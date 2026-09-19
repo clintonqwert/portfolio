@@ -1,26 +1,23 @@
 import type { Stat } from "@/types/content";
 
-/** The measured strip beneath the masthead. Two columns on phones, four above. */
+/** Measured strip. Two columns on phones, four above. */
 export function StatStrip({ stats }: { stats: Stat[] }) {
   return (
-    <dl className="grid grid-cols-2 border-b border-rule sm:grid-cols-4">
+    <dl className="grid grid-cols-2 border-t border-rule sm:grid-cols-4">
       {stats.map((stat, i) => (
         <div
           key={stat.label}
           className={[
-            "py-6 pr-5",
-            "border-line",
-            // Right rule on every cell except the last in its row.
-            i % 2 === 0 ? "border-r sm:border-r" : "sm:border-r",
+            "py-6 pr-6 border-line",
+            i % 2 === 1 ? "border-r-0" : "border-r",
+            i === stats.length - 1 ? "sm:border-r-0" : "sm:border-r",
             i < 2 ? "border-b sm:border-b-0" : "",
-            i === 3 ? "sm:border-r-0" : "",
-            i === 1 ? "border-r-0 sm:border-r" : "",
           ].join(" ")}
         >
-          <dd className="block font-mono text-[1.85rem] font-medium leading-[1.1] tracking-[-0.03em] tabular-nums text-ink">
+          <dd className="font-mono text-[clamp(1.4rem,2.2vw,1.8rem)] font-medium leading-none tabular-nums tracking-[-0.03em] text-ink">
             {stat.value}
           </dd>
-          <dt className="mt-1 font-mono text-[0.7rem] uppercase leading-[1.5] tracking-[0.08em] text-faint">
+          <dt className="mt-2.5 font-mono text-[0.66rem] uppercase leading-[1.55] tracking-[0.08em] text-faint">
             {stat.label}
             {stat.detail ? (
               <>

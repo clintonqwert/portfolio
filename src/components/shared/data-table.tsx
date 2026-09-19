@@ -15,7 +15,7 @@ function TableFrame({
   minWidth: string;
 }) {
   return (
-    <div className="my-6 overflow-x-auto border border-line bg-surface">
+    <div className="my-6 overflow-x-auto border border-line bg-panel">
       <table className="w-full border-collapse" style={{ minWidth }}>
         <caption className="border-b border-line bg-sunk px-4 py-3 text-left font-mono text-[0.7rem] uppercase tracking-[0.1em] text-faint">
           {caption}

@@ -2,13 +2,12 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
+import { SiteFooter } from "@/components/layout/site-footer";
 import { AssertionTable } from "@/components/shared/data-table";
 import { JsonLd } from "@/components/shared/json-ld";
 import { Passages } from "@/components/shared/passages";
 import { StatStrip } from "@/components/shared/stat-strip";
-import { Section, SectionHeading } from "@/components/ui/section";
-import { Col, Rail, Spec } from "@/components/ui/spec";
-import { Wrap } from "@/components/ui/wrap";
+import { Label, Prose, Section, SectionHeading } from "@/components/ui/section";
 import { getCaseStudy, getCaseStudySlugs } from "@/lib/content/work";
 import { buildCaseStudyJsonLd, buildMetadata } from "@/lib/seo";
 
@@ -55,20 +54,29 @@ export default async function CaseStudyPage({
         })}
       />
 
-      <Wrap>
-        <div className="pb-10 pt-12 sm:pt-16">
-          <p className="font-mono text-[0.72rem] uppercase tracking-[0.14em] text-accent">
-            <Link href="/#work" className="underline-offset-4 hover:underline">
-              Work
-            </Link>{" "}
-            / {study.name}
-          </p>
-          <h1 className="mt-4 max-w-[20ch] font-display text-[clamp(2rem,5vw,3.1rem)] font-bold leading-[1.05] tracking-[-0.025em] text-ink">
-            {study.headline}
-          </h1>
-          <p className="mt-4 max-w-[62ch] text-muted">{study.summary}</p>
+      <div className="px-6 pt-[clamp(2.5rem,5vw,4rem)] sm:px-10 lg:px-14">
+        <div className="max-w-[1080px]">
+          <nav aria-label="Breadcrumb">
+            <p className="font-mono text-[0.7rem] uppercase tracking-[0.12em] text-accent">
+              <Link href="/#work" className="no-underline hover:underline">
+                Work
+              </Link>
+              <span className="text-faint"> / {study.name}</span>
+            </p>
+          </nav>
 
-          <ul className="mt-6 flex flex-wrap gap-x-6 gap-y-2 font-mono text-[0.78rem]">
+          <SectionHeading
+            as="h1"
+            className="mt-5 max-w-[18ch] text-[clamp(2.1rem,4.6vw,3.2rem)] leading-[1.06] tracking-[-0.026em]"
+          >
+            {study.headline}
+          </SectionHeading>
+
+          <Prose className="mt-5 text-[1.05rem]">
+            <p>{study.summary}</p>
+          </Prose>
+
+          <ul className="mt-7 flex flex-wrap gap-x-5 gap-y-2 font-mono text-[0.74rem]">
             {study.liveUrl ? (
               <li>
                 <a
@@ -90,13 +98,16 @@ export default async function CaseStudyPage({
               </li>
             ) : null}
           </ul>
+
+          <div className="mt-[clamp(2rem,4vw,3rem)]">
+            <StatStrip stats={study.stats} />
+          </div>
         </div>
-        <StatStrip stats={study.stats} />
-      </Wrap>
+      </div>
 
       <Section divider={false}>
-        <Spec>
-          <Rail label={study.name}>
+        <div className="datagrid">
+          <Label title={study.name}>
             {study.period}
             <br />
             {study.role}
@@ -107,43 +118,44 @@ export default async function CaseStudyPage({
                 {tech}
               </span>
             ))}
-          </Rail>
-          <Col>
+          </Label>
+          <Prose>
             <Passages passages={study.passages} />
-          </Col>
-        </Spec>
+          </Prose>
+        </div>
       </Section>
 
       {study.assertions ? (
         <Section>
-          <Spec>
-            <Rail label="Asserted">On every
+          <div className="datagrid">
+            <Label title="Asserted">
+              On every
               <br />
               pull request
-            </Rail>
-            <Col wide>
-              <SectionHeading className="mb-2">The budget, in full</SectionHeading>
+            </Label>
+            <div>
+              <SectionHeading className="mb-1">The budget, in full</SectionHeading>
               <AssertionTable
                 caption={study.assertions.caption}
                 rows={study.assertions.rows}
               />
-            </Col>
-          </Spec>
+            </div>
+          </div>
         </Section>
       ) : null}
 
       <Section>
-        <Spec>
-          <Rail label="Next" />
-          <Col>
-            <p className="font-mono text-[0.8rem]">
-              <Link href="/#gaps" className="text-accent underline underline-offset-4">
-                What I would fix first →
-              </Link>
-            </p>
-          </Col>
-        </Spec>
+        <div className="datagrid">
+          <Label title="Next" />
+          <p className="font-mono text-[0.78rem]">
+            <Link href="/#gaps" className="text-accent underline underline-offset-4">
+              What I would fix first →
+            </Link>
+          </p>
+        </div>
       </Section>
+
+      <SiteFooter />
     </>
   );
 }

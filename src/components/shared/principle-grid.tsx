@@ -5,7 +5,7 @@ export function PrincipleGrid({ principles }: { principles: Principle[] }) {
   return (
     <ul className="mt-7 grid gap-px border border-line bg-line [grid-template-columns:repeat(auto-fit,minmax(240px,1fr))]">
       {principles.map((principle) => (
-        <li key={principle.title} className="bg-ground p-5">
+        <li key={principle.title} className="bg-canvas p-5">
           <h3 className="font-display text-[1.02rem] font-semibold text-ink">
             {principle.title}
           </h3>

@@ -4,36 +4,70 @@
   MIRROR RULE: these values are duplicated in src/lib/design-tokens.ts.
   Nothing enforces the mirror — change both together.
 
-  Light-first here rather than dark-first (the ProjectOS default) because this
-  page is a specification sheet: dense prose and data tables that read better on
-  paper-white. Recorded as a deliberate departure.
+  Strategy: Committed. A dark slate rail carries the chrome across full viewport
+  height against a true neutral canvas. Canvas chroma is 0 — deliberately not a
+  warm near-white, which PRODUCT.md lists as an anti-reference.
+
+  Accent is the deep teal that predates this redesign. Identity preservation.
 */
 @theme {
-  --color-ground: #edeff1;
-  --color-surface: #f7f8f9;
-  --color-sunk: #e3e7ea;
-  --color-ink: #14181c;
-  --color-muted: #5a646e;
-  --color-faint: #78838d;
-  --color-line: #d3d8dd;
-  --color-rule: #c2c9d0;
-  --color-accent: #0f5c6b;
-  --color-pass: #2f6b4f;
-  --color-signal: #b4621a;
+  /* ── workspace ─────────────────────────────────────────────────────── */
+  --color-canvas: oklch(0.982 0 0);
+  --color-panel: oklch(1 0 0);
+  --color-sunk: oklch(0.955 0.002 220);
 
-  /* Families come from next/font in layout.tsx, which sets these variables on
-     <html>. The fallbacks below only apply before hydration of the font CSS. */
+  /* ── chrome ────────────────────────────────────────────────────────── */
+  --color-rail: oklch(0.215 0.028 225);
+  --color-rail-line: oklch(0.32 0.025 225);
+  --color-rail-ink: oklch(0.93 0.006 220);
+  --color-rail-muted: oklch(0.68 0.015 220);
+
+  /* ── text ──────────────────────────────────────────────────────────── */
+  --color-ink: oklch(0.225 0.018 230);
+  --color-muted: oklch(0.47 0.016 230);
+  --color-faint: oklch(0.515 0.015 230);
+
+  /* ── structure ─────────────────────────────────────────────────────── */
+  --color-line: oklch(0.905 0.005 220);
+  --color-rule: oklch(0.845 0.008 220);
+
+  /* ── accent + states ───────────────────────────────────────────────── */
+  /* #0F5C6B, preserved from the previous design. */
+  --color-accent: oklch(0.425 0.058 206);
+  --color-accent-soft: oklch(0.955 0.018 206);
+  /* Lifted for legibility on the dark rail. */
+  --color-accent-bright: oklch(0.775 0.085 198);
+  --color-pass: oklch(0.475 0.095 152);
+  --color-signal: oklch(0.545 0.125 52);
+
+  /* ── type ──────────────────────────────────────────────────────────── */
+  /*
+    One family with committed weight contrast rather than a display/body pair:
+    serif body + mono labels + ruled separators is the editorial-typographic
+    lane this project rejects. Mono is reserved for data and labels, where it
+    carries real meaning rather than signalling "technical".
+  */
   --font-display: var(--font-archivo), "Helvetica Neue", Arial, sans-serif;
-  --font-serif: var(--font-source-serif), Georgia, "Times New Roman", serif;
+  --font-body: var(--font-archivo), "Helvetica Neue", Arial, sans-serif;
   --font-mono: var(--font-plex-mono), ui-monospace, "SF Mono", Menlo, monospace;
+
+  /* ── motion ────────────────────────────────────────────────────────── */
+  --ease-out-quart: cubic-bezier(0.25, 1, 0.5, 1);
+
+  /* ── z-index scale ─────────────────────────────────────────────────── */
+  --z-sticky: 20;
+  --z-rail: 30;
+  --z-overlay: 40;
+  --z-skip: 60;
 }
 
 @layer base {
   html {
     scroll-behavior: smooth;
+    /* The rail is fixed; anchored sections must clear the mobile top bar. */
+    scroll-padding-top: 5rem;
   }
 
-  /* Honour the OS setting over the nicety. */
   @media (prefers-reduced-motion: reduce) {
     html {
       scroll-behavior: auto;
@@ -48,13 +82,12 @@
   }
 
   body {
-    background-color: var(--color-ground);
+    background-color: var(--color-canvas);
     color: var(--color-ink);
-    font-family: var(--font-serif);
-    font-size: 17px;
-    line-height: 1.65;
+    font-family: var(--font-body);
+    font-size: 16.5px;
+    line-height: 1.6;
     -webkit-font-smoothing: antialiased;
-    /* Long URLs must not widen the document past the viewport. */
     overflow-wrap: break-word;
   }
 
@@ -65,36 +98,77 @@
     text-wrap: balance;
   }
 
-  /* Visible focus is a delivery requirement, not a preference. */
+  p {
+    text-wrap: pretty;
+  }
+
   :focus-visible {
     outline: 2px solid var(--color-accent);
     outline-offset: 3px;
     border-radius: 2px;
   }
+
+  /* Focus on the dark rail needs the lifted accent to stay visible. */
+  .rail :focus-visible {
+    outline-color: var(--color-accent-bright);
+  }
 }
 
 @layer components {
   /*
-    The spec-sheet grid: a mono annotation rail beside a measured prose column.
-    Grid children need min-width:0 or a wide child (the assertion tables, which
-    carry a min-width so their columns stay legible) stretches the whole column
-    and widens the document.
+    Panels are the workspace's unit. A hairline ring rather than a drop shadow:
+    the page is an instrument, and shadows imply a depth that isn't there.
   */
-  .spec {
+  .panel {
+    background-color: var(--color-panel);
+    box-shadow: inset 0 0 0 1px var(--color-line);
+  }
+
+  /*
+    A mono label column beside content. Grid children need min-width:0 or a wide
+    child (the assertion tables carry a min-width so their columns stay legible)
+    stretches the column and widens the document.
+  */
+  .datagrid {
     display: grid;
-    grid-template-columns: 132px minmax(0, 1fr);
-    gap: 34px;
+    grid-template-columns: 148px minmax(0, 1fr);
+    gap: 0 32px;
     align-items: start;
   }
 
-  .spec > * {
+  .datagrid > * {
     min-width: 0;
   }
 
-  @media (max-width: 880px) {
-    .spec {
+  @media (max-width: 900px) {
+    .datagrid {
       grid-template-columns: 1fr;
-      gap: 14px;
+      gap: 12px;
+    }
+  }
+
+  /*
+    Entrance enhances an already-visible default: content is never gated behind
+    a transition, so headless renderers and background tabs still show it.
+  */
+  @media (prefers-reduced-motion: no-preference) {
+    @supports (animation-timeline: view()) {
+      .rise {
+        animation: rise linear both;
+        animation-timeline: view();
+        animation-range: entry 0% entry 42%;
+      }
+    }
+  }
+
+  @keyframes rise {
+    from {
+      opacity: 0.4;
+      transform: translateY(14px);
+    }
+    to {
+      opacity: 1;
+      transform: none;
     }
   }
 }

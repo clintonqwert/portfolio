@@ -40,6 +40,32 @@ export const CONTACT_HREF = {
   studio: "https://driftpilot.ca",
 } as const;
 
+/**
+ * Downloadable résumé. This is the *public* copy: built from profile/resume.html
+ * with `?phone=off`, so it carries email and LinkedIn but not the mobile number.
+ * Rebuild it with:
+ *   cd profile && ./build-resume.sh          # master copies, phone included
+ *   then print ?v=fullstack&phone=off to public/clinton-jay-ramonida-resume.pdf
+ */
+export const RESUME = {
+  href: "/clinton-jay-ramonida-resume.pdf",
+  pages: 2,
+  size: "86 kB",
+} as const;
+
+/**
+ * Portrait.
+ *
+ * TO REPLACE: drop your photo at `public/portrait.jpg` and change `src` below to
+ * "/portrait.jpg". Shoot or crop to 4:5 portrait; 1200×1500 or larger. The frame
+ * renders it at up to 420px wide, so anything above 840px wide is wasted bytes.
+ */
+export const PORTRAIT = {
+  src: "/portrait-placeholder.svg",
+  alt: "Clinton Jay Ramonida",
+  isPlaceholder: true,
+} as const;
+
 export const LEDE =
   "Senior full-stack engineer — nine years of production web systems, five of them on automotive SaaS at national scale.";
 

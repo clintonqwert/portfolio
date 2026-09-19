@@ -5,7 +5,8 @@
   "scripts": {
     "dev": "next dev",
     "check:claims": "node scripts/check-claims.mjs",
-    "build": "npm run check:claims && next build",
+    "check:contrast": "node scripts/check-contrast.mjs",
+    "build": "npm run check:claims && npm run check:contrast && next build",
     "start": "next start",
     "lint": "eslint .",
     "typecheck": "next typegen && tsc --noEmit"

@@ -5,43 +5,55 @@
  * src/app/globals.css. Nothing enforces the mirror, so changing one without the
  * other is a defect that only shows up visually. Change both together.
  *
- * Components use the semantic Tailwind utilities (bg-surface, text-muted,
- * border-line). Raw hex in a component is a defect — see ProjectOS
- * 01-Engineering/coding-standards.md.
+ * Components use the semantic Tailwind utilities (bg-panel, text-muted,
+ * border-line). Raw hex in a component is a defect.
+ *
+ * Strategy: Committed — a dark slate rail against a true neutral canvas. Canvas
+ * chroma is 0 on purpose; a warm near-white is an anti-reference in PRODUCT.md.
  */
 export const colors = {
-  /** Page background. */
-  ground: "#EDEFF1",
-  /** Raised panels, tables, cards. */
-  surface: "#F7F8F9",
+  /** Workspace background. Chroma 0 — never warm-tinted. */
+  canvas: "oklch(0.982 0 0)",
+  /** Raised panels. */
+  panel: "oklch(1 0 0)",
   /** Recessed strips — table captions. */
-  sunk: "#E3E7EA",
+  sunk: "oklch(0.955 0.002 220)",
+
+  /** Fixed navigation rail. */
+  rail: "oklch(0.215 0.028 225)",
+  railLine: "oklch(0.32 0.025 225)",
+  railInk: "oklch(0.93 0.006 220)",
+  railMuted: "oklch(0.68 0.015 220)",
+
   /** Primary text. */
-  ink: "#14181C",
+  ink: "oklch(0.225 0.018 230)",
   /** Secondary text. */
-  muted: "#5A646E",
-  /** Tertiary text — rails, captions, metadata. */
-  faint: "#78838D",
+  muted: "oklch(0.47 0.016 230)",
+  /** Metadata only — sits at the AA floor on canvas. */
+  faint: "oklch(0.515 0.015 230)",
+
   /** Hairlines. */
-  line: "#D3D8DD",
-  /** Structural rules — heavier than line. */
-  rule: "#C2C9D0",
-  /** Links, rail headings, accents. */
-  accent: "#0F5C6B",
-  /** Passing state in assertion tables. */
-  pass: "#2F6B4F",
-  /** Measured-but-not-binary state. */
-  signal: "#B4621A",
+  line: "oklch(0.905 0.005 220)",
+  /** Structural rules. */
+  rule: "oklch(0.845 0.008 220)",
+
+  /** #0F5C6B, preserved from the previous design. */
+  accent: "oklch(0.425 0.058 206)",
+  accentSoft: "oklch(0.955 0.018 206)",
+  /** Lifted so it stays legible on the dark rail. */
+  accentBright: "oklch(0.775 0.085 198)",
+  pass: "oklch(0.475 0.095 152)",
+  signal: "oklch(0.545 0.125 52)",
 } as const;
 
 /**
  * Families are loaded by next/font in src/app/layout.tsx, which exposes them as
- * --font-archivo / --font-source-serif / --font-plex-mono on <html>. globals.css
- * maps those onto the semantic --font-display / --font-serif / --font-mono.
+ * --font-archivo / --font-plex-mono on <html>. One family carries display and
+ * body with weight contrast; mono is reserved for data and labels.
  */
 export const fonts = {
   display: "var(--font-display)",
-  serif: "var(--font-serif)",
+  body: "var(--font-body)",
   mono: "var(--font-mono)",
 } as const;
 

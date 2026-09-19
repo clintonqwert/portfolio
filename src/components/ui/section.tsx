@@ -1,7 +1,9 @@
-import { Wrap } from "@/components/ui/wrap";
 import { cn } from "@/lib/utils";
 
-/** A top-level page section with its dividing rule. */
+/**
+ * A workspace section. Padding is fluid rather than stepped so the rhythm
+ * breathes on wide viewports without a breakpoint for every size.
+ */
 export function Section({
   id,
   children,
@@ -17,17 +19,42 @@ export function Section({
     <section
       id={id}
       className={cn(
-        "py-14 sm:py-[72px]",
+        "px-6 py-[clamp(3rem,6vw,5.5rem)] sm:px-10 lg:px-14",
         divider && "border-t border-rule",
         className,
       )}
     >
-      <Wrap>{children}</Wrap>
+      <div className="max-w-[1080px]">{children}</div>
     </section>
   );
 }
 
-/** Section headline. Sizes are clamped so they scale without a media query. */
+/**
+ * The mono label column beside a section's content. `index` is the section's
+ * position in the page order — the same number the rail shows, not decoration.
+ */
+export function Label({
+  title,
+  index,
+  children,
+}: {
+  title: string;
+  index?: string;
+  children?: React.ReactNode;
+}) {
+  return (
+    <div className="pt-1 font-mono text-[0.68rem] uppercase leading-[1.75] tracking-[0.1em] text-faint">
+      <b className="flex items-baseline gap-2 font-medium text-accent">
+        {index ? (
+          <span className="tabular-nums text-faint">{index}</span>
+        ) : null}
+        {title}
+      </b>
+      {children}
+    </div>
+  );
+}
+
 export function SectionHeading({
   children,
   as: Tag = "h2",
@@ -40,14 +67,35 @@ export function SectionHeading({
   return (
     <Tag
       className={cn(
-        "font-display font-bold leading-[1.15] tracking-[-0.02em] text-ink",
+        "font-display text-ink",
         Tag === "h3"
-          ? "text-[1.02rem] tracking-[-0.005em]"
-          : "text-[clamp(1.55rem,3.1vw,2.05rem)]",
+          ? "text-[1.05rem] font-semibold leading-snug tracking-[-0.008em]"
+          : "text-[clamp(1.6rem,3vw,2.15rem)] font-bold leading-[1.12] tracking-[-0.022em]",
         className,
       )}
     >
       {children}
     </Tag>
+  );
+}
+
+/**
+ * Measured prose column.
+ *
+ * 62ch, not 68: the `ch` unit measures the "0" glyph, which is narrower than the
+ * average character in a proportional face, so a 68ch column rendered ~85
+ * characters — past the 65–75 band. Measured against the real copy.
+ */
+export function Prose({
+  children,
+  className,
+}: {
+  children: React.ReactNode;
+  className?: string;
+}) {
+  return (
+    <div className={cn("max-w-[min(62ch,100%)] text-muted", className)}>
+      {children}
+    </div>
   );
 }
