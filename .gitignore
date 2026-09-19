@@ -27,3 +27,22 @@ docs/
 # Python venvs used for one-off verification
 .venv*/
 __pycache__/
+
+# ── Next.js / Node ───────────────────────────────────────────────────────────
+node_modules/
+.next/
+out/
+build/
+next-env.d.ts
+*.tsbuildinfo
+
+# Local env — never commit secrets
+.env
+.env.local
+.env*.local
+
+# Vercel
+.vercel/
+
+# Lighthouse CI artefacts
+.lighthouseci/

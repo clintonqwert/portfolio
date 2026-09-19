@@ -1,0 +1,45 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  # The build fails without this (see src/lib/seo.ts). CI only needs a
+  # well-formed origin; the real one is set in Vercel.
+  NEXT_PUBLIC_SITE_URL: https://clintonramonida.vercel.app
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+
+      - run: npm ci
+
+      - name: Retired claims
+        run: npm run check:claims
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Typecheck
+        run: npm run typecheck
+
+      - name: Build
+        run: npm run build
+
+      - name: Lighthouse budgets
+        run: |
+          npm install -g @lhci/cli@0.14.x
+          lhci autorun

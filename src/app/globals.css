@@ -1,0 +1,100 @@
+@import "tailwindcss";
+
+/*
+  MIRROR RULE: these values are duplicated in src/lib/design-tokens.ts.
+  Nothing enforces the mirror — change both together.
+
+  Light-first here rather than dark-first (the ProjectOS default) because this
+  page is a specification sheet: dense prose and data tables that read better on
+  paper-white. Recorded as a deliberate departure.
+*/
+@theme {
+  --color-ground: #edeff1;
+  --color-surface: #f7f8f9;
+  --color-sunk: #e3e7ea;
+  --color-ink: #14181c;
+  --color-muted: #5a646e;
+  --color-faint: #78838d;
+  --color-line: #d3d8dd;
+  --color-rule: #c2c9d0;
+  --color-accent: #0f5c6b;
+  --color-pass: #2f6b4f;
+  --color-signal: #b4621a;
+
+  /* Families come from next/font in layout.tsx, which sets these variables on
+     <html>. The fallbacks below only apply before hydration of the font CSS. */
+  --font-display: var(--font-archivo), "Helvetica Neue", Arial, sans-serif;
+  --font-serif: var(--font-source-serif), Georgia, "Times New Roman", serif;
+  --font-mono: var(--font-plex-mono), ui-monospace, "SF Mono", Menlo, monospace;
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+
+  /* Honour the OS setting over the nicety. */
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+
+  body {
+    background-color: var(--color-ground);
+    color: var(--color-ink);
+    font-family: var(--font-serif);
+    font-size: 17px;
+    line-height: 1.65;
+    -webkit-font-smoothing: antialiased;
+    /* Long URLs must not widen the document past the viewport. */
+    overflow-wrap: break-word;
+  }
+
+  h1,
+  h2,
+  h3 {
+    font-family: var(--font-display);
+    text-wrap: balance;
+  }
+
+  /* Visible focus is a delivery requirement, not a preference. */
+  :focus-visible {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 3px;
+    border-radius: 2px;
+  }
+}
+
+@layer components {
+  /*
+    The spec-sheet grid: a mono annotation rail beside a measured prose column.
+    Grid children need min-width:0 or a wide child (the assertion tables, which
+    carry a min-width so their columns stay legible) stretches the whole column
+    and widens the document.
+  */
+  .spec {
+    display: grid;
+    grid-template-columns: 132px minmax(0, 1fr);
+    gap: 34px;
+    align-items: start;
+  }
+
+  .spec > * {
+    min-width: 0;
+  }
+
+  @media (max-width: 880px) {
+    .spec {
+      grid-template-columns: 1fr;
+      gap: 14px;
+    }
+  }
+}
