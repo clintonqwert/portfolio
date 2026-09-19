@@ -1,0 +1,29 @@
+# ─────────────────────────────────────────────────────────────────────────────
+# This repository is public. Everything below stays local.
+# ─────────────────────────────────────────────────────────────────────────────
+
+# Job-search material: resume source and built PDFs, LinkedIn copy, the portfolio
+# page and its gaps table, interview prep, and per-application drafts.
+# Publishing any of it would expose an active job search and personal contact
+# details. profile/.gitignore adds a second layer for the most sensitive files.
+profile/
+
+# Design specs. These describe the job search and catalogue known weaknesses in
+# the DriftPilot and Riflessi codebases.
+docs/
+
+# Agent scratch space. Currently holds an uploaded resume PDF with a phone number.
+.devswarm-temp/
+
+# macOS
+.DS_Store
+**/.DS_Store
+
+# Editor / tooling
+.vscode/
+.idea/
+*.swp
+
+# Python venvs used for one-off verification
+.venv*/
+__pycache__/
