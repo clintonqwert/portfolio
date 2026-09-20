@@ -220,7 +220,10 @@
 
   @media (min-width: 1024px) {
     .deck {
-      height: calc(100dvh - 2 * var(--deck-pad));
+      /* Fills whatever the headline and marquee leave, rather than assuming the
+         viewport height itself — the bands above it are not fixed-height. */
+      min-height: 0;
+      flex: 1;
       grid-template-columns: repeat(12, minmax(0, 1fr));
       grid-auto-rows: minmax(0, 1fr);
     }
@@ -249,5 +252,65 @@
     min-height: 0;
     overflow-y: auto;
     overscroll-behavior: contain;
+  }
+}
+
+@layer components {
+  /*
+    Marquee. The track holds two identical lists and translates by exactly -50%,
+    so the loop is seamless with no jump. Duration scales with content rather
+    than being a fixed number — a longer list at the same duration reads as a
+    blur.
+  */
+  .marquee {
+    /* Fade the ends so items read as passing behind the frame rather than
+       being cut off by it. */
+    -webkit-mask-image: linear-gradient(
+      to right,
+      transparent,
+      #000 48px,
+      #000 calc(100% - 48px),
+      transparent
+    );
+    mask-image: linear-gradient(
+      to right,
+      transparent,
+      #000 48px,
+      #000 calc(100% - 48px),
+      transparent
+    );
+  }
+
+  .marquee-track {
+    animation: marquee 46s linear infinite;
+    will-change: transform;
+  }
+
+  /* Pause on hover and on keyboard focus, so the strip can be read either way. */
+  .marquee:hover .marquee-track,
+  .marquee:focus-within .marquee-track {
+    animation-play-state: paused;
+  }
+
+  @keyframes marquee {
+    from {
+      transform: translateX(0);
+    }
+    to {
+      transform: translateX(-50%);
+    }
+  }
+
+  /*
+    Reduced motion: drop the animation rather than slowing it, and make the strip
+    an ordinary scroller so the content is still reachable.
+  */
+  @media (prefers-reduced-motion: reduce) {
+    .marquee {
+      overflow-x: auto;
+    }
+    .marquee-track {
+      animation: none;
+    }
   }
 }

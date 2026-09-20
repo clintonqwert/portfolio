@@ -95,6 +95,22 @@ export async function getTrackRecord(): Promise<Role[]> {
   ];
 }
 
+/**
+ * Flat skill list for the marquee. Ordered by how much of the current work each
+ * one carries, not alphabetically — the first dozen are what a reader skimming
+ * a moving strip will actually catch.
+ */
+export async function getSkillMarquee(): Promise<string[]> {
+  return [
+    "TypeScript", "React 19", "Next.js App Router", "Node.js", "Server Components",
+    "React Server Actions", "Tailwind CSS", "Zod", "Vue.js", "PHP", "Python", "SQL",
+    "MySQL", "PostgreSQL", "Redis", "AWS", "Vercel", "Docker", "Cloudflare",
+    "GitHub Actions", "Lighthouse CI", "Core Web Vitals", "WCAG accessibility",
+    "Technical SEO", "Design tokens", "Claude API", "OpenAI API", "Structured outputs",
+    "Multi-agent pipelines", "Architecture guardrails", "Decision records", "Code review",
+  ];
+}
+
 /** Tools, grouped. Current and prior-role. */
 export async function getStackGroups(): Promise<StackGroup[]> {
   return [

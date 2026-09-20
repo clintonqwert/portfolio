@@ -66,6 +66,10 @@ export const PORTRAIT = {
   isPlaceholder: true,
 } as const;
 
+/** The statement above the fold. Shorter and harder than the résumé summary. */
+export const HEADLINE =
+  "I make the quality bar something the pipeline enforces, not something the team remembers.";
+
 export const LEDE =
   "Senior full-stack engineer — nine years of production web systems, five of them on automotive SaaS at national scale.";
 

@@ -30,7 +30,14 @@ const getSnapshot = (): Theme =>
 
 const getServerSnapshot = (): null => null;
 
-export function ThemeToggle({ className }: { className?: string }) {
+export function ThemeToggle({
+  className,
+  /** Drops the text label. For narrow chrome where the label would truncate. */
+  iconOnly = false,
+}: {
+  className?: string;
+  iconOnly?: boolean;
+}) {
   const theme = useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot);
   const isDark = theme === "dark";
 
@@ -77,8 +84,11 @@ export function ThemeToggle({ className }: { className?: string }) {
         )}
       </svg>
       {/* Fixed width so the control does not resize when toggled; wide enough
-          for "Light", which is the longer of the two labels. */}
-      <span className="w-[3.1rem] text-left">{isDark ? "Dark" : "Light"}</span>
+          for "Light", which is the longer of the two labels. The icon-only
+          variant still carries the state in aria-label and aria-pressed. */}
+      {iconOnly ? null : (
+        <span className="w-[3.1rem] text-left">{isDark ? "Dark" : "Light"}</span>
+      )}
     </button>
   );
 }

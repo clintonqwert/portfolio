@@ -69,7 +69,9 @@ export function Figure({ stat, size = "md" }: { stat: Stat; size?: "sm" | "md" }
       >
         {stat.value}
       </div>
-      <div className="mt-1.5 truncate font-mono text-[0.6rem] uppercase leading-tight tracking-[0.07em] text-faint">
+      {/* Clamped rather than truncated: at narrow widths a single line cut the
+          labels to "PRERENDERED ROU…". Two lines still cannot overflow a cell. */}
+      <div className="mt-1.5 line-clamp-2 font-mono text-[0.6rem] uppercase leading-tight tracking-[0.07em] text-faint">
         {stat.label}
       </div>
     </div>

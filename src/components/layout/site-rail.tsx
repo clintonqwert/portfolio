@@ -1,6 +1,7 @@
 import Link from "next/link";
 
 import { RailNav } from "@/components/layout/rail-nav";
+import { ProfileCard } from "@/components/layout/profile-card";
 import { ThemeToggle } from "@/components/layout/theme-toggle";
 
 import type { NavLink } from "@/lib/content/navigation";
@@ -20,22 +21,14 @@ export function SiteRail({ links }: { links: NavLink[] }) {
       {/* ── desktop rail ───────────────────────────────────────────────── */}
       <div className="rail fixed inset-y-0 left-0 z-[var(--z-rail)] hidden w-[236px] flex-col justify-between bg-rail px-6 py-7 lg:flex">
         <div>
-          <Link href="/" className="block no-underline">
-            <span className="block font-display text-[0.95rem] font-bold leading-tight tracking-[-0.01em] text-rail-ink">
-              {NAME}
-            </span>
-            <span className="mt-1 block font-mono text-[0.66rem] uppercase tracking-[0.12em] text-accent-bright">
-              Senior full-stack
-            </span>
-          </Link>
+          <ProfileCard />
 
-          <nav aria-label="Sections" className="mt-9">
+          <nav aria-label="Sections" className="mt-8 border-t border-rail-line pt-6">
             <RailNav links={links} variant="rail" />
           </nav>
         </div>
 
         <div className="border-t border-rail-line pt-5">
-          <ThemeToggle className="mb-3 w-full justify-between bg-rail-line/40 text-rail-muted hover:bg-rail-line/70 hover:text-rail-ink" />
           <a
             href={RESUME.href}
             download

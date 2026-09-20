@@ -45,6 +45,12 @@ src/types/content.ts  The contract between content and presentation
 Every route is statically prerendered. There is no runtime database and no
 client-side data fetching.
 
+### Layout
+
+The rail carries the profile — avatar, name, role, location, theme toggle — at
+top-left, then navigation, then the résumé download. The workspace is three
+bands: headline, a skills marquee, and the tile grid.
+
 ### The deck
 
 `/` is a dashboard, not a landing page. At ≥1024px it fills exactly one viewport
@@ -56,6 +62,16 @@ Long-form prose lives in detail routes (`/autotrader`, `/gaps`, `/standard`,
 scrolls, the prose panel does. Below 1024px the constraint is lifted and the
 page scrolls normally, because a single viewport on a phone means either three
 tiles or unreadable type.
+
+### The marquee
+
+`.marquee-track` renders the skill list twice and translates by exactly `-50%`,
+which is what makes the loop seamless. The duplicate is `aria-hidden`, so a
+screen reader hears the list once. Motion pauses on hover **and** on
+`focus-within`, so a keyboard user can stop it to read. Under
+`prefers-reduced-motion` the animation is removed and the strip becomes an
+ordinary horizontal scroller — the content stays reachable rather than
+disappearing with the motion.
 
 ### Themes
 
