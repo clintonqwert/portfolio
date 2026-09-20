@@ -72,10 +72,11 @@ export const LEDE =
 /** The four figures in the masthead strip. */
 export async function getHeadlineStats(): Promise<Stat[]> {
   return [
+    // Labels are kept to two short lines so the strip's baselines stay level.
     { value: "9", label: "Years shipping", detail: "production web" },
-    { value: "2", label: "Live sites", detail: "designed & shipped solo" },
-    { value: "32", label: "Reviewed pull requests", detail: "on own codebases" },
-    { value: "≥95", label: "Lighthouse perf, asserted", detail: "on every merge" },
+    { value: "2", label: "Live sites", detail: "shipped solo" },
+    { value: "32", label: "Reviewed PRs", detail: "on own codebases" },
+    { value: "≥95", label: "Lighthouse perf", detail: "asserted on merge" },
   ];
 }
 

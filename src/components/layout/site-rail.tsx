@@ -1,5 +1,7 @@
 import Link from "next/link";
 
+import { RailNav } from "@/components/layout/rail-nav";
+
 import type { NavLink } from "@/lib/content/navigation";
 import { CONTACT, CONTACT_HREF, NAME, RESUME } from "@/lib/content/profile";
 
@@ -27,23 +29,7 @@ export function SiteRail({ links }: { links: NavLink[] }) {
           </Link>
 
           <nav aria-label="Sections" className="mt-9">
-            <ul className="space-y-[3px]">
-              {links.map((link) => (
-                <li key={link.href}>
-                  <Link
-                    href={link.href}
-                    className="group flex items-baseline gap-3 rounded-sm px-2 py-[7px] text-rail-muted no-underline transition-colors duration-200 hover:bg-rail-line/50 hover:text-rail-ink"
-                  >
-                    <span className="font-mono text-[0.62rem] tabular-nums text-rail-muted/70 transition-colors group-hover:text-accent-bright">
-                      {link.index}
-                    </span>
-                    <span className="font-display text-[0.86rem] font-medium">
-                      {link.label}
-                    </span>
-                  </Link>
-                </li>
-              ))}
-            </ul>
+            <RailNav links={links} variant="rail" />
           </nav>
         </div>
 
@@ -82,18 +68,7 @@ export function SiteRail({ links }: { links: NavLink[] }) {
           </a>
         </div>
         <nav aria-label="Sections" className="overflow-x-auto border-t border-rail-line/60">
-          <ul className="flex w-max gap-1 px-4 py-2">
-            {links.map((link) => (
-              <li key={link.href}>
-                <Link
-                  href={link.href}
-                  className="block whitespace-nowrap rounded-sm px-2.5 py-1.5 font-display text-[0.78rem] font-medium text-rail-muted no-underline"
-                >
-                  {link.label}
-                </Link>
-              </li>
-            ))}
-          </ul>
+          <RailNav links={links} variant="bar" />
         </nav>
       </header>
     </>

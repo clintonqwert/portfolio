@@ -12,12 +12,12 @@ import type { CaseStudy } from "@/types/content";
  */
 export function WorkGrid({ studies }: { studies: CaseStudy[] }) {
   return (
-    <div className="grid gap-5 lg:grid-cols-5">
+    <div className="grid items-start gap-5 xl:grid-cols-5">
       {studies.map((study, i) => (
         <article
           key={study.slug}
-          className={`panel rise flex flex-col p-6 sm:p-7 ${
-            i === 0 ? "lg:col-span-3" : "lg:col-span-2"
+          className={`panel rise flex flex-col p-6 transition-shadow duration-200 hover:shadow-[inset_0_0_0_1px_var(--color-rule)] sm:p-7 ${
+            i === 0 ? "xl:col-span-3" : "xl:col-span-2"
           }`}
         >
           <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
@@ -55,7 +55,7 @@ export function WorkGrid({ studies }: { studies: CaseStudy[] }) {
             ))}
           </dl>
 
-          <div className="mt-auto flex flex-wrap items-center gap-x-5 gap-y-2 pt-6 font-mono text-[0.7rem]">
+          <div className="mt-6 flex flex-wrap items-center gap-x-5 gap-y-2 font-mono text-[0.7rem]">
             <Link
               href={`/work/${study.slug}`}
               className="text-accent underline decoration-1 underline-offset-4"

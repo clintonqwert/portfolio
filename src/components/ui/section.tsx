@@ -9,18 +9,36 @@ export function Section({
   children,
   className,
   divider = true,
+  tone = "canvas",
+  size = "default",
 }: {
   id?: string;
   children: React.ReactNode;
   className?: string;
   divider?: boolean;
+  /**
+   * `sunk` marks a section as a focal point. Used once, on the open-gaps
+   * section: publishing unfixed weaknesses is this page's argument, and it
+   * should not look like every other block on the page.
+   */
+  tone?: "canvas" | "sunk";
+  /** Vertical rhythm tier. Uniform padding everywhere reads as monotonous. */
+  size?: "tight" | "default" | "loose";
 }) {
+  const pad = {
+    tight: "py-[clamp(2.25rem,4vw,3.5rem)]",
+    default: "py-[clamp(3rem,6vw,5rem)]",
+    loose: "py-[clamp(4rem,8vw,7rem)]",
+  }[size];
+
   return (
     <section
       id={id}
       className={cn(
-        "px-6 py-[clamp(3rem,6vw,5.5rem)] sm:px-10 lg:px-14",
+        "px-6 sm:px-10 lg:px-14",
+        pad,
         divider && "border-t border-rule",
+        tone === "sunk" && "bg-sunk",
         className,
       )}
     >

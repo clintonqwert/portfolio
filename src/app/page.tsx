@@ -121,7 +121,7 @@ export default async function HomePage() {
         </div>
       </Section>
 
-      <Section id="practice">
+      <Section id="practice" size="tight">
         <div className="datagrid">
           <Label title="Practice" index="04">
             How I work
@@ -130,7 +130,7 @@ export default async function HomePage() {
         </div>
       </Section>
 
-      <Section id="gaps">
+      <Section id="gaps" tone="sunk" size="loose">
         <div className="datagrid">
           <Label title="Open gaps" index="05">
             Recorded in
