@@ -37,7 +37,7 @@ export function DetailView({
 }) {
   return (
     <div className="flex flex-col gap-2 p-2 lg:h-full">
-      <header className={cn("tile shrink-0 px-[21px] py-[13px]", aside || raw ? "" : "lg:max-w-[860px]")}>
+      <header className="tile shrink-0 px-[21px] py-[13px]">
         <p className="font-mono text-[0.64rem] uppercase tracking-[0.12em] text-accent">
           <Link href="/" className="no-underline hover:underline">
             Overview
@@ -72,13 +72,14 @@ export function DetailView({
         ) : null}
       </header>
 
-      {/* Without an aside the panel would stretch the full workspace while the
-          prose stays at its measure, leaving a conspicuous void to the right.
-          Cap it instead so the panel ends where the content does. */}
+      {/* No width cap: the prose flows into columns, so a wider panel simply
+          fits more of them. The old cap was from when this was one measured
+          column — keeping it limited /work/mygarage to three columns when the
+          workspace had room for nearly five, and the content spilled. */}
       <div
         className={cn(
           "grid min-h-0 flex-1 gap-2",
-          aside ? "lg:grid-cols-[minmax(0,1fr)_320px]" : raw ? "" : "lg:max-w-[860px]",
+          aside ? "lg:grid-cols-[minmax(0,1fr)_320px]" : "",
         )}
       >
         {raw ? (

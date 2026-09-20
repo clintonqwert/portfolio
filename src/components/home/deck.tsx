@@ -20,17 +20,13 @@ export function Deck({
   gaps,
   skills,
   autoTraderLede,
-  standardLede,
 }: {
   stats: Stat[];
   studies: CaseStudy[];
   gaps: Gap[];
   skills: string[];
   autoTraderLede: string;
-  standardLede: string;
 }) {
-  const [first, second] = studies;
-
   return (
     <div className="flex flex-col gap-2 p-2 lg:h-full">
       {/* ── headline ─────────────────────────────────────────────────── */}
@@ -45,72 +41,65 @@ export function Deck({
 
       {/* ── main ─────────────────────────────────────────────────────── */}
       <div className="deck lg:[grid-template-rows:repeat(8,minmax(0,1fr))]">
-        {first ? (
-          <Tile
-            label={first.name}
-            index="01"
-            href={`/work/${first.slug}`}
-            cta="Case study"
-            className="lg:col-start-1 lg:col-end-5 lg:row-start-1 lg:row-end-6"
-          >
-            <p className="min-h-0 overflow-hidden text-[0.88rem] leading-snug text-muted">
-              {first.summary}
-            </p>
-            <ul className="mt-[13px] flex flex-wrap gap-x-[13px] gap-y-[3px] font-mono text-[0.64rem] text-faint">
-              {first.stack.map((tech) => (
-                <li key={tech}>{tech}</li>
-              ))}
-            </ul>
-            {first.assertions ? (
-              <dl className="mt-[13px] space-y-[5px] border-t border-line pt-[13px] font-mono text-[0.68rem]">
-                {first.assertions.rows.slice(0, 4).map((row) => (
-                  <div key={row.name} className="flex items-baseline justify-between gap-[13px]">
-                    <dt className="min-w-0 truncate text-muted">{row.name}</dt>
-                    <dd className={row.measured ? "shrink-0 text-signal" : "shrink-0 text-pass"}>
-                      {row.threshold}
-                    </dd>
-                  </div>
-                ))}
-              </dl>
-            ) : null}
-            <div className="mt-auto flex gap-[21px] border-t border-line pt-[13px]">
-              {first.stats.slice(0, 3).map((stat) => (
-                <Figure key={stat.label} stat={stat} size="sm" />
-              ))}
-            </div>
-          </Tile>
-        ) : null}
+      {studies.map((study, i) => (
+        <Tile
+          key={study.slug}
+          label={study.name}
+          index={`0${i + 1}`}
+          href={`/work/${study.slug}`}
+          cta="Case study"
+          className={`${
+            [
+              "lg:col-start-1 lg:col-end-5",
+              "lg:col-start-5 lg:col-end-9",
+              "lg:col-start-9 lg:col-end-13",
+            ][i] ?? ""
+          } lg:row-start-1 lg:row-end-5`}
+        >
+          <p className="min-h-0 overflow-hidden text-[0.86rem] leading-snug text-muted">
+            {study.summary}
+          </p>
 
-        {second ? (
-          <Tile
-            label={second.name}
-            index="02"
-            href={`/work/${second.slug}`}
-            cta="Case study"
-            className="lg:col-start-5 lg:col-end-9 lg:row-start-1 lg:row-end-6"
-          >
-            <p className="min-h-0 overflow-hidden text-[0.88rem] leading-snug text-muted">
-              {second.summary}
-            </p>
-            <ul className="mt-[13px] flex flex-wrap gap-x-[13px] gap-y-[3px] font-mono text-[0.64rem] text-faint">
-              {second.stack.map((tech) => (
-                <li key={tech}>{tech}</li>
+          <ul className="mt-[13px] flex flex-wrap gap-x-[13px] gap-y-[3px] font-mono text-[0.64rem] text-faint">
+            {study.stack.map((tech) => (
+              <li key={tech}>{tech}</li>
+            ))}
+          </ul>
+
+          {/* Asserted thresholds where they exist, figures otherwise. myGarage
+              has neither, and says so rather than padding the tile. */}
+          {study.assertions ? (
+            <dl className="mt-auto space-y-[5px] border-t border-line pt-[13px] font-mono text-[0.68rem]">
+              {study.assertions.rows.slice(0, 4).map((row) => (
+                <div key={row.name} className="flex items-baseline justify-between gap-[13px]">
+                  <dt className="min-w-0 truncate text-muted">{row.name}</dt>
+                  <dd className={row.measured ? "shrink-0 text-signal" : "shrink-0 text-pass"}>
+                    {row.threshold}
+                  </dd>
+                </div>
               ))}
-            </ul>
+            </dl>
+          ) : study.stats.length > 0 ? (
             <div className="mt-auto grid grid-cols-2 gap-[13px] border-t border-line pt-[13px]">
-              {second.stats.map((stat) => (
+              {study.stats.slice(0, 4).map((stat) => (
                 <Figure key={stat.label} stat={stat} size="sm" />
               ))}
             </div>
-          </Tile>
-        ) : null}
+          ) : (
+            <p className="mt-auto border-t border-line pt-[13px] font-mono text-[0.66rem] leading-snug text-faint">
+              No adoption figures — the events were never instrumented. The case
+              is the architecture.
+            </p>
+          )}
+        </Tile>
+      ))}
 
         <Tile
           label="AutoTrader.ca — AutoSync"
-          index="03"
+          index="04"
           href="/autotrader"
           cta="Read"
-          className="lg:col-start-9 lg:col-end-13 lg:row-start-1 lg:row-end-6"
+          className="lg:col-start-1 lg:col-end-5 lg:row-start-5 lg:row-end-9"
         >
           <p className="min-h-0 overflow-hidden text-[0.88rem] leading-snug text-muted">
             {autoTraderLede}
@@ -137,10 +126,10 @@ export function Deck({
         {/* The page's argument, so it gets the sunk surface and the widest cell. */}
         <Tile
           label="Open gaps"
-          index="04"
+          index="05"
           href="/gaps"
           cta="All three"
-          className="bg-sunk lg:col-start-1 lg:col-end-7 lg:row-start-6 lg:row-end-9"
+          className="bg-sunk lg:col-start-5 lg:col-end-10 lg:row-start-5 lg:row-end-9"
         >
           <ul className="flex-1 space-y-[8px] overflow-hidden">
             {gaps.map((gap) => (
@@ -164,7 +153,7 @@ export function Deck({
           label="Measured"
           href="/history"
           cta="History"
-          className="lg:col-start-7 lg:col-end-10 lg:row-start-6 lg:row-end-9"
+          className="lg:col-start-10 lg:col-end-13 lg:row-start-5 lg:row-end-9"
         >
           <div className="grid flex-1 grid-cols-2 content-center gap-x-[13px] gap-y-[13px]">
             {stats.map((stat) => (
@@ -173,17 +162,6 @@ export function Deck({
           </div>
         </Tile>
 
-        <Tile
-          label="Project OS"
-          index="05"
-          href="/standard"
-          cta="Read"
-          className="lg:col-start-10 lg:col-end-13 lg:row-start-6 lg:row-end-9"
-        >
-          <p className="min-h-0 overflow-hidden text-[0.85rem] leading-snug text-muted">
-            {standardLede}
-          </p>
-        </Tile>
       </div>
     </div>
   );

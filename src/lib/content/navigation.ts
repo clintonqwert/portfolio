@@ -16,9 +16,10 @@ export async function getNavLinks(): Promise<NavLink[]> {
     { href: "/", label: "Overview", index: "00" },
     { href: "/work/driftpilot", label: "DriftPilot", index: "01" },
     { href: "/work/riflessi", label: "Riflessi", index: "02" },
-    { href: "/autotrader", label: "AutoTrader", index: "03" },
-    { href: "/gaps", label: "Open gaps", index: "04" },
-    { href: "/standard", label: "Project OS", index: "05" },
-    { href: "/history", label: "History", index: "06" },
+    { href: "/work/mygarage", label: "myGarage", index: "03" },
+    { href: "/autotrader", label: "AutoTrader", index: "04" },
+    { href: "/gaps", label: "Open gaps", index: "05" },
+    { href: "/standard", label: "Project OS", index: "06" },
+    { href: "/history", label: "History", index: "07" },
   ];
 }

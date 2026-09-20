@@ -1,6 +1,6 @@
 import { Deck } from "@/components/home/deck";
 import { JsonLd } from "@/components/shared/json-ld";
-import { AUTOTRADER_LEDE, PROJECT_OS_LEDE } from "@/lib/content/experience";
+import { AUTOTRADER_LEDE } from "@/lib/content/experience";
 import { getGaps, getSkillMarquee } from "@/lib/content/practice";
 import { getHeadlineStats } from "@/lib/content/profile";
 import { getCaseStudies } from "@/lib/content/work";
@@ -23,7 +23,6 @@ export default async function HomePage() {
         gaps={gaps}
         skills={skills}
         autoTraderLede={AUTOTRADER_LEDE}
-        standardLede={PROJECT_OS_LEDE}
       />
     </>
   );

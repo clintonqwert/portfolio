@@ -66,6 +66,7 @@ export default async function CaseStudyPage({
         ]}
         links={links}
         aside={
+          study.stats.length === 0 && !study.assertions ? undefined :
           <div className="flex-1 overflow-hidden p-[13px]">
             <p className="font-mono text-[0.64rem] uppercase tracking-[0.1em] text-accent">
               Measured

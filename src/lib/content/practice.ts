@@ -66,11 +66,33 @@ export async function getGaps(): Promise<Gap[]> {
 export async function getTrackRecord(): Promise<Role[]> {
   return [
     {
+      period: "Jan 2026 – Present",
+      title: "Founder & Senior Software Engineer",
+      org: "DriftPilot",
+      summary:
+        "Product engineering studio. AI stack research through the first half of 2026, then two live Next.js sites designed and shipped end to end under a performance budget enforced in CI.",
+    },
+    {
+      // Named rather than left as a silent gap: on a page that publishes its
+      // own weaknesses, an unexplained year is the loudest thing on it.
+      period: "Jun 2025 – Jan 2026",
+      title: "Family leave",
+      org: "Planned break",
+      summary: "A deliberate pause between roles. Returned to full-time engineering in January 2026.",
+    },
+    {
+      period: "Jan 2020 – Jun 2025",
+      title: "Senior Software Engineer, Full-Stack",
+      org: "AutoTrader.ca — AutoSync",
+      summary:
+        "Production features on a national automotive SaaS platform. Implemented and tuned Redis Object Cache Pro against AWS-hosted Redis; network-level downtime dropped to near zero after rollout.",
+    },
+    {
       period: "Nov 2018 – Jan 2020",
       title: "Full-Stack Senior Development Specialist",
       org: "Convertus (acq. AutoTrader.ca)",
       summary:
-        "WordPress multisite serving enterprise automotive clients, extended with custom object-oriented PHP. Built a Node.js notification service automating vehicle price-drop alerts, and shipped SEO improvements across the client portfolio.",
+        "WordPress multisite serving enterprise automotive clients, extended with custom object-oriented PHP. Built myGarage on the Tadvantage platform, which later served AutoSync dealer websites. Also a Node.js notification service automating vehicle price-drop alerts, and SEO improvements across the client portfolio.",
     },
     {
       period: "Jan 2018 – Nov 2018",

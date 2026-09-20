@@ -2,7 +2,11 @@
   "ci": {
     "collect": {
       "startServerCommand": "npm run start",
-      "url": ["http://localhost:3000/", "http://localhost:3000/work/driftpilot"],
+      "url": [
+        "http://localhost:3000/",
+        "http://localhost:3000/work/driftpilot",
+        "http://localhost:3000/work/mygarage"
+      ],
       "numberOfRuns": 3,
       "settings": { "preset": "desktop" }
     },
