@@ -101,45 +101,45 @@ const CASE_STUDIES: readonly CaseStudy[] = [
     ],
   },
   {
-    slug: "mygarage",
-    name: "myGarage",
-    headline: "Separating customer intent from inventory state",
+    slug: "tadvantage",
+    name: "Tadvantage",
+    headline: "The dealer platform, and the feature that tested its data model",
     summary:
-      "Dealership sites treated every visit as a disconnected session. myGarage gave shoppers a persistent place to keep the vehicles they were considering — without pretending inventory holds still.",
-    period: "Nov 2018 – Jan 2020",
+      "The website platform behind dealer sites at Convertus, carried through the AutoTrader acquisition into AutoSync. myGarage is the feature I would point at — it is where the platform's data model had to be right.",
+    period: "Convertus → AutoTrader",
     liveUrl: "autosyncmotors.com",
     // Proprietary — Convertus / AutoTrader internal platform.
     repoUrl: null,
-    role: "Full-stack · Convertus, Tadvantage platform",
+    role: "Full-stack engineer",
     stack: ["Vue.js", "PHP", "Node.js", "MySQL", "WordPress", "WP-CLI"],
     // No verified figures exist for adoption or engagement, so none are claimed.
-    // This case study argues from its decisions, which are checkable in a
-    // conversation, rather than from numbers that are not.
+    // This case study argues from its decisions, which hold up in a
+    // conversation, rather than from numbers that would not.
     stats: [],
     passages: [
       {
         paragraphs: [
-          "Automotive shoppers browse dozens of vehicles across several sessions before they contact anyone, but a dealership site treated each visit as disconnected. Customers lost their shortlist when they left and restarted their research from nothing.",
-          "The engineering problem underneath that is more interesting than the feature: how do you hold a customer's intent steady while the inventory it points at moves independently? Vehicles sell, prices change, specifications get corrected. A saved-vehicles list that snapshots the car is wrong within a week.",
+          "Tadvantage is the platform dealer websites ran on — Vue for the interactive surfaces, PHP and WordPress underneath, MySQL holding inventory, WP-CLI driving deployment. I worked on it at Convertus and continued after the AutoTrader acquisition, where it served AutoSync dealer sites.",
+          "The feature worth describing is myGarage, because it is where the platform's data model had to be right rather than merely convenient.",
         ],
       },
       {
-        heading: "The decision the rest follows from",
+        heading: "Holding intent still while inventory moves",
         paragraphs: [
-          "The garage stores the customer's interest relationship, not a copy of the vehicle. That one choice is what lets the system handle sold or withdrawn inventory gracefully instead of accumulating stale records — the relationship stays valid even when the thing it points at changes underneath it.",
-          "It also decided the storage: relational tables with foreign keys into the existing inventory schema, rather than documents. Referential integrity was the point. A document store would have made the write path simpler and the correctness problem permanent.",
+          "Shoppers browse dozens of vehicles across several sessions before contacting anyone, but the site treated each visit as disconnected — customers lost their shortlist and restarted from nothing. The interesting problem is not the feature, it is the constraint underneath it: how do you hold a customer's intent steady while the inventory it points at changes independently? Vehicles sell, prices move, specifications get corrected. A saved list that snapshots the car is wrong within a week.",
+          "So the garage stores the customer's interest relationship, not a copy of the vehicle. That single choice is what lets the platform handle sold or withdrawn stock gracefully instead of accumulating stale rows — the relationship stays valid even when the thing it points at changes underneath. It also settled the storage question: relational tables with foreign keys into the existing inventory schema rather than documents, because referential integrity was the whole point. A document store would have made writes simpler and the correctness problem permanent.",
         ],
       },
       {
         heading: "Vue inside WordPress, deliberately",
         paragraphs: [
-          "The interactive parts are Vue components; the backend stayed PHP and WordPress, with REST endpoints for the garage operations and WP-CLI for deployment. Choosing Vue for the reactive surface and leaving the platform alone avoided a rewrite nobody had asked for, at the cost of added build complexity. Rendering stayed server-side rather than moving to a single-page app — on an inventory site search visibility is the business, so trading it for smoother client-side state would have been the wrong way round, even though it made state synchronisation harder.",
+          "The interactive parts are Vue components; the backend stayed PHP and WordPress, with REST endpoints for garage operations and WP-CLI for deployment. Choosing Vue for the reactive surface and leaving the platform alone avoided a rewrite nobody had asked for, at the cost of added build complexity. Rendering stayed server-side rather than moving to a single-page app — on an inventory site search visibility is the business, so trading it away for smoother client-side state would have been the wrong way round, even though it made state synchronisation harder.",
         ],
       },
       {
         heading: "What I would do differently",
         paragraphs: [
-          "Inventory changes were polled. Webhook-driven updates would have been more accurate and less wasteful, and I would build it that way now. Some jQuery also stayed for legacy integration rather than being migrated — it shipped faster and left debt, and both of those are true.",
+          "Inventory changes were polled; webhook-driven updates would have been more accurate and less wasteful, and I would build it that way now. Some jQuery also stayed for legacy integration rather than being migrated — it shipped faster and left debt, and both of those are true.",
           "Above all I would instrument it from day one. Save, remove and compare events were never measured, which is exactly why this case study carries no adoption figures: the data to make that argument was not collected. That is the real cost of shipping a feature before deciding how you will know whether it worked.",
         ],
       },

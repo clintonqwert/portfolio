@@ -288,7 +288,7 @@
     Passages must be allowed to split across columns. Holding each one together
     with break-inside:avoid means any passage taller than the column cannot be
     placed, and it overflows the panel instead of reflowing — which is what
-    pushed /work/mygarage 259px past its own width.
+    pushed /work/tadvantage 259px past its own width.
 
     Headings keep their first lines instead, which is the part that actually
     matters for reading.

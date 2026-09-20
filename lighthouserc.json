@@ -5,7 +5,7 @@
       "url": [
         "http://localhost:3000/",
         "http://localhost:3000/work/driftpilot",
-        "http://localhost:3000/work/mygarage"
+        "http://localhost:3000/work/tadvantage"
       ],
       "numberOfRuns": 3,
       "settings": { "preset": "desktop" }

@@ -1,25 +1,31 @@
-import { SectionHeading } from "@/components/ui/section";
 import type { Passage } from "@/types/content";
 
 /**
-  * Renders prose passages, each optionally introduced by a subheading.
-  *
-  * The subheading is h2: every route using this renders an h1 title above it,
-  * and jumping straight to h3 skips a level — which Lighthouse flags and screen
-  * reader users navigate by.
-  */
+ * Renders prose passages, each optionally introduced by a subheading.
+ *
+ * The subheading is h2: every route using this renders an h1 title above it,
+ * and jumping straight to h3 skips a level — which Lighthouse flags and which
+ * screen reader users navigate by.
+ *
+ * It is also deliberately small. These sit inside a ~30ch column, where the
+ * full section-heading scale runs to three lines and overwhelms the paragraphs
+ * it is meant to introduce.
+ */
 export function Passages({ passages }: { passages: Passage[] }) {
   return (
     <>
       {passages.map((passage, i) => (
-        <div key={passage.heading ?? i}>
+        // Spacing lives on the wrapper, not the heading: `first:` matches the
+        // first child of a parent, and the heading is always that — which
+        // silently removed the gap above every subhead, not just the first.
+        <div key={passage.heading ?? i} className="mt-[21px] first:mt-0">
           {passage.heading ? (
-            <SectionHeading as="h2" className="mt-[21px] mb-[8px]">
+            <h2 className="mb-[8px] font-display text-[0.95rem] font-semibold leading-snug tracking-[-0.008em] text-ink">
               {passage.heading}
-            </SectionHeading>
+            </h2>
           ) : null}
           {passage.paragraphs.map((paragraph) => (
-            <p key={paragraph.slice(0, 48)} className="mb-[1.15rem] last:mb-0">
+            <p key={paragraph.slice(0, 48)} className="mb-[13px] last:mb-0">
               {paragraph}
             </p>
           ))}

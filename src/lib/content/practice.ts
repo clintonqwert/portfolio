@@ -92,7 +92,7 @@ export async function getTrackRecord(): Promise<Role[]> {
       title: "Full-Stack Senior Development Specialist",
       org: "Convertus (acq. AutoTrader.ca)",
       summary:
-        "WordPress multisite serving enterprise automotive clients, extended with custom object-oriented PHP. Built myGarage on the Tadvantage platform, which later served AutoSync dealer websites. Also a Node.js notification service automating vehicle price-drop alerts, and SEO improvements across the client portfolio.",
+        "WordPress multisite serving enterprise automotive clients, extended with custom object-oriented PHP. Worked on the Tadvantage dealer website platform — including myGarage — which carried through the acquisition to serve AutoSync dealer sites. Also a Node.js notification service automating vehicle price-drop alerts, and SEO improvements across the client portfolio.",
     },
     {
       period: "Jan 2018 – Nov 2018",

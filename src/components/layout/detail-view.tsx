@@ -74,7 +74,7 @@ export function DetailView({
 
       {/* No width cap: the prose flows into columns, so a wider panel simply
           fits more of them. The old cap was from when this was one measured
-          column — keeping it limited /work/mygarage to three columns when the
+          column — keeping it limited /work/tadvantage to three columns when the
           workspace had room for nearly five, and the content spilled. */}
       <div
         className={cn(
