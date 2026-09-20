@@ -61,6 +61,40 @@
   --z-skip: 60;
 }
 
+
+/*
+  Dark theme. Selected by [data-theme="dark"] on <html>, set before paint by the
+  inline script in layout.tsx so there is no flash of the wrong theme.
+
+  Not an inversion: surfaces are desaturated slate rather than flipped values,
+  and the accent lifts because the same teal that reads as considered on white
+  reads as muddy on a dark surface. Both themes are contrast-checked
+  independently by scripts/check-contrast.mjs.
+*/
+[data-theme="dark"] {
+  --color-canvas: oklch(0.192 0.013 242);
+  --color-panel: oklch(0.237 0.015 242);
+  --color-sunk: oklch(0.164 0.012 242);
+
+  --color-rail: oklch(0.148 0.012 242);
+  --color-rail-line: oklch(0.29 0.016 242);
+  --color-rail-ink: oklch(0.945 0.005 230);
+  --color-rail-muted: oklch(0.70 0.013 230);
+
+  --color-ink: oklch(0.955 0.005 230);
+  --color-muted: oklch(0.775 0.012 230);
+  --color-faint: oklch(0.655 0.013 230);
+
+  --color-line: oklch(0.315 0.015 240);
+  --color-rule: oklch(0.375 0.016 240);
+
+  --color-accent: oklch(0.80 0.085 198);
+  --color-accent-soft: oklch(0.30 0.035 200);
+  --color-accent-bright: oklch(0.83 0.09 198);
+  --color-pass: oklch(0.78 0.11 155);
+  --color-signal: oklch(0.80 0.12 62);
+}
+
 @layer base {
   html {
     scroll-behavior: smooth;
@@ -170,5 +204,50 @@
       opacity: 1;
       transform: none;
     }
+  }
+}
+
+@layer components {
+  /*
+    The dashboard occupies exactly one viewport at >=1024px and never scrolls.
+    Below that the tiles stack and the page scrolls normally — forcing a single
+    viewport onto a phone means either three tiles or unreadable type.
+  */
+  .deck {
+    display: grid;
+    gap: 12px;
+  }
+
+  @media (min-width: 1024px) {
+    .deck {
+      height: calc(100dvh - 2 * var(--deck-pad));
+      grid-template-columns: repeat(12, minmax(0, 1fr));
+      grid-auto-rows: minmax(0, 1fr);
+    }
+  }
+
+  /*
+    Tiles clip rather than push the grid taller. Any tile whose content can
+    exceed its cell scrolls internally — there is no page scroll to fall back on.
+  */
+  .tile {
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+    min-width: 0;
+    background-color: var(--color-panel);
+    box-shadow: inset 0 0 0 1px var(--color-line);
+    transition: box-shadow 200ms var(--ease-out-quart);
+  }
+
+  a.tile:hover,
+  a.tile:focus-visible {
+    box-shadow: inset 0 0 0 1px var(--color-accent);
+  }
+
+  .tile-scroll {
+    min-height: 0;
+    overflow-y: auto;
+    overscroll-behavior: contain;
   }
 }

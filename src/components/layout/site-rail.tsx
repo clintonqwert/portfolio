@@ -1,6 +1,7 @@
 import Link from "next/link";
 
 import { RailNav } from "@/components/layout/rail-nav";
+import { ThemeToggle } from "@/components/layout/theme-toggle";
 
 import type { NavLink } from "@/lib/content/navigation";
 import { CONTACT, CONTACT_HREF, NAME, RESUME } from "@/lib/content/profile";
@@ -34,6 +35,7 @@ export function SiteRail({ links }: { links: NavLink[] }) {
         </div>
 
         <div className="border-t border-rail-line pt-5">
+          <ThemeToggle className="mb-3 w-full justify-between bg-rail-line/40 text-rail-muted hover:bg-rail-line/70 hover:text-rail-ink" />
           <a
             href={RESUME.href}
             download
@@ -59,13 +61,16 @@ export function SiteRail({ links }: { links: NavLink[] }) {
               {NAME}
             </span>
           </Link>
-          <a
-            href={RESUME.href}
-            download
-            className="shrink-0 rounded-sm bg-rail-line/60 px-3 py-1.5 font-mono text-[0.64rem] uppercase tracking-[0.08em] text-rail-ink no-underline"
-          >
-            Résumé ↓
-          </a>
+          <div className="flex shrink-0 items-center gap-2">
+            <ThemeToggle className="bg-rail-line/50 text-rail-muted" />
+            <a
+              href={RESUME.href}
+              download
+              className="rounded-sm bg-rail-line/60 px-3 py-1.5 font-mono text-[0.64rem] uppercase tracking-[0.08em] text-rail-ink no-underline"
+            >
+              Résumé ↓
+            </a>
+          </div>
         </div>
         <nav aria-label="Sections" className="overflow-x-auto border-t border-rail-line/60">
           <RailNav links={links} variant="bar" />

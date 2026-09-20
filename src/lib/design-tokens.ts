@@ -57,4 +57,29 @@ export const fonts = {
   mono: "var(--font-mono)",
 } as const;
 
+/**
+ * Dark theme overrides. Mirrors the [data-theme="dark"] block in globals.css.
+ * Desaturated slate surfaces rather than inverted values; the accent lifts
+ * because the light-mode teal reads muddy on a dark surface.
+ */
+export const darkColors: Record<ColorToken, string> = {
+  canvas: "oklch(0.192 0.013 242)",
+  panel: "oklch(0.237 0.015 242)",
+  sunk: "oklch(0.164 0.012 242)",
+  rail: "oklch(0.148 0.012 242)",
+  railLine: "oklch(0.29 0.016 242)",
+  railInk: "oklch(0.945 0.005 230)",
+  railMuted: "oklch(0.70 0.013 230)",
+  ink: "oklch(0.955 0.005 230)",
+  muted: "oklch(0.775 0.012 230)",
+  faint: "oklch(0.655 0.013 230)",
+  line: "oklch(0.315 0.015 240)",
+  rule: "oklch(0.375 0.016 240)",
+  accent: "oklch(0.80 0.085 198)",
+  accentSoft: "oklch(0.30 0.035 200)",
+  accentBright: "oklch(0.83 0.09 198)",
+  pass: "oklch(0.78 0.11 155)",
+  signal: "oklch(0.80 0.12 62)",
+};
+
 export type ColorToken = keyof typeof colors;

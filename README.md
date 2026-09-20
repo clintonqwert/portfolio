@@ -45,6 +45,25 @@ src/types/content.ts  The contract between content and presentation
 Every route is statically prerendered. There is no runtime database and no
 client-side data fetching.
 
+### The deck
+
+`/` is a dashboard, not a landing page. At ≥1024px it fills exactly one viewport
+and does not scroll: `body` is `overflow-hidden`, the deck is a 12×9 grid of
+`100dvh`, and any tile whose content could exceed its cell scrolls inside itself.
+
+Long-form prose lives in detail routes (`/autotrader`, `/gaps`, `/standard`,
+`/history`, `/work/[slug]`). Those are viewport-fixed too — the page never
+scrolls, the prose panel does. Below 1024px the constraint is lifted and the
+page scrolls normally, because a single viewport on a phone means either three
+tiles or unreadable type.
+
+### Themes
+
+Light and dark, toggled from the rail and stored in `localStorage`, defaulting to
+`prefers-color-scheme`. An inline script in `<head>` applies the theme before
+first paint, so there is no flash. Dark is a separate palette rather than an
+inversion, and `npm run check:contrast` verifies both themes independently.
+
 ### Deliberately absent
 
 No CMS, no client-state library, no data-fetching library, no component library,

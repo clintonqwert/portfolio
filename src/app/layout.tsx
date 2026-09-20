@@ -6,14 +6,10 @@ import { SpeedInsights } from "@vercel/speed-insights/next";
 import "./globals.css";
 
 import { SiteRail } from "@/components/layout/site-rail";
+import { ThemeScript } from "@/components/layout/theme-script";
 import { getNavLinks } from "@/lib/content/navigation";
 import { SITE_DESCRIPTION, SITE_NAME, SITE_URL, buildMetadata } from "@/lib/seo";
 
-/*
-  Self-hosted via next/font: no third-party request, automatic subsetting, and
-  size-adjusted fallbacks so swapping in the real face causes no layout shift.
-  Archivo carries display and body across four weights; mono is data only.
-*/
 const archivo = Archivo({
   subsets: ["latin"],
   weight: ["400", "500", "600", "700"],
@@ -44,8 +40,18 @@ export default async function RootLayout({
   const navLinks = await getNavLinks();
 
   return (
-    <html lang="en" className={`${archivo.variable} ${mono.variable}`}>
-      <body className="min-h-dvh bg-canvas antialiased">
+    // suppressHydrationWarning: ThemeScript sets data-theme before React runs,
+    // so the server-rendered <html> deliberately differs from the client's.
+    <html lang="en" className={`${archivo.variable} ${mono.variable}`} suppressHydrationWarning>
+      <head>
+        <ThemeScript />
+      </head>
+      {/*
+        lg:overflow-hidden is what makes the dashboard viewport-fit: at desktop
+        widths the document itself cannot scroll, and any tile that needs more
+        room scrolls inside its own box. Below lg the page scrolls normally.
+      */}
+      <body className="min-h-dvh bg-canvas antialiased lg:h-dvh lg:overflow-hidden">
         <a
           href="#main"
           className="sr-only rounded bg-ink px-4 py-2 text-canvas focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[var(--z-skip)]"
@@ -55,9 +61,10 @@ export default async function RootLayout({
 
         <SiteRail links={navLinks} />
 
-        {/* The rail is fixed at ≥1024px; the workspace is inset to clear it. */}
-        <div className="lg:pl-[236px]">
-          <main id="main">{children}</main>
+        <div className="lg:h-dvh lg:pl-[236px]">
+          <main id="main" className="lg:h-full">
+            {children}
+          </main>
         </div>
 
         <Analytics />

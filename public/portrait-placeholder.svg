@@ -1,12 +1,13 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 800" role="img" aria-label="Portrait placeholder">
+  <!-- Theme-neutral: no fills, only semi-transparent strokes, so it reads on
+       both the light and dark tile surfaces without a second asset. -->
   <defs>
-    <pattern id="grid" width="32" height="32" patternUnits="userSpaceOnUse">
-      <path d="M32 0H0v32" fill="none" stroke="#dfe4e8" stroke-width="1"/>
+    <pattern id="g" width="40" height="40" patternUnits="userSpaceOnUse">
+      <path d="M40 0H0v40" fill="none" stroke="#8b959c" stroke-opacity=".22" stroke-width="1"/>
     </pattern>
   </defs>
-  <rect width="640" height="800" fill="#f2f4f5"/>
-  <rect width="640" height="800" fill="url(#grid)"/>
-  <g fill="none" stroke="#9aa5ad" stroke-width="2">
+  <rect width="640" height="800" fill="url(#g)"/>
+  <g fill="none" stroke="#8b959c" stroke-opacity=".55" stroke-width="2.5">
     <circle cx="320" cy="300" r="94"/>
     <path d="M152 688c0-101 75-172 168-172s168 71 168 172"/>
   </g>

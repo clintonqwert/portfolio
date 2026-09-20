@@ -19,6 +19,13 @@ export const AUTOTRADER_RAIL = {
   stack: ["Vue · Node.js", "PHP · MySQL", "Redis · AWS"],
 } as const;
 
+/** One-line summaries for the dashboard tiles. */
+export const AUTOTRADER_LEDE =
+  "Five years on the platform thousands of Canadian dealerships run their inventory on. The work I would point at first is the caching — and the outcome that mattered was stability, not speed.";
+
+export const PROJECT_OS_LEDE =
+  "The cross-project standard both sites are built against, including how five specialist AI roles are allowed to touch the work.";
+
 export async function getAutoTraderPassages(): Promise<Passage[]> {
   return [
     {

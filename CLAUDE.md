@@ -15,6 +15,11 @@ material work. The repository is the technical source of truth.
   earlier drafts of this material drifted into claims the repositories did not
   support.
 - Reuse the token, content, SEO and component systems before adding alternatives.
+- **The deck must not scroll at ≥1024px.** Anything added to `/` has to fit its
+  grid cell; tiles clip or scroll internally. If content does not fit, it belongs
+  in a detail route, not in a taller tile.
+- Both themes are first-class. Never add a raw colour; both palettes are checked
+  by `npm run check:contrast` and dark is not inferred from light.
 - Semantic tokens only. Raw hex in a component is a defect. The palette is
   mirrored between `src/app/globals.css` and `src/lib/design-tokens.ts` — change
   both together.

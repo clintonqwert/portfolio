@@ -50,12 +50,25 @@ const contrast = (fg, bg) => {
 };
 
 const css = readFileSync("src/app/globals.css", "utf8");
-const tokens = Object.fromEntries(
-  [...css.matchAll(/--color-([a-z-]+): oklch\(([^)]+)\)/g)].map(([, name, v]) => [
-    name,
-    oklchToSrgb(...v.trim().split(/\s+/).map(Number)),
-  ]),
-);
+
+/** Tokens declared inside a given block, e.g. `@theme` or `[data-theme="dark"]`. */
+function tokensIn(blockStart) {
+  const from = css.indexOf(blockStart);
+  if (from === -1) throw new Error(`block not found: ${blockStart}`);
+  // Blocks here are flat, so the first closing brace at column 0 ends them.
+  const to = css.indexOf("\n}", from);
+  const body = css.slice(from, to);
+  return Object.fromEntries(
+    [...body.matchAll(/--color-([a-z-]+): oklch\(([^)]+)\)/g)].map(([, name, v]) => [
+      name,
+      oklchToSrgb(...v.trim().split(/\s+/).map(Number)),
+    ]),
+  );
+}
+
+const light = tokensIn("@theme {");
+// Dark declares only what it overrides; anything unset falls through to light.
+const dark = { ...light, ...tokensIn('[data-theme="dark"] {') };
 
 const hex = (c) => "#" + c.map((v) => v.toString(16).padStart(2, "0")).join("");
 
@@ -81,26 +94,33 @@ const PAIRS = [
 
 let failures = 0;
 
-for (const [fgName, bgName, need] of PAIRS) {
-  const fg = tokens[fgName];
-  const bg = tokens[bgName];
-  if (!fg || !bg) {
-    failures += 1;
-    console.error(`FAIL | unknown token in pair ${fgName} on ${bgName}`);
-    continue;
+/** Both themes are checked independently; dark is never inferred from light. */
+for (const [themeName, tokens] of [
+  ["light", light],
+  ["dark", dark],
+]) {
+  console.log(`── ${themeName} ──`);
+  for (const [fgName, bgName, need] of PAIRS) {
+    const fg = tokens[fgName];
+    const bg = tokens[bgName];
+    if (!fg || !bg) {
+      failures += 1;
+      console.error(`FAIL | unknown token in pair ${fgName} on ${bgName}`);
+      continue;
+    }
+    const ratio = contrast(fg, bg);
+    const ok = ratio >= need;
+    if (!ok) failures += 1;
+    console.log(
+      `${ok ? "PASS" : "FAIL"} | ${`${fgName} on ${bgName}`.padEnd(28)} ` +
+        `${ratio.toFixed(2).padStart(5)}:1  (need ${need})  ${hex(fg)}`,
+    );
   }
-  const ratio = contrast(fg, bg);
-  const ok = ratio >= need;
-  if (!ok) failures += 1;
-  console.log(
-    `${ok ? "PASS" : "FAIL"} | ${`${fgName} on ${bgName}`.padEnd(28)} ` +
-      `${ratio.toFixed(2).padStart(5)}:1  (need ${need})  ${hex(fg)}`,
-  );
+  console.log();
 }
 
-console.log();
 if (failures > 0) {
   console.error(`FAILED: ${failures} pair(s) below AA`);
   process.exit(1);
 }
-console.log("ALL PAIRS PASS WCAG 2.2 AA");
+console.log("ALL PAIRS PASS WCAG 2.2 AA IN BOTH THEMES");
