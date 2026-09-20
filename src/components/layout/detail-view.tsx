@@ -17,6 +17,12 @@ export function DetailView({
   links,
   children,
   aside,
+  /**
+   * Skip the prose column-flow and let the route lay out its own panels. For
+   * content that is block grids rather than paragraphs — CSS columns cannot
+   * paginate a grid, so flowing it just pushes the panel sideways.
+   */
+  raw = false,
 }: {
   eyebrow: string;
   title: string;
@@ -27,25 +33,26 @@ export function DetailView({
   children: React.ReactNode;
   /** Optional right-hand column, e.g. a figures panel. */
   aside?: React.ReactNode;
+  raw?: boolean;
 }) {
   return (
-    <div className="flex flex-col gap-3 p-3 lg:h-full">
-      <header className={cn("tile shrink-0 px-6 py-5", aside ? "" : "lg:max-w-[860px]")}>
+    <div className="flex flex-col gap-2 p-2 lg:h-full">
+      <header className={cn("tile shrink-0 px-[21px] py-[13px]", aside || raw ? "" : "lg:max-w-[860px]")}>
         <p className="font-mono text-[0.64rem] uppercase tracking-[0.12em] text-accent">
           <Link href="/" className="no-underline hover:underline">
             Overview
           </Link>
           <span className="text-faint"> / {eyebrow}</span>
         </p>
-        <h1 className="mt-3 max-w-[22ch] font-display text-[clamp(1.6rem,3vw,2.4rem)] font-bold leading-[1.08] tracking-[-0.025em] text-ink">
+        <h1 className="mt-[8px] max-w-[24ch] font-display text-[clamp(1.6rem,3vw,2.4rem)] font-bold leading-[1.08] tracking-[-0.025em] text-ink">
           {title}
         </h1>
         {lede ? (
-          <p className="mt-3 max-w-[62ch] text-[0.95rem] text-muted">{lede}</p>
+          <p className="mt-[8px] max-w-[70ch] text-[0.92rem] leading-snug text-muted">{lede}</p>
         ) : null}
 
         {meta || links ? (
-          <div className="mt-4 flex flex-wrap items-center gap-x-6 gap-y-2 font-mono text-[0.68rem]">
+          <div className="mt-[13px] flex flex-wrap items-center gap-x-[21px] gap-y-[5px] font-mono text-[0.68rem]">
             {meta?.map((m) => (
               <span key={m.label} className="text-faint">
                 <span className="uppercase tracking-[0.08em]">{m.label}</span>{" "}
@@ -70,15 +77,21 @@ export function DetailView({
           Cap it instead so the panel ends where the content does. */}
       <div
         className={cn(
-          "grid min-h-0 flex-1 gap-3",
-          aside ? "lg:grid-cols-[minmax(0,1fr)_320px]" : "lg:max-w-[860px]",
+          "grid min-h-0 flex-1 gap-2",
+          aside ? "lg:grid-cols-[minmax(0,1fr)_320px]" : raw ? "" : "lg:max-w-[860px]",
         )}
       >
-        <div className="tile min-h-0">
-          <div className="tile-scroll flex-1 px-6 py-6">
-            <div className="max-w-[62ch] text-muted">{children}</div>
+        {raw ? (
+          children
+        ) : (
+          <div className="tile min-h-0">
+            {/* Columns, not scroll: the prose fills the panel across rather
+                than running past its bottom edge. */}
+            <div className="flow flex-1 px-[21px] py-[21px] text-muted">
+              {children}
+            </div>
           </div>
-        </div>
+        )}
         {aside ? <div className="tile min-h-0">{aside}</div> : null}
       </div>
     </div>

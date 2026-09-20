@@ -63,6 +63,23 @@ scrolls, the prose panel does. Below 1024px the constraint is lifted and the
 page scrolls normally, because a single viewport on a phone means either three
 tiles or unreadable type.
 
+### Spacing
+
+Fibonacci — 3 / 5 / 8 / 13 / 21 / 34 / 55, exposed as `--space-1` … `--space-7`.
+It is the golden ratio in integers, so every step is ~1.6x the last and adjacent
+sizes read as clearly different rather than as a mistake, while staying on whole
+pixels.
+
+### Sections do not scroll
+
+Detail prose flows into CSS columns (`.flow`) that fill the panel across, rather
+than running past its bottom edge. Nothing is clipped: `/history` is block grids
+rather than paragraphs — columns cannot paginate a grid — so it uses `raw` mode
+and lays out three panels instead.
+
+Both properties are measured, not assumed: every route is checked for page
+scroll, for column spill, and for silently clipped `overflow:hidden` boxes.
+
 ### The marquee
 
 `.marquee-track` renders the skill list twice and translates by exactly `-50%`,

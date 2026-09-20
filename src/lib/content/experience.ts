@@ -26,6 +26,17 @@ export const AUTOTRADER_LEDE =
 export const PROJECT_OS_LEDE =
   "The cross-project standard both sites are built against, including how five specialist AI roles are allowed to touch the work.";
 
+/**
+ * Short restatements of facts already published in the passages below, for the
+ * dashboard tile. Same claims, fewer words — not new material.
+ */
+export const AUTOTRADER_POINTS = [
+  "Custom in-house OOP PHP, not Laravel or Symfony",
+  "Redis Object Cache Pro against AWS-hosted Redis",
+  "Technical SEO where inventory discoverability is the product",
+  "Mentored through code review and pair programming",
+];
+
 export async function getAutoTraderPassages(): Promise<Passage[]> {
   return [
     {

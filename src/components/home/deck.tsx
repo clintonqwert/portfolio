@@ -1,5 +1,6 @@
 import { SkillMarquee } from "@/components/home/skill-marquee";
 import { Figure, Tile } from "@/components/home/tile";
+import { AUTOTRADER_POINTS } from "@/lib/content/experience";
 import { HEADLINE, LEDE } from "@/lib/content/profile";
 import type { CaseStudy, Gap, Stat } from "@/types/content";
 
@@ -31,13 +32,13 @@ export function Deck({
   const [first, second] = studies;
 
   return (
-    <div className="flex flex-col gap-3 p-3 lg:h-full">
+    <div className="flex flex-col gap-2 p-2 lg:h-full">
       {/* ── headline ─────────────────────────────────────────────────── */}
-      <header className="panel shrink-0 px-6 py-5">
+      <header className="panel shrink-0 px-[21px] py-[13px]">
         <h1 className="max-w-[26ch] font-display text-[clamp(1.35rem,2.5vw,2rem)] font-bold leading-[1.12] tracking-[-0.025em] text-ink">
           {HEADLINE}
         </h1>
-        <p className="mt-2 max-w-[70ch] text-[0.9rem] text-muted">{LEDE}</p>
+        <p className="mt-[5px] max-w-[70ch] text-[0.88rem] leading-snug text-muted">{LEDE}</p>
       </header>
 
       <SkillMarquee skills={skills} />
@@ -55,12 +56,24 @@ export function Deck({
             <p className="min-h-0 overflow-hidden text-[0.88rem] leading-snug text-muted">
               {first.summary}
             </p>
-            <ul className="mt-4 flex flex-wrap gap-x-3 gap-y-1 font-mono text-[0.64rem] text-faint">
+            <ul className="mt-[13px] flex flex-wrap gap-x-[13px] gap-y-[3px] font-mono text-[0.64rem] text-faint">
               {first.stack.map((tech) => (
                 <li key={tech}>{tech}</li>
               ))}
             </ul>
-            <div className="mt-auto flex gap-6 border-t border-line pt-4">
+            {first.assertions ? (
+              <dl className="mt-[13px] space-y-[5px] border-t border-line pt-[13px] font-mono text-[0.68rem]">
+                {first.assertions.rows.slice(0, 4).map((row) => (
+                  <div key={row.name} className="flex items-baseline justify-between gap-[13px]">
+                    <dt className="min-w-0 truncate text-muted">{row.name}</dt>
+                    <dd className={row.measured ? "shrink-0 text-signal" : "shrink-0 text-pass"}>
+                      {row.threshold}
+                    </dd>
+                  </div>
+                ))}
+              </dl>
+            ) : null}
+            <div className="mt-auto flex gap-[21px] border-t border-line pt-[13px]">
               {first.stats.slice(0, 3).map((stat) => (
                 <Figure key={stat.label} stat={stat} size="sm" />
               ))}
@@ -79,13 +92,13 @@ export function Deck({
             <p className="min-h-0 overflow-hidden text-[0.88rem] leading-snug text-muted">
               {second.summary}
             </p>
-            <ul className="mt-4 flex flex-wrap gap-x-3 gap-y-1 font-mono text-[0.64rem] text-faint">
+            <ul className="mt-[13px] flex flex-wrap gap-x-[13px] gap-y-[3px] font-mono text-[0.64rem] text-faint">
               {second.stack.map((tech) => (
                 <li key={tech}>{tech}</li>
               ))}
             </ul>
-            <div className="mt-auto flex gap-6 border-t border-line pt-4">
-              {second.stats.slice(0, 2).map((stat) => (
+            <div className="mt-auto grid grid-cols-2 gap-[13px] border-t border-line pt-[13px]">
+              {second.stats.map((stat) => (
                 <Figure key={stat.label} stat={stat} size="sm" />
               ))}
             </div>
@@ -102,12 +115,20 @@ export function Deck({
           <p className="min-h-0 overflow-hidden text-[0.88rem] leading-snug text-muted">
             {autoTraderLede}
           </p>
-          <ul className="mt-4 flex flex-wrap gap-x-3 gap-y-1 font-mono text-[0.64rem] text-faint">
+          <ul className="mt-[13px] flex flex-wrap gap-x-[13px] gap-y-[3px] font-mono text-[0.64rem] text-faint">
             {["Vue", "Node.js", "PHP", "MySQL", "Redis", "AWS"].map((tech) => (
               <li key={tech}>{tech}</li>
             ))}
           </ul>
-          <div className="mt-auto flex gap-6 border-t border-line pt-4">
+          <ul className="mt-[13px] space-y-[5px] border-t border-line pt-[13px] text-[0.78rem] leading-snug text-muted">
+            {AUTOTRADER_POINTS.map((point) => (
+              <li key={point} className="flex gap-[8px]">
+                <span aria-hidden="true" className="mt-[7px] size-[3px] shrink-0 rounded-full bg-accent" />
+                {point}
+              </li>
+            ))}
+          </ul>
+          <div className="mt-auto flex gap-[21px] border-t border-line pt-[13px]">
             <Figure stat={{ value: "5 yrs", label: "Jan 2020 – Jun 2025" }} size="sm" />
             <Figure stat={{ value: "~0", label: "Downtime after rollout" }} size="sm" />
           </div>
@@ -121,7 +142,7 @@ export function Deck({
           cta="All three"
           className="bg-sunk lg:col-start-1 lg:col-end-7 lg:row-start-6 lg:row-end-9"
         >
-          <ul className="tile-scroll flex-1 space-y-2.5">
+          <ul className="flex-1 space-y-[8px] overflow-hidden">
             {gaps.map((gap) => (
               <li key={gap.gap} className="flex items-baseline gap-2.5">
                 <span
@@ -145,7 +166,7 @@ export function Deck({
           cta="History"
           className="lg:col-start-7 lg:col-end-10 lg:row-start-6 lg:row-end-9"
         >
-          <div className="grid flex-1 grid-cols-2 content-center gap-x-4 gap-y-4">
+          <div className="grid flex-1 grid-cols-2 content-center gap-x-[13px] gap-y-[13px]">
             {stats.map((stat) => (
               <Figure key={stat.label} stat={stat} size="sm" />
             ))}

@@ -19,27 +19,27 @@ export function SiteRail({ links }: { links: NavLink[] }) {
   return (
     <>
       {/* ── desktop rail ───────────────────────────────────────────────── */}
-      <div className="rail fixed inset-y-0 left-0 z-[var(--z-rail)] hidden w-[236px] flex-col justify-between bg-rail px-6 py-7 lg:flex">
+      <div className="rail fixed inset-y-0 left-0 z-[var(--z-rail)] hidden w-[236px] flex-col justify-between bg-rail px-[21px] py-[21px] lg:flex">
         <div>
           <ProfileCard />
 
-          <nav aria-label="Sections" className="mt-8 border-t border-rail-line pt-6">
+          <nav aria-label="Sections" className="mt-[21px] border-t border-rail-line pt-[13px]">
             <RailNav links={links} variant="rail" />
           </nav>
         </div>
 
-        <div className="border-t border-rail-line pt-5">
+        <div className="border-t border-rail-line pt-[13px]">
           <a
             href={RESUME.href}
             download
-            className="flex items-center justify-between gap-2 rounded-sm bg-rail-line/60 px-3 py-2.5 font-mono text-[0.68rem] uppercase tracking-[0.08em] text-rail-ink no-underline transition-colors duration-200 hover:bg-accent-bright hover:text-rail"
+            className="flex items-center justify-between gap-2 rounded-sm bg-rail-line/60 px-[13px] py-[8px] font-mono text-[0.68rem] uppercase tracking-[0.08em] text-rail-ink no-underline transition-colors duration-200 hover:bg-accent-bright hover:text-rail"
           >
             Résumé
             <span aria-hidden="true">↓</span>
           </a>
           <a
             href={CONTACT_HREF.email}
-            className="mt-3 block break-all font-mono text-[0.68rem] text-rail-muted no-underline hover:text-accent-bright"
+            className="mt-[8px] block break-all font-mono text-[0.66rem] text-rail-muted no-underline hover:text-accent-bright"
           >
             {CONTACT.email}
           </a>
@@ -48,7 +48,7 @@ export function SiteRail({ links }: { links: NavLink[] }) {
 
       {/* ── mobile bar ─────────────────────────────────────────────────── */}
       <header className="sticky top-0 z-[var(--z-rail)] border-b border-rail-line bg-rail lg:hidden">
-        <div className="flex items-center justify-between gap-4 px-5 py-3">
+        <div className="flex items-center justify-between gap-[13px] px-[13px] py-[8px]">
           <Link href="/" className="no-underline">
             <span className="font-display text-[0.86rem] font-bold text-rail-ink">
               {NAME}
