@@ -119,6 +119,26 @@ guard runs before every build and in CI.
 A line may quote a retired claim in order to warn against it — that is forgiven
 only when the same line, or the one above it, carries an explicit warning cue.
 
+## Measured, not asserted
+
+First real Lighthouse run, 2026-09-20, median of three against a production
+build on localhost:
+
+| | `/` | `/work/driftpilot` | Budget |
+|---|---|---|---|
+| Performance | 1.00 | 1.00 | ≥ 0.95 |
+| Accessibility | 1.00 | 1.00 | ≥ 0.98 |
+| SEO | 1.00 | 1.00 | ≥ 0.95 |
+| Best practices | 0.96 | 0.96 | ≥ 0.90 |
+| LCP | 537 ms | 539 ms | < 1500 ms |
+| CLS | 0.000 | 0.000 | < 0.05 |
+| TBT | 0 ms | 0 ms | < 150 ms |
+| Script transfer | 158.0 kB | — | < 260 kB |
+
+The first run **failed**: accessibility came in at 0.92 / 0.91 against the
+asserted 0.98. Three defects, all now fixed — see the commit. This is lab data
+on localhost; field data will come from Speed Insights after the first deploy.
+
 ## Performance budget
 
 `lighthouserc.json` carries the ProjectOS budget: performance ≥ 0.95,

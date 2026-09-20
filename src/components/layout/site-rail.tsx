@@ -5,7 +5,7 @@ import { ProfileCard } from "@/components/layout/profile-card";
 import { ThemeToggle } from "@/components/layout/theme-toggle";
 
 import type { NavLink } from "@/lib/content/navigation";
-import { CONTACT, CONTACT_HREF, NAME, RESUME } from "@/lib/content/profile";
+import { AVAILABILITY, CONTACT, CONTACT_HREF, NAME, RESUME } from "@/lib/content/profile";
 
 /**
  * The navigation rail. Fixed full-height chrome at ≥1024px, a horizontal bar
@@ -29,6 +29,13 @@ export function SiteRail({ links }: { links: NavLink[] }) {
         </div>
 
         <div className="border-t border-rail-line pt-[13px]">
+          {/* Availability, stated rather than buried — a reviewer should not
+              have to hunt for whether this person is open to work. */}
+          <p className="mb-[13px] flex items-center gap-[8px] font-mono text-[0.64rem] text-rail-muted">
+            <span aria-hidden="true" className="size-[6px] shrink-0 rounded-full bg-pass" />
+            {AVAILABILITY}
+          </p>
+
           <a
             href={RESUME.href}
             download
@@ -37,12 +44,32 @@ export function SiteRail({ links }: { links: NavLink[] }) {
             Résumé
             <span aria-hidden="true">↓</span>
           </a>
-          <a
-            href={CONTACT_HREF.email}
-            className="mt-[8px] block break-all font-mono text-[0.66rem] text-rail-muted no-underline hover:text-accent-bright"
-          >
-            {CONTACT.email}
-          </a>
+
+          {/*
+            The site's argument is that every claim is checkable. These are how
+            a reader checks — they were previously only in JSON-LD, which is to
+            say invisible to the human being asked to verify.
+          */}
+          {/* py gives each link a >=24px target; WCAG 2.2 target-size minimum. */}
+          <ul className="mt-[8px] font-mono text-[0.64rem]">
+            {(
+              [
+                [CONTACT_HREF.email, CONTACT.email],
+                [CONTACT_HREF.github, CONTACT.github],
+                [CONTACT_HREF.linkedin, CONTACT.linkedin],
+                [CONTACT_HREF.studio, CONTACT.studio],
+              ] as const
+            ).map(([href, label]) => (
+              <li key={href}>
+                <a
+                  href={href}
+                  className="block truncate py-[5px] text-rail-muted no-underline transition-colors hover:text-accent-bright"
+                >
+                  {label}
+                </a>
+              </li>
+            ))}
+          </ul>
         </div>
       </div>
 

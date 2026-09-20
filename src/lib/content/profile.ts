@@ -25,6 +25,12 @@ export const NAME = "Clinton Jay Ramonida";
 export const LOCATION = "Vancouver, British Columbia";
 export const ROLE_TITLE = "Senior Full-Stack Software Engineer";
 
+/**
+ * Availability. Shown in the rail on every route — a reviewer should not have
+ * to hunt for whether you are open to work.
+ */
+export const AVAILABILITY = "Open to senior & staff roles";
+
 export const CONTACT = {
   email: "clintonramonida25@gmail.com",
   linkedin: "linkedin.com/in/clintonramonida",

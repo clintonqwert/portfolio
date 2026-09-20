@@ -103,7 +103,7 @@ export function RailNav({
               />
               <span
                 className={`font-mono text-[0.62rem] tabular-nums transition-colors ${
-                  isActive ? "text-accent-bright" : "text-rail-muted/70"
+                  isActive ? "text-accent-bright" : "text-rail-muted"
                 }`}
               >
                 {link.index}

@@ -10,7 +10,7 @@
  *
  * usage: node scripts/check-contrast.mjs
  */
-import { readFileSync } from "node:fs";
+import { readdirSync, readFileSync, statSync } from "node:fs";
 
 /** OKLCH → sRGB (0-255), gamut-clipped. */
 function oklchToSrgb(L, C, H) {
@@ -119,8 +119,39 @@ for (const [themeName, tokens] of [
   console.log();
 }
 
+// ── opacity modifiers ────────────────────────────────────────────────────────
+// The pairs above are token-to-token. A component writing `text-rail-muted/70`
+// renders something this table never sees — which is exactly how a 3.6:1 nav
+// label reached a Lighthouse run and was caught there rather than here. Any
+// opacity modifier on a text colour is flagged for a human to justify.
+const textOpacity = [];
+(function walk(dir) {
+  for (const entry of readdirSync(dir)) {
+    const full = `${dir}/${entry}`;
+    if (statSync(full).isDirectory()) walk(full);
+    else if (/\.tsx?$/.test(entry)) {
+      readFileSync(full, "utf8")
+        .split("\n")
+        .forEach((line, i) => {
+          for (const m of line.matchAll(/text-([a-z-]+)\/(\d{1,2})\b/g)) {
+            textOpacity.push(`${full}:${i + 1}  text-${m[1]}/${m[2]}`);
+          }
+        });
+    }
+  }
+})("src");
+
+if (textOpacity.length > 0) {
+  failures += textOpacity.length;
+  console.error("FAIL | opacity modifier on a text colour — contrast unverified:");
+  for (const hit of textOpacity) console.error(`     | ${hit}`);
+  console.error("     | Use a solid token, or add the computed pair to PAIRS.");
+} else {
+  console.log("PASS | no opacity modifiers on text colours");
+}
+
 if (failures > 0) {
-  console.error(`FAILED: ${failures} pair(s) below AA`);
+  console.error(`\nFAILED: ${failures} contrast problem(s)`);
   process.exit(1);
 }
-console.log("ALL PAIRS PASS WCAG 2.2 AA IN BOTH THEMES");
+console.log("\nALL PAIRS PASS WCAG 2.2 AA IN BOTH THEMES");
