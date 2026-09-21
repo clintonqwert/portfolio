@@ -27,7 +27,7 @@ export function Tile({
   cta?: string;
 }) {
   const head = (
-    <div className="flex items-baseline justify-between gap-[8px] border-b border-line px-[13px] py-[8px]">
+    <div className="flex items-baseline justify-between gap-[8px] border-b border-line px-[12px] py-[8px]">
       <span className="flex items-baseline gap-2 font-mono text-[0.64rem] uppercase tracking-[0.1em] text-accent">
         {index ? <span className="text-faint tabular-nums">{index}</span> : null}
         {label}
@@ -43,7 +43,7 @@ export function Tile({
   const body = (
     <>
       {head}
-      <div className="flex min-h-0 flex-1 flex-col px-[13px] py-[13px]">{children}</div>
+      <div className="flex min-h-0 flex-1 flex-col px-[12px] py-[12px]">{children}</div>
     </>
   );
 
@@ -72,7 +72,7 @@ export function Figure({ stat, size = "md" }: { stat: Stat; size?: "sm" | "md" }
       </div>
       {/* Clamped rather than truncated: at narrow widths a single line cut the
           labels to "PRERENDERED ROU…". Two lines still cannot overflow a cell. */}
-      <div className="mt-[5px] line-clamp-2 font-mono text-[0.6rem] uppercase leading-tight tracking-[0.07em] text-faint">
+      <div className="mt-[4px] line-clamp-2 font-mono text-[0.6rem] uppercase leading-tight tracking-[0.07em] text-faint">
         {stat.label}
       </div>
     </div>

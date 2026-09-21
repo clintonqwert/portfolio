@@ -11,67 +11,131 @@
   Accent is the deep teal that predates this redesign. Identity preservation.
 */
 @theme {
-  /* ── workspace ─────────────────────────────────────────────────────── */
-  --color-canvas: oklch(0.982 0 0);
+  /*
+    ── surfaces ────────────────────────────────────────────────────────
+    A light workspace with real elevation: the page sits one step below the
+    panels, and panels carry a hairline ring *and* a soft drop. The previous
+    design used a flat inset ring only, on the argument that shadows imply a
+    depth that isn't there. This one takes the opposite position — the tiles
+    are objects on a surface, and saying so makes the hierarchy readable at a
+    glance instead of requiring the reader to parse rules.
+
+    Chroma leans toward the navy ink, never toward warm. A warm near-white
+    canvas is an explicit anti-reference in PRODUCT.md.
+  */
+  --color-canvas: oklch(0.976 0.004 260);
   --color-panel: oklch(1 0 0);
-  --color-sunk: oklch(0.955 0.002 220);
+  --color-sunk: oklch(0.950 0.006 260);
 
   /*
     ── chrome ──────────────────────────────────────────────────────────
-    A second neutral layer, cooler than the canvas, that flips with the theme
-    rather than staying dark in both. In light mode it sits one step down from
-    the canvas; in dark it is the deepest surface on the page.
+    The rail flips with the theme rather than staying dark in both.
   */
-  --color-rail: oklch(0.941 0.004 235);
-  --color-rail-line: oklch(0.878 0.006 235);
-  --color-rail-ink: oklch(0.225 0.018 230);
-  --color-rail-muted: oklch(0.47 0.016 230);
+  --color-rail: oklch(0.945 0.006 260);
+  --color-rail-line: oklch(0.882 0.009 260);
+  --color-rail-ink: oklch(0.241 0.068 261);
+  --color-rail-muted: oklch(0.470 0.040 263);
 
   /* ── text ──────────────────────────────────────────────────────────── */
-  --color-ink: oklch(0.225 0.018 230);
-  --color-muted: oklch(0.47 0.016 230);
-  --color-faint: oklch(0.515 0.015 230);
+  /* #0b1e3f — navy rather than the previous near-black slate. */
+  --color-ink: oklch(0.241 0.068 261);
+  --color-muted: oklch(0.470 0.040 263);
+  --color-faint: oklch(0.512 0.034 263);
 
   /* ── structure ─────────────────────────────────────────────────────── */
-  --color-line: oklch(0.905 0.005 220);
-  --color-rule: oklch(0.845 0.008 220);
+  --color-line: oklch(0.908 0.008 260);
+  --color-rule: oklch(0.848 0.011 260);
 
   /* ── accent + states ───────────────────────────────────────────────── */
-  /* #0F5C6B, preserved from the previous design. */
-  --color-accent: oklch(0.425 0.058 206);
-  --color-accent-soft: oklch(0.955 0.018 206);
-  /* Lifted for legibility on the dark rail. */
-  /* Used on the rail, so it tracks the rail rather than being fixed light. */
-  --color-accent-bright: oklch(0.425 0.058 206);
-  --color-pass: oklch(0.475 0.095 152);
-  --color-signal: oklch(0.545 0.125 52);
+  /*
+    #0F5C6B, preserved from the previous design. The supplied spec carries no
+    accent token at all — only text and surface — so teal fills a gap in it
+    rather than contradicting it, and PRODUCT.md principle 5 holds.
+  */
+  --color-accent: oklch(0.439 0.073 215);
+  --color-accent-soft: oklch(0.958 0.020 215);
+  --color-accent-bright: oklch(0.439 0.073 215);
+  --color-pass: oklch(0.470 0.098 152);
+  --color-signal: oklch(0.540 0.128 52);
 
   /* ── type ──────────────────────────────────────────────────────────── */
   /*
-    One family with committed weight contrast rather than a display/body pair:
-    serif body + mono labels + ruled separators is the editorial-typographic
-    lane this project rejects. Mono is reserved for data and labels, where it
-    carries real meaning rather than signalling "technical".
+    One family with committed weight contrast rather than a display/body pair.
+    Mono is reserved for data and labels, where it carries real meaning rather
+    than signalling "technical".
   */
   --font-display: var(--font-archivo), "Helvetica Neue", Arial, sans-serif;
   --font-body: var(--font-archivo), "Helvetica Neue", Arial, sans-serif;
   --font-mono: var(--font-plex-mono), ui-monospace, "SF Mono", Menlo, monospace;
 
   /*
-    ── spacing ─────────────────────────────────────────────────────────
-    Fibonacci, which is the golden ratio in integers and stays on whole pixels.
-    Each step is ~1.6x the last, so adjacent sizes read as clearly different
-    rather than as a mistake.
+    ── type scale ──────────────────────────────────────────────────────
+    The supplied scale ran 11px to 15px across eight steps — a 1.03 ratio, with
+    its top step equal to the base and no heading sizes at all. Its small end is
+    kept, because dense metadata is the point; above the 15px base the steps
+    open to a 1.25 ratio so headings actually read as headings.
   */
-  --space-1: 3px;
-  --space-2: 5px;
-  --space-3: 8px;
-  --space-4: 13px;
-  --space-5: 21px;
-  --space-6: 34px;
-  --space-7: 55px;
+  --text-2xs: 11px;
+  --text-xs: 12px;
+  --text-sm: 13px;
+  --text-base: 15px;
+  --text-lg: 19px;
+  --text-xl: 23px;
+  --text-2xl: 29px;
+  --text-3xl: 37px;
+  --text-4xl: 46px;
 
-  /* ── motion ────────────────────────────────────────────────────────── */
+  /*
+    ── spacing ─────────────────────────────────────────────────────────
+    A 4pt scale. The previous Fibonacci run (3/5/8/13/21/34/55) was coherent but
+    loose at the top; the supplied spec clusters everything between 2px and 13px,
+    which is too tight to separate sections. This keeps the dense low end and
+    extends it on multiples of four.
+  */
+  --space-1: 2px;
+  --space-2: 4px;
+  --space-3: 8px;
+  --space-4: 12px;
+  --space-5: 16px;
+  --space-6: 24px;
+  --space-7: 32px;
+  --space-8: 48px;
+
+  /*
+    ── radius ──────────────────────────────────────────────────────────
+    Deduplicated from the supplied 8/9/10/11/12/14/22/24, which had six values
+    inside six pixels. Panels were square-cornered before this.
+  */
+  --radius-sm: 8px;
+  --radius-md: 10px;
+  --radius-lg: 12px;
+  --radius-xl: 14px;
+  --radius-2xl: 22px;
+
+  /*
+    ── elevation ───────────────────────────────────────────────────────
+    Taken from the supplied spec close to verbatim; these were the best-formed
+    values in it. Ring and drop are separate tokens so a surface can carry the
+    hairline without the lift.
+  */
+  --shadow-ring: inset 0 0 0 1px oklch(0.241 0.068 261 / 0.14);
+  --shadow-hair: 0 1px 2px oklch(0.170 0.055 261 / 0.05);
+  --shadow-raise:
+    0 1px 1.5px oklch(0.170 0.055 261 / 0.04),
+    0 10px 30px -18px oklch(0.170 0.055 261 / 0.28);
+  --shadow-lift:
+    0 1px 2px oklch(0.170 0.055 261 / 0.12),
+    0 8px 20px -12px oklch(0.241 0.068 261 / 0.35);
+
+  /*
+    ── motion ──────────────────────────────────────────────────────────
+    Deduplicated: the supplied 220/240 and 560/620/750 were indistinguishable
+    neighbours. Four steps that read as different from each other.
+  */
+  --duration-instant: 140ms;
+  --duration-fast: 220ms;
+  --duration-normal: 340ms;
+  --duration-slow: 560ms;
   --ease-out-quart: cubic-bezier(0.25, 1, 0.5, 1);
 
   /* ── z-index scale ─────────────────────────────────────────────────── */
@@ -86,33 +150,44 @@
   Dark theme. Selected by [data-theme="dark"] on <html>, set before paint by the
   inline script in layout.tsx so there is no flash of the wrong theme.
 
-  Not an inversion: surfaces are desaturated slate rather than flipped values,
+  Not an inversion: surfaces are desaturated navy rather than flipped values,
   and the accent lifts because the same teal that reads as considered on white
-  reads as muddy on a dark surface. Both themes are contrast-checked
+  reads as muddy on a dark surface. Elevation is rebuilt rather than reused — a
+  shadow tuned for a white page disappears on a dark one, so dark leans on the
+  ring and a deeper, tighter drop. Both themes are contrast-checked
   independently by scripts/check-contrast.mjs.
 */
 [data-theme="dark"] {
-  --color-canvas: oklch(0.192 0.013 242);
-  --color-panel: oklch(0.237 0.015 242);
-  --color-sunk: oklch(0.164 0.012 242);
+  --color-canvas: oklch(0.185 0.018 262);
+  --color-panel: oklch(0.232 0.020 262);
+  --color-sunk: oklch(0.158 0.016 262);
 
-  --color-rail: oklch(0.148 0.012 242);
-  --color-rail-line: oklch(0.29 0.016 242);
-  --color-rail-ink: oklch(0.945 0.005 230);
-  --color-rail-muted: oklch(0.70 0.013 230);
+  --color-rail: oklch(0.145 0.016 262);
+  --color-rail-line: oklch(0.292 0.020 262);
+  --color-rail-ink: oklch(0.952 0.006 260);
+  --color-rail-muted: oklch(0.778 0.014 260);
 
-  --color-ink: oklch(0.955 0.005 230);
-  --color-muted: oklch(0.775 0.012 230);
-  --color-faint: oklch(0.655 0.013 230);
+  --color-ink: oklch(0.952 0.006 260);
+  --color-muted: oklch(0.778 0.014 260);
+  --color-faint: oklch(0.660 0.016 260);
 
-  --color-line: oklch(0.315 0.015 240);
-  --color-rule: oklch(0.375 0.016 240);
+  --color-line: oklch(0.318 0.018 262);
+  --color-rule: oklch(0.378 0.020 262);
 
   --color-accent: oklch(0.80 0.085 198);
   --color-accent-soft: oklch(0.30 0.035 200);
   --color-accent-bright: oklch(0.83 0.09 198);
   --color-pass: oklch(0.78 0.11 155);
   --color-signal: oklch(0.80 0.12 62);
+
+  --shadow-ring: inset 0 0 0 1px oklch(0.952 0.006 260 / 0.10);
+  --shadow-hair: 0 1px 2px oklch(0 0 0 / 0.30);
+  --shadow-raise:
+    0 1px 1.5px oklch(0 0 0 / 0.35),
+    0 10px 26px -16px oklch(0 0 0 / 0.65);
+  --shadow-lift:
+    0 1px 2px oklch(0 0 0 / 0.40),
+    0 8px 20px -10px oklch(0 0 0 / 0.75);
 }
 
 @layer base {
@@ -139,8 +214,10 @@
     background-color: var(--color-canvas);
     color: var(--color-ink);
     font-family: var(--font-body);
-    font-size: 16.5px;
-    line-height: 1.6;
+    /* 15px / 22.5px, from the supplied spec. Denser than the 16.5px/1.6 it
+       replaces, which is the point: more evidence per screen. */
+    font-size: var(--text-base);
+    line-height: 1.5;
     -webkit-font-smoothing: antialiased;
     overflow-wrap: break-word;
   }
@@ -159,7 +236,7 @@
   :focus-visible {
     outline: 2px solid var(--color-accent);
     outline-offset: 3px;
-    border-radius: 2px;
+    border-radius: var(--radius-sm);
   }
 
   /* Focus on the dark rail needs the lifted accent to stay visible. */
@@ -170,12 +247,14 @@
 
 @layer components {
   /*
-    Panels are the workspace's unit. A hairline ring rather than a drop shadow:
-    the page is an instrument, and shadows imply a depth that isn't there.
+    Panels are the workspace's unit — objects resting on the canvas rather than
+    regions ruled off it. Ring plus drop: the ring holds the edge at any zoom,
+    the drop separates the panel from the page without a border doing the work.
   */
   .panel {
     background-color: var(--color-panel);
-    box-shadow: inset 0 0 0 1px var(--color-line);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-ring), var(--shadow-raise);
   }
 
   /*
@@ -259,13 +338,30 @@
     min-height: 0;
     min-width: 0;
     background-color: var(--color-panel);
-    box-shadow: inset 0 0 0 1px var(--color-line);
-    transition: box-shadow 200ms var(--ease-out-quart);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-ring), var(--shadow-raise);
+    transition:
+      box-shadow var(--duration-fast) var(--ease-out-quart),
+      transform var(--duration-fast) var(--ease-out-quart);
   }
 
+  /*
+    A link tile lifts on hover. Transform is 1px — enough to read as a response,
+    small enough not to shift the text under the pointer.
+  */
   a.tile:hover,
   a.tile:focus-visible {
-    box-shadow: inset 0 0 0 1px var(--color-accent);
+    box-shadow:
+      inset 0 0 0 1px var(--color-accent),
+      var(--shadow-lift);
+    transform: translateY(-1px);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    a.tile:hover,
+    a.tile:focus-visible {
+      transform: none;
+    }
   }
 
   /*

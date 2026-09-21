@@ -32,10 +32,10 @@ export function ProfileCard() {
       <p className="mt-[8px] font-display text-[0.95rem] font-bold leading-[1.2] tracking-[-0.018em] text-rail-ink">
         {NAME}
       </p>
-      <p className="mt-[3px] font-mono text-[0.62rem] uppercase leading-snug tracking-[0.09em] text-accent-bright">
+      <p className="mt-[2px] font-mono text-[0.62rem] uppercase leading-snug tracking-[0.09em] text-accent-bright">
         {ROLE_TITLE}
       </p>
-      <p className="mt-[3px] font-mono text-[0.64rem] text-rail-muted">{LOCATION}</p>
+      <p className="mt-[2px] font-mono text-[0.64rem] text-rail-muted">{LOCATION}</p>
     </div>
   );
 }

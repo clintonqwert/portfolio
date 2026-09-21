@@ -42,7 +42,7 @@ export function DetailView({
 }) {
   return (
     <div className="flex flex-col gap-2 p-2 min-[1440px]:h-full">
-      <header className="tile shrink-0 px-[21px] py-[13px]">
+      <header className="tile shrink-0 px-[16px] py-[12px]">
         <p className="font-mono text-[0.64rem] uppercase tracking-[0.12em] text-accent">
           <Link href="/" className="no-underline hover:underline">
             Overview
@@ -57,7 +57,7 @@ export function DetailView({
         ) : null}
 
         {meta || links ? (
-          <div className="mt-[13px] flex flex-wrap items-center gap-x-[21px] gap-y-[5px] font-mono text-[0.68rem]">
+          <div className="mt-[12px] flex flex-wrap items-center gap-x-[16px] gap-y-[4px] font-mono text-[0.68rem]">
             {meta?.map((m) => (
               <span key={m.label} className="text-faint">
                 <span className="uppercase tracking-[0.08em]">{m.label}</span>{" "}
@@ -93,7 +93,7 @@ export function DetailView({
           <div className="tile min-h-0">
             {/* Columns, not scroll: the prose fills the panel across rather
                 than running past its bottom edge. */}
-            <div className="flow flex-1 px-[21px] py-[21px] text-muted">
+            <div className="flow flex-1 px-[16px] py-[16px] text-muted">
               {children}
             </div>
           </div>

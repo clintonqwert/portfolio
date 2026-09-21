@@ -78,7 +78,7 @@ export function RailNav({
   }
 
   return (
-    <ul className="space-y-[3px]">
+    <ul className="space-y-[2px]">
       {links.map((link) => {
         const id = link.href.split("#")[1];
         const isActive = id === active;
@@ -87,7 +87,7 @@ export function RailNav({
             <Link
               href={link.href}
               aria-current={isActive ? "location" : undefined}
-              className={`group relative flex items-baseline gap-[8px] rounded-sm px-[5px] py-[5px] no-underline transition-colors duration-200 ${
+              className={`group relative flex items-baseline gap-[8px] rounded-sm px-[4px] py-[4px] no-underline transition-colors duration-200 ${
                 isActive
                   ? "bg-rail-line/50 text-rail-ink"
                   : "text-rail-muted hover:bg-rail-line/30 hover:text-rail-ink"

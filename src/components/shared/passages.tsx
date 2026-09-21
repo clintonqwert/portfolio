@@ -18,14 +18,14 @@ export function Passages({ passages }: { passages: Passage[] }) {
         // Spacing lives on the wrapper, not the heading: `first:` matches the
         // first child of a parent, and the heading is always that — which
         // silently removed the gap above every subhead, not just the first.
-        <div key={passage.heading ?? i} className="mt-[21px] first:mt-0">
+        <div key={passage.heading ?? i} className="mt-[16px] first:mt-0">
           {passage.heading ? (
             <h2 className="mb-[8px] font-display text-[0.95rem] font-semibold leading-snug tracking-[-0.008em] text-ink">
               {passage.heading}
             </h2>
           ) : null}
           {passage.paragraphs.map((paragraph) => (
-            <p key={paragraph.slice(0, 48)} className="mb-[13px] last:mb-0">
+            <p key={paragraph.slice(0, 48)} className="mb-[12px] last:mb-0">
               {paragraph}
             </p>
           ))}

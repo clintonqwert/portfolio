@@ -67,20 +67,20 @@ export default async function CaseStudyPage({
         links={links}
         aside={
           study.stats.length === 0 && !study.assertions ? undefined :
-          <div className="flex-1 overflow-hidden p-[13px]">
+          <div className="flex-1 overflow-hidden p-[12px]">
             <p className="font-mono text-[0.64rem] uppercase tracking-[0.1em] text-accent">
               Measured
             </p>
-            <div className="mt-[13px] space-y-[13px]">
+            <div className="mt-[12px] space-y-[12px]">
               {study.stats.map((stat) => (
                 <Figure key={stat.label} stat={stat} size="sm" />
               ))}
             </div>
 
-            <p className="mt-[21px] font-mono text-[0.64rem] uppercase tracking-[0.1em] text-accent">
+            <p className="mt-[16px] font-mono text-[0.64rem] uppercase tracking-[0.1em] text-accent">
               Stack
             </p>
-            <ul className="mt-[8px] space-y-[3px] font-mono text-[0.72rem] text-muted">
+            <ul className="mt-[8px] space-y-[2px] font-mono text-[0.72rem] text-muted">
               {study.stack.map((tech) => (
                 <li key={tech}>{tech}</li>
               ))}
@@ -88,10 +88,10 @@ export default async function CaseStudyPage({
 
             {study.assertions ? (
               <>
-                <p className="mt-[21px] font-mono text-[0.64rem] uppercase tracking-[0.1em] text-accent">
+                <p className="mt-[16px] font-mono text-[0.64rem] uppercase tracking-[0.1em] text-accent">
                   Asserted on every PR
                 </p>
-                <dl className="mt-[8px] space-y-[5px] font-mono text-[0.68rem]">
+                <dl className="mt-[8px] space-y-[4px] font-mono text-[0.68rem]">
                   {study.assertions.rows.map((row) => (
                     <div key={row.name} className="flex justify-between gap-3">
                       <dt className="min-w-0 truncate text-muted">{row.name}</dt>

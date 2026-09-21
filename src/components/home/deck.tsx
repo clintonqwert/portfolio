@@ -30,11 +30,11 @@ export function Deck({
   return (
     <div className="flex flex-col gap-2 p-2 lg:h-full">
       {/* ── headline ─────────────────────────────────────────────────── */}
-      <header className="panel shrink-0 px-[21px] py-[13px]">
+      <header className="panel shrink-0 px-[16px] py-[12px]">
         <h1 className="max-w-[26ch] font-display text-[clamp(1.35rem,2.5vw,2rem)] font-bold leading-[1.12] tracking-[-0.025em] text-ink">
           {HEADLINE}
         </h1>
-        <p className="mt-[5px] max-w-[70ch] text-[0.88rem] leading-snug text-muted">{LEDE}</p>
+        <p className="mt-[4px] max-w-[70ch] text-[0.88rem] leading-snug text-muted">{LEDE}</p>
       </header>
 
       <SkillMarquee skills={skills} />
@@ -65,7 +65,7 @@ export function Deck({
           <div
             className={
               study.feature
-                ? "grid min-h-0 flex-1 gap-x-[21px] lg:grid-cols-2"
+                ? "grid min-h-0 flex-1 gap-x-[16px] lg:grid-cols-2"
                 : "flex min-h-0 flex-1 flex-col"
             }
           >
@@ -73,7 +73,7 @@ export function Deck({
               <p className="overflow-hidden text-[0.86rem] leading-snug text-muted">
                 {study.summary}
               </p>
-              <ul className="mt-[13px] flex flex-wrap gap-x-[13px] gap-y-[3px] font-mono text-[0.64rem] text-faint">
+              <ul className="mt-[12px] flex flex-wrap gap-x-[12px] gap-y-[2px] font-mono text-[0.64rem] text-faint">
                 {study.stack.map((tech) => (
                   <li key={tech}>{tech}</li>
                 ))}
@@ -82,10 +82,13 @@ export function Deck({
 
             {study.assertions ? (
               <dl
-                className={`space-y-[5px] font-mono text-[0.68rem] ${
+                className={`space-y-[4px] font-mono text-[0.68rem] ${
                   study.feature
-                    ? "lg:border-l lg:border-line lg:pl-[21px]"
-                    : "mt-auto border-t border-line pt-[13px]"
+                    ? // The rule is vertical only once the interior is two columns.
+                      // Stacked, the assertions ran straight into the stack list
+                      // with nothing between them.
+                      "mt-[12px] border-t border-line pt-[12px] lg:mt-0 lg:border-l lg:border-t-0 lg:pl-[16px] lg:pt-0"
+                    : "mt-auto border-t border-line pt-[12px]"
                 }`}
               >
                 {study.assertions.rows
@@ -93,7 +96,7 @@ export function Deck({
                   .map((row) => (
                     <div
                       key={row.name}
-                      className="flex items-baseline justify-between gap-[13px]"
+                      className="flex items-baseline justify-between gap-[12px]"
                     >
                       <dt className="min-w-0 truncate text-muted">{row.name}</dt>
                       <dd className={row.measured ? "shrink-0 text-signal" : "shrink-0 text-pass"}>
@@ -103,13 +106,13 @@ export function Deck({
                   ))}
               </dl>
             ) : study.stats.length > 0 ? (
-              <div className="mt-auto grid grid-cols-2 gap-[13px] border-t border-line pt-[13px]">
+              <div className="mt-auto grid grid-cols-2 gap-[12px] border-t border-line pt-[12px]">
                 {study.stats.slice(0, 4).map((stat) => (
                   <Figure key={stat.label} stat={stat} size="sm" />
                 ))}
               </div>
             ) : (
-              <p className="mt-auto border-t border-line pt-[13px] font-mono text-[0.66rem] leading-snug text-faint">
+              <p className="mt-auto border-t border-line pt-[12px] font-mono text-[0.66rem] leading-snug text-faint">
                 No adoption figures — the events were never instrumented. The
                 case is the architecture.
               </p>
@@ -128,12 +131,12 @@ export function Deck({
           <p className="min-h-0 overflow-hidden text-[0.88rem] leading-snug text-muted">
             {autoTraderLede}
           </p>
-          <ul className="mt-[13px] flex flex-wrap gap-x-[13px] gap-y-[3px] font-mono text-[0.64rem] text-faint">
+          <ul className="mt-[12px] flex flex-wrap gap-x-[12px] gap-y-[2px] font-mono text-[0.64rem] text-faint">
             {["Vue", "Node.js", "PHP", "MySQL", "Redis", "AWS"].map((tech) => (
               <li key={tech}>{tech}</li>
             ))}
           </ul>
-          <ul className="mt-[13px] space-y-[5px] border-t border-line pt-[13px] text-[0.78rem] leading-snug text-muted">
+          <ul className="mt-[12px] space-y-[4px] border-t border-line pt-[12px] text-[0.78rem] leading-snug text-muted">
             {/* At 1024 the cell is three lines shorter than the copy, and the
                 deck may not scroll. The last two points drop out there rather
                 than being clipped mid-sentence; all four are on /autotrader,
@@ -148,7 +151,7 @@ export function Deck({
               </li>
             ))}
           </ul>
-          <div className="mt-auto flex gap-[21px] border-t border-line pt-[13px]">
+          <div className="mt-auto flex gap-[16px] border-t border-line pt-[12px]">
             <Figure stat={{ value: "5 yrs", label: "Jan 2020 – Jun 2025" }} size="sm" />
             <Figure stat={{ value: "~0", label: "Downtime after rollout" }} size="sm" />
           </div>
@@ -162,7 +165,13 @@ export function Deck({
           cta="All three"
           className="bg-sunk lg:col-start-5 lg:col-end-10 lg:row-start-5 lg:row-end-9"
         >
-          <ul className="flex-1 space-y-[8px] overflow-hidden">
+          {/*
+            The consequences wrap rather than truncate. They were clamped to one
+            line with `truncate` while a third of the tile sat empty below them —
+            a layout leftover that quietly did the one thing PRODUCT.md says this
+            tile must never do, which is soften a gap.
+          */}
+          <ul className="flex flex-1 flex-col justify-between overflow-hidden">
             {gaps.map((gap) => (
               <li key={gap.gap} className="flex items-baseline gap-2.5">
                 <span
@@ -171,7 +180,7 @@ export function Deck({
                 />
                 <span className="min-w-0">
                   <span className="font-mono text-[0.72rem] text-signal">{gap.gap}</span>
-                  <span className="block truncate text-[0.78rem] text-muted">
+                  <span className="block text-[0.78rem] leading-snug text-muted">
                     {gap.consequence}
                   </span>
                 </span>
@@ -186,7 +195,7 @@ export function Deck({
           cta="History"
           className="lg:col-start-10 lg:col-end-13 lg:row-start-5 lg:row-end-9"
         >
-          <div className="grid flex-1 grid-cols-2 content-center gap-x-[13px] gap-y-[13px]">
+          <div className="grid flex-1 grid-cols-2 content-center gap-x-[12px] gap-y-[12px]">
             {stats.map((stat) => (
               <Figure key={stat.label} stat={stat} size="sm" />
             ))}

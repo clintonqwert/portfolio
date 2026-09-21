@@ -2,11 +2,11 @@ import type { Role, StackGroup } from "@/types/content";
 
 export function TrackRecord({ roles }: { roles: Role[] }) {
   return (
-    <ol className="space-y-[13px]">
+    <ol className="space-y-[12px]">
       {roles.map((role) => (
         <li
           key={`${role.period}-${role.title}`}
-          className="grid gap-x-[13px] gap-y-[2px] sm:grid-cols-[112px_minmax(0,1fr)]"
+          className="grid gap-x-[12px] gap-y-[2px] sm:grid-cols-[112px_minmax(0,1fr)]"
         >
           <div className="font-mono text-[0.66rem] uppercase tracking-[0.05em] text-faint">
             {role.period}
@@ -26,7 +26,7 @@ export function TrackRecord({ roles }: { roles: Role[] }) {
 
 export function StackGrid({ groups }: { groups: StackGroup[] }) {
   return (
-    <dl className="space-y-[13px]">
+    <dl className="space-y-[12px]">
       {groups.map((group) => (
         <div key={group.name}>
           <dt className="font-display text-[0.82rem] font-semibold text-ink">

@@ -59,7 +59,7 @@ export default async function RootLayout({
       <body className="min-h-dvh bg-canvas antialiased lg:h-dvh lg:overflow-hidden">
         <a
           href="#main"
-          className="sr-only rounded bg-ink px-4 py-2 text-canvas focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[var(--z-skip)]"
+          className="sr-only rounded-md bg-ink px-4 py-2 text-canvas focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[var(--z-skip)]"
         >
           Skip to content
         </a>

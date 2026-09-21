@@ -30,34 +30,34 @@ export default async function HistoryPage() {
     <DetailView eyebrow="History" title="Track record, tools and practice" lede={LEDE} raw>
       <div className="grid min-h-0 gap-2 lg:grid-cols-[minmax(0,1.25fr)_minmax(0,1fr)_minmax(0,1fr)]">
         <section className="tile min-h-0 overflow-hidden">
-          <h2 className="border-b border-line px-[13px] py-[8px] font-mono text-[0.64rem] uppercase tracking-[0.1em] text-accent">
+          <h2 className="border-b border-line px-[12px] py-[8px] font-mono text-[0.64rem] uppercase tracking-[0.1em] text-accent">
             Track record
           </h2>
-          <div className="min-h-0 flex-1 overflow-hidden px-[13px] py-[13px]">
+          <div className="min-h-0 flex-1 overflow-hidden px-[12px] py-[12px]">
             <TrackRecord roles={roles} />
           </div>
         </section>
 
         <section className="tile min-h-0 overflow-hidden">
-          <h2 className="border-b border-line px-[13px] py-[8px] font-mono text-[0.64rem] uppercase tracking-[0.1em] text-accent">
+          <h2 className="border-b border-line px-[12px] py-[8px] font-mono text-[0.64rem] uppercase tracking-[0.1em] text-accent">
             Tools
           </h2>
-          <div className="min-h-0 flex-1 overflow-hidden px-[13px] py-[13px]">
+          <div className="min-h-0 flex-1 overflow-hidden px-[12px] py-[12px]">
             <StackGrid groups={groups} />
           </div>
         </section>
 
         <section className="tile min-h-0 overflow-hidden">
-          <h2 className="border-b border-line px-[13px] py-[8px] font-mono text-[0.64rem] uppercase tracking-[0.1em] text-accent">
+          <h2 className="border-b border-line px-[12px] py-[8px] font-mono text-[0.64rem] uppercase tracking-[0.1em] text-accent">
             Practice
           </h2>
-          <ul className="min-h-0 flex-1 space-y-[13px] overflow-hidden px-[13px] py-[13px]">
+          <ul className="min-h-0 flex-1 space-y-[12px] overflow-hidden px-[12px] py-[12px]">
             {principles.map((principle) => (
               <li key={principle.title}>
                 <h3 className="font-display text-[0.88rem] font-semibold text-ink">
                   {principle.title}
                 </h3>
-                <p className="mt-[3px] text-[0.8rem] leading-snug text-muted">
+                <p className="mt-[2px] text-[0.8rem] leading-snug text-muted">
                   {principle.body}
                 </p>
               </li>

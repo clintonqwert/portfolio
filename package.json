@@ -7,10 +7,11 @@
     "check:claims": "node scripts/check-claims.mjs",
     "check:contrast": "node scripts/check-contrast.mjs",
     "check:overflow": "node scripts/check-overflow.mjs",
-    "build": "npm run check:claims && npm run check:contrast && next build",
+    "build": "npm run check:claims && npm run check:tokens && npm run check:contrast && next build",
     "start": "next start",
     "lint": "eslint .",
-    "typecheck": "next typegen && tsc --noEmit"
+    "typecheck": "next typegen && tsc --noEmit",
+    "check:tokens": "node scripts/check-tokens.mjs"
   },
   "dependencies": {
     "@vercel/analytics": "^2.0.1",
