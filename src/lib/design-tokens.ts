@@ -10,44 +10,44 @@
  * Components use the semantic Tailwind utilities (bg-panel, text-muted,
  * border-line). Raw hex in a component is a defect.
  *
- * Strategy: Restrained — a near-neutral navy-tinted workspace, one teal accent,
- * hierarchy carried by elevation rather than by colour. Canvas chroma leans to
- * the navy ink and never to warm; a warm near-white is an anti-reference in
- * PRODUCT.md.
+ * Strategy: monochrome. Every value is chroma 0 on purpose — black ink, white
+ * paper, grey for what recedes. Taken from Clinton's own earlier design for
+ * this site, where colour arrives only through photography and the interface
+ * never competes with it. Hierarchy is weight, case and rule, not hue.
  */
 export const colors = {
   /** Workspace background. Sits one step below the panels. */
-  canvas: "oklch(0.976 0.004 260)",
+  canvas: "oklch(1 0 0)",
   /** Raised panels. */
   panel: "oklch(1 0 0)",
   /** Recessed strips — table captions. */
-  sunk: "oklch(0.950 0.006 260)",
+  sunk: "oklch(0.963 0 0)",
 
   /** Fixed navigation rail. Flips with the theme. */
-  rail: "oklch(0.945 0.006 260)",
-  railLine: "oklch(0.882 0.009 260)",
-  railInk: "oklch(0.241 0.068 261)",
-  railMuted: "oklch(0.470 0.040 263)",
+  rail: "oklch(1 0 0)",
+  railLine: "oklch(0.78 0 0)",
+  railInk: "oklch(0.17 0 0)",
+  railMuted: "oklch(0.48 0 0)",
 
   /** Primary text. #0b1e3f. */
-  ink: "oklch(0.241 0.068 261)",
+  ink: "oklch(0.17 0 0)",
   /** Secondary text. */
-  muted: "oklch(0.470 0.040 263)",
+  muted: "oklch(0.48 0 0)",
   /** Metadata only. */
-  faint: "oklch(0.512 0.034 263)",
+  faint: "oklch(0.52 0 0)",
 
   /** Hairlines. */
-  line: "oklch(0.908 0.008 260)",
+  line: "oklch(0.80 0 0)",
   /** Structural rules. */
-  rule: "oklch(0.848 0.011 260)",
+  rule: "oklch(0.17 0 0)",
 
   /** #0F5C6B, preserved from the previous design. */
-  accent: "oklch(0.439 0.073 215)",
-  accentSoft: "oklch(0.958 0.020 215)",
+  accent: "oklch(0.17 0 0)",
+  accentSoft: "oklch(0.945 0 0)",
   /** Tracks the rail, which is light in this theme. */
-  accentBright: "oklch(0.439 0.073 215)",
-  pass: "oklch(0.470 0.098 152)",
-  signal: "oklch(0.540 0.128 52)",
+  accentBright: "oklch(0.17 0 0)",
+  pass: "oklch(0.48 0 0)",
+  signal: "oklch(0.17 0 0)",
 } as const;
 
 /**
@@ -115,23 +115,23 @@ export const duration = {
  * because the light-mode teal reads muddy on a dark surface.
  */
 export const darkColors: Record<ColorToken, string> = {
-  canvas: "oklch(0.185 0.018 262)",
-  panel: "oklch(0.232 0.020 262)",
-  sunk: "oklch(0.158 0.016 262)",
-  rail: "oklch(0.145 0.016 262)",
-  railLine: "oklch(0.292 0.020 262)",
-  railInk: "oklch(0.952 0.006 260)",
-  railMuted: "oklch(0.778 0.014 260)",
-  ink: "oklch(0.952 0.006 260)",
-  muted: "oklch(0.778 0.014 260)",
-  faint: "oklch(0.660 0.016 260)",
-  line: "oklch(0.318 0.018 262)",
-  rule: "oklch(0.378 0.020 262)",
-  accent: "oklch(0.80 0.085 198)",
-  accentSoft: "oklch(0.30 0.035 200)",
-  accentBright: "oklch(0.83 0.09 198)",
-  pass: "oklch(0.78 0.11 155)",
-  signal: "oklch(0.80 0.12 62)",
+  canvas: "oklch(0.145 0 0)",
+  panel: "oklch(0.145 0 0)",
+  sunk: "oklch(0.195 0 0)",
+  rail: "oklch(0.145 0 0)",
+  railLine: "oklch(0.38 0 0)",
+  railInk: "oklch(0.975 0 0)",
+  railMuted: "oklch(0.72 0 0)",
+  ink: "oklch(0.975 0 0)",
+  muted: "oklch(0.72 0 0)",
+  faint: "oklch(0.665 0 0)",
+  line: "oklch(0.36 0 0)",
+  rule: "oklch(0.975 0 0)",
+  accent: "oklch(0.975 0 0)",
+  accentSoft: "oklch(0.255 0 0)",
+  accentBright: "oklch(0.975 0 0)",
+  pass: "oklch(0.72 0 0)",
+  signal: "oklch(0.975 0 0)",
 };
 
 export type ColorToken = keyof typeof colors;

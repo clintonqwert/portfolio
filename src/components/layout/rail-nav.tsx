@@ -62,10 +62,8 @@ export function RailNav({
               <Link
                 href={link.href}
                 aria-current={isActive ? "location" : undefined}
-                className={`block whitespace-nowrap rounded-sm px-2.5 py-1.5 font-display text-[0.78rem] font-medium no-underline transition-colors duration-200 ${
-                  isActive
-                    ? "bg-rail-line/70 text-rail-ink"
-                    : "text-rail-muted"
+                className={`block whitespace-nowrap px-2.5 py-1.5 font-display text-[0.78rem] font-medium uppercase tracking-[0.04em] no-underline transition-colors duration-200 ${
+                  isActive ? "chip" : "text-rail-muted"
                 }`}
               >
                 {link.label}
@@ -78,42 +76,51 @@ export function RailNav({
   }
 
   return (
-    <ul className="space-y-[2px]">
+    <ul>
       {links.map((link) => {
         const id = link.href.split("#")[1];
         const isActive = id === active;
+        // The drop cap is decorative splitting of one word, so the label is
+        // given to assistive tech whole and the two spans are hidden from it.
+        const [first = "", ...rest] = [...link.label];
         return (
           <li key={link.href}>
             <Link
               href={link.href}
               aria-current={isActive ? "location" : undefined}
-              className={`group relative flex items-baseline gap-[8px] rounded-sm px-[4px] py-[4px] no-underline transition-colors duration-200 ${
-                isActive
-                  ? "bg-rail-line/50 text-rail-ink"
-                  : "text-rail-muted hover:bg-rail-line/30 hover:text-rail-ink"
+              aria-label={link.label}
+              // py-[6px] is a floor, not a rhythm choice: at this type size
+              // anything less puts the row under the 24px WCAG 2.2 target
+              // minimum. It shipped at 3px once and measured 22.8px.
+              className={`group relative flex items-baseline py-[6px] pl-[10px] no-underline transition-colors duration-200 ${
+                isActive ? "text-rail-ink" : "text-rail-muted hover:text-rail-ink"
               }`}
             >
-              {/* Position is marked twice — bar and weight — so the state does
-                  not rest on colour alone. */}
+              {/* Marked twice — the rule and the weight — so position never
+                  rests on colour alone. Square, like everything else here. */}
               <span
                 aria-hidden="true"
-                className={`absolute left-0 top-1/2 h-4 w-[2px] -translate-y-1/2 rounded-full bg-accent-bright transition-opacity duration-200 ${
+                className={`absolute left-0 top-[6px] bottom-[6px] w-[3px] bg-rail-ink transition-opacity duration-200 ${
                   isActive ? "opacity-100" : "opacity-0"
                 }`}
               />
               <span
-                className={`font-mono text-[0.62rem] tabular-nums transition-colors ${
-                  isActive ? "text-accent-bright" : "text-rail-muted"
+                aria-hidden="true"
+                className={`font-display leading-none transition-colors ${
+                  isActive
+                    ? "text-[1.18rem] font-bold text-rail-ink"
+                    : "text-[1.05rem] font-bold text-rail-ink"
                 }`}
               >
-                {link.index}
+                {first}
               </span>
               <span
-                className={`font-display text-[0.86rem] ${
-                  isActive ? "font-semibold" : "font-medium"
+                aria-hidden="true"
+                className={`font-display text-[0.74rem] uppercase leading-none tracking-[0.06em] ${
+                  isActive ? "font-semibold text-rail-ink" : "font-medium"
                 }`}
               >
-                {link.label}
+                {rest.join("")}
               </span>
             </Link>
           </li>

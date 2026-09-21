@@ -19,7 +19,7 @@ export function SiteRail({ links }: { links: NavLink[] }) {
   return (
     <>
       {/* ── desktop rail ───────────────────────────────────────────────── */}
-      <div className="rail fixed inset-y-0 left-0 z-[var(--z-rail)] hidden w-[236px] flex-col justify-between bg-rail px-[16px] py-[16px] lg:flex">
+      <div className="rail fixed inset-y-0 left-0 z-[var(--z-rail)] hidden w-[236px] flex-col justify-between border-r border-rail-line bg-rail px-[16px] py-[16px] lg:flex">
         <div>
           <ProfileCard />
 
@@ -39,7 +39,7 @@ export function SiteRail({ links }: { links: NavLink[] }) {
           <a
             href={RESUME.href}
             download
-            className="flex items-center justify-between gap-2 rounded-sm bg-rail-line/60 px-[12px] py-[8px] font-mono text-[0.68rem] uppercase tracking-[0.08em] text-rail-ink no-underline transition-colors duration-200 hover:bg-accent-bright hover:text-rail"
+            className="chip display flex items-center justify-between gap-2 px-[12px] py-[8px] text-[0.72rem] uppercase tracking-[0.08em] no-underline transition-opacity duration-200 hover:opacity-80"
           >
             Résumé
             <span aria-hidden="true">↓</span>
@@ -91,7 +91,7 @@ export function SiteRail({ links }: { links: NavLink[] }) {
             <a
               href={RESUME.href}
               download
-              className="rounded-sm bg-rail-line/60 px-3 py-1.5 font-mono text-[0.64rem] uppercase tracking-[0.08em] text-rail-ink no-underline"
+              className="chip display px-3 py-1.5 text-[0.66rem] uppercase tracking-[0.08em] no-underline"
             >
               Résumé ↓
             </a>

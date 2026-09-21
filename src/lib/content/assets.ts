@@ -26,16 +26,33 @@ export interface ImageSlot {
 const PLACEHOLDER = "/work/placeholder-screenshot.svg";
 
 /**
- * Lighthouse scores for driftpilot.ca, shown in the Measured tile.
+ * Lighthouse scores for driftpilot.ca.
  *
- * This is the highest-value asset on the list: the deck asserts >=95 four
- * times, and a real run turns four assertions into evidence, which is the
- * premise the whole site rests on. 1200x400, scores legible.
+ * NOT CURRENTLY RENDERED. It was in the Measured tile until that tile became a
+ * half-height strip with no room for it. The slot is kept because the asset is
+ * still worth having — the deck asserts >=95 four times, and a real run is the
+ * difference between asserting that and showing it. /work/driftpilot is the
+ * obvious home, since that is the page making the assertions. 1200x400, scores
+ * legible.
  */
 export const SCORES_IMAGE: ImageSlot = {
   src: "/work/placeholder-scores.svg",
   target: "/work/driftpilot-lighthouse.png",
   alt: "Lighthouse scores for driftpilot.ca: performance, accessibility, best practices and SEO",
+  isPlaceholder: true,
+};
+
+/**
+ * AutoSync, for the AutoTrader tile and /autotrader.
+ *
+ * Not in WORK_IMAGES because AutoTrader is a role rather than a case study and
+ * has no slug. autosyncmotors.com is the public demo of the same platform, so
+ * it is the honest thing to show and safe to capture.
+ */
+export const AUTOSYNC_IMAGE: ImageSlot = {
+  src: PLACEHOLDER,
+  target: "/work/autosync-hero.png",
+  alt: "An AutoSync dealer site — the inventory listing shoppers search",
   isPlaceholder: true,
 };
 

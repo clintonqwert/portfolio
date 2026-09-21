@@ -1,6 +1,6 @@
 import { Deck } from "@/components/home/deck";
 import { JsonLd } from "@/components/shared/json-ld";
-import { SCORES_IMAGE, WORK_IMAGES } from "@/lib/content/assets";
+import { AUTOSYNC_IMAGE, WORK_IMAGES } from "@/lib/content/assets";
 import { AUTOTRADER_LEDE } from "@/lib/content/experience";
 import { getGaps, getSkillMarquee } from "@/lib/content/practice";
 import { getHeadlineStats } from "@/lib/content/profile";
@@ -25,7 +25,7 @@ export default async function HomePage() {
         skills={skills}
         autoTraderLede={AUTOTRADER_LEDE}
         workImages={WORK_IMAGES}
-        scoresImage={SCORES_IMAGE}
+        autoSyncImage={AUTOSYNC_IMAGE}
       />
     </>
   );

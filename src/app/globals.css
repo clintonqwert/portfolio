@@ -12,69 +12,57 @@
 */
 @theme {
   /*
-    ── surfaces ────────────────────────────────────────────────────────
-    A light workspace with real elevation: the page sits one step below the
-    panels, and panels carry a hairline ring *and* a soft drop. The previous
-    design used a flat inset ring only, on the argument that shadows imply a
-    depth that isn't there. This one takes the opposite position — the tiles
-    are objects on a surface, and saying so makes the hierarchy readable at a
-    glance instead of requiring the reader to parse rules.
-
-    Chroma leans toward the navy ink, never toward warm. A warm near-white
-    canvas is an explicit anti-reference in PRODUCT.md.
+    ── monochrome ──────────────────────────────────────────────────────
+    Black ink, white paper, hairline rules, and solid black blocks for
+    emphasis. Taken from Clinton's own earlier design for this site, which is
+    strictly monochrome: colour enters only through photography, never through
+    the interface. That is the whole idea, so there is no accent hue here — a
+    link is distinguished by weight, case and rule, not by turning blue.
   */
-  --color-canvas: oklch(0.976 0.004 260);
+  --color-canvas: oklch(1 0 0);
   --color-panel: oklch(1 0 0);
-  --color-sunk: oklch(0.950 0.006 260);
+  --color-sunk: oklch(0.963 0 0);
 
-  /*
-    ── chrome ──────────────────────────────────────────────────────────
-    The rail flips with the theme rather than staying dark in both.
-  */
-  --color-rail: oklch(0.945 0.006 260);
-  --color-rail-line: oklch(0.882 0.009 260);
-  --color-rail-ink: oklch(0.241 0.068 261);
-  --color-rail-muted: oklch(0.470 0.040 263);
+  /* Chrome. The rail is paper too, separated by a rule rather than a fill. */
+  --color-rail: oklch(1 0 0);
+  --color-rail-line: oklch(0.78 0 0);
+  --color-rail-ink: oklch(0.17 0 0);
+  --color-rail-muted: oklch(0.48 0 0);
 
   /* ── text ──────────────────────────────────────────────────────────── */
-  /* #0b1e3f — navy rather than the previous near-black slate. */
-  --color-ink: oklch(0.241 0.068 261);
-  --color-muted: oklch(0.470 0.040 263);
-  --color-faint: oklch(0.512 0.034 263);
+  --color-ink: oklch(0.17 0 0);
+  --color-muted: oklch(0.48 0 0);
+  --color-faint: oklch(0.52 0 0);
 
-  /* ── structure ─────────────────────────────────────────────────────── */
-  --color-line: oklch(0.908 0.008 260);
-  --color-rule: oklch(0.848 0.011 260);
-
-  /* ── accent + states ───────────────────────────────────────────────── */
   /*
-    #0F5C6B, preserved from the previous design. The supplied spec carries no
-    accent token at all — only text and surface — so teal fills a gap in it
-    rather than contradicting it, and PRODUCT.md principle 5 holds.
+    ── structure ───────────────────────────────────────────────────────
+    Two weights of line, and the difference matters in this language: `line`
+    is the quiet hairline inside a panel, `rule` is the black structural edge
+    that frames one.
   */
-  --color-accent: oklch(0.439 0.073 215);
-  --color-accent-soft: oklch(0.958 0.020 215);
-  --color-accent-bright: oklch(0.439 0.073 215);
-  --color-pass: oklch(0.470 0.098 152);
-  --color-signal: oklch(0.540 0.128 52);
+  --color-line: oklch(0.80 0 0);
+  --color-rule: oklch(0.17 0 0);
+
+  /*
+    ── emphasis + states ───────────────────────────────────────────────
+    No accent hue. `signal` is ink, for a figure that was measured and is
+    worth stopping on; `pass` is grey, for a threshold that simply holds.
+    Monochrome does not mean meaning is lost — it means weight carries it.
+  */
+  --color-accent: oklch(0.17 0 0);
+  --color-accent-soft: oklch(0.945 0 0);
+  --color-accent-bright: oklch(0.17 0 0);
+  --color-pass: oklch(0.48 0 0);
+  --color-signal: oklch(0.17 0 0);
 
   /* ── type ──────────────────────────────────────────────────────────── */
-  /*
-    One family with committed weight contrast rather than a display/body pair.
-    Mono is reserved for data and labels, where it carries real meaning rather
-    than signalling "technical".
-  */
   --font-display: var(--font-archivo), "Helvetica Neue", Arial, sans-serif;
   --font-body: var(--font-archivo), "Helvetica Neue", Arial, sans-serif;
   --font-mono: var(--font-plex-mono), ui-monospace, "SF Mono", Menlo, monospace;
 
-  /*
-    ── type scale ──────────────────────────────────────────────────────
-    The supplied scale ran 11px to 15px across eight steps — a 1.03 ratio, with
-    its top step equal to the base and no heading sizes at all. Its small end is
-    kept, because dense metadata is the point; above the 15px base the steps
-    open to a 1.25 ratio so headings actually read as headings.
-  */
+  /* ── type scale ─────────────────────────────────────────────────────
+     15px base at 1.5, a 1.25 ratio above it, and a dense 11-13px band below
+     for labels and data. */
   --text-2xs: 11px;
   --text-xs: 12px;
   --text-sm: 13px;
@@ -85,13 +73,7 @@
   --text-3xl: 37px;
   --text-4xl: 46px;
 
-  /*
-    ── spacing ─────────────────────────────────────────────────────────
-    A 4pt scale. The previous Fibonacci run (3/5/8/13/21/34/55) was coherent but
-    loose at the top; the supplied spec clusters everything between 2px and 13px,
-    which is too tight to separate sections. This keeps the dense low end and
-    extends it on multiples of four.
-  */
+  /* ── spacing ─────────────────────────────────────────────────────── */
   --space-1: 2px;
   --space-2: 4px;
   --space-3: 8px;
@@ -103,35 +85,27 @@
 
   /*
     ── radius ──────────────────────────────────────────────────────────
-    Deduplicated from the supplied 8/9/10/11/12/14/22/24, which had six values
-    inside six pixels. Panels were square-cornered before this.
+    Square. The reference design has no rounded corner anywhere: every box is
+    a ruled rectangle. The tokens stay so the focus ring and the few genuinely
+    round things (the portrait, status dots) have something to ask for.
   */
-  --radius-sm: 8px;
-  --radius-md: 10px;
-  --radius-lg: 12px;
-  --radius-xl: 14px;
-  --radius-2xl: 22px;
+  --radius-sm: 0px;
+  --radius-md: 0px;
+  --radius-lg: 0px;
+  --radius-xl: 0px;
+  --radius-2xl: 0px;
 
   /*
     ── elevation ───────────────────────────────────────────────────────
-    Taken from the supplied spec close to verbatim; these were the best-formed
-    values in it. Ring and drop are separate tokens so a surface can carry the
-    hairline without the lift.
+    A rule, not a shadow. Panels sit on the page rather than above it, which
+    is what makes the black lines read as drawn rather than as chrome.
   */
-  --shadow-ring: inset 0 0 0 1px oklch(0.241 0.068 261 / 0.14);
-  --shadow-hair: 0 1px 2px oklch(0.170 0.055 261 / 0.05);
-  --shadow-raise:
-    0 1px 1.5px oklch(0.170 0.055 261 / 0.04),
-    0 10px 30px -18px oklch(0.170 0.055 261 / 0.28);
-  --shadow-lift:
-    0 1px 2px oklch(0.170 0.055 261 / 0.12),
-    0 8px 20px -12px oklch(0.241 0.068 261 / 0.35);
+  --shadow-ring: inset 0 0 0 1px var(--color-line);
+  --shadow-hair: none;
+  --shadow-raise: none;
+  --shadow-lift: none;
 
-  /*
-    ── motion ──────────────────────────────────────────────────────────
-    Deduplicated: the supplied 220/240 and 560/620/750 were indistinguishable
-    neighbours. Four steps that read as different from each other.
-  */
+  /* ── motion ────────────────────────────────────────────────────────── */
   --duration-instant: 140ms;
   --duration-fast: 220ms;
   --duration-normal: 340ms;
@@ -147,47 +121,33 @@
 
 
 /*
-  Dark theme. Selected by [data-theme="dark"] on <html>, set before paint by the
-  inline script in layout.tsx so there is no flash of the wrong theme.
-
-  Not an inversion: surfaces are desaturated navy rather than flipped values,
-  and the accent lifts because the same teal that reads as considered on white
-  reads as muddy on a dark surface. Elevation is rebuilt rather than reused — a
-  shadow tuned for a white page disappears on a dark one, so dark leans on the
-  ring and a deeper, tighter drop. Both themes are contrast-checked
-  independently by scripts/check-contrast.mjs.
+  Dark theme: the same drawing, inverted. Black paper, white ink, white
+  hairlines. Not a separate palette — in a monochrome system the inversion is
+  the honest move, and it is what the solid-black emphasis blocks become.
+  Both themes are contrast-checked independently by scripts/check-contrast.mjs.
 */
 [data-theme="dark"] {
-  --color-canvas: oklch(0.185 0.018 262);
-  --color-panel: oklch(0.232 0.020 262);
-  --color-sunk: oklch(0.158 0.016 262);
+  --color-canvas: oklch(0.145 0 0);
+  --color-panel: oklch(0.145 0 0);
+  --color-sunk: oklch(0.195 0 0);
 
-  --color-rail: oklch(0.145 0.016 262);
-  --color-rail-line: oklch(0.292 0.020 262);
-  --color-rail-ink: oklch(0.952 0.006 260);
-  --color-rail-muted: oklch(0.778 0.014 260);
+  --color-rail: oklch(0.145 0 0);
+  --color-rail-line: oklch(0.38 0 0);
+  --color-rail-ink: oklch(0.975 0 0);
+  --color-rail-muted: oklch(0.72 0 0);
 
-  --color-ink: oklch(0.952 0.006 260);
-  --color-muted: oklch(0.778 0.014 260);
-  --color-faint: oklch(0.660 0.016 260);
+  --color-ink: oklch(0.975 0 0);
+  --color-muted: oklch(0.72 0 0);
+  --color-faint: oklch(0.665 0 0);
 
-  --color-line: oklch(0.318 0.018 262);
-  --color-rule: oklch(0.378 0.020 262);
+  --color-line: oklch(0.36 0 0);
+  --color-rule: oklch(0.975 0 0);
 
-  --color-accent: oklch(0.80 0.085 198);
-  --color-accent-soft: oklch(0.30 0.035 200);
-  --color-accent-bright: oklch(0.83 0.09 198);
-  --color-pass: oklch(0.78 0.11 155);
-  --color-signal: oklch(0.80 0.12 62);
-
-  --shadow-ring: inset 0 0 0 1px oklch(0.952 0.006 260 / 0.10);
-  --shadow-hair: 0 1px 2px oklch(0 0 0 / 0.30);
-  --shadow-raise:
-    0 1px 1.5px oklch(0 0 0 / 0.35),
-    0 10px 26px -16px oklch(0 0 0 / 0.65);
-  --shadow-lift:
-    0 1px 2px oklch(0 0 0 / 0.40),
-    0 8px 20px -10px oklch(0 0 0 / 0.75);
+  --color-accent: oklch(0.975 0 0);
+  --color-accent-soft: oklch(0.255 0 0);
+  --color-accent-bright: oklch(0.975 0 0);
+  --color-pass: oklch(0.72 0 0);
+  --color-signal: oklch(0.975 0 0);
 }
 
 @layer base {
@@ -247,14 +207,48 @@
 
 @layer components {
   /*
-    Panels are the workspace's unit — objects resting on the canvas rather than
-    regions ruled off it. Ring plus drop: the ring holds the edge at any zoom,
-    the drop separates the panel from the page without a border doing the work.
+    Panels are regions ruled off the page, not objects resting on it. A single
+    hairline and nothing else: no radius, no drop. The drawing is the design.
   */
   .panel {
     background-color: var(--color-panel);
-    border-radius: var(--radius-lg);
-    box-shadow: var(--shadow-ring), var(--shadow-raise);
+    box-shadow: var(--shadow-ring);
+  }
+
+  /*
+    The display face. Archivo's width axis pushed wide, tracked tight and set
+    heavy — square bowls and flat terminals, which is what the reference
+    headline type does. Applied by class rather than to h1 globally, because
+    prose headings inside a case study want the normal width.
+  */
+  .display {
+    font-family: var(--font-display);
+    font-variation-settings: "wdth" 118;
+    font-weight: 700;
+    letter-spacing: -0.03em;
+  }
+
+  /*
+    The same face at normal width for running headlines. The site's headline is
+    a full sentence; setting that in expanded caps would shout rather than
+    speak, which the reference never does — it reserves caps for single words.
+  */
+  .display-tight {
+    font-family: var(--font-display);
+    font-variation-settings: "wdth" 104;
+    font-weight: 700;
+    letter-spacing: -0.032em;
+  }
+
+  /*
+    A solid block of ink with the type knocked out of it. The reference uses
+    this for anything that must be obeyed rather than read — the resume button,
+    a section label, the page counter. Inverts cleanly in dark because the
+    whole palette does.
+  */
+  .chip {
+    background-color: var(--color-ink);
+    color: var(--color-canvas);
   }
 
   /*
@@ -338,30 +332,18 @@
     min-height: 0;
     min-width: 0;
     background-color: var(--color-panel);
-    border-radius: var(--radius-lg);
-    box-shadow: var(--shadow-ring), var(--shadow-raise);
-    transition:
-      box-shadow var(--duration-fast) var(--ease-out-quart),
-      transform var(--duration-fast) var(--ease-out-quart);
+    box-shadow: inset 0 0 0 1px var(--color-line);
+    transition: box-shadow var(--duration-fast) var(--ease-out-quart);
   }
 
   /*
-    A link tile lifts on hover. Transform is 1px — enough to read as a response,
-    small enough not to shift the text under the pointer.
+    A link tile does not lift — nothing here has height. Its hairline goes to
+    full ink instead, so the response is the drawing getting firmer. That reads
+    at a glance and costs no layout.
   */
   a.tile:hover,
   a.tile:focus-visible {
-    box-shadow:
-      inset 0 0 0 1px var(--color-accent),
-      var(--shadow-lift);
-    transform: translateY(-1px);
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    a.tile:hover,
-    a.tile:focus-visible {
-      transform: none;
-    }
+    box-shadow: inset 0 0 0 1.5px var(--color-rule);
   }
 
   /*

@@ -54,9 +54,14 @@ actually cannot verify from code.
 - **Generic AI-SaaS landing pages.** Gradient heroes, the big-number-plus-small-
   label stat row as decoration, identical icon cards, uppercase tracked eyebrows
   above every section.
-- **Cream / sand / warm near-white body backgrounds.** The saturated default of
-  2026. Warmth, if wanted, comes from accent and typography — never from tinting
-  the canvas.
+- **Tinted canvases of any kind.** Cream, sand and warm near-white are the
+  saturated default of 2026, but the rule here is stricter than that: the
+  surface is chroma 0. A tinted neutral would read as a decision the design
+  does not make.
+
+- **Rounded corners and drop shadows.** Every box is a ruled rectangle. Radius
+  tokens exist but are `0px`; elevation is a hairline, not a shadow. A panel
+  that floats contradicts a drawing that is meant to sit flat on the page.
 - **Adopting a reference without auditing it.** `portfolio.brewedops.cloud`
   informed the app-shell layout, and a token spec extracted from it informed the
   2026-09-21 remodel: navy ink, soft radii, layered elevation, dense small type.
@@ -79,12 +84,14 @@ actually cannot verify from code.
    courted. Information per screen beats theatre per scroll.
 4. **The gaps are load-bearing.** Weaknesses are published in the same visual
    register as strengths. Never soften, hide, or visually demote them.
-5. **Identity preservation.** The deep teal `#0F5C6B` predates every redesign
-   and stays. New surfaces are composed around it rather than replacing it. It
-   survived the 2026-09-21 remodel for a concrete reason as well as a
-   sentimental one: the supplied spec defined only text and surface tokens and
-   carried no accent at all, so teal fills a hole in it rather than contesting
-   one.
+5. **Identity preservation — monochrome.** The palette is chroma 0 in both
+   themes: black ink, white paper, grey for what recedes, and solid black
+   blocks for emphasis. This comes from Clinton's own earlier design for this
+   site (`profile/PortfolioSiteDesign`), which is strictly monochrome and lets
+   colour arrive only through photography. The deep teal `#0F5C6B` that
+   preceded it was retired on 2026-09-21 at his request; it was never his
+   mark, and this is. Hierarchy is carried by weight, case and rule — never by
+   hue. Adding an accent colour would undo the identity, not extend it.
 
 ## Accessibility & Inclusion
 

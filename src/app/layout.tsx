@@ -10,9 +10,17 @@ import { ThemeScript } from "@/components/layout/theme-script";
 import { getNavLinks } from "@/lib/content/navigation";
 import { SITE_DESCRIPTION, SITE_NAME, SITE_URL, buildMetadata } from "@/lib/seo";
 
+/*
+  Archivo as a variable font with its width axis, not four static weights.
+  The display face in the reference design is wide and blocky — squared bowls,
+  flat terminals — which `wdth` reaches without shipping a second family.
+  (The resume pipeline in profile/ keeps its own static TTFs: Chrome embeds
+  variable fonts as Type3 in a PDF, which does not extract. That is a print
+  problem only and does not apply here.)
+*/
 const archivo = Archivo({
   subsets: ["latin"],
-  weight: ["400", "500", "600", "700"],
+  axes: ["wdth"],
   variable: "--font-archivo",
   display: "swap",
 });

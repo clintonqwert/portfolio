@@ -30,9 +30,15 @@ export function Tile({
 }) {
   const head = (
     <div className="flex items-baseline justify-between gap-[8px] border-b border-line px-[12px] py-[8px]">
-      <span className="flex items-baseline gap-2 font-mono text-[0.64rem] uppercase tracking-[0.1em] text-accent">
-        {index ? <span className="text-faint tabular-nums">{index}</span> : null}
-        {label}
+      <span className="flex min-w-0 items-center gap-[8px] text-[0.66rem] uppercase tracking-[0.1em] text-ink">
+        {/* The counter block, from the reference's page marker: ink with the
+            number knocked out, rather than a faint grey numeral. */}
+        {index ? (
+          <span className="chip shrink-0 px-[5px] py-[2px] font-mono text-[0.6rem] tabular-nums leading-none">
+            {index}
+          </span>
+        ) : null}
+        <span className="display truncate tracking-[0.08em]">{label}</span>
       </span>
       {cta ? (
         <span className="shrink-0 font-mono text-[0.64rem] text-faint transition-colors group-hover:text-accent">

@@ -14,6 +14,14 @@
  * overflow from what was actually a 500px crop. setViewport sets the metrics
  * directly, so 375px means 375px.
  *
+ * Deliberately NOT checked here: WCAG target size. It was added and removed
+ * on 2026-09-21. The rule has real exceptions — a target inline in a sentence
+ * is exempt, and so is one with 24px of clear space around it — and flex items
+ * are blockified, so `display: inline` does not identify the exempt ones. The
+ * naive version flagged the skip link, every breadcrumb and every live URL,
+ * none of which Lighthouse flags. A gate that cries wolf gets ignored, so
+ * target size stays with Lighthouse, which implements the exceptions properly.
+ *
  * usage: node scripts/check-overflow.mjs [origin]
  */
 import puppeteer from "puppeteer-core";
@@ -115,9 +123,12 @@ try {
             out.push(`clipped +${wide}px wide [${label(el)}]`);
           }
           // A scrollable box holding more than twice its own width is the
-          // /gaps failure: technically reachable, practically invisible. A
-          // normal scroll strip (the mobile nav) stays well under 2x.
+          // /gaps failure: technically reachable, practically invisible.
+          // Navigation is exempt — a scrolling nav strip is a known pattern
+          // with its own affordance, and the mobile bar legitimately runs to
+          // 829px of links inside 375px.
           if (cs.overflowX === "auto" && el.clientWidth > 0 &&
+              el.closest("nav") === null &&
               el.scrollWidth > el.clientWidth * 2) {
             out.push(`buried ${el.scrollWidth}px in ${el.clientWidth}px [${label(el)}]`);
           }

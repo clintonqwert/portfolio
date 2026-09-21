@@ -21,7 +21,7 @@ export function ProfileCard() {
           width={72}
           height={72}
           priority
-          className="size-[72px] shrink-0 rounded-full bg-rail-line object-cover object-top shadow-[inset_0_0_0_1px_var(--color-rail-line)]"
+          className="size-[72px] shrink-0 bg-sunk object-cover object-top shadow-[inset_0_0_0_1px_var(--color-rail-line)]"
         />
         <ThemeToggle
           iconOnly
@@ -29,8 +29,12 @@ export function ProfileCard() {
         />
       </div>
 
-      <p className="mt-[8px] font-display text-[0.95rem] font-bold leading-[1.2] tracking-[-0.018em] text-rail-ink">
+      {/* The wordmark, with its period. Clinton's earlier design signs the
+          page "CLINTON RAMONIDA." — expanded, tracked, and stopped. It is the
+          one piece of this that is unmistakably his rather than generic. */}
+      <p className="display mt-[10px] text-[0.92rem] uppercase leading-[1.15] tracking-[0.02em] text-rail-ink">
         {NAME}
+        <span aria-hidden="true">.</span>
       </p>
       <p className="mt-[2px] font-mono text-[0.62rem] uppercase leading-snug tracking-[0.09em] text-accent-bright">
         {ROLE_TITLE}

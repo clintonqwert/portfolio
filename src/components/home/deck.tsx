@@ -22,7 +22,7 @@ export function Deck({
   skills,
   autoTraderLede,
   workImages,
-  scoresImage,
+  autoSyncImage,
 }: {
   stats: Stat[];
   studies: CaseStudy[];
@@ -31,14 +31,14 @@ export function Deck({
   autoTraderLede: string;
   /** Case-study screenshots, keyed by slug. */
   workImages: Record<string, ImageSlot>;
-  /** Lighthouse run shown in the Measured tile. */
-  scoresImage: ImageSlot;
+  /** AutoSync screenshot for the AutoTrader tile. */
+  autoSyncImage: ImageSlot;
 }) {
   return (
     <div className="flex flex-col gap-2 p-2 lg:h-full">
       {/* ── headline ─────────────────────────────────────────────────── */}
       <header className="panel shrink-0 px-[16px] py-[12px]">
-        <h1 className="max-w-[38ch] font-display text-[clamp(1.35rem,2.5vw,2rem)] font-bold leading-[1.12] tracking-[-0.025em] text-ink">
+        <h1 className="display-tight max-w-[38ch] text-[clamp(1.35rem,2.5vw,2rem)] leading-[1.1] text-ink">
           {HEADLINE}
         </h1>
         <p className="mt-[4px] max-w-[70ch] text-[0.88rem] leading-snug text-muted">{LEDE}</p>
@@ -191,10 +191,10 @@ export function Deck({
           {/* Clamped below 1440, where this cell is ~250px wide and the lede
               runs to eleven lines. The ellipsis and the Read link together say
               there is more, which silent clipping did not. */}
-          <p className="min-h-0 line-clamp-6 text-[0.88rem] leading-snug text-muted min-[1440px]:line-clamp-none">
+          <p className="line-clamp-3 shrink-0 text-[0.88rem] leading-snug text-muted min-[1280px]:line-clamp-4 min-[1680px]:line-clamp-5">
             {autoTraderLede}
           </p>
-          <ul className="mt-[12px] flex flex-wrap gap-x-[12px] gap-y-[2px] font-mono text-[0.64rem] text-faint">
+          <ul className="mt-[12px] hidden flex-wrap gap-x-[12px] gap-y-[2px] font-mono text-[0.64rem] text-faint min-[1280px]:flex">
             {["Vue", "Node.js", "PHP", "MySQL", "Redis", "AWS"].map((tech) => (
               <li key={tech}>{tech}</li>
             ))}
@@ -214,7 +214,7 @@ export function Deck({
                     ? "flex"
                     : i < 4
                       ? "hidden min-[1440px]:flex"
-                      : "hidden min-[1680px]:flex"
+                      : "hidden min-[1920px]:flex"
                 }`}
               >
                 <span aria-hidden="true" className="mt-[7px] size-[3px] shrink-0 rounded-full bg-accent" />
@@ -222,6 +222,15 @@ export function Deck({
               </li>
             ))}
           </ul>
+          {/* autosyncmotors.com — the public demo of the platform these five
+              years were spent on. Gated like the others: this cell has 32px
+              spare at 1440 and 127px at 1680, so it only appears at the width
+              that can actually hold it. */}
+          <TileShot
+            image={autoSyncImage}
+            className="mt-[12px] hidden [--shot-h:88px] min-[1680px]:block"
+          />
+
           <div className="mt-auto flex gap-[16px] border-t border-line pt-[12px]">
             <Figure stat={{ value: "5 yrs", label: "Jan 2020 – Jun 2025" }} size="sm" />
             <Figure stat={{ value: "~0", label: "Downtime after rollout" }} size="sm" />
@@ -234,7 +243,7 @@ export function Deck({
           index="05"
           href="/gaps"
           cta="All three"
-          className="bg-sunk lg:col-start-5 lg:col-end-10 lg:row-start-5 lg:row-end-9"
+          className="bg-sunk min-[1024px]:col-start-5 min-[1024px]:col-end-10 min-[1024px]:row-start-5 min-[1024px]:row-end-9 min-[1440px]:col-end-13 min-[1440px]:row-end-7"
         >
           {/*
             Gap, consequence, fix — the same three parts the table on /gaps
@@ -244,7 +253,7 @@ export function Deck({
             sat empty below them, which quietly did the one thing PRODUCT.md
             says this tile must never do.
           */}
-          <ul className="flex flex-1 flex-col justify-between overflow-hidden">
+          <ul className="grid flex-1 grid-cols-1 gap-x-[21px] gap-y-[4px] overflow-hidden min-[1440px]:grid-cols-3 min-[1440px]:gap-y-[8px]">
             {gaps.map((gap) => (
               <li key={gap.gap} className="flex items-baseline gap-2.5">
                 <span
@@ -253,10 +262,12 @@ export function Deck({
                 />
                 <span className="min-w-0">
                   <span className="font-mono text-[0.72rem] text-signal">{gap.gap}</span>
-                  <span className="block text-[0.78rem] leading-snug text-muted">
+                  {/* The strip is half the height it was, so the consequence
+                      clamps until there is room for all of it. */}
+                  <span className="line-clamp-2 block text-[0.78rem] leading-tight text-muted min-[1440px]:line-clamp-3 min-[1440px]:leading-snug min-[1680px]:line-clamp-none">
                     {gap.consequence}
                   </span>
-                  <span className="mt-[2px] hidden text-[0.74rem] leading-snug text-faint min-[1440px]:block">
+                  <span className="mt-[2px] hidden text-[0.74rem] leading-snug text-faint min-[1680px]:block">
                     {/* Labelled, because an unlabelled third line reads as more
                         consequence rather than as the plan. */}
                     <span className="font-mono text-[0.68rem] uppercase tracking-[0.08em] text-accent">
@@ -274,27 +285,16 @@ export function Deck({
           label="Measured"
           href="/history"
           cta="History"
-          className="lg:col-start-10 lg:col-end-13 lg:row-start-5 lg:row-end-9"
+          className="min-[1024px]:col-start-10 min-[1024px]:col-end-13 min-[1024px]:row-start-5 min-[1024px]:row-end-9 min-[1440px]:col-start-5 min-[1440px]:row-start-7"
         >
-          {/* content-center so the figures sit in the middle of whatever the
-              scores image leaves, rather than collecting at the top with a void
-              between the two halves. */}
-          <div className="grid flex-1 grid-cols-2 content-center gap-x-[12px] gap-y-[12px]">
+          {/* Four across, not 2x2: this tile is now a wide half-height strip,
+              so the figures run along it rather than stacking into a shape the
+              cell no longer has. */}
+          <div className="grid flex-1 grid-cols-2 content-center gap-x-[16px] gap-y-[12px] min-[1440px]:grid-cols-4">
             {stats.map((stat) => (
               <Figure key={stat.label} stat={stat} size="sm" />
             ))}
           </div>
-
-          {/*
-            The Lighthouse run, in the tile that claims the numbers. This deck
-            asserts >=95 four times; a real run is the difference between
-            asserting that and showing it, which is the premise the rest of the
-            site rests on. 116px of free space here at 1440, measured.
-          */}
-          <TileShot
-            image={scoresImage}
-            className="hidden pt-[12px] [--shot-h:96px] min-[1440px]:block min-[1680px]:[--shot-h:132px]"
-          />
         </Tile>
 
       </div>
