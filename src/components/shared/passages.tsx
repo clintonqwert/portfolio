@@ -29,6 +29,18 @@ export function Passages({ passages }: { passages: Passage[] }) {
               {paragraph}
             </p>
           ))}
+          {passage.list ? (
+            // A definition list, not a table: inside a ~30ch column a two-column
+            // table cannot hold its shape, and this has to survive the flow.
+            <dl className="mt-[12px] border-t border-line pt-[8px]">
+              {passage.list.map((row) => (
+                <div key={row.term} className="mb-[8px] last:mb-0">
+                  <dt className="font-mono text-[0.72rem] text-accent">{row.term}</dt>
+                  <dd className="text-[0.82rem] leading-snug text-muted">{row.detail}</dd>
+                </div>
+              ))}
+            </dl>
+          ) : null}
         </div>
       ))}
     </>

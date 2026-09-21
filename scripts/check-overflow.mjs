@@ -66,12 +66,55 @@ try {
 
       const hits = await page.evaluate(() => {
         const out = [];
+        const label = (el) =>
+          (el.textContent ?? "").trim().slice(0, 40).replace(/\s+/g, " ");
+
         // 2px of slack: sub-pixel rounding on fractional layouts is not a defect.
         for (const el of document.querySelectorAll(".tile")) {
           const over = el.scrollHeight - el.clientHeight - 2;
-          if (over > 0) {
-            const label = (el.textContent ?? "").trim().slice(0, 40).replace(/\s+/g, " ");
-            out.push(`tile +${over}px [${label}]`);
+          if (over > 0) out.push(`tile +${over}px [${label(el)}]`);
+        }
+
+        // Anything that *loses* its own children. Measuring only .tile missed
+        // two real defects: /history cut the earliest role mid-word inside an
+        // overflow-hidden child, and /gaps clipped a 640px table into a 247px
+        // column. In both cases the tile was the right height, so a check that
+        // only asked the tile saw nothing wrong.
+        //
+        // Only `hidden` counts as loss. `auto` is reachable by scrolling, and
+        // flagging it buried the real hits under the mobile nav and every
+        // horizontally-scrollable strip on the page — with one exception below.
+        const intentional = (el) =>
+          el.classList.contains("sr-only") ||
+          el.closest(".marquee") !== null ||
+          // An ellipsis is a signpost, not a loss — the reader can see that
+          // something was shortened, which is the whole difference. Both the
+          // single-line (`truncate`) and multi-line (`line-clamp-N`) forms
+          // render one; only line-clamp does it without `text-overflow`.
+          getComputedStyle(el).textOverflow === "ellipsis" ||
+          getComputedStyle(el).webkitLineClamp !== "none" ||
+          // sr-only skip links are 1px boxes by construction.
+          el.clientWidth <= 1 ||
+          el.clientHeight <= 1;
+
+        for (const el of document.querySelectorAll("*")) {
+          if (intentional(el)) continue;
+          const cs = getComputedStyle(el);
+          const tall = el.scrollHeight - el.clientHeight;
+          const wide = el.scrollWidth - el.clientWidth;
+
+          if (cs.overflowY === "hidden" && tall > 2) {
+            out.push(`clipped +${tall}px tall [${label(el)}]`);
+          }
+          if (cs.overflowX === "hidden" && wide > 2) {
+            out.push(`clipped +${wide}px wide [${label(el)}]`);
+          }
+          // A scrollable box holding more than twice its own width is the
+          // /gaps failure: technically reachable, practically invisible. A
+          // normal scroll strip (the mobile nav) stays well under 2x.
+          if (cs.overflowX === "auto" && el.clientWidth > 0 &&
+              el.scrollWidth > el.clientWidth * 2) {
+            out.push(`buried ${el.scrollWidth}px in ${el.clientWidth}px [${label(el)}]`);
           }
         }
         const de = document.documentElement;

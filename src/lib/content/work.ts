@@ -116,9 +116,13 @@ const CASE_STUDIES: readonly CaseStudy[] = [
     role: "Full-stack engineer",
     stack: ["Vue.js", "PHP", "Node.js", "MySQL", "AWS RDS", "WordPress", "WP-CLI"],
     // No adoption or engagement figures were ever collected — see the last
-    // passage. Scope is described instead, and it is checkable: the source
-    // carries @author tags.
-    stats: [],
+    // passage, and the note below. What can be stated is tenure, which is a
+    // signal in its own right and was previously invisible on the dashboard.
+    stats: [
+      { value: "6.5 yrs", label: "Convertus \u2192 AutoTrader" },
+      { value: "2 companies", label: "One platform" },
+    ],
+    note: "No adoption figures \u2014 the events were never instrumented. The case is the architecture.",
     passages: [
       {
         paragraphs: [

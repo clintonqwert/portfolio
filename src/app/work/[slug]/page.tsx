@@ -1,9 +1,11 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import { notFound } from "next/navigation";
 
 import { DetailView } from "@/components/layout/detail-view";
 import { JsonLd } from "@/components/shared/json-ld";
 import { Passages } from "@/components/shared/passages";
+import { WORK_IMAGES } from "@/lib/content/assets";
 import { Figure } from "@/components/home/tile";
 import { getCaseStudy, getCaseStudySlugs } from "@/lib/content/work";
 import { buildCaseStudyJsonLd, buildMetadata } from "@/lib/seo";
@@ -41,6 +43,8 @@ export default async function CaseStudyPage({
   const study = await getCaseStudy(slug);
   if (!study) notFound();
 
+  const image = WORK_IMAGES[study.slug];
+
   const links = [
     study.liveUrl ? { href: `https://${study.liveUrl}`, label: study.liveUrl } : null,
     study.repoUrl ? { href: `https://${study.repoUrl}`, label: "Source" } : null,
@@ -66,11 +70,31 @@ export default async function CaseStudyPage({
         ]}
         links={links}
         aside={
-          study.stats.length === 0 && !study.assertions ? undefined :
-          <div className="flex-1 overflow-hidden p-[12px]">
-            <p className="font-mono text-[0.64rem] uppercase tracking-[0.1em] text-accent">
-              Measured
-            </p>
+          <div className="flex-1 overflow-y-auto p-[12px]">
+            {/* The work, shown rather than only linked. Placeholder until the
+                real capture lands — see src/lib/content/assets.ts. */}
+            {image ? (
+              <figure className="mb-[16px]">
+                <Image
+                  src={image.src}
+                  alt={image.alt}
+                  width={640}
+                  height={400}
+                  className="w-full rounded-md bg-sunk object-cover shadow-[inset_0_0_0_1px_var(--color-line)]"
+                />
+                {image.isPlaceholder ? (
+                  <figcaption className="mt-[4px] font-mono text-[0.62rem] text-faint">
+                    Screenshot pending
+                  </figcaption>
+                ) : null}
+              </figure>
+            ) : null}
+
+            {study.stats.length > 0 ? (
+              <p className="font-mono text-[0.64rem] uppercase tracking-[0.1em] text-accent">
+                Measured
+              </p>
+            ) : null}
             <div className="mt-[12px] space-y-[12px]">
               {study.stats.map((stat) => (
                 <Figure key={stat.label} stat={stat} size="sm" />

@@ -18,11 +18,14 @@ export default async function GapsPage() {
   const gaps = await getGaps();
 
   return (
-    <DetailView eyebrow="Open gaps" title="What I would fix first" lede={LEDE}>
-      {/* The table needs the full width of the panel, not the prose measure. */}
-      <div className="w-[min(100%,62ch)]">
+    // `raw`: this route is a table, and CSS columns cannot paginate one. Flowed,
+    // the 640px table was clipped into a 247px column — the entire Fix column
+    // was unreachable and every consequence was cut mid-sentence, on the page
+    // whose whole job is to show the weaknesses in full.
+    <DetailView eyebrow="Open gaps" title="What I would fix first" lede={LEDE} raw>
+      <div className="tile min-h-0 overflow-auto px-[16px] py-[16px]">
         <GapsTable rows={gaps} />
-        <p className="mt-2 text-[0.92rem] italic">
+        <p className="mt-[12px] max-w-[70ch] text-[0.92rem] italic text-muted">
           Both sites are my own studio&rsquo;s work. I am looking for a senior role
           on a team where the standards are shared rather than self-imposed.
         </p>

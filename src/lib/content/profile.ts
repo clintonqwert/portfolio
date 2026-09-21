@@ -72,6 +72,22 @@ export const PORTRAIT = {
   isPlaceholder: true,
 } as const;
 
+/**
+ * The four facts a recruiter screens on, in the order they screen for them.
+ *
+ * These were previously unanswerable from the page: seniority sought, location,
+ * working arrangement and work authorisation existed only as a ten-pixel line in
+ * the rail, or not at all. Authorisation is last but present — it is the fastest
+ * disqualifier on a screening call and this is a clean pass, so it should never
+ * be a question anyone has to ask.
+ */
+export const FACTS = [
+  "Senior & staff roles",
+  "Vancouver, BC",
+  "Hybrid preferred, remote or on-site welcome",
+  "Canadian citizen — no sponsorship required",
+] as const;
+
 /** The statement above the fold. Shorter and harder than the résumé summary. */
 export const HEADLINE =
   "I make the quality bar something the pipeline enforces, not something the team remembers.";

@@ -1,7 +1,7 @@
 import { SkillMarquee } from "@/components/home/skill-marquee";
 import { Figure, Tile } from "@/components/home/tile";
 import { AUTOTRADER_POINTS } from "@/lib/content/experience";
-import { HEADLINE, LEDE } from "@/lib/content/profile";
+import { FACTS, HEADLINE, LEDE } from "@/lib/content/profile";
 import type { CaseStudy, Gap, Stat } from "@/types/content";
 
 /**
@@ -31,10 +31,38 @@ export function Deck({
     <div className="flex flex-col gap-2 p-2 lg:h-full">
       {/* ── headline ─────────────────────────────────────────────────── */}
       <header className="panel shrink-0 px-[16px] py-[12px]">
-        <h1 className="max-w-[26ch] font-display text-[clamp(1.35rem,2.5vw,2rem)] font-bold leading-[1.12] tracking-[-0.025em] text-ink">
+        <h1 className="max-w-[38ch] font-display text-[clamp(1.35rem,2.5vw,2rem)] font-bold leading-[1.12] tracking-[-0.025em] text-ink">
           {HEADLINE}
         </h1>
         <p className="mt-[4px] max-w-[70ch] text-[0.88rem] leading-snug text-muted">{LEDE}</p>
+
+        {/*
+          The headline earns the attention; this line converts it. A reader
+          could previously not answer seniority, location, arrangement or work
+          authorisation from anywhere above the fold.
+        */}
+        <ul className="mt-[8px] flex flex-wrap items-center gap-x-[12px] gap-y-[2px] font-mono text-[0.68rem] text-faint">
+          {FACTS.map((fact, i) => (
+            <li
+              key={fact}
+              // The arrangement line is the longest and the least decisive of
+              // the four. Below 1280 the strip wraps to three lines without it
+              // gone, and the deck pays for every one of them.
+              className={`items-center gap-[12px] ${
+                i === 2 ? "hidden min-[1280px]:flex" : "flex"
+              }`}
+            >
+              {fact}
+              {/* Separator by index: `last:` would match the span against its own
+                  li, where it is always last, and hide every one of them. */}
+              {i < FACTS.length - 1 ? (
+                <span aria-hidden="true" className="text-line">
+                  ·
+                </span>
+              ) : null}
+            </li>
+          ))}
+        </ul>
       </header>
 
       <SkillMarquee skills={skills} />
@@ -105,17 +133,24 @@ export function Deck({
                     </div>
                   ))}
               </dl>
-            ) : study.stats.length > 0 ? (
-              <div className="mt-auto grid grid-cols-2 gap-[12px] border-t border-line pt-[12px]">
-                {study.stats.slice(0, 4).map((stat) => (
-                  <Figure key={stat.label} stat={stat} size="sm" />
-                ))}
-              </div>
             ) : (
-              <p className="mt-auto border-t border-line pt-[12px] font-mono text-[0.66rem] leading-snug text-faint">
-                No adoption figures — the events were never instrumented. The
-                case is the architecture.
-              </p>
+              // Stats and the caveat are no longer either/or. Tadvantage has
+              // tenure worth quoting and no adoption figures, and showing only
+              // the second let its longest engagement lead with a negative.
+              <div className="mt-auto">
+                {study.stats.length > 0 ? (
+                  <div className="grid grid-cols-2 gap-[12px] border-t border-line pt-[12px]">
+                    {study.stats.slice(0, 4).map((stat) => (
+                      <Figure key={stat.label} stat={stat} size="sm" />
+                    ))}
+                  </div>
+                ) : null}
+                {study.note ? (
+                  <p className="mt-[12px] border-t border-line pt-[12px] font-mono text-[0.66rem] leading-snug text-faint">
+                    {study.note}
+                  </p>
+                ) : null}
+              </div>
             )}
           </div>
         </Tile>
@@ -128,7 +163,10 @@ export function Deck({
           cta="Read"
           className="lg:col-start-1 lg:col-end-5 lg:row-start-5 lg:row-end-9"
         >
-          <p className="min-h-0 overflow-hidden text-[0.88rem] leading-snug text-muted">
+          {/* Clamped below 1440, where this cell is ~250px wide and the lede
+              runs to eleven lines. The ellipsis and the Read link together say
+              there is more, which silent clipping did not. */}
+          <p className="min-h-0 line-clamp-6 text-[0.88rem] leading-snug text-muted min-[1440px]:line-clamp-none">
             {autoTraderLede}
           </p>
           <ul className="mt-[12px] flex flex-wrap gap-x-[12px] gap-y-[2px] font-mono text-[0.64rem] text-faint">
@@ -144,7 +182,7 @@ export function Deck({
             {AUTOTRADER_POINTS.map((point, i) => (
               <li
                 key={point}
-                className={`gap-[8px] ${i < 2 ? "flex" : "hidden min-[1280px]:flex"}`}
+                className={`gap-[8px] ${i < 2 ? "flex" : "hidden min-[1440px]:flex"}`}
               >
                 <span aria-hidden="true" className="mt-[7px] size-[3px] shrink-0 rounded-full bg-accent" />
                 {point}
@@ -185,7 +223,7 @@ export function Deck({
                   <span className="block text-[0.78rem] leading-snug text-muted">
                     {gap.consequence}
                   </span>
-                  <span className="mt-[2px] block text-[0.74rem] leading-snug text-faint">
+                  <span className="mt-[2px] hidden text-[0.74rem] leading-snug text-faint min-[1440px]:block">
                     {/* Labelled, because an unlabelled third line reads as more
                         consequence rather than as the plan. */}
                     <span className="font-mono text-[0.68rem] uppercase tracking-[0.08em] text-accent">

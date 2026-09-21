@@ -28,12 +28,17 @@ export default async function HistoryPage() {
 
   return (
     <DetailView eyebrow="History" title="Track record, tools and practice" lede={LEDE} raw>
-      <div className="grid min-h-0 gap-2 lg:grid-cols-[minmax(0,1.25fr)_minmax(0,1fr)_minmax(0,1fr)]">
+      {/* Track record takes more of the row than it used to: Tools and Practice
+          both fit with room to spare while it overflowed by 132px, cutting the
+          earliest role off mid-word. */}
+      <div className="grid min-h-0 gap-2 lg:grid-cols-[minmax(0,1.6fr)_minmax(0,1fr)_minmax(0,1fr)]">
         <section className="tile min-h-0 overflow-hidden">
           <h2 className="border-b border-line px-[12px] py-[8px] font-mono text-[0.64rem] uppercase tracking-[0.1em] text-accent">
             Track record
           </h2>
-          <div className="min-h-0 flex-1 overflow-hidden px-[12px] py-[12px]">
+          {/* Scroll rather than clip: the width change alone is not a promise,
+              and a truncated first job is worse than a scrollbar. */}
+          <div className="min-h-0 flex-1 overflow-y-auto px-[12px] py-[12px]">
             <TrackRecord roles={roles} />
           </div>
         </section>

@@ -53,11 +53,23 @@ export interface Principle {
   body: string;
 }
 
+/** A term and what it means — the rows of a `Passage.list`. */
+export interface PassageTerm {
+  term: string;
+  detail: string;
+}
+
 /** A body paragraph, optionally introduced by a subheading. */
 export interface Passage {
   heading?: string;
   /** Paragraphs. Inline emphasis is expressed with the marks below. */
   paragraphs: string[];
+  /**
+   * An optional term list rendered after the paragraphs. Some claims are
+   * structurally a list — five roles and their permissions, three omissions and
+   * their reasons — and prose hides that shape from a reader who is skimming.
+   */
+  list?: PassageTerm[];
 }
 
 /**
@@ -87,6 +99,12 @@ export interface CaseStudy {
   stack: string[];
   stats: Stat[];
   passages: Passage[];
+  /**
+   * A footer caveat for the dashboard tile. Separate from `stats` because a
+   * study can have both: Tadvantage has six and a half years worth quoting and
+   * no adoption figures, and the tile used to be able to show only one of those.
+   */
+  note?: string;
   /** Optional assertion table, with its caption. */
   assertions?: { caption: string; rows: Assertion[] };
 }

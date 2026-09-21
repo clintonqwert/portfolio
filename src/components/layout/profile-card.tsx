@@ -18,10 +18,10 @@ export function ProfileCard() {
         <Image
           src={PORTRAIT.src}
           alt={PORTRAIT.alt}
-          width={52}
-          height={52}
+          width={72}
+          height={72}
           priority
-          className="size-[52px] shrink-0 rounded-full bg-rail-line object-cover object-top shadow-[inset_0_0_0_1px_var(--color-rail-line)]"
+          className="size-[72px] shrink-0 rounded-full bg-rail-line object-cover object-top shadow-[inset_0_0_0_1px_var(--color-rail-line)]"
         />
         <ThemeToggle
           iconOnly

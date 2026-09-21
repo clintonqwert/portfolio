@@ -415,19 +415,21 @@
   */
   .marquee {
     /* Fade the ends so items read as passing behind the frame rather than
-       being cut off by it. */
+       being cut off by it. 48px was not enough travel: a word entering the
+       frame was still at full opacity while half of it was still outside, so
+       it read as clipped text rather than as motion. */
     -webkit-mask-image: linear-gradient(
       to right,
       transparent,
-      #000 48px,
-      #000 calc(100% - 48px),
+      #000 112px,
+      #000 calc(100% - 112px),
       transparent
     );
     mask-image: linear-gradient(
       to right,
       transparent,
-      #000 48px,
-      #000 calc(100% - 48px),
+      #000 112px,
+      #000 calc(100% - 112px),
       transparent
     );
   }
