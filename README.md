@@ -67,10 +67,15 @@ tiles or unreadable type.
 
 ### Spacing
 
-Fibonacci — 3 / 5 / 8 / 13 / 21 / 34 / 55, exposed as `--space-1` … `--space-7`.
-It is the golden ratio in integers, so every step is ~1.6x the last and adjacent
-sizes read as clearly different rather than as a mistake, while staying on whole
-pixels.
+A 4pt scale — 2 / 4 / 8 / 12 / 16 / 24 / 32 / 48, exposed as `--space-1` …
+`--space-8`. It replaced a Fibonacci run (3 / 5 / 8 / 13 / 21 / 34 / 55) in the
+2026-09-21 remodel: Fibonacci was coherent but loose at the top, and the design
+this now follows is dense at the small end, where ~1.6x steps are too coarse to
+be useful.
+
+One rule that is not a rhythm choice: the rail's contact links carry `py-[8px]`
+because anything less puts their touch target under the 24px WCAG 2.2 minimum.
+A scale sweep took them to 4px once and only Lighthouse noticed.
 
 ### Sections do not scroll
 

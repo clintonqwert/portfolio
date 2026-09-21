@@ -96,7 +96,7 @@ export async function getPositionPassages(): Promise<Passage[]> {
     {
       paragraphs: [
         "I spent five years at AutoTrader.ca building production features on AutoSync — the automotive SaaS platform serving thousands of Canadian dealerships — across Vue, Node.js, PHP and MySQL, with Redis caching and AWS infrastructure underneath.",
-        "Since 2026 I have designed and shipped two live sites end to end, under a performance budget that runs in CI and blocks my own merges when it fails. The second site reused the first's architecture and shipped in five weeks, because the content layer sits behind typed accessors that can be replaced without touching a page or a component.",
+        "Since 2026 I have designed and shipped two live sites end to end, under a performance budget that runs in CI and blocks my own merges when it fails. The second site reused the first’s architecture and shipped in five weeks, because the content layer sits behind typed accessors that can be replaced without touching a page or a component.",
         "I write architecture guardrails and decision records, and I keep the known gaps in the same document as the wins. The gaps are further down this page.",
       ],
     },

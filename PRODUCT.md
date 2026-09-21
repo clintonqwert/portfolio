@@ -57,10 +57,15 @@ actually cannot verify from code.
 - **Cream / sand / warm near-white body backgrounds.** The saturated default of
   2026. Warmth, if wanted, comes from accent and typography — never from tinting
   the canvas.
-- **Cloning the structural reference.** `portfolio.brewedops.cloud` informed the
-  app-shell layout. Its palette, type and surface treatment are deliberately not
-  reused; a portfolio arguing for deliberate decisions cannot be a recognisable
-  copy of a peer's.
+- **Adopting a reference without auditing it.** `portfolio.brewedops.cloud`
+  informed the app-shell layout, and a token spec extracted from it informed the
+  2026-09-21 remodel: navy ink, soft radii, layered elevation, dense small type.
+  That borrowing is deliberate and no longer an anti-reference. What stays
+  forbidden is taking such a spec on trust. The extracted one was internally
+  unreadable — navy on black at 1.27:1, near-white on white at 1.10:1 — and its
+  type, spacing and radius "scales" were histograms of whatever the live site
+  computed, not authored ramps. Every value borrowed from anywhere is measured
+  against this project's gates before it ships.
 
 ## Design Principles
 
@@ -74,8 +79,12 @@ actually cannot verify from code.
    courted. Information per screen beats theatre per scroll.
 4. **The gaps are load-bearing.** Weaknesses are published in the same visual
    register as strengths. Never soften, hide, or visually demote them.
-5. **Identity preservation.** The deep teal `#0F5C6B` predates this redesign and
-   stays. New surfaces are composed around it rather than replacing it.
+5. **Identity preservation.** The deep teal `#0F5C6B` predates every redesign
+   and stays. New surfaces are composed around it rather than replacing it. It
+   survived the 2026-09-21 remodel for a concrete reason as well as a
+   sentimental one: the supplied spec defined only text and surface tokens and
+   carried no accent at all, so teal fills a hole in it rather than contesting
+   one.
 
 ## Accessibility & Inclusion
 

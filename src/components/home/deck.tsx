@@ -166,10 +166,12 @@ export function Deck({
           className="bg-sunk lg:col-start-5 lg:col-end-10 lg:row-start-5 lg:row-end-9"
         >
           {/*
-            The consequences wrap rather than truncate. They were clamped to one
-            line with `truncate` while a third of the tile sat empty below them —
-            a layout leftover that quietly did the one thing PRODUCT.md says this
-            tile must never do, which is soften a gap.
+            Gap, consequence, fix — the same three parts the table on /gaps
+            carries, so the tile is a summary of that page rather than a
+            different claim. The consequences wrap rather than truncate: they
+            were clamped to one line with `truncate` while a third of the tile
+            sat empty below them, which quietly did the one thing PRODUCT.md
+            says this tile must never do.
           */}
           <ul className="flex flex-1 flex-col justify-between overflow-hidden">
             {gaps.map((gap) => (
@@ -182,6 +184,14 @@ export function Deck({
                   <span className="font-mono text-[0.72rem] text-signal">{gap.gap}</span>
                   <span className="block text-[0.78rem] leading-snug text-muted">
                     {gap.consequence}
+                  </span>
+                  <span className="mt-[2px] block text-[0.74rem] leading-snug text-faint">
+                    {/* Labelled, because an unlabelled third line reads as more
+                        consequence rather than as the plan. */}
+                    <span className="font-mono text-[0.68rem] uppercase tracking-[0.08em] text-accent">
+                      Fix{" "}
+                    </span>
+                    {gap.fix}
                   </span>
                 </span>
               </li>

@@ -45,7 +45,7 @@ export async function getGaps(): Promise<Gap[]> {
       gap: "No test runner",
       consequence:
         "Zero automated coverage in either project. The lead-capture path — the only revenue path — has no regression tests.",
-      fix: "Test the revenue path first: Zod schema, spam gates, and the webhook client's retry, backoff and timeout behaviour.",
+      fix: "Test the revenue path first: Zod schema, spam gates, and the webhook client’s retry, backoff and timeout behaviour.",
     },
     {
       gap: "No error monitoring",
@@ -92,7 +92,7 @@ export async function getTrackRecord(): Promise<Role[]> {
       title: "Full-Stack Senior Development Specialist",
       org: "Convertus (acq. AutoTrader.ca)",
       summary:
-        "WordPress multisite serving enterprise automotive clients, extended with custom object-oriented PHP. Authored the Tadvantage platform's SEO subsystem — Vehicle and AutoDealer structured data, custom inventory sitemaps, canonical and meta handling — and co-built myGarage with its price-alert service. The platform carried through the acquisition to serve AutoSync dealer sites.",
+        "WordPress multisite serving enterprise automotive clients, extended with custom object-oriented PHP. Authored the Tadvantage platform’s SEO subsystem — Vehicle and AutoDealer structured data, custom inventory sitemaps, canonical and meta handling — and co-built myGarage with its price-alert service. The platform carried through the acquisition to serve AutoSync dealer sites.",
     },
     {
       period: "Jan 2018 – Nov 2018",

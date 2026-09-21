@@ -83,7 +83,7 @@ const CASE_STUDIES: readonly CaseStudy[] = [
     passages: [
       {
         paragraphs: [
-          "Any architecture claims reusability. The only honest test is building the second thing. Riflessi Auto Care went from empty repository to live in five weeks by swapping design-token values and rewriting content against fixed type contracts — every component survived untouched. That is the evidence the first project's abstractions were load-bearing rather than decorative.",
+          "Any architecture claims reusability. The only honest test is building the second thing. Riflessi Auto Care went from empty repository to live in five weeks by swapping design-token values and rewriting content against fixed type contracts — every component survived untouched. That is the evidence the first project’s abstractions were load-bearing rather than decorative.",
           "The honest version matters too: the parts that did need new code were the motion layer and the 3D stage, which were new capability rather than re-theming. A reuse claim that omits what did not reuse is not worth making.",
         ],
       },

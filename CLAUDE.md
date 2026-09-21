@@ -22,7 +22,8 @@ material work. The repository is the technical source of truth.
   by `npm run check:contrast` and dark is not inferred from light.
 - Semantic tokens only. Raw hex in a component is a defect. The palette is
   mirrored between `src/app/globals.css` and `src/lib/design-tokens.ts` — change
-  both together.
+  both together. `npm run check:tokens` compares them and fails the build on a
+  mismatch; it exists because the mirror silently drifted on twelve colours.
 - Ask before changing the gaps table, the AutoTrader measurement caveat, or any
   public claim about the work.
 
