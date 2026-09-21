@@ -134,8 +134,15 @@ export function Deck({
             ))}
           </ul>
           <ul className="mt-[13px] space-y-[5px] border-t border-line pt-[13px] text-[0.78rem] leading-snug text-muted">
-            {AUTOTRADER_POINTS.map((point) => (
-              <li key={point} className="flex gap-[8px]">
+            {/* At 1024 the cell is three lines shorter than the copy, and the
+                deck may not scroll. The last two points drop out there rather
+                than being clipped mid-sentence; all four are on /autotrader,
+                which the tile links to. */}
+            {AUTOTRADER_POINTS.map((point, i) => (
+              <li
+                key={point}
+                className={`gap-[8px] ${i < 2 ? "flex" : "hidden min-[1280px]:flex"}`}
+              >
                 <span aria-hidden="true" className="mt-[7px] size-[3px] shrink-0 rounded-full bg-accent" />
                 {point}
               </li>

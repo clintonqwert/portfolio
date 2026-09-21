@@ -16,10 +16,12 @@ npm run dev
 | Script | Does |
 | --- | --- |
 | `npm run dev` | Development server |
-| `npm run build` | Retired-claims check, then production build |
+| `npm run build` | Claims and contrast checks, then production build |
 | `npm run typecheck` | `next typegen` then `tsc --noEmit` |
 | `npm run lint` | ESLint, `next/core-web-vitals` + TypeScript |
 | `npm run check:claims` | Scans the content layer for retired claims |
+| `npm run check:contrast` | WCAG 2.2 AA on both palettes, plus opacity modifiers |
+| `npm run check:overflow` | Panel spill at three viewports; needs a server running |
 
 `NEXT_PUBLIC_SITE_URL` is required. `src/lib/seo.ts` throws without it in
 production rather than emitting wrong canonical URLs silently.

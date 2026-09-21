@@ -50,6 +50,11 @@ export default async function RootLayout({
         lg:overflow-hidden is what makes the dashboard viewport-fit: at desktop
         widths the document itself cannot scroll, and any tile that needs more
         room scrolls inside its own box. Below lg the page scrolls normally.
+
+        <main> takes the scroll instead of the document so the rail stays put.
+        The deck never uses it — it fits by construction — but a case study on a
+        1280px laptop does, and without it the prose had nowhere to go but
+        sideways, 307px past the edge of the page.
       */}
       <body className="min-h-dvh bg-canvas antialiased lg:h-dvh lg:overflow-hidden">
         <a
@@ -62,7 +67,7 @@ export default async function RootLayout({
         <SiteRail links={navLinks} />
 
         <div className="lg:h-dvh lg:pl-[236px]">
-          <main id="main" className="lg:h-full">
+          <main id="main" className="lg:h-full lg:overflow-y-auto">
             {children}
           </main>
         </div>

@@ -5,9 +5,14 @@ import { cn } from "@/lib/utils";
 /**
  * A detail view.
  *
- * The page never scrolls; the body panel does. That is what lets long-form
- * prose live inside a dashboard whose shell is fixed to one viewport. Below
- * 1024px the constraint is lifted and the page scrolls normally.
+ * Long-form prose lives inside a dashboard shell fixed to one viewport by
+ * flowing into CSS columns rather than scrolling.
+ *
+ * The height is pinned only at 1440px and up. A multi-column box overflows in
+ * the *inline* direction when its height is constrained — so below that width
+ * the longest case study did not reflow, it ran 722px off the side of the page
+ * where nothing could reach it. With the height left auto, the columns balance
+ * and grow downwards instead, and <main> scrolls.
  */
 export function DetailView({
   eyebrow,
@@ -36,7 +41,7 @@ export function DetailView({
   raw?: boolean;
 }) {
   return (
-    <div className="flex flex-col gap-2 p-2 lg:h-full">
+    <div className="flex flex-col gap-2 p-2 min-[1440px]:h-full">
       <header className="tile shrink-0 px-[21px] py-[13px]">
         <p className="font-mono text-[0.64rem] uppercase tracking-[0.12em] text-accent">
           <Link href="/" className="no-underline hover:underline">
@@ -79,7 +84,7 @@ export function DetailView({
       <div
         className={cn(
           "grid min-h-0 flex-1 gap-2",
-          aside ? "lg:grid-cols-[minmax(0,1fr)_320px]" : "",
+          aside ? "min-[1440px]:grid-cols-[minmax(0,1fr)_320px]" : "",
         )}
       >
         {raw ? (

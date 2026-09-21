@@ -6,6 +6,7 @@
     "dev": "next dev",
     "check:claims": "node scripts/check-claims.mjs",
     "check:contrast": "node scripts/check-contrast.mjs",
+    "check:overflow": "node scripts/check-overflow.mjs",
     "build": "npm run check:claims && npm run check:contrast && next build",
     "start": "next start",
     "lint": "eslint .",
@@ -29,6 +30,7 @@
     "@types/react-dom": "^19",
     "eslint": "^9",
     "eslint-config-next": "16.2.7",
+    "puppeteer-core": "^22.15.0",
     "tailwindcss": "^4",
     "typescript": "^5"
   },
