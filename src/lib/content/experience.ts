@@ -35,6 +35,7 @@ export const AUTOTRADER_POINTS = [
   "Redis Object Cache Pro against AWS-hosted Redis",
   "Technical SEO where inventory discoverability is the product",
   "Mentored through code review and pair programming",
+  "Agile delivery on a shared codebase, not solo work",
 ];
 
 export async function getAutoTraderPassages(): Promise<Passage[]> {

@@ -1,6 +1,8 @@
+import Image from "next/image";
 import Link from "next/link";
 
 import { cn } from "@/lib/utils";
+import type { ImageSlot } from "@/lib/content/assets";
 import type { Stat } from "@/types/content";
 
 /**
@@ -76,5 +78,41 @@ export function Figure({ stat, size = "md" }: { stat: Stat; size?: "sm" | "md" }
         {stat.label}
       </div>
     </div>
+  );
+}
+
+/**
+ * A screenshot inside a tile.
+ *
+ * Height is fixed rather than aspect-derived, because the deck is exactly one
+ * viewport tall and a tile cannot grow: an image whose height depends on the
+ * column width would push the cell at some widths and not others. `object-cover`
+ * takes the crop instead.
+ *
+ * Tiles only have room for this above a certain width — measured, not guessed —
+ * so every caller passes its own breakpoint class.
+ */
+export function TileShot({
+  image,
+  className,
+}: {
+  image: ImageSlot;
+  className?: string;
+}) {
+  return (
+    <figure className={cn("shrink-0", className)}>
+      <Image
+        src={image.src}
+        alt={image.alt}
+        width={800}
+        height={500}
+        className="h-[var(--shot-h)] w-full rounded-md bg-sunk object-cover object-top shadow-[inset_0_0_0_1px_var(--color-line)]"
+      />
+      {image.isPlaceholder ? (
+        <figcaption className="mt-[2px] font-mono text-[0.58rem] text-faint">
+          Screenshot pending
+        </figcaption>
+      ) : null}
+    </figure>
   );
 }

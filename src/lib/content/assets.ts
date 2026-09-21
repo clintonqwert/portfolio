@@ -25,6 +25,20 @@ export interface ImageSlot {
 
 const PLACEHOLDER = "/work/placeholder-screenshot.svg";
 
+/**
+ * Lighthouse scores for driftpilot.ca, shown in the Measured tile.
+ *
+ * This is the highest-value asset on the list: the deck asserts >=95 four
+ * times, and a real run turns four assertions into evidence, which is the
+ * premise the whole site rests on. 1200x400, scores legible.
+ */
+export const SCORES_IMAGE: ImageSlot = {
+  src: "/work/placeholder-scores.svg",
+  target: "/work/driftpilot-lighthouse.png",
+  alt: "Lighthouse scores for driftpilot.ca: performance, accessibility, best practices and SEO",
+  isPlaceholder: true,
+};
+
 /** Hero shot per case study, keyed by slug. */
 export const WORK_IMAGES: Record<string, ImageSlot> = {
   driftpilot: {

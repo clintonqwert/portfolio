@@ -30,6 +30,11 @@ const ROUTES = [
 
 /** The shell is only viewport-fit at lg and up; below that it scrolls by design. */
 const VIEWPORTS = [
+  // 1920 and 1680 are not vanity sizes here: the deck reveals screenshots and
+  // extra points above 1440, so they are the only widths where that content
+  // exists at all. Testing 1440 down would have shipped it unmeasured.
+  { name: "1920x1080", width: 1920, height: 1080 },
+  { name: "1680x1050", width: 1680, height: 1050 },
   { name: "1440x900", width: 1440, height: 900 },
   { name: "1280x800", width: 1280, height: 800 },
   { name: "1024x768", width: 1024, height: 768 },

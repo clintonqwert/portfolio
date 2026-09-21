@@ -1,7 +1,8 @@
 import { SkillMarquee } from "@/components/home/skill-marquee";
-import { Figure, Tile } from "@/components/home/tile";
+import { Figure, Tile, TileShot } from "@/components/home/tile";
 import { AUTOTRADER_POINTS } from "@/lib/content/experience";
 import { FACTS, HEADLINE, LEDE } from "@/lib/content/profile";
+import type { ImageSlot } from "@/lib/content/assets";
 import type { CaseStudy, Gap, Stat } from "@/types/content";
 
 /**
@@ -20,12 +21,18 @@ export function Deck({
   gaps,
   skills,
   autoTraderLede,
+  workImages,
+  scoresImage,
 }: {
   stats: Stat[];
   studies: CaseStudy[];
   gaps: Gap[];
   skills: string[];
   autoTraderLede: string;
+  /** Case-study screenshots, keyed by slug. */
+  workImages: Record<string, ImageSlot>;
+  /** Lighthouse run shown in the Measured tile. */
+  scoresImage: ImageSlot;
 }) {
   return (
     <div className="flex flex-col gap-2 p-2 lg:h-full">
@@ -106,6 +113,24 @@ export function Deck({
                   <li key={tech}>{tech}</li>
                 ))}
               </ul>
+
+              {/*
+                The work, shown rather than only linked. Breakpoints come from
+                measuring free space per cell, not from taste: at 1440 only the
+                feature cell has room (137px), and the two narrow cells do not
+                get one until 1680 (163px and 143px). Below those widths the
+                tile is already full and an image would clip real content.
+              */}
+              {workImages[study.slug] ? (
+                <TileShot
+                  image={workImages[study.slug]!}
+                  className={
+                    study.feature
+                      ? "mt-[12px] hidden [--shot-h:104px] min-[1440px]:block min-[1680px]:[--shot-h:132px]"
+                      : "mt-[12px] hidden [--shot-h:104px] min-[1680px]:block"
+                  }
+                />
+              ) : null}
             </div>
 
             {study.assertions ? (
@@ -182,7 +207,15 @@ export function Deck({
             {AUTOTRADER_POINTS.map((point, i) => (
               <li
                 key={point}
-                className={`gap-[8px] ${i < 2 ? "flex" : "hidden min-[1440px]:flex"}`}
+                className={`gap-[8px] ${
+                  // Measured per width: two points fit at 1024, four at 1440,
+                  // and the fifth only once the cell has 127px spare at 1680.
+                  i < 2
+                    ? "flex"
+                    : i < 4
+                      ? "hidden min-[1440px]:flex"
+                      : "hidden min-[1680px]:flex"
+                }`}
               >
                 <span aria-hidden="true" className="mt-[7px] size-[3px] shrink-0 rounded-full bg-accent" />
                 {point}
@@ -243,11 +276,25 @@ export function Deck({
           cta="History"
           className="lg:col-start-10 lg:col-end-13 lg:row-start-5 lg:row-end-9"
         >
+          {/* content-center so the figures sit in the middle of whatever the
+              scores image leaves, rather than collecting at the top with a void
+              between the two halves. */}
           <div className="grid flex-1 grid-cols-2 content-center gap-x-[12px] gap-y-[12px]">
             {stats.map((stat) => (
               <Figure key={stat.label} stat={stat} size="sm" />
             ))}
           </div>
+
+          {/*
+            The Lighthouse run, in the tile that claims the numbers. This deck
+            asserts >=95 four times; a real run is the difference between
+            asserting that and showing it, which is the premise the rest of the
+            site rests on. 116px of free space here at 1440, measured.
+          */}
+          <TileShot
+            image={scoresImage}
+            className="hidden pt-[12px] [--shot-h:96px] min-[1440px]:block min-[1680px]:[--shot-h:132px]"
+          />
         </Tile>
 
       </div>
