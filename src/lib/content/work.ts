@@ -106,44 +106,50 @@ const CASE_STUDIES: readonly CaseStudy[] = [
   {
     slug: "tadvantage",
     name: "Tadvantage",
-    headline: "The dealer platform, and the feature that tested its data model",
+    headline: "Six years on a dealer platform, and the parts I put my name on",
     summary:
-      "Six and a half years on the platform behind dealer websites — built at Convertus, carried through the AutoTrader acquisition into AutoSync. myGarage is the feature I would point at: it is where the data model had to be right.",
-    period: "6.5 years · Convertus → AutoTrader",
+      "The platform behind dealer websites \u2014 built at Convertus, carried through the acquisition into AutoSync. I authored its SEO subsystem and co-built myGarage.",
+    period: "6.5 years \u00b7 Convertus \u2192 AutoTrader",
     liveUrl: "autosyncmotors.com",
     // Proprietary — Convertus / AutoTrader internal platform.
     repoUrl: null,
     role: "Full-stack engineer",
-    stack: ["Vue.js", "PHP", "Node.js", "MySQL", "WordPress", "WP-CLI"],
-    // No verified figures exist for adoption or engagement, so none are claimed.
-    // This case study argues from its decisions, which hold up in a
-    // conversation, rather than from numbers that would not.
+    stack: ["Vue.js", "PHP", "Node.js", "MySQL", "AWS RDS", "WordPress", "WP-CLI"],
+    // No adoption or engagement figures were ever collected — see the last
+    // passage. Scope is described instead, and it is checkable: the source
+    // carries @author tags.
     stats: [],
     passages: [
       {
         paragraphs: [
-          "Tadvantage is the platform dealer websites ran on — Vue for the interactive surfaces, PHP and WordPress underneath, MySQL holding inventory, WP-CLI driving deployment. I worked on it for six and a half years \u2014 at Convertus, then continuing after the AutoTrader acquisition, where it served AutoSync dealer sites.",
-          "The feature worth describing is myGarage, because it is where the platform's data model had to be right rather than merely convenient.",
+          "Tadvantage is the platform dealer websites ran on \u2014 Vue for the interactive surfaces, PHP and WordPress underneath, MySQL for inventory, WP-CLI for deployment. Six and a half years on it: built at Convertus, continued after the AutoTrader acquisition where it served AutoSync dealer sites. It is a large codebase with many authors, so what follows is the work that carries my name in the source.",
         ],
       },
       {
-        heading: "Holding intent still while inventory moves",
+        heading: "The SEO subsystem",
         paragraphs: [
-          "Shoppers browse dozens of vehicles across several sessions before contacting anyone, but the site treated each visit as disconnected — customers lost their shortlist and restarted from nothing. The interesting problem is not the feature, it is the constraint underneath it: how do you hold a customer's intent steady while the inventory it points at changes independently? Vehicles sell, prices move, specifications get corrected. A saved list that snapshots the car is wrong within a week.",
-          "So the garage stores the customer's interest relationship, not a copy of the vehicle. That single choice is what lets the platform handle sold or withdrawn stock gracefully instead of accumulating stale rows — the relationship stays valid even when the thing it points at changes underneath. It also settled the storage question: relational tables with foreign keys into the existing inventory schema rather than documents, because referential integrity was the whole point. A document store would have made writes simpler and the correctness problem permanent.",
+          "On a dealer site, search visibility is not a marketing concern \u2014 it is how inventory gets found at all. I wrote the layer that made it machine-readable: Vehicle and AutoDealer structured data extending Yoast\u2019s schema graph API, pulling live specifications from the VRS and VMS services; the website, webpage and breadcrumb graph pieces; custom vehicle sitemaps injected into the Yoast sitemap index and split between new and used detail pages; and the canonical, meta and robots handling underneath it.",
+          "That last part is the unglamorous half. A dealer site generates a detail page per vehicle and a search page per filter combination \u2014 without deliberate canonicalisation you publish a self-competing index.",
         ],
       },
       {
-        heading: "Vue inside WordPress, deliberately",
+        heading: "myGarage, and why it lives outside WordPress",
         paragraphs: [
-          "The interactive parts are Vue components; the backend stayed PHP and WordPress, with REST endpoints for garage operations and WP-CLI for deployment. Choosing Vue for the reactive surface and leaving the platform alone avoided a rewrite nobody had asked for, at the cost of added build complexity. Rendering stayed server-side rather than moving to a single-page app — on an inventory site search visibility is the business, so trading it away for smoother client-side state would have been the wrong way round, even though it made state synchronisation harder.",
+          "Shoppers browse dozens of vehicles across several sessions before contacting anyone, but the site treated each visit as disconnected. The constraint underneath the feature is the interesting part: hold a customer\u2019s intent steady while the inventory it points at moves independently. Vehicles sell, prices change, specifications get corrected \u2014 a saved list that snapshots the car is wrong within a week.",
+          "So the garage stores a reference, not a copy: an advertisement ID against a user, with timestamps. And it lives in its own AWS RDS database rather than in any one site\u2019s WordPress tables, which is what lets a garage persist across the dealer sites on the platform instead of being trapped in whichever one the shopper landed on. Four tables carry it \u2014 saved vehicles, viewed history, price alerts, and a user record keyed to the platform\u2019s VMS identity. Co-built with a colleague.",
+        ],
+      },
+      {
+        heading: "Price alerts, end to end",
+        paragraphs: [
+          "The alerts table stores the price at the moment a shopper set the alert alongside the current one. A Node.js service reads that difference and emails the buyer when a vehicle they were watching drops. A small system, but it spans a database, a WordPress plugin and a service \u2014 and it only works because the garage stored a reference to the vehicle rather than a snapshot of it. The decision that survives inventory churn is the same one that makes a price comparison meaningful.",
         ],
       },
       {
         heading: "What I would do differently",
         paragraphs: [
-          "Inventory changes were polled; webhook-driven updates would have been more accurate and less wasteful, and I would build it that way now. Some jQuery also stayed for legacy integration rather than being migrated — it shipped faster and left debt, and both of those are true.",
-          "Above all I would instrument it from day one. Save, remove and compare events were never measured, which is exactly why this case study carries no adoption figures: the data to make that argument was not collected. That is the real cost of shipping a feature before deciding how you will know whether it worked.",
+          "Inventory changes were polled; webhooks would have been more accurate and less wasteful. Some jQuery stayed for legacy integration rather than being migrated \u2014 it shipped faster and left debt, and both are true.",
+          "Above all I would instrument it from day one. Save, remove and compare events were never measured, which is why this case study carries no adoption figures: the data to make that argument was not collected. That is the real cost of shipping a feature before deciding how you will know whether it worked.",
         ],
       },
     ],

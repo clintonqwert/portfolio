@@ -56,7 +56,7 @@ export const CONTACT_HREF = {
 export const RESUME = {
   href: "/clinton-jay-ramonida-resume.pdf",
   pages: 2,
-  size: "86 kB",
+  size: "89 kB",
 } as const;
 
 /**
