@@ -9,6 +9,9 @@ import type { CaseStudy } from "@/types/content";
 const CASE_STUDIES: readonly CaseStudy[] = [
   {
     slug: "driftpilot",
+    // Carries the wide cell: it is the only study with an enforced budget to
+    // show, so it has the most that rewards the extra room.
+    feature: true,
     name: "DriftPilot",
     headline: "A performance budget that blocks the merge",
     summary:
@@ -105,8 +108,8 @@ const CASE_STUDIES: readonly CaseStudy[] = [
     name: "Tadvantage",
     headline: "The dealer platform, and the feature that tested its data model",
     summary:
-      "The website platform behind dealer sites at Convertus, carried through the AutoTrader acquisition into AutoSync. myGarage is the feature I would point at — it is where the platform's data model had to be right.",
-    period: "Convertus → AutoTrader",
+      "Six and a half years on the platform behind dealer websites — built at Convertus, carried through the AutoTrader acquisition into AutoSync. myGarage is the feature I would point at: it is where the data model had to be right.",
+    period: "6.5 years · Convertus → AutoTrader",
     liveUrl: "autosyncmotors.com",
     // Proprietary — Convertus / AutoTrader internal platform.
     repoUrl: null,
@@ -119,7 +122,7 @@ const CASE_STUDIES: readonly CaseStudy[] = [
     passages: [
       {
         paragraphs: [
-          "Tadvantage is the platform dealer websites ran on — Vue for the interactive surfaces, PHP and WordPress underneath, MySQL holding inventory, WP-CLI driving deployment. I worked on it at Convertus and continued after the AutoTrader acquisition, where it served AutoSync dealer sites.",
+          "Tadvantage is the platform dealer websites ran on — Vue for the interactive surfaces, PHP and WordPress underneath, MySQL holding inventory, WP-CLI driving deployment. I worked on it for six and a half years \u2014 at Convertus, then continuing after the AutoTrader acquisition, where it served AutoSync dealer sites.",
           "The feature worth describing is myGarage, because it is where the platform's data model had to be right rather than merely convenient.",
         ],
       },

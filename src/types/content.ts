@@ -66,6 +66,12 @@ export interface Passage {
  */
 export interface CaseStudy {
   slug: string;
+  /**
+   * Gives this study the double-width cell on the dashboard, with a
+   * two-column interior. One study carries it — the one with the most
+   * verifiable detail. Equal cells would claim the three are equivalent.
+   */
+  feature?: boolean;
   /** Short name used in navigation and cards. */
   name: string;
   /** Sentence-case headline — the argument the case study makes. */

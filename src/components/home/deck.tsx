@@ -48,49 +48,73 @@ export function Deck({
           index={`0${i + 1}`}
           href={`/work/${study.slug}`}
           cta="Case study"
-          className={`${
-            [
-              "lg:col-start-1 lg:col-end-5",
-              "lg:col-start-5 lg:col-end-9",
-              "lg:col-start-9 lg:col-end-13",
-            ][i] ?? ""
-          } lg:row-start-1 lg:row-end-5`}
+          className={[
+            // Variant cells: the feature study takes half the row with a
+            // two-column interior; the other two split the remainder. Equal
+            // cells would assert the three are equivalent, and they are not.
+            study.feature
+              ? "lg:col-start-1 lg:col-end-7"
+              : i === 1
+                ? "lg:col-start-7 lg:col-end-10"
+                : "lg:col-start-10 lg:col-end-13",
+            "lg:row-start-1 lg:row-end-5",
+          ].join(" ")}
         >
-          <p className="min-h-0 overflow-hidden text-[0.86rem] leading-snug text-muted">
-            {study.summary}
-          </p>
-
-          <ul className="mt-[13px] flex flex-wrap gap-x-[13px] gap-y-[3px] font-mono text-[0.64rem] text-faint">
-            {study.stack.map((tech) => (
-              <li key={tech}>{tech}</li>
-            ))}
-          </ul>
-
-          {/* Asserted thresholds where they exist, figures otherwise. myGarage
-              has neither, and says so rather than padding the tile. */}
-          {study.assertions ? (
-            <dl className="mt-auto space-y-[5px] border-t border-line pt-[13px] font-mono text-[0.68rem]">
-              {study.assertions.rows.slice(0, 4).map((row) => (
-                <div key={row.name} className="flex items-baseline justify-between gap-[13px]">
-                  <dt className="min-w-0 truncate text-muted">{row.name}</dt>
-                  <dd className={row.measured ? "shrink-0 text-signal" : "shrink-0 text-pass"}>
-                    {row.threshold}
-                  </dd>
-                </div>
-              ))}
-            </dl>
-          ) : study.stats.length > 0 ? (
-            <div className="mt-auto grid grid-cols-2 gap-[13px] border-t border-line pt-[13px]">
-              {study.stats.slice(0, 4).map((stat) => (
-                <Figure key={stat.label} stat={stat} size="sm" />
-              ))}
+          {/* The wide cell splits into summary and data; the narrow cells
+              stack them. Same content, proportioned to the room. */}
+          <div
+            className={
+              study.feature
+                ? "grid min-h-0 flex-1 gap-x-[21px] lg:grid-cols-2"
+                : "flex min-h-0 flex-1 flex-col"
+            }
+          >
+            <div className="min-h-0">
+              <p className="overflow-hidden text-[0.86rem] leading-snug text-muted">
+                {study.summary}
+              </p>
+              <ul className="mt-[13px] flex flex-wrap gap-x-[13px] gap-y-[3px] font-mono text-[0.64rem] text-faint">
+                {study.stack.map((tech) => (
+                  <li key={tech}>{tech}</li>
+                ))}
+              </ul>
             </div>
-          ) : (
-            <p className="mt-auto border-t border-line pt-[13px] font-mono text-[0.66rem] leading-snug text-faint">
-              No adoption figures — the events were never instrumented. The case
-              is the architecture.
-            </p>
-          )}
+
+            {study.assertions ? (
+              <dl
+                className={`space-y-[5px] font-mono text-[0.68rem] ${
+                  study.feature
+                    ? "lg:border-l lg:border-line lg:pl-[21px]"
+                    : "mt-auto border-t border-line pt-[13px]"
+                }`}
+              >
+                {study.assertions.rows
+                  .slice(0, study.feature ? 8 : 4)
+                  .map((row) => (
+                    <div
+                      key={row.name}
+                      className="flex items-baseline justify-between gap-[13px]"
+                    >
+                      <dt className="min-w-0 truncate text-muted">{row.name}</dt>
+                      <dd className={row.measured ? "shrink-0 text-signal" : "shrink-0 text-pass"}>
+                        {row.threshold}
+                      </dd>
+                    </div>
+                  ))}
+              </dl>
+            ) : study.stats.length > 0 ? (
+              <div className="mt-auto grid grid-cols-2 gap-[13px] border-t border-line pt-[13px]">
+                {study.stats.slice(0, 4).map((stat) => (
+                  <Figure key={stat.label} stat={stat} size="sm" />
+                ))}
+              </div>
+            ) : (
+              <p className="mt-auto border-t border-line pt-[13px] font-mono text-[0.66rem] leading-snug text-faint">
+                No adoption figures — the events were never instrumented. The
+                case is the architecture.
+              </p>
+            )}
+          </div>
         </Tile>
       ))}
 
