@@ -136,7 +136,7 @@ const CASE_STUDIES: readonly CaseStudy[] = [
       {
         heading: "What it is",
         paragraphs: [
-          "Tadvantage \u2014 Achilles internally \u2014 is the WordPress multisite platform behind Convertus dealer websites: ten OEM and dealer-group themes, thirty-five-plus custom plugins covering inventory, showroom, pricing, SEO, integrations and analytics, with Vue on the interactive surfaces and PHP underneath. Convertus is part of Trader Corporation, the company behind AutoTrader.ca.",
+          "Tadvantage is the WordPress multisite platform behind Convertus dealer websites \u2014 Project Achilles on the inside, which is the name anyone who worked on it will recognise. It carries ten OEM and dealer-group themes and thirty-five-plus custom plugins covering inventory, showroom, pricing, SEO, integrations and analytics, with Vue on the interactive surfaces and PHP underneath. Convertus is part of Trader Corporation, the company behind AutoTrader.ca.",
         ],
       },
       {
