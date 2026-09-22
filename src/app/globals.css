@@ -97,9 +97,10 @@
 
   /*
     ── surface ─────────────────────────────────────────────────────────
-    The weight of the line a panel is drawn with. A token rather than a
-    hard-coded 1px so the card treatment is adjustable from the design studio
-    (`npm run design`) without editing three rules by hand.
+    The weight of the line a panel is drawn with. A token rather than three
+    hard-coded 1px values, because in this design the rule *is* the panel —
+    there is no fill or shadow doing the work, so its weight is a decision
+    worth naming and changing in one place.
   */
   --surface-border: 1px;
 

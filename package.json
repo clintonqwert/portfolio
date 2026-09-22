@@ -11,8 +11,7 @@
     "start": "next start",
     "lint": "eslint .",
     "typecheck": "next typegen && tsc --noEmit",
-    "check:tokens": "node scripts/check-tokens.mjs",
-    "design": "node scripts/design-studio.mjs"
+    "check:tokens": "node scripts/check-tokens.mjs"
   },
   "dependencies": {
     "@vercel/analytics": "^2.0.1",
