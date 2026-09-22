@@ -216,6 +216,17 @@ const PANEL = /* html */ `<!doctype html>
          border-top: 1px solid var(--ui-line); max-height: 140px; overflow-y: auto; color: var(--ui-muted); }
   iframe { width: 100%; height: 100%; border: 0; display: block; background: #fff; }
   .none { color: var(--ui-muted); font-size: 11.5px; padding: 10px 0; }
+  .trow { padding: 6px 0 7px; border-bottom: 1px solid color-mix(in srgb, var(--ui-line) 55%, transparent); }
+  .thead { display: flex; align-items: center; gap: 6px; margin-bottom: 4px; }
+  .thead label { flex: 1; font: 11.5px ui-monospace, Menlo, monospace; }
+  .tval { font: 10.5px ui-monospace, Menlo, monospace; color: var(--ui-muted); }
+  .axis { display: grid; grid-template-columns: 12px 1fr 42px; gap: 6px; align-items: center; margin-top: 3px; }
+  .axis i { font-style: normal; font-size: 10px; color: var(--ui-muted); }
+  .axis output { font: 10.5px ui-monospace, Menlo, monospace; color: var(--ui-muted); text-align: right; }
+  input[type=range] { width: 100%; height: 14px; accent-color: var(--ui); cursor: ew-resize; }
+  input[type=range]:focus-visible { outline: 2px solid currentColor; outline-offset: 2px; }
+  input[type=number] { width: 100%; font: 11px ui-monospace, Menlo, monospace; padding: 2px 4px;
+                       border: 1px solid var(--ui-line); background: transparent; color: inherit; border-radius: 3px; }
   .who { font: 11.5px ui-monospace, Menlo, monospace; word-break: break-all;
          padding: 8px 0 10px; border-bottom: 1px solid var(--ui-line); }
   .who b { display: block; font-size: 12.5px; margin-bottom: 3px; }
@@ -273,27 +284,7 @@ function render() {
     lg.textContent = g.themed ? g.label + " · " + theme : g.label;
     fs.append(lg);
     for (const t of g.tokens) {
-      const row = document.createElement("div");
-      row.className = "row";
-      const lab = document.createElement("label");
-      lab.textContent = t.short;
-      lab.htmlFor = "f-" + t.name;
-      const inp = document.createElement("input");
-      inp.type = "text";
-      inp.id = "f-" + t.name;
-      inp.value = valueOf(t);
-      inp.spellcheck = false;
-      const sw = document.createElement("span");
-      sw.className = "sw";
-      sw.style.background = g.key === "color" ? valueOf(t) : "transparent";
-      inp.addEventListener("input", () => {
-        const scope = g.themed ? theme : "light";
-        edits[scope][t.name] = inp.value;
-        if (g.key === "color") sw.style.background = inp.value;
-        apply();
-      });
-      row.append(lab, inp, sw);
-      fs.append(row);
+      fs.append(tokenRow(g, t, g.themed ? theme : "light"));
     }
     host.append(fs);
   }
@@ -332,6 +323,118 @@ $("#t-light").addEventListener("click", () => setTheme("light"));
 $("#t-dark").addEventListener("click", () => setTheme("dark"));
 $("#site").addEventListener("load", () => { setTheme(theme); apply(); wirePicker(); selected = null; if (picking) renderElement(); });
 
+
+// ── controls ────────────────────────────────────────────────────────────────
+// Typed sliders rather than text fields. Hand-typing oklch(0.80 0 0) is the
+// reason this tool was hard to use: you cannot feel your way to a colour by
+// editing three decimals, and a px value wants a drag, not a keystroke.
+
+/** Slider bounds per group: [min, max, step]. */
+const RANGES = {
+  radius: [0, 32, 1],
+  space: [0, 64, 1],
+  text: [8, 64, 1],
+  surface: [0, 8, 0.5],
+};
+
+/** oklch(L C H) to [L, C, H], or null. Parsed by hand — see setPlacement. */
+function parseOklch(v) {
+  const t = String(v).trim();
+  if (!t.startsWith("oklch(") || !t.endsWith(")")) return null;
+  const parts = t.slice(6, -1).split(" ").filter(Boolean).map(Number);
+  if (parts.length < 3 || parts.some(Number.isNaN)) return null;
+  return parts.slice(0, 3);
+}
+
+function axis(label, min, max, step, value, onInput) {
+  const row = document.createElement("div");
+  row.className = "axis";
+  const i = document.createElement("i");
+  i.textContent = label;
+  const r = document.createElement("input");
+  r.type = "range";
+  r.min = min; r.max = max; r.step = step; r.value = value;
+  r.setAttribute("aria-label", label);
+  const o = document.createElement("output");
+  o.textContent = value;
+  r.addEventListener("input", () => { o.textContent = r.value; onInput(Number(r.value)); });
+  row.append(i, r, o);
+  return row;
+}
+
+/**
+ * One editable token. Shared by both tabs so the element inspector and the
+ * full list cannot drift apart.
+ */
+function tokenRow(g, tok, scope) {
+  const name = tok.name;
+  const current = () => edits[scope][name] ?? (scope === "dark" ? tok.dark : tok.light);
+
+  const wrap = document.createElement("div");
+  wrap.className = "trow";
+  const head = document.createElement("div");
+  head.className = "thead";
+  const lab = document.createElement("label");
+  lab.textContent = g.key === "color" ? tok.short : g.key + " \u00b7 " + tok.short;
+  lab.title = name;
+  const val = document.createElement("span");
+  val.className = "tval";
+  val.textContent = current();
+  const sw = document.createElement("span");
+  sw.className = "sw";
+  if (g.key === "color") sw.style.background = current();
+  head.append(lab, val, sw);
+  wrap.append(head);
+
+  const commit = (v) => {
+    edits[scope][name] = v;
+    val.textContent = v;
+    if (g.key === "color") sw.style.background = v;
+    apply();
+  };
+
+  const lch = parseOklch(current());
+  if (lch) {
+    let [L, C, H] = lch;
+    const push = () => commit("oklch(" + L + " " + C + " " + H + ")");
+    wrap.append(axis("L", 0, 1, 0.005, L, (v) => { L = v; push(); }));
+    wrap.append(axis("C", 0, 0.4, 0.005, C, (v) => { C = v; push(); }));
+    wrap.append(axis("H", 0, 360, 1, H, (v) => { H = v; push(); }));
+    return wrap;
+  }
+
+  const raw = String(current()).trim();
+  if (raw.endsWith("px")) {
+    const [min, max, step] = RANGES[g.key] ?? [0, 64, 1];
+    const n = parseFloat(raw);
+    const row = document.createElement("div");
+    row.className = "axis";
+    const i = document.createElement("i");
+    i.textContent = "px";
+    const r = document.createElement("input");
+    r.type = "range";
+    r.min = min; r.max = max; r.step = step; r.value = n;
+    r.setAttribute("aria-label", name + " in pixels");
+    const num = document.createElement("input");
+    num.type = "number";
+    num.min = min; num.step = step; num.value = n;
+    const both = (v) => { r.value = v; num.value = v; commit(v + "px"); };
+    r.addEventListener("input", () => both(r.value));
+    num.addEventListener("input", () => both(num.value));
+    row.append(i, r, num);
+    wrap.append(row);
+    return wrap;
+  }
+
+  // Anything else — a shadow, a font stack — stays a text field.
+  const inp = document.createElement("input");
+  inp.type = "text";
+  inp.value = raw;
+  inp.spellcheck = false;
+  inp.addEventListener("input", () => commit(inp.value));
+  wrap.append(inp);
+  return wrap;
+}
 
 // ── pick mode ───────────────────────────────────────────────────────────────
 // The reason this exists: a token list tells you a value but not what it does.
@@ -473,29 +576,10 @@ function renderElement() {
     const g = data.groups.find((x) => name.startsWith(x.prefix));
     const tok = g && g.tokens.find((t) => t.name === name);
     if (!tok) continue;
-    const scope = g.themed ? theme : "light";
-    const row = document.createElement("div");
-    row.className = "row";
-    const lab = document.createElement("label");
-    // Qualified by group here, unlike the Tokens tab. In a mixed list "lg" and
-    // "border" could be a radius, a text size or a surface weight, and this
+    // Same control as the Tokens tab, qualified by group: in a mixed list "lg"
+    // and "border" could be a radius, a text size or a surface weight, and this
     // panel exists precisely so you know what you are about to change.
-    lab.textContent = g.key + " \u00b7 " + tok.short;
-    lab.title = name;
-    const inp = document.createElement("input");
-    inp.type = "text";
-    inp.value = edits[scope][name] ?? (scope === "dark" ? tok.dark : tok.light);
-    inp.spellcheck = false;
-    inp.addEventListener("input", () => {
-      edits[scope][name] = inp.value;
-      apply();
-      sync();
-    });
-    const sw = document.createElement("span");
-    sw.className = "sw";
-    if (g.key === "color") sw.style.background = inp.value;
-    row.append(lab, inp, sw);
-    fs2.append(row);
+    fs2.append(tokenRow(g, tok, g.themed ? theme : "light"));
   }
   host.append(fs2);
 
@@ -532,19 +616,6 @@ function gridPanel(el, doc) {
   out.id = "grid-out";
   fs.append(out);
   return fs;
-}
-
-/** Keep the token tab's inputs in step when the element tab edits one. */
-function sync() {
-  if ($("#fields").hidden) return;
-  for (const g of data.groups) {
-    for (const t of g.tokens) {
-      const i = document.getElementById("f-" + t.name);
-      if (!i) continue;
-      const scope = g.themed ? theme : "light";
-      if (edits[scope][t.name] !== undefined) i.value = edits[scope][t.name];
-    }
-  }
 }
 
 function setMode(next) {

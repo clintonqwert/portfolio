@@ -89,6 +89,11 @@ It binds to `127.0.0.1` only, because it writes source files. It is a
 standalone script — nothing in `src/` imports it, so the production bundle and
 the performance budget are untouched.
 
+Values are sliders, not text fields. Colours are three axes — lightness,
+chroma, hue — because nobody finds a colour by typing decimals into
+`oklch(0.80 0 0)`. Anything in pixels gets a slider and a number box, bounded
+per group so radius cannot be dragged to 200px by accident.
+
 **Pick element** mode answers "what am I actually changing?". Click anything in
 the preview and the panel names it, shows its box, and lists *only* the tokens
 that element's own cascade reads — each one editable in place. A breadcrumb
