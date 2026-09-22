@@ -98,6 +98,11 @@ export const radius = {
   "2xl": "22px",
 } as const;
 
+/** Surface drawing. The weight of the line a panel is ruled with. */
+export const surface = {
+  border: "1px",
+} as const;
+
 /**
  * Motion durations. Four steps that read as different from each other; the
  * supplied spec's 220/240 and 560/620/750 were indistinguishable neighbours.

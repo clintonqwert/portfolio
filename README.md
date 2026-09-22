@@ -22,6 +22,7 @@ npm run dev
 | `npm run check:claims` | Scans the content layer for retired claims |
 | `npm run check:contrast` | WCAG 2.2 AA on both palettes, plus opacity modifiers |
 | `npm run check:overflow` | Panel spill at three viewports; needs a server running |
+| `npm run design` | Design Studio — edit tokens live, write them back to source |
 
 `NEXT_PUBLIC_SITE_URL` is required. `src/lib/seo.ts` throws without it in
 production rather than emitting wrong canonical URLs silently.
@@ -64,6 +65,34 @@ Long-form prose lives in detail routes (`/autotrader`, `/gaps`, `/standard`,
 scrolls, the prose panel does. Below 1024px the constraint is lifted and the
 page scrolls normally, because a single viewport on a phone means either three
 tiles or unreadable type.
+
+### Design Studio
+
+`npm run design` starts a local studio at `http://127.0.0.1:4321/__studio`. It
+proxies the running site into a same-origin iframe, so every design token —
+colour in both themes, type scale, spacing, radius, surface border — can be
+edited with the real site updating live beside the controls.
+
+**It writes back.** Saving rewrites `globals.css` and `design-tokens.ts`
+together, then runs `check:tokens` and `check:contrast` and reports the result
+in the panel. A preview-only tool would mean hand-copying values afterwards and
+letting the two mirrors drift, which is the failure this repo already has a
+check for.
+
+```bash
+npm run dev            # or npm run start
+npm run design         # against :3000
+npm run design -- 3111 # against another port
+```
+
+It binds to `127.0.0.1` only, because it writes source files. It is a
+standalone script — nothing in `src/` imports it, so the production bundle and
+the performance budget are untouched.
+
+Tokens are only adjustable if something reads them: `--radius-lg` and
+`--surface-border` are consumed by `.panel` and `.tile` for exactly this
+reason. A control that moves a value nothing references is worse than no
+control.
 
 ### Spacing
 
