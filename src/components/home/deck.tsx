@@ -204,18 +204,14 @@ export function Deck({
                 deck may not scroll. The last two points drop out there rather
                 than being clipped mid-sentence; all four are on /autotrader,
                 which the tile links to. */}
-            {AUTOTRADER_POINTS.map((point, i) => (
+            {AUTOTRADER_POINTS.slice(0, 4).map((point, i) => (
               <li
                 key={point}
-                className={`gap-[8px] ${
-                  // Measured per width: two points fit at 1024, four at 1440,
-                  // and the fifth only once the cell has 127px spare at 1680.
-                  i < 2
-                    ? "flex"
-                    : i < 4
-                      ? "hidden min-[1440px]:flex"
-                      : "hidden min-[1920px]:flex"
-                }`}
+                // Measured per width: two points fit at 1024, four at 1440. The
+                // fifth is cut entirely — it never had room once the skills
+                // strip grew, and it is on /autotrader where it can be read
+                // properly rather than squeezed into a cell.
+                className={`gap-[8px] ${i < 2 ? "flex" : "hidden min-[1440px]:flex"}`}
               >
                 <span aria-hidden="true" className="mt-[7px] size-[3px] shrink-0 rounded-full bg-accent" />
                 {point}

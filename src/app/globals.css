@@ -407,6 +407,16 @@
     blur.
   */
   .marquee {
+    /*
+      A stated height rather than one derived from the type inside it. The strip
+      sits between the headline and a deck that must fit the rest of the
+      viewport exactly, so its height is a number the deck can be reasoned
+      about against — not a side effect of a font-size change.
+    */
+    display: flex;
+    align-items: center;
+    height: 40px;
+
     /* Fade the ends so items read as passing behind the frame rather than
        being cut off by it. 48px was not enough travel: a word entering the
        frame was still at full opacity while half of it was still outside, so
