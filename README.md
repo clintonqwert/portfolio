@@ -89,6 +89,19 @@ It binds to `127.0.0.1` only, because it writes source files. It is a
 standalone script — nothing in `src/` imports it, so the production bundle and
 the performance budget are untouched.
 
+**Pick element** mode answers "what am I actually changing?". Click anything in
+the preview and the panel names it, shows its box, and lists *only* the tokens
+that element's own cascade reads — each one editable in place. A breadcrumb
+climbs to the parent, since a click lands on the deepest node rather than the
+card containing it.
+
+Select a deck tile and it also reports its grid position. Dragging the tile's
+right or bottom edge snaps it to whole grid tracks, and because placement is a
+Tailwind class rather than a token, the panel works out the class change
+(`lg:col-end-7` to `lg:col-end-9`) and writes that one token into `deck.tsx`.
+It sends the single changed class, not the rendered `className`, and the
+endpoint refuses unless that string appears exactly once in the file.
+
 Tokens are only adjustable if something reads them: `--radius-lg` and
 `--surface-border` are consumed by `.panel` and `.tile` for exactly this
 reason. A control that moves a value nothing references is worse than no

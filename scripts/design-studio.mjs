@@ -139,6 +139,25 @@ function save(payload) {
   return changed;
 }
 
+/**
+ * Swap one class string for another in a source file.
+ *
+ * Grid placement is Tailwind classes in JSX, not a token, so a tile resized by
+ * dragging cannot be saved through the token path. This replaces the exact
+ * class string instead — and refuses unless it appears exactly once, because a
+ * near-miss in a file like deck.tsx is a silent layout change somewhere else.
+ */
+function applyClass({ file, from, to }) {
+  const allowed = ["src/components/home/deck.tsx", "src/components/home/tile.tsx"];
+  if (!allowed.includes(file)) throw new Error(`refusing to edit ${file}`);
+  const src = readFileSync(file, "utf8");
+  const hits = src.split(from).length - 1;
+  if (hits === 0) throw new Error("class string not found — edit it by hand");
+  if (hits > 1) throw new Error(`class string appears ${hits} times — too ambiguous to edit safely`);
+  writeFileSync(file, src.replace(from, to));
+  return { file, hits };
+}
+
 /** The checks that would gate this change in CI, run immediately. */
 async function verify() {
   const results = [];
@@ -196,6 +215,17 @@ const PANEL = /* html */ `<!doctype html>
   #log { padding: 8px 14px; font: 11px ui-monospace, Menlo, monospace; white-space: pre-wrap;
          border-top: 1px solid var(--ui-line); max-height: 140px; overflow-y: auto; color: var(--ui-muted); }
   iframe { width: 100%; height: 100%; border: 0; display: block; background: #fff; }
+  .none { color: var(--ui-muted); font-size: 11.5px; padding: 10px 0; }
+  .who { font: 11.5px ui-monospace, Menlo, monospace; word-break: break-all;
+         padding: 8px 0 10px; border-bottom: 1px solid var(--ui-line); }
+  .who b { display: block; font-size: 12.5px; margin-bottom: 3px; }
+  .metric { display: grid; grid-template-columns: 1fr auto; gap: 6px; align-items: center;
+            padding: 3px 0; font: 11.5px ui-monospace, Menlo, monospace; }
+  .metric span:last-child { color: var(--ui-muted); }
+  .scrub { cursor: ew-resize; user-select: none; border-bottom: 1px dotted currentColor; }
+  .hint { font-size: 11px; color: var(--ui-muted); padding: 6px 0 0; line-height: 1.4; }
+  code { font: 11px ui-monospace, Menlo, monospace; background: color-mix(in srgb, currentColor 8%, transparent);
+         padding: 1px 4px; border-radius: 3px; }
 </style></head><body>
 <aside>
   <header>
@@ -206,7 +236,12 @@ const PANEL = /* html */ `<!doctype html>
       <button id="t-dark" aria-pressed="false">Dark</button>
     </div>
   </header>
+  <div class="seg" role="group" aria-label="Mode" style="padding:0 14px 10px">
+    <button id="m-tokens" aria-pressed="true">Tokens</button>
+    <button id="m-pick" aria-pressed="false">Pick element</button>
+  </div>
   <div class="scroll" id="fields"></div>
+  <div class="scroll" id="element" hidden></div>
   <div class="bar">
     <button id="revert">Revert</button>
     <button id="save" class="primary">Save to source</button>
@@ -295,7 +330,393 @@ function setTheme(next) {
 
 $("#t-light").addEventListener("click", () => setTheme("light"));
 $("#t-dark").addEventListener("click", () => setTheme("dark"));
-$("#site").addEventListener("load", () => { setTheme(theme); apply(); });
+$("#site").addEventListener("load", () => { setTheme(theme); apply(); wirePicker(); selected = null; if (picking) renderElement(); });
+
+
+// ── pick mode ───────────────────────────────────────────────────────────────
+// The reason this exists: a token list tells you a value but not what it does.
+// Pick an element and the panel names it, shows its box, and lists only the
+// tokens that element's own cascade actually reads.
+
+let picking = false, selected = null, justDragged = false;
+
+function overlay(doc, id, style) {
+  let el = doc.getElementById(id);
+  if (!el) {
+    el = doc.createElement("div");
+    el.id = id;
+    el.style.cssText =
+      "position:absolute;pointer-events:none;z-index:2147483646;" + style;
+    doc.body.append(el);
+  }
+  return el;
+}
+
+function place(box, r, doc) {
+  const sx = doc.defaultView.scrollX, sy = doc.defaultView.scrollY;
+  box.style.left = r.left + sx + "px";
+  box.style.top = r.top + sy + "px";
+  box.style.width = r.width + "px";
+  box.style.height = r.height + "px";
+}
+
+/** Custom properties this element's matched rules actually reference. */
+function tokensFor(el, doc) {
+  const found = new Set();
+  for (const sheet of doc.styleSheets) {
+    let rules;
+    try { rules = sheet.cssRules; } catch { continue; }
+    for (const rule of rules) walkRule(rule, el, found);
+  }
+  return [...found].sort();
+}
+function walkRule(rule, el, found) {
+  // Test the selector BEFORE recursing. CSSStyleRule now carries its own
+  // (usually empty) cssRules list for CSS nesting, so an "if (rule.cssRules)"
+  // guard returns before ever looking at selectorText — which silently skipped
+  // every style rule on the page and reported that nothing used any token.
+  if (rule.selectorText) {
+    let matches = false;
+    try { matches = el.matches(rule.selectorText); } catch { matches = false; }
+    // Doubled backslash on purpose: this lives inside the PANEL template
+    // literal, where \( would be eaten as an escape and leave an unterminated
+    // group. It took the whole panel script down with a parse error once.
+    if (matches) {
+      for (const m of rule.style.cssText.matchAll(/var\\((--[a-z0-9-]+)/g)) found.add(m[1]);
+    }
+  }
+  if (rule.cssRules) for (const r of rule.cssRules) walkRule(r, el, found);
+}
+
+/** A readable name for what was clicked, favouring the tokens' own classes. */
+function describe(el) {
+  const known = ["tile", "panel", "deck", "flow", "chip", "display", "marquee", "rail"];
+  const hit = known.filter((c) => el.classList.contains(c));
+  return el.tagName.toLowerCase() + (hit.length ? "." + hit.join(".") : "");
+}
+
+function renderElement() {
+  const host = $("#element");
+  host.innerHTML = "";
+  if (!selected) {
+    host.innerHTML = '<p class="none">Click anything in the preview to inspect it.</p>';
+    return;
+  }
+  const doc = $("#site").contentDocument;
+  const cs = doc.defaultView.getComputedStyle(selected);
+  const r = selected.getBoundingClientRect();
+
+  const who = document.createElement("div");
+  who.className = "who";
+  who.innerHTML = "<b>" + describe(selected) + "</b>" +
+    (selected.className ? String(selected.className).slice(0, 220) : "<i>no classes</i>");
+  host.append(who);
+
+  // A click lands on the deepest element, which is usually a label rather than
+  // the card it sits in. The breadcrumb climbs out without hunting for a gap
+  // between the child elements to click on.
+  const trail = document.createElement("div");
+  trail.className = "hint";
+  const chain = [];
+  for (let n = selected.parentElement; n && n.tagName !== "BODY"; n = n.parentElement) {
+    chain.push(n);
+    if (chain.length >= 4) break;
+  }
+  if (chain.length) {
+    trail.append("Select parent: ");
+    chain.forEach((n, i) => {
+      const a = document.createElement("button");
+      a.textContent = describe(n);
+      a.style.cssText = "flex:0 0 auto;padding:1px 6px;margin:2px 4px 0 0;font-size:11px;";
+      a.addEventListener("click", () => {
+        selected = n;
+        const d = $("#site").contentDocument;
+        const sel = d.getElementById("__studio-sel");
+        if (sel) { sel.style.display = "block"; place(sel, n.getBoundingClientRect(), d); }
+        renderElement();
+      });
+      trail.append(a);
+      if (i < chain.length - 1) trail.append("");
+    });
+  }
+  host.append(trail);
+
+  const fs = document.createElement("fieldset");
+  fs.innerHTML = "<legend>Box</legend>";
+  const metrics = [
+    ["size", Math.round(r.width) + " x " + Math.round(r.height)],
+    ["padding", cs.padding],
+    ["border-radius", cs.borderRadius],
+    ["font-size", cs.fontSize],
+    ["line-height", cs.lineHeight],
+    ["color", cs.color],
+  ];
+  for (const [k, v] of metrics) {
+    const row = document.createElement("div");
+    row.className = "metric";
+    row.innerHTML = "<span>" + k + "</span><span>" + v + "</span>";
+    fs.append(row);
+  }
+  host.append(fs);
+
+  const used = tokensFor(selected, doc);
+  const fs2 = document.createElement("fieldset");
+  fs2.innerHTML = "<legend>Tokens this element reads</legend>";
+  if (used.length === 0) {
+    const p = document.createElement("p");
+    p.className = "hint";
+    p.textContent =
+      "None. Its values are hard-coded Tailwind classes, not tokens — change them in the component, or promote them to tokens first.";
+    fs2.append(p);
+  }
+  for (const name of used) {
+    const g = data.groups.find((x) => name.startsWith(x.prefix));
+    const tok = g && g.tokens.find((t) => t.name === name);
+    if (!tok) continue;
+    const scope = g.themed ? theme : "light";
+    const row = document.createElement("div");
+    row.className = "row";
+    const lab = document.createElement("label");
+    // Qualified by group here, unlike the Tokens tab. In a mixed list "lg" and
+    // "border" could be a radius, a text size or a surface weight, and this
+    // panel exists precisely so you know what you are about to change.
+    lab.textContent = g.key + " \u00b7 " + tok.short;
+    lab.title = name;
+    const inp = document.createElement("input");
+    inp.type = "text";
+    inp.value = edits[scope][name] ?? (scope === "dark" ? tok.dark : tok.light);
+    inp.spellcheck = false;
+    inp.addEventListener("input", () => {
+      edits[scope][name] = inp.value;
+      apply();
+      sync();
+    });
+    const sw = document.createElement("span");
+    sw.className = "sw";
+    if (g.key === "color") sw.style.background = inp.value;
+    row.append(lab, inp, sw);
+    fs2.append(row);
+  }
+  host.append(fs2);
+
+  if (selected.classList.contains("tile")) host.append(gridPanel(selected, doc));
+}
+
+/**
+ * Grid resize. A tile's size is Tailwind placement classes in deck.tsx, not a
+ * token, so dragging cannot go through the save path — the panel works out the
+ * class change and applies it to source as an exact string swap.
+ */
+function gridPanel(el, doc) {
+  const fs = document.createElement("fieldset");
+  fs.innerHTML = "<legend>Grid span</legend>";
+  const deck = el.closest(".deck");
+  if (!deck) {
+    fs.innerHTML += '<p class="hint">Not inside the deck grid.</p>';
+    return fs;
+  }
+  const cs = doc.defaultView.getComputedStyle(deck);
+  const cols = cs.gridTemplateColumns.split(" ").length;
+  const rows = cs.gridTemplateRows.split(" ").length;
+  const es = doc.defaultView.getComputedStyle(el);
+  const p = document.createElement("p");
+  p.className = "hint";
+  p.innerHTML =
+    "Grid is <code>" + cols + " x " + rows + "</code>. This tile sits at column <code>" +
+    es.gridColumnStart + " / " + es.gridColumnEnd + "</code>, row <code>" +
+    es.gridRowStart + " / " + es.gridRowEnd + "</code>.<br>" +
+    "Drag its right or bottom edge in the preview to resize by whole grid tracks.";
+  fs.append(p);
+  const out = document.createElement("p");
+  out.className = "hint";
+  out.id = "grid-out";
+  fs.append(out);
+  return fs;
+}
+
+/** Keep the token tab's inputs in step when the element tab edits one. */
+function sync() {
+  if ($("#fields").hidden) return;
+  for (const g of data.groups) {
+    for (const t of g.tokens) {
+      const i = document.getElementById("f-" + t.name);
+      if (!i) continue;
+      const scope = g.themed ? theme : "light";
+      if (edits[scope][t.name] !== undefined) i.value = edits[scope][t.name];
+    }
+  }
+}
+
+function setMode(next) {
+  picking = next === "pick";
+  $("#m-tokens").setAttribute("aria-pressed", String(!picking));
+  $("#m-pick").setAttribute("aria-pressed", String(picking));
+  $("#fields").hidden = picking;
+  $("#element").hidden = !picking;
+  const doc = $("#site").contentDocument;
+  if (doc) {
+    const hov = doc.getElementById("__studio-hover");
+    if (hov) hov.style.display = "none";
+    doc.body.style.cursor = picking ? "crosshair" : "";
+  }
+  if (picking) renderElement();
+}
+
+$("#m-tokens").addEventListener("click", () => setMode("tokens"));
+$("#m-pick").addEventListener("click", () => setMode("pick"));
+
+function wirePicker() {
+  const doc = $("#site").contentDocument;
+  // The body check has to come before the flag. Called once at script end, the
+  // iframe often has no body yet; setting __studioWired first and then throwing
+  // in overlay() left the document marked as wired with no listeners on it, so
+  // picking silently did nothing depending on how fast the frame loaded.
+  if (!doc || !doc.body || doc.__studioWired) return;
+  doc.__studioWired = true;
+
+  const hover = overlay(doc, "__studio-hover",
+    "outline:1px dashed rgba(0,0,0,.45);background:rgba(0,120,255,.08);display:none;");
+  const sel = overlay(doc, "__studio-sel",
+    "outline:2px solid #0a84ff;display:none;");
+
+  doc.addEventListener("mousemove", (e) => {
+    if (!picking) return;
+    const el = e.target;
+    if (!el || el.id?.startsWith("__studio")) return;
+    hover.style.display = "block";
+    place(hover, el.getBoundingClientRect(), doc);
+  }, true);
+
+  doc.addEventListener("click", (e) => {
+    if (!picking) return;
+    e.preventDefault(); e.stopPropagation();
+    // A drag ends with a click wherever the pointer stopped, which is usually
+    // outside the tile being resized. Without this the selection jumped to the
+    // deck on mouseup and took the panel — including the Apply button — with it.
+    if (justDragged) { justDragged = false; return; }
+    selected = e.target;
+    sel.style.display = "block";
+    place(sel, selected.getBoundingClientRect(), doc);
+    renderElement();
+  }, true);
+
+  // Edge drag: snap the selected tile to whole grid tracks.
+  let drag = null;
+  doc.addEventListener("mousedown", (e) => {
+    if (!picking || !selected || !selected.classList.contains("tile")) return;
+    const r = selected.getBoundingClientRect();
+    const nearRight = Math.abs(e.clientX - r.right) < 8;
+    const nearBottom = Math.abs(e.clientY - r.bottom) < 8;
+    if (!nearRight && !nearBottom) return;
+    e.preventDefault();
+    drag = { edge: nearRight ? "right" : "bottom" };
+  }, true);
+
+  doc.addEventListener("mousemove", (e) => {
+    if (!drag || !selected) return;
+    const deck = selected.closest(".deck");
+    if (!deck) return;
+    const dr = deck.getBoundingClientRect();
+    const view = doc.defaultView;
+    const dcs = view.getComputedStyle(deck);
+    const track = (list, size) => {
+      const parts = list.split(" ").map(parseFloat);
+      const gap = parseFloat(dcs.gap) || 0;
+      let acc = 0, i = 0;
+      for (; i < parts.length; i++) { acc += parts[i] + gap; if (acc > size) break; }
+      return i + 2; // grid lines are 1-based and we want the closing line
+    };
+    if (drag.edge === "right") {
+      const line = track(dcs.gridTemplateColumns, e.clientX - dr.left);
+      selected.style.gridColumnEnd = String(Math.max(2, line));
+    } else {
+      const line = track(dcs.gridTemplateRows, e.clientY - dr.top);
+      selected.style.gridRowEnd = String(Math.max(2, line));
+    }
+    place(sel, selected.getBoundingClientRect(), doc);
+    reportGrid();
+  }, true);
+
+  doc.addEventListener("mouseup", () => {
+    if (drag) justDragged = true;
+    drag = null;
+  }, true);
+}
+
+/**
+ * Rewrite the last "variant:prop-N" class in a class string.
+ *
+ * Deliberately no regex. This code lives inside a template literal that is
+ * itself a JS string, so a pattern written as min-backslash-bracket survives one unescape
+ * and is eaten by the next — the earlier version compiled to min-[d+px] and
+ * matched nothing while looking correct. String work has no such trap.
+ *
+ * The last occurrence is the one rewritten: placement classes are written in
+ * ascending breakpoint order, so the last is the one winning at the width you
+ * are looking at.
+ */
+function lastPlacementToken(cls, prop) {
+  const needle = ":" + prop + "-";
+  let found = null;
+  for (const part of cls.split(" ")) {
+    const at = part.indexOf(needle);
+    if (at === -1) continue;
+    const tail = part.slice(at + needle.length);
+    if (tail === "" || !/^[0-9]+$/.test(tail)) continue;
+    found = part;
+  }
+  return found;
+}
+
+/** Show the class change a drag implies, and offer to write it. */
+function reportGrid() {
+  const out = document.getElementById("grid-out");
+  if (!out || !selected) return;
+  const doc = $("#site").contentDocument;
+  const es = doc.defaultView.getComputedStyle(selected);
+  const wanted = [];
+  if (selected.style.gridColumnEnd) wanted.push(["col-end", es.gridColumnEnd]);
+  if (selected.style.gridRowEnd) wanted.push(["row-end", es.gridRowEnd]);
+  if (wanted.length === 0) { out.textContent = ""; return; }
+  // Send the single class token that changed, not the rendered className.
+  // The rendered string carries what cn() prepends and is assembled across a
+  // ternary in source, so it never appears verbatim in the file — the endpoint
+  // correctly refused every time until this sent "lg:col-end-7" instead.
+  const cls = String(selected.className);
+  const changes = [];
+  for (const [prop, val] of wanted) {
+    const tok = lastPlacementToken(cls, prop);
+    if (!tok) continue;
+    const next = tok.slice(0, tok.lastIndexOf("-") + 1) + val;
+    if (next !== tok) changes.push([tok, next]);
+  }
+  if (changes.length === 0) {
+    out.innerHTML = '<span class="hint">Dragged, but no placement class to rewrite.</span>';
+    return;
+  }
+  out.innerHTML = "";
+  const pre = document.createElement("div");
+  pre.className = "hint";
+  pre.innerHTML = changes
+    .map(([f, t]) => "<code>" + f + "</code> to <code>" + t + "</code>")
+    .join("<br>");
+  const btn = document.createElement("button");
+  btn.textContent = "Apply to deck.tsx";
+  btn.style.marginTop = "6px";
+  btn.addEventListener("click", async () => {
+    const done = [];
+    for (const [f, t] of changes) {
+      const r = await fetch("/__studio/apply-class", {
+        method: "POST", headers: { "content-type": "application/json" },
+        body: JSON.stringify({ file: "src/components/home/deck.tsx", from: f, to: t }),
+      });
+      const j = await r.json();
+      done.push((j.ok ? "wrote " : "skipped ") + f + (j.ok ? "" : " (" + j.error + ")"));
+    }
+    log(done.join(" \u00b7 "));
+  });
+  out.append(pre, btn);
+}
 
 $("#revert").addEventListener("click", () => {
   edits.light = {}; edits.dark = {};
@@ -325,6 +746,7 @@ $("#save").addEventListener("click", async () => {
 });
 
 render();
+wirePicker();
 </script></body></html>`;
 
 const server = createServer(async (req, res) => {
@@ -353,6 +775,19 @@ const server = createServer(async (req, res) => {
     const checks = await verify();
     res.writeHead(200, { "content-type": "application/json" });
     return res.end(JSON.stringify({ changed, checks }));
+  }
+
+  if (url.pathname === "/__studio/apply-class" && req.method === "POST") {
+    const chunks = [];
+    for await (const c of req) chunks.push(c);
+    try {
+      const out = applyClass(JSON.parse(Buffer.concat(chunks).toString()));
+      res.writeHead(200, { "content-type": "application/json" });
+      return res.end(JSON.stringify({ ok: true, ...out }));
+    } catch (e) {
+      res.writeHead(200, { "content-type": "application/json" });
+      return res.end(JSON.stringify({ ok: false, error: String(e.message) }));
+    }
   }
 
   // Everything else is the site, proxied so the preview iframe is same-origin
