@@ -1,0 +1,462 @@
+@import "tailwindcss";
+
+/*
+  MIRROR RULE: these values are duplicated in src/lib/design-tokens.ts.
+  Nothing enforces the mirror — change both together.
+
+  Strategy: Committed. A dark slate rail carries the chrome across full viewport
+  height against a true neutral canvas. Canvas chroma is 0 — deliberately not a
+  warm near-white, which PRODUCT.md lists as an anti-reference.
+
+  Accent is the deep teal that predates this redesign. Identity preservation.
+*/
+@theme {
+  /*
+    ── monochrome ──────────────────────────────────────────────────────
+    Black ink, white paper, hairline rules, and solid black blocks for
+    emphasis. Taken from Clinton's own earlier design for this site, which is
+    strictly monochrome: colour enters only through photography, never through
+    the interface. That is the whole idea, so there is no accent hue here — a
+    link is distinguished by weight, case and rule, not by turning blue.
+  */
+  --color-canvas: oklch(1 0 0);
+  --color-panel: oklch(1 0 0);
+  --color-sunk: oklch(0.963 0 0);
+
+  /* Chrome. The rail is paper too, separated by a rule rather than a fill. */
+  --color-rail: oklch(1 0 0);
+  --color-rail-line: oklch(0.78 0 0);
+  --color-rail-ink: oklch(0.17 0 0);
+  --color-rail-muted: oklch(0.48 0 0);
+
+  /* ── text ──────────────────────────────────────────────────────────── */
+  --color-ink: oklch(0.17 0 0);
+  --color-muted: oklch(0.48 0 0);
+  --color-faint: oklch(0.52 0 0);
+
+  /*
+    ── structure ───────────────────────────────────────────────────────
+    Two weights of line, and the difference matters in this language: `line`
+    is the quiet hairline inside a panel, `rule` is the black structural edge
+    that frames one.
+  */
+  --color-line: oklch(0.80 0 0);
+  --color-rule: oklch(0.17 0 0);
+
+  /*
+    ── emphasis + states ───────────────────────────────────────────────
+    No accent hue. `signal` is ink, for a figure that was measured and is
+    worth stopping on; `pass` is grey, for a threshold that simply holds.
+    Monochrome does not mean meaning is lost — it means weight carries it.
+  */
+  --color-accent: oklch(0.17 0 0);
+  --color-accent-soft: oklch(0.945 0 0);
+  --color-accent-bright: oklch(0.17 0 0);
+  --color-pass: oklch(0.48 0 0);
+  --color-signal: oklch(0.17 0 0);
+
+  /* ── type ──────────────────────────────────────────────────────────── */
+  --font-display: var(--font-archivo), "Helvetica Neue", Arial, sans-serif;
+  --font-body: var(--font-archivo), "Helvetica Neue", Arial, sans-serif;
+  --font-mono: var(--font-plex-mono), ui-monospace, "SF Mono", Menlo, monospace;
+
+  /* ── type scale ─────────────────────────────────────────────────────
+     15px base at 1.5, a 1.25 ratio above it, and a dense 11-13px band below
+     for labels and data. */
+  --text-2xs: 11px;
+  --text-xs: 12px;
+  --text-sm: 13px;
+  --text-base: 15px;
+  --text-lg: 19px;
+  --text-xl: 23px;
+  --text-2xl: 29px;
+  --text-3xl: 37px;
+  --text-4xl: 46px;
+
+  /* ── spacing ─────────────────────────────────────────────────────── */
+  --space-1: 2px;
+  --space-2: 4px;
+  --space-3: 8px;
+  --space-4: 12px;
+  --space-5: 16px;
+  --space-6: 24px;
+  --space-7: 32px;
+  --space-8: 48px;
+
+  /*
+    ── radius ──────────────────────────────────────────────────────────
+    Square. The reference design has no rounded corner anywhere: every box is
+    a ruled rectangle. The tokens stay so the focus ring and the few genuinely
+    round things (the portrait, status dots) have something to ask for.
+  */
+  --radius-sm: 0px;
+  --radius-md: 0px;
+  --radius-lg: 0px;
+  --radius-xl: 0px;
+  --radius-2xl: 0px;
+
+  /*
+    ── surface ─────────────────────────────────────────────────────────
+    The weight of the line a panel is drawn with. A token rather than three
+    hard-coded 1px values, because in this design the rule *is* the panel —
+    there is no fill or shadow doing the work, so its weight is a decision
+    worth naming and changing in one place.
+  */
+  --surface-border: 1px;
+
+  /*
+    ── elevation ───────────────────────────────────────────────────────
+    A rule, not a shadow. Panels sit on the page rather than above it, which
+    is what makes the black lines read as drawn rather than as chrome.
+  */
+  --shadow-ring: inset 0 0 0 1px var(--color-line);
+  --shadow-hair: none;
+  --shadow-raise: none;
+  --shadow-lift: none;
+
+  /* ── motion ────────────────────────────────────────────────────────── */
+  --duration-instant: 140ms;
+  --duration-fast: 220ms;
+  --duration-normal: 340ms;
+  --duration-slow: 560ms;
+  --ease-out-quart: cubic-bezier(0.25, 1, 0.5, 1);
+
+  /* ── z-index scale ─────────────────────────────────────────────────── */
+  --z-sticky: 20;
+  --z-rail: 30;
+  --z-overlay: 40;
+  --z-skip: 60;
+}
+
+
+/*
+  Dark theme: the same drawing, inverted. Black paper, white ink, white
+  hairlines. Not a separate palette — in a monochrome system the inversion is
+  the honest move, and it is what the solid-black emphasis blocks become.
+  Both themes are contrast-checked independently by scripts/check-contrast.mjs.
+*/
+[data-theme="dark"] {
+  --color-canvas: oklch(0.145 0 0);
+  --color-panel: oklch(0.145 0 0);
+  --color-sunk: oklch(0.195 0 0);
+
+  --color-rail: oklch(0.145 0 0);
+  --color-rail-line: oklch(0.38 0 0);
+  --color-rail-ink: oklch(0.975 0 0);
+  --color-rail-muted: oklch(0.72 0 0);
+
+  --color-ink: oklch(0.975 0 0);
+  --color-muted: oklch(0.72 0 0);
+  --color-faint: oklch(0.665 0 0);
+
+  --color-line: oklch(0.36 0 0);
+  --color-rule: oklch(0.975 0 0);
+
+  --color-accent: oklch(0.975 0 0);
+  --color-accent-soft: oklch(0.255 0 0);
+  --color-accent-bright: oklch(0.975 0 0);
+  --color-pass: oklch(0.72 0 0);
+  --color-signal: oklch(0.975 0 0);
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    /* The rail is fixed; anchored sections must clear the mobile top bar. */
+    scroll-padding-top: 5rem;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+
+  body {
+    background-color: var(--color-canvas);
+    color: var(--color-ink);
+    font-family: var(--font-body);
+    /* 15px / 22.5px, from the supplied spec. Denser than the 16.5px/1.6 it
+       replaces, which is the point: more evidence per screen. */
+    font-size: var(--text-base);
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+    overflow-wrap: break-word;
+  }
+
+  h1,
+  h2,
+  h3 {
+    font-family: var(--font-display);
+    text-wrap: balance;
+  }
+
+  p {
+    text-wrap: pretty;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 3px;
+    border-radius: var(--radius-sm);
+  }
+
+  /* Focus on the dark rail needs the lifted accent to stay visible. */
+  .rail :focus-visible {
+    outline-color: var(--color-accent-bright);
+  }
+}
+
+@layer components {
+  /*
+    Panels are regions ruled off the page, not objects resting on it. A single
+    hairline and nothing else: no radius, no drop. The drawing is the design.
+  */
+  .panel {
+    background-color: var(--color-panel);
+    border-radius: var(--radius-lg);
+    box-shadow: inset 0 0 0 var(--surface-border) var(--color-line);
+  }
+
+  /*
+    The display face. Archivo's width axis pushed wide, tracked tight and set
+    heavy — square bowls and flat terminals, which is what the reference
+    headline type does. Applied by class rather than to h1 globally, because
+    prose headings inside a case study want the normal width.
+  */
+  .display {
+    font-family: var(--font-display);
+    font-variation-settings: "wdth" 118;
+    font-weight: 700;
+    letter-spacing: -0.03em;
+  }
+
+  /*
+    The same face at normal width for running headlines. The site's headline is
+    a full sentence; setting that in expanded caps would shout rather than
+    speak, which the reference never does — it reserves caps for single words.
+  */
+  .display-tight {
+    font-family: var(--font-display);
+    font-variation-settings: "wdth" 104;
+    font-weight: 700;
+    letter-spacing: -0.032em;
+  }
+
+  /*
+    A solid block of ink with the type knocked out of it. The reference uses
+    this for anything that must be obeyed rather than read — the resume button,
+    a section label, the page counter. Inverts cleanly in dark because the
+    whole palette does.
+  */
+  .chip {
+    background-color: var(--color-ink);
+    color: var(--color-canvas);
+  }
+
+  /*
+    A mono label column beside content. Grid children need min-width:0 or a wide
+    child (the assertion tables carry a min-width so their columns stay legible)
+    stretches the column and widens the document.
+  */
+  .datagrid {
+    display: grid;
+    grid-template-columns: 148px minmax(0, 1fr);
+    gap: 0 32px;
+    align-items: start;
+  }
+
+  .datagrid > * {
+    min-width: 0;
+  }
+
+  @media (max-width: 900px) {
+    .datagrid {
+      grid-template-columns: 1fr;
+      gap: 12px;
+    }
+  }
+
+  /*
+    Entrance enhances an already-visible default: content is never gated behind
+    a transition, so headless renderers and background tabs still show it.
+  */
+  @media (prefers-reduced-motion: no-preference) {
+    @supports (animation-timeline: view()) {
+      .rise {
+        animation: rise linear both;
+        animation-timeline: view();
+        animation-range: entry 0% entry 42%;
+      }
+    }
+  }
+
+  @keyframes rise {
+    from {
+      opacity: 0.4;
+      transform: translateY(14px);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+}
+
+@layer components {
+  /*
+    The dashboard occupies exactly one viewport at >=1024px and never scrolls.
+    Below that the tiles stack and the page scrolls normally — forcing a single
+    viewport onto a phone means either three tiles or unreadable type.
+  */
+  .deck {
+    display: grid;
+    gap: var(--space-3);
+  }
+
+  @media (min-width: 1024px) {
+    .deck {
+      /* Fills whatever the headline and marquee leave, rather than assuming the
+         viewport height itself — the bands above it are not fixed-height. */
+      min-height: 0;
+      flex: 1;
+      grid-template-columns: repeat(12, minmax(0, 1fr));
+      grid-auto-rows: minmax(0, 1fr);
+    }
+  }
+
+  /*
+    Tiles clip rather than push the grid taller. Any tile whose content can
+    exceed its cell scrolls internally — there is no page scroll to fall back on.
+  */
+  .tile {
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+    min-width: 0;
+    background-color: var(--color-panel);
+    border-radius: var(--radius-lg);
+    box-shadow: inset 0 0 0 var(--surface-border) var(--color-line);
+    transition: box-shadow var(--duration-fast) var(--ease-out-quart);
+  }
+
+  /*
+    A link tile does not lift — nothing here has height. Its hairline goes to
+    full ink instead, so the response is the drawing getting firmer. That reads
+    at a glance and costs no layout.
+  */
+  a.tile:hover,
+  a.tile:focus-visible {
+    box-shadow: inset 0 0 0 calc(var(--surface-border) + 0.5px) var(--color-rule);
+  }
+
+  /*
+    Detail prose flows into columns instead of scrolling: the panel fills with
+    text left-to-right, so a long passage fits one viewport without hiding any
+    of it. Clipping would have been the other way to stop the scroll, and it
+    makes the evidence unreadable.
+  */
+  .flow {
+    min-height: 0;
+    /* Narrower columns fit more of them in the panel before content spills. */
+    columns: 30ch auto;
+    column-gap: var(--space-5);
+    column-rule: 1px solid var(--color-line);
+    font-size: 0.9rem;
+    line-height: 1.55;
+  }
+
+  /*
+    Passages must be allowed to split across columns. Holding each one together
+    with break-inside:avoid means any passage taller than the column cannot be
+    placed, and it overflows the panel instead of reflowing — which is what
+    pushed /work/tadvantage 259px past its own width.
+
+    Headings keep their first lines instead, which is the part that actually
+    matters for reading.
+  */
+  .flow :is(h2, h3) {
+    break-after: avoid-column;
+    break-inside: avoid-column;
+  }
+
+  .flow p {
+    orphans: 2;
+    widows: 2;
+  }
+
+  @media (max-width: 1023px) {
+    .flow {
+      columns: 1;
+    }
+  }
+}
+
+@layer components {
+  /*
+    Marquee. The track holds two identical lists and translates by exactly -50%,
+    so the loop is seamless with no jump. Duration scales with content rather
+    than being a fixed number — a longer list at the same duration reads as a
+    blur.
+  */
+  .marquee {
+    /* Fade the ends so items read as passing behind the frame rather than
+       being cut off by it. 48px was not enough travel: a word entering the
+       frame was still at full opacity while half of it was still outside, so
+       it read as clipped text rather than as motion. */
+    -webkit-mask-image: linear-gradient(
+      to right,
+      transparent,
+      #000 112px,
+      #000 calc(100% - 112px),
+      transparent
+    );
+    mask-image: linear-gradient(
+      to right,
+      transparent,
+      #000 112px,
+      #000 calc(100% - 112px),
+      transparent
+    );
+  }
+
+  .marquee-track {
+    animation: marquee 46s linear infinite;
+    will-change: transform;
+  }
+
+  /* Pause on hover and on keyboard focus, so the strip can be read either way. */
+  .marquee:hover .marquee-track,
+  .marquee:focus-within .marquee-track {
+    animation-play-state: paused;
+  }
+
+  @keyframes marquee {
+    from {
+      transform: translateX(0);
+    }
+    to {
+      transform: translateX(-50%);
+    }
+  }
+
+  /*
+    Reduced motion: drop the animation rather than slowing it, and make the strip
+    an ordinary scroller so the content is still reachable.
+  */
+  @media (prefers-reduced-motion: reduce) {
+    .marquee {
+      overflow-x: auto;
+    }
+    .marquee-track {
+      animation: none;
+    }
+  }
+}

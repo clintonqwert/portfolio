@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 400" role="img" aria-label="Lighthouse scores placeholder">
+  <!-- Theme-neutral strokes only, so one asset reads on both surfaces. -->
+  <g fill="none" stroke="#8b959c" stroke-opacity=".5" stroke-width="7">
+    <circle cx="210" cy="200" r="84"/>
+    <circle cx="470" cy="200" r="84"/>
+    <circle cx="730" cy="200" r="84"/>
+    <circle cx="990" cy="200" r="84"/>
+  </g>
+  <g fill="none" stroke="#8b959c" stroke-opacity=".28" stroke-width="3">
+    <path d="M150 330h120M410 330h120M670 330h120M930 330h120"/>
+  </g>
+</svg>
