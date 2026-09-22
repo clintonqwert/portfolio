@@ -47,7 +47,10 @@ export default async function HistoryPage() {
           <h2 className="border-b border-line px-[12px] py-[8px] font-mono text-[0.64rem] uppercase tracking-[0.1em] text-accent">
             Tools
           </h2>
-          <div className="min-h-0 flex-1 overflow-hidden px-[12px] py-[12px]">
+          {/* Scrolls like Track Record beside it. The stack list grew when the
+              Convertus material landed, and a reference list that silently
+              drops its last group is worse than one you scroll. */}
+          <div className="min-h-0 flex-1 overflow-y-auto px-[12px] py-[12px]">
             <StackGrid groups={groups} />
           </div>
         </section>

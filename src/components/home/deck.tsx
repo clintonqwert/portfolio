@@ -76,7 +76,7 @@ export function Deck({
 
       {/* ── main ─────────────────────────────────────────────────────── */}
       <div className="deck lg:[grid-template-rows:repeat(8,minmax(0,1fr))]">
-      {studies.map((study, i) => (
+      {studies.filter((s) => s.onDeck !== false).map((study, i) => (
         <Tile
           key={study.slug}
           label={study.name}

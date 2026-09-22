@@ -100,6 +100,15 @@ export interface CaseStudy {
   stats: Stat[];
   passages: Passage[];
   /**
+   * Set false to keep a study off the dashboard.
+   *
+   * The deck is exactly one viewport tall with three case-study cells assigned
+   * by position; a fourth would collide with the third. A study that is a
+   * chapter of another one reaches readers through the rail and through its
+   * parent study instead, which costs it nothing.
+   */
+  onDeck?: boolean;
+  /**
    * A footer caveat for the dashboard tile. Separate from `stats` because a
    * study can have both: Tadvantage has six and a half years worth quoting and
    * no adoption figures, and the tile used to be able to show only one of those.

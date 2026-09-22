@@ -108,45 +108,66 @@ const CASE_STUDIES: readonly CaseStudy[] = [
     name: "Tadvantage",
     headline: "Six years on a dealer platform, and the parts I put my name on",
     summary:
-      "The platform behind dealer websites \u2014 built at Convertus, carried through the acquisition into AutoSync. I authored its SEO subsystem and co-built myGarage.",
+      "The platform behind dealer websites \u2014 built at Convertus, carried through the acquisition into AutoSync. Top all-time contributor across six and a half years.",
     period: "6.5 years \u00b7 Convertus \u2192 AutoTrader",
     liveUrl: "autosyncmotors.com",
     // Proprietary — Convertus / AutoTrader internal platform.
     repoUrl: null,
     role: "Full-stack engineer",
-    stack: ["Vue.js", "PHP", "Node.js", "MySQL", "AWS RDS", "WordPress", "WP-CLI"],
-    // No adoption or engagement figures were ever collected — see the last
-    // passage, and the note below. What can be stated is tenure, which is a
-    // signal in its own right and was previously invisible on the dashboard.
-    stats: [
-      { value: "6.5 yrs", label: "Convertus \u2192 AutoTrader" },
-      { value: "2 companies", label: "One platform" },
+    stack: [
+      "PHP",
+      "WordPress Multisite",
+      "Vue.js",
+      "Node.js",
+      "MySQL",
+      "Redis Cluster",
+      "WP-CLI",
+      "PHPUnit",
     ],
-    note: "No adoption figures \u2014 the events were never instrumented. The case is the architecture.",
+    stats: [
+      { value: "1,682", label: "Commits \u2014 #1 of 100+ engineers" },
+      { value: "358", label: "Merged pull requests" },
+    ],
+    // The only unverifiable figures on this site, and the note that says so.
+    // A private repository cannot be clicked through; pretending otherwise
+    // would undo the credibility the rest of the page is built on.
+    note: "Counted from the repository\u2019s own history \u2014 private, so this is the one thing here you cannot click through and check.",
     passages: [
       {
+        heading: "What it is",
         paragraphs: [
-          "Tadvantage is the platform dealer websites ran on \u2014 Vue for the interactive surfaces, PHP and WordPress underneath, MySQL for inventory, WP-CLI for deployment. Six and a half years on it: built at Convertus, continued after the AutoTrader acquisition where it served AutoSync dealer sites. It is a large codebase with many authors, so what follows is the work that carries my name in the source.",
+          "Tadvantage \u2014 Achilles internally \u2014 is the WordPress multisite platform behind Convertus dealer websites: ten OEM and dealer-group themes, thirty-five-plus custom plugins covering inventory, showroom, pricing, SEO, integrations and analytics, with Vue on the interactive surfaces and PHP underneath. Convertus is part of Trader Corporation, the company behind AutoTrader.ca.",
         ],
       },
       {
-        heading: "The SEO subsystem",
+        heading: "Where I sat in it",
         paragraphs: [
-          "On a dealer site, search visibility is not a marketing concern \u2014 it is how inventory gets found at all. I wrote the layer that made it machine-readable: Vehicle and AutoDealer structured data extending Yoast\u2019s schema graph API, pulling live specifications from the VRS and VMS services; the website, webpage and breadcrumb graph pieces; custom vehicle sitemaps injected into the Yoast sitemap index and split between new and used detail pages; and the canonical, meta and robots handling underneath it.",
-          "That last part is the unglamorous half. A dealer site generates a detail page per vehicle and a search page per filter combination \u2014 without deliberate canonicalisation you publish a self-competing index.",
+          "I was the top all-time contributor: 1,682 commits and 358 merged pull requests on a codebase with more than a hundred engineers in its history. 253 tickets, 177 release commits, 39 hotfixes. That count starts in January 2019 rather than at my start date, because my first couple of months went in under a colleague\u2019s pull requests. I owned production releases from v3 through v12.7 and merged the French translations for most of them.",
+          "Those figures come from the repository\u2019s own history. It is private, so unlike everything else on this site you cannot click through and check it \u2014 I can walk you through it on a call.",
         ],
       },
       {
-        heading: "myGarage, and why it lives outside WordPress",
+        heading: "Pricing, which is where the risk is",
         paragraphs: [
-          "Shoppers browse dozens of vehicles across several sessions before contacting anyone, but the site treated each visit as disconnected. The constraint underneath the feature is the interesting part: hold a customer\u2019s intent steady while the inventory it points at moves independently. Vehicles sell, prices change, specifications get corrected \u2014 a saved list that snapshots the car is wrong within a week.",
-          "So the garage stores a reference, not a copy: an advertisement ID against a user, with timestamps. And it lives in its own AWS RDS database rather than in any one site\u2019s WordPress tables, which is what lets a garage persist across the dealer sites on the platform instead of being trapped in whichever one the shopper landed on. Four tables carry it \u2014 saved vehicles, viewed history, price alerts, and a user record keyed to the platform\u2019s VMS identity. Co-built with a colleague.",
+          "A price appears in more places than anyone expects: four search-result card versions, the vehicle detail page, the quick view, the inventory carousel, and a calculator with cash, finance and lease tabs. If any one of them disagrees with another, the customer stops trusting the number and the dealer carries the compliance risk. I built Canada\u2019s federal luxury tax through all of them, behind a feature flag so it could go out dealer by dealer.",
         ],
       },
       {
-        heading: "Price alerts, end to end",
+        heading: "Performance",
         paragraphs: [
-          "The alerts table stores the price at the moment a shopper set the alert alongside the current one. A Node.js service reads that difference and emails the buyer when a vehicle they were watching drops. A small system, but it spans a database, a WordPress plugin and a service \u2014 and it only works because the garage stored a reference to the vehicle rather than a snapshot of it. The decision that survives inventory churn is the same one that makes a price comparison meaningful.",
+          "I created the object-caching repository and put the platform on Object Cache Pro against shared Redis clusters \u2014 key prefixes, global groups, prefetching, connection timeouts \u2014 load-tested on a dedicated environment before it went near production. Later I rolled page caching out to the whole fleet with WP-CLI, excluding the inventory and showroom routes that can never be served stale, wired into the deploy scripts so every new site got it automatically.",
+        ],
+      },
+      {
+        heading: "Integrations",
+        paragraphs: [
+          "CARFAX v3 with Auth0 token generation. Ford Model E inventory and OEM window stickers. Motocommerce build-and-price with deep links carrying colour and trim. Honda, Lincoln and Jeep showroom mapping. Hyundai Roadster. Dealer data feeds to Shift Digital and CarGurus over SFTP.",
+        ],
+      },
+      {
+        heading: "The unglamorous half",
+        paragraphs: [
+          "I built the SEO foundation \u2014 inventory sitemaps in English and French, Product and Breadcrumb schema with VIN as the identifier, canonical handling across the detail page, the search page and the print view \u2014 and maintained a fork of Yoast carrying inventory sitemap support through three major versions. I also built the Bill S-211 compliance pages that publish themselves to every dealer site in both languages, because a legal requirement nobody configures by hand is a legal requirement that actually gets met.",
         ],
       },
       {
@@ -154,6 +175,53 @@ const CASE_STUDIES: readonly CaseStudy[] = [
         paragraphs: [
           "Inventory changes were polled; webhooks would have been more accurate and less wasteful. Some jQuery stayed for legacy integration rather than being migrated \u2014 it shipped faster and left debt, and both are true.",
           "Above all I would instrument it from day one. Save, remove and compare events were never measured, which is why this case study carries no adoption figures: the data to make that argument was not collected. That is the real cost of shipping a feature before deciding how you will know whether it worked.",
+        ],
+      },
+    ],
+  },
+  {
+    slug: "luxury-tax",
+    name: "Luxury tax",
+    headline: "A tax that had to be right in eleven places at once",
+    summary:
+      "Canada\u2019s luxury tax, built through every surface a price appears on, behind a flag so it could go dealer by dealer.",
+    period: "Dec 2024 \u2013 Jan 2025",
+    liveUrl: null,
+    repoUrl: null,
+    role: "Full-stack engineer",
+    stack: ["PHP", "WordPress", "Vue.js", "Optimizely", "WP-CLI", "PHPUnit", "Jest"],
+    /*
+      Kept off the dashboard. The deck is exactly one viewport tall and its
+      three case-study cells are already assigned; a fourth would either
+      collide with the third or shrink all of them. This study reaches readers
+      through the rail and through the Tadvantage study it belongs to, which
+      costs it nothing — it is a chapter of that platform, not a rival to it.
+    */
+    onDeck: false,
+    stats: [],
+    passages: [
+      {
+        heading: "The problem",
+        paragraphs: [
+          "Canada\u2019s Select Luxury Items Tax applies above a price threshold, and a dealer site has to show it consistently everywhere a price or a payment appears. That is four search-result card versions, the vehicle detail page, the quick view, the inventory carousel, the calculator\u2019s cash, finance and lease tabs, and GM Digital Retailing. Any one of them disagreeing with another is a customer who stops believing the number and a dealer carrying compliance risk. An older \u201cdisable luxury tax\u201d toggle made the existing behaviour harder to reason about than the tax itself.",
+        ],
+      },
+      {
+        heading: "What I built",
+        paragraphs: [
+          "Central configuration for the tax rules with a WP-CLI manager, so settings could be changed across the network rather than site by site. Tax-aware pricing through every card version, the detail pages, the carousel and the calculator. French throughout. Unit tests over the configuration, the utilities and the card rendering.",
+        ],
+      },
+      {
+        heading: "Rolling it out",
+        paragraphs: [
+          "I replaced the old toggle with an Optimizely-targeted flag so it could go live for specific dealers rather than the whole fleet at once. It shipped in the 11.8 release, and four edge cases surfaced in the week after: price breakdowns that did not sum to the final price, a lease display on one card version, a finance payment that disagreed between card and calculator, and the tax missing from the calculator\u2019s total cash price. All four went out as patch releases that same week.",
+        ],
+      },
+      {
+        heading: "What that week taught me",
+        paragraphs: [
+          "Shipping behind a flag is not the same as shipping carefully. The flag limited who saw the bugs; it did not stop me writing them. What found them was production traffic hitting combinations the tests did not have \u2014 which is an argument for shipping to a small group early, not for testing less.",
         ],
       },
     ],

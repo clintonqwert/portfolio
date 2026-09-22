@@ -55,7 +55,7 @@ export async function getAutoTraderPassages(): Promise<Passage[]> {
     {
       heading: "What I cannot tell you",
       paragraphs: [
-        "I want to be precise about what I can and cannot tell you there. I did not own the dashboards and I did not keep the figures when I left, so I have no percentage to quote and I am not going to invent one. What I can describe exactly is the failure mode before and its absence afterwards. On a page that ends with a table of my own unfixed gaps, a number I cannot source is worth less than a mechanism I can explain.",
+        "I want to be precise about what I can and cannot tell you there. I can count what I wrote, because the repository counts it for me. I cannot tell you what it did to page speed or to conversion: I did not own those dashboards and I did not take the figures with me. So there is no percentage here and I am not going to invent one. What I can describe exactly is the failure mode before and its absence afterwards. On a page that ends with a table of my own unfixed gaps, a number I cannot source is worth less than a mechanism I can explain.",
       ],
     },
     {

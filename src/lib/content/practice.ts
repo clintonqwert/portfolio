@@ -136,21 +136,36 @@ export async function getSkillMarquee(): Promise<string[]> {
 /** Tools, grouped. Current and prior-role. */
 export async function getStackGroups(): Promise<StackGroup[]> {
   return [
-    { name: "Languages", items: "TypeScript, JavaScript, PHP, Python, SQL" },
+    { name: "Languages", items: "TypeScript, JavaScript, PHP, Python, SQL, Bash" },
     {
       name: "Frontend",
       items:
-        "React 19, Next.js App Router and Server Components, Vue.js, Tailwind CSS, design tokens, SCSS, WCAG accessibility",
+        "React 19, Next.js App Router and Server Components, Vue.js (Vuex, Vue Router), Tailwind CSS, design tokens, SCSS, Webpack, WCAG accessibility",
     },
     {
       name: "Backend",
       items:
-        "Node.js, REST APIs, React Server Actions, MySQL, PostgreSQL, Redis, Zod validation",
+        "Node.js, Express, REST APIs, React Server Actions, WordPress Multisite and WP-CLI, MySQL, PostgreSQL, MongoDB, Redis Cluster, Zod validation",
+    },
+    {
+      name: "Performance",
+      items:
+        "Object Cache Pro, WP Rocket, object and page caching strategy, k6 load testing, New Relic, Core Web Vitals and performance budgets",
     },
     {
       name: "Cloud & DevOps",
       items:
-        "AWS, Vercel, Docker, Cloudflare, GitHub Actions, CI/CD, Core Web Vitals and performance budgets",
+        "AWS (CodeDeploy, S3), Vercel, Docker, Cloudflare, GitHub Actions, Bitbucket Pipelines, Jenkins, CI/CD",
+    },
+    {
+      name: "Quality",
+      items:
+        "PHPUnit, Jest, SonarQube, Veracode, ESLint, PHPCS, Composer, code review",
+    },
+    {
+      name: "Integrations",
+      items:
+        "CARFAX, Auth0, Optimizely, ChromeData, Slack API, SFTP, Nodemailer, SOAP and REST partner feeds",
     },
     {
       name: "AI & automation",
@@ -160,7 +175,8 @@ export async function getStackGroups(): Promise<StackGroup[]> {
     {
       name: "Practice",
       items:
-        "Architecture guardrails, decision records, code review, technical SEO, Agile and Scrum, mentoring",
+        "Architecture guardrails, decision records, release ownership, technical SEO, EN/FR internationalization, Agile and Scrum, mentoring",
     },
   ];
 }
+
