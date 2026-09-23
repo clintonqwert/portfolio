@@ -16,7 +16,7 @@ import { writeFileSync } from "node:fs";
 import * as si from "simple-icons";
 
 /** Skill label as it appears in the marquee → simple-icons slug. */
-const MAP = {
+export const MAP = {
   TypeScript: "typescript",
   React: "react",
   "Next.js": "nextdotjs",
@@ -42,6 +42,9 @@ const MAP = {
 
 const key = (slug) => "si" + slug.charAt(0).toUpperCase() + slug.slice(1);
 
+// Importing this module must not write anything — check-logos.mjs imports MAP.
+const RUN = import.meta.url === `file://${process.argv[1]}`;
+
 const entries = [];
 for (const [label, slug] of Object.entries(MAP)) {
   const icon = si[key(slug)];
@@ -53,7 +56,7 @@ const body = entries
   .map(([label, path]) => `  ${JSON.stringify(label)}: ${JSON.stringify(path)},`)
   .join("\n");
 
-writeFileSync(
+if (RUN) writeFileSync(
   "src/lib/logos.ts",
   `/**
  * Brand marks, keyed by the skill label they belong to.
@@ -73,4 +76,4 @@ ${body}
 `,
 );
 
-console.log(`wrote src/lib/logos.ts — ${entries.length} marks`);
+if (RUN) console.log(`wrote src/lib/logos.ts — ${entries.length} marks`);

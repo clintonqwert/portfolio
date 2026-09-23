@@ -19,7 +19,13 @@ export function SiteRail({ links }: { links: NavLink[] }) {
   return (
     <>
       {/* ── desktop rail ───────────────────────────────────────────────── */}
-      <div className="rail fixed inset-y-0 left-0 z-[var(--z-rail)] hidden w-[236px] flex-col justify-between border-r border-rail-line bg-rail px-[16px] py-[16px] lg:flex">
+      <div /* overflow-y-auto is the guarantee, not the polish. The rail is
+          position:fixed, so anything past the fold cannot be scrolled to —
+          at a 700px viewport that silently hid two of the five contact
+          links, and at 660px three of them. The portrait steps below cut
+          how often a scrollbar appears; this is what makes it impossible
+          to lose the links at any height. */
+        className="rail fixed inset-y-0 left-0 z-[var(--z-rail)] hidden w-[236px] min-h-0 flex-col justify-between overflow-y-auto border-r border-rail-line bg-rail px-[16px] py-[16px] lg:flex">
         <div>
           <ProfileCard />
 

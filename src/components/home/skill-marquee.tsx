@@ -1,8 +1,14 @@
 import { LOGOS } from "@/lib/logos";
 
-/** Stable element id for a mark, derived from its label. */
+/**
+ * Stable element id for a mark.
+ *
+ * Namespaced because these ids are document-global: a second SkillMarquee on
+ * one page would duplicate every one of them and <use> would silently resolve
+ * to whichever came first.
+ */
 const symbolId = (skill: string) =>
-  "logo-" + skill.toLowerCase().replace(/[^a-z0-9]+/g, "-");
+  "skill-logo-" + skill.toLowerCase().replace(/[^a-z0-9]+/g, "-");
 
 /**
  * Skills marquee.

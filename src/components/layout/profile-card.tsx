@@ -28,7 +28,6 @@ export function ProfileCard() {
         width={208}
         height={208}
         priority
-        sizes="208px"
         className="portrait shrink-0 bg-sunk object-cover object-top shadow-[inset_0_0_0_1px_var(--color-rail-line)]"
       />
 

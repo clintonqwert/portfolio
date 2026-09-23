@@ -46,6 +46,11 @@ const VIEWPORTS = [
   { name: "1440x900", width: 1440, height: 900 },
   { name: "1280x800", width: 1280, height: 800 },
   { name: "1024x768", width: 1024, height: 768 },
+  // Short and wide. Every other desktop entry scales height with width, so the
+  // suite never tested this shape — which is exactly what breaks a full-height
+  // fixed rail. A 1366x768 laptop is roughly this once browser chrome is gone,
+  // and at this height the rail was hiding two of its five contact links.
+  { name: "1440x700", width: 1440, height: 700 },
   { name: "375x812", width: 375, height: 812 },
 ];
 
@@ -133,6 +138,21 @@ try {
             out.push(`buried ${el.scrollWidth}px in ${el.clientWidth}px [${label(el)}]`);
           }
         }
+        // Fixed panels that hide their own content. A position:fixed element
+        // cannot be scrolled by the page, so anything past its edge is
+        // unreachable unless it scrolls itself. The rail failed exactly this
+        // way and no tile-based check could see it: the rail is not a tile.
+        for (const el of document.querySelectorAll("*")) {
+          const cs = getComputedStyle(el);
+          if (cs.position !== "fixed") continue;
+          const over = el.scrollHeight - el.clientHeight;
+          if (over <= 2) continue;
+          const scrolls = ["auto", "scroll"].includes(cs.overflowY);
+          if (!scrolls) {
+            out.push(`unreachable +${over}px in fixed panel [${label(el)}]`);
+          }
+        }
+
         const de = document.documentElement;
         const wide = de.scrollWidth - de.clientWidth;
         if (wide > 2) out.push(`horizontal +${wide}px`);

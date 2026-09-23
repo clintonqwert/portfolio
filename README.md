@@ -21,7 +21,9 @@ npm run dev
 | `npm run lint` | ESLint, `next/core-web-vitals` + TypeScript |
 | `npm run check:claims` | Scans the content layer for retired claims |
 | `npm run check:contrast` | WCAG 2.2 AA on both palettes, plus opacity modifiers |
-| `npm run check:overflow` | Panel spill at three viewports; needs a server running |
+| `npm run check:overflow` | Panel spill and unreachable fixed panels, seven viewports; needs a server |
+| `npm run check:logos` | Skill logos match the generator and the skill list |
+| `npm run gen:logos` | Regenerate `src/lib/logos.ts` from simple-icons |
 
 `NEXT_PUBLIC_SITE_URL` is required. `src/lib/seo.ts` throws without it in
 production rather than emitting wrong canonical URLs silently.
