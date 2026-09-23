@@ -62,14 +62,16 @@ export const RESUME = {
 /**
  * Portrait.
  *
- * TO REPLACE: drop your photo at `public/portrait.jpg` and change `src` below to
- * "/portrait.jpg". Shoot or crop to 4:5 portrait; 1200×1500 or larger. The frame
- * renders it at up to 420px wide, so anything above 840px wide is wasted bytes.
+ * Square, because the rail frame is square — a 4:5 crop would only be cropped
+ * back to this. Shipped at 640px for a frame that renders 72px, which is ample
+ * at any device pixel ratio; the 2048px original is kept out of the repo in
+ * profile/, since a public repository carries every byte of it forever.
+ *
+ * TO REPLACE: overwrite public/portrait.jpeg and keep it square.
  */
 export const PORTRAIT = {
-  src: "/portrait-placeholder.svg",
+  src: "/portrait.jpeg",
   alt: "Clinton Jay Ramonida",
-  isPlaceholder: true,
 } as const;
 
 /**

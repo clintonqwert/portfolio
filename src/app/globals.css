@@ -251,6 +251,33 @@
   }
 
   /*
+    The portrait scales with the height available, not the width.
+
+    The rail has 78px of slack at a 768px viewport and 360px at 1050px, so a
+    single size is either timid on a large screen or overflows a small one.
+    These three steps were measured against that slack rather than chosen for
+    looking right in one window.
+  */
+  .portrait {
+    width: 128px;
+    height: 128px;
+  }
+
+  @media (min-height: 900px) {
+    .portrait {
+      width: 168px;
+      height: 168px;
+    }
+  }
+
+  @media (min-height: 1040px) {
+    .portrait {
+      width: 203px;
+      height: 203px;
+    }
+  }
+
+  /*
     A solid block of ink with the type knocked out of it. The reference uses
     this for anything that must be obeyed rather than read — the resume button,
     a section label, the page counter. Inverts cleanly in dark because the
