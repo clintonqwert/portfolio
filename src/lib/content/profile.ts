@@ -63,14 +63,18 @@ export const RESUME = {
  * Portrait.
  *
  * Square, because the rail frame is square — a 4:5 crop would only be cropped
- * back to this. Shipped at 640px for a frame that renders 72px, which is ample
- * at any device pixel ratio; the 2048px original is kept out of the repo in
- * profile/, since a public repository carries every byte of it forever.
+ * back to this. Shipped at 640px for a frame that renders at most 203px (the
+ * .portrait steps in globals.css top out there), which is ample at any device
+ * pixel ratio; the 2048px original is kept out of the repo, in
+ * profile/portrait-original.webp, since a public repository carries every
+ * byte of it forever.
  *
- * TO REPLACE: overwrite public/portrait.jpeg and keep it square.
+ * WebP over JPEG at the same 640px and visual quality: 17kB against 55kB.
+ *
+ * TO REPLACE: overwrite public/portrait.webp and keep it square.
  */
 export const PORTRAIT = {
-  src: "/portrait.jpeg",
+  src: "/portrait.webp",
   alt: "Clinton Jay Ramonida",
 } as const;
 
