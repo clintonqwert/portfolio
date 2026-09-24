@@ -19,19 +19,25 @@ export function SiteRail({ links }: { links: NavLink[] }) {
   return (
     <>
       {/* ── desktop rail ───────────────────────────────────────────────── */}
-      <div className="rail fixed inset-y-0 left-0 z-[var(--z-rail)] hidden w-[236px] flex-col justify-between border-r border-rail-line bg-rail px-[16px] py-[16px] lg:flex">
+      <div /* overflow-y-auto is the guarantee, not the polish. The rail is
+          position:fixed, so anything past the fold cannot be scrolled to —
+          at a 700px viewport that silently hid two of the five contact
+          links, and at 660px three of them. The portrait steps below cut
+          how often a scrollbar appears; this is what makes it impossible
+          to lose the links at any height. */
+        className="rail fixed inset-y-0 left-0 z-[var(--z-rail)] hidden w-[236px] min-h-0 flex-col justify-between overflow-y-auto border-r border-rail-line bg-rail px-4 py-4 lg:flex">
         <div>
           <ProfileCard />
 
-          <nav aria-label="Sections" className="mt-[16px] border-t border-rail-line pt-[12px]">
+          <nav aria-label="Sections" className="mt-4 border-t border-rail-line pt-3">
             <RailNav links={links} variant="rail" />
           </nav>
         </div>
 
-        <div className="border-t border-rail-line pt-[12px]">
+        <div className="border-t border-rail-line pt-3">
           {/* Availability, stated rather than buried — a reviewer should not
               have to hunt for whether this person is open to work. */}
-          <p className="mb-[12px] flex items-center gap-[8px] font-mono text-[0.64rem] text-rail-muted">
+          <p className="mb-3 flex items-center gap-2 meta text-rail-muted">
             <span aria-hidden="true" className="size-[6px] shrink-0 rounded-full bg-pass" />
             {AVAILABILITY}
           </p>
@@ -39,7 +45,7 @@ export function SiteRail({ links }: { links: NavLink[] }) {
           <a
             href={RESUME.href}
             download
-            className="chip display flex items-center justify-between gap-2 px-[12px] py-[8px] text-[0.72rem] uppercase tracking-[0.08em] no-underline transition-opacity duration-200 hover:opacity-80"
+            className="chip display flex items-center justify-between gap-2 px-3 py-2 text-2xs uppercase tracking-[0.08em] no-underline transition-opacity duration-200 hover:opacity-80"
           >
             Résumé
             <span aria-hidden="true">↓</span>
@@ -51,12 +57,12 @@ export function SiteRail({ links }: { links: NavLink[] }) {
             say invisible to the human being asked to verify.
           */}
           {/*
-            py-[8px] is a floor, not a rhythm choice: it is what keeps each link
+            py-2 is a floor, not a rhythm choice: it is what keeps each link
             above the 24px WCAG 2.2 target-size minimum at this type size. A
-            spacing-scale sweep once took it to py-[4px] — 23.3px — and only
+            spacing-scale sweep once took it to py-1 — 23.3px — and only
             Lighthouse caught it, because a token check cannot see geometry.
           */}
-          <ul className="mt-[8px] font-mono text-[0.64rem]">
+          <ul className="mt-2 font-mono text-3xs">
             {(
               [
                 [CONTACT_HREF.email, CONTACT.email],
@@ -68,7 +74,7 @@ export function SiteRail({ links }: { links: NavLink[] }) {
               <li key={href}>
                 <a
                   href={href}
-                  className="block truncate py-[8px] text-rail-muted no-underline transition-colors hover:text-accent-bright"
+                  className="block truncate py-2 text-rail-muted no-underline transition-colors hover:text-accent-bright"
                 >
                   {label}
                 </a>
@@ -80,9 +86,9 @@ export function SiteRail({ links }: { links: NavLink[] }) {
 
       {/* ── mobile bar ─────────────────────────────────────────────────── */}
       <header className="sticky top-0 z-[var(--z-rail)] border-b border-rail-line bg-rail lg:hidden">
-        <div className="flex items-center justify-between gap-[12px] px-[12px] py-[8px]">
+        <div className="flex items-center justify-between gap-3 px-3 py-2">
           <Link href="/" className="no-underline">
-            <span className="font-display text-[0.86rem] font-bold text-rail-ink">
+            <span className="font-display text-md font-bold text-rail-ink">
               {NAME}
             </span>
           </Link>
@@ -91,7 +97,7 @@ export function SiteRail({ links }: { links: NavLink[] }) {
             <a
               href={RESUME.href}
               download
-              className="chip display px-3 py-1.5 text-[0.66rem] uppercase tracking-[0.08em] no-underline"
+              className="chip display px-3 py-1.5 text-3xs uppercase tracking-[0.08em] no-underline"
             >
               Résumé ↓
             </a>

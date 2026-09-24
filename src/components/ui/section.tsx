@@ -61,7 +61,7 @@ export function Label({
   children?: React.ReactNode;
 }) {
   return (
-    <div className="pt-1 font-mono text-[0.68rem] uppercase leading-[1.75] tracking-[0.1em] text-faint">
+    <div className="pt-1 font-mono text-2xs uppercase leading-[1.75] tracking-[0.1em] text-faint">
       <b className="flex items-baseline gap-2 font-medium text-accent">
         {index ? (
           <span className="tabular-nums text-faint">{index}</span>
@@ -87,7 +87,7 @@ export function SectionHeading({
       className={cn(
         "font-display text-ink",
         Tag === "h3"
-          ? "text-[1.05rem] font-semibold leading-snug tracking-[-0.008em]"
+          ? "text-lg font-semibold leading-snug tracking-[-0.008em]"
           : "text-[clamp(1.6rem,3vw,2.15rem)] font-bold leading-[1.12] tracking-[-0.022em]",
         className,
       )}

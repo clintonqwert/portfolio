@@ -23,9 +23,9 @@ export default async function GapsPage() {
     // was unreachable and every consequence was cut mid-sentence, on the page
     // whose whole job is to show the weaknesses in full.
     <DetailView eyebrow="Open gaps" title="What I would fix first" lede={LEDE} raw>
-      <div className="tile min-h-0 overflow-auto px-[16px] py-[16px]">
+      <div className="tile min-h-0 overflow-auto px-4 py-4">
         <GapsTable rows={gaps} />
-        <p className="mt-[12px] max-w-[70ch] text-[0.92rem] italic text-muted">
+        <p className="mt-3 max-w-[70ch] text-base italic text-muted">
           Both sites are my own studio&rsquo;s work. I am looking for a senior role
           on a team where the standards are shared rather than self-imposed.
         </p>

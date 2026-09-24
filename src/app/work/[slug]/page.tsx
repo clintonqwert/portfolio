@@ -70,11 +70,11 @@ export default async function CaseStudyPage({
         ]}
         links={links}
         aside={
-          <div className="flex-1 overflow-y-auto p-[12px]">
+          <div className="flex-1 overflow-y-auto p-3">
             {/* The work, shown rather than only linked. Placeholder until the
                 real capture lands — see src/lib/content/assets.ts. */}
             {image ? (
-              <figure className="mb-[16px]">
+              <figure className="mb-4">
                 <Image
                   src={image.src}
                   alt={image.alt}
@@ -83,7 +83,7 @@ export default async function CaseStudyPage({
                   className="w-full rounded-md bg-sunk object-cover shadow-[inset_0_0_0_1px_var(--color-line)]"
                 />
                 {image.isPlaceholder ? (
-                  <figcaption className="mt-[4px] font-mono text-[0.62rem] text-faint">
+                  <figcaption className="mt-1 meta text-faint">
                     Screenshot pending
                   </figcaption>
                 ) : null}
@@ -91,20 +91,20 @@ export default async function CaseStudyPage({
             ) : null}
 
             {study.stats.length > 0 ? (
-              <p className="font-mono text-[0.64rem] uppercase tracking-[0.1em] text-accent">
+              <p className="label text-accent">
                 Measured
               </p>
             ) : null}
-            <div className="mt-[12px] space-y-[12px]">
+            <div className="mt-3 space-y-3">
               {study.stats.map((stat) => (
                 <Figure key={stat.label} stat={stat} size="sm" />
               ))}
             </div>
 
-            <p className="mt-[16px] font-mono text-[0.64rem] uppercase tracking-[0.1em] text-accent">
+            <p className="mt-4 label text-accent">
               Stack
             </p>
-            <ul className="mt-[8px] space-y-[2px] font-mono text-[0.72rem] text-muted">
+            <ul className="mt-2 space-y-0.5 meta text-2xs text-muted">
               {study.stack.map((tech) => (
                 <li key={tech}>{tech}</li>
               ))}
@@ -112,10 +112,10 @@ export default async function CaseStudyPage({
 
             {study.assertions ? (
               <>
-                <p className="mt-[16px] font-mono text-[0.64rem] uppercase tracking-[0.1em] text-accent">
+                <p className="mt-4 label text-accent">
                   Asserted on every PR
                 </p>
-                <dl className="mt-[8px] space-y-[4px] font-mono text-[0.68rem]">
+                <dl className="mt-2 space-y-1 font-mono text-2xs">
                   {study.assertions.rows.map((row) => (
                     <div key={row.name} className="flex justify-between gap-3">
                       <dt className="min-w-0 truncate text-muted">{row.name}</dt>

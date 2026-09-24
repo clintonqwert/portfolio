@@ -41,23 +41,23 @@ export function DetailView({
   raw?: boolean;
 }) {
   return (
-    <div className="flex flex-col gap-2 p-2 min-[1440px]:h-full">
-      <header className="tile shrink-0 px-[16px] py-[12px]">
-        <p className="font-mono text-[0.64rem] uppercase tracking-[0.12em] text-accent">
+    <div className="flex flex-col gap-2 p-2 wide:h-full">
+      <header className="tile shrink-0 px-4 py-3">
+        <p className="label tracking-[0.12em] text-accent">
           <Link href="/" className="no-underline hover:underline">
             Overview
           </Link>
           <span className="text-faint"> / {eyebrow}</span>
         </p>
-        <h1 className="mt-[8px] max-w-[24ch] font-display text-[clamp(1.6rem,3vw,2.4rem)] font-bold leading-[1.08] tracking-[-0.025em] text-ink">
+        <h1 className="mt-2 max-w-[24ch] font-display text-[clamp(1.6rem,3vw,2.4rem)] font-bold leading-[1.08] tracking-[-0.025em] text-ink">
           {title}
         </h1>
         {lede ? (
-          <p className="mt-[8px] max-w-[70ch] text-[0.92rem] leading-snug text-muted">{lede}</p>
+          <p className="mt-2 max-w-[70ch] text-base leading-snug text-muted">{lede}</p>
         ) : null}
 
         {meta || links ? (
-          <div className="mt-[12px] flex flex-wrap items-center gap-x-[16px] gap-y-[4px] font-mono text-[0.68rem]">
+          <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-1 font-mono text-2xs">
             {meta?.map((m) => (
               <span key={m.label} className="text-faint">
                 <span className="uppercase tracking-[0.08em]">{m.label}</span>{" "}
@@ -84,7 +84,7 @@ export function DetailView({
       <div
         className={cn(
           "grid min-h-0 flex-1 gap-2",
-          aside ? "min-[1440px]:grid-cols-[minmax(0,1fr)_320px]" : "",
+          aside ? "wide:grid-cols-[minmax(0,1fr)_320px]" : "",
         )}
       >
         {raw ? (
@@ -93,7 +93,7 @@ export function DetailView({
           <div className="tile min-h-0">
             {/* Columns, not scroll: the prose fills the panel across rather
                 than running past its bottom edge. */}
-            <div className="flow flex-1 px-[16px] py-[16px] text-muted">
+            <div className="flow flex-1 px-4 py-4 text-muted">
               {children}
             </div>
           </div>

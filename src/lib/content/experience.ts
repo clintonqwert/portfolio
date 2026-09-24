@@ -29,13 +29,18 @@ export const PROJECT_OS_LEDE =
 /**
  * Short restatements of facts already published in the passages below, for the
  * dashboard tile. Same claims, fewer words — not new material.
+ *
+ * Four, and the tile renders four. A fifth was added and then sliced off when
+ * the skills strip took the height it needed, which left an entry in this file
+ * that shipped nowhere. The claim it made — Agile delivery on a shared codebase
+ * — is in the "How the work was run" passage below, which is where it reads
+ * properly anyway.
  */
 export const AUTOTRADER_POINTS = [
   "Custom in-house OOP PHP, not Laravel or Symfony",
   "Redis Object Cache Pro against AWS-hosted Redis",
   "Technical SEO where inventory discoverability is the product",
   "Mentored through code review and pair programming",
-  "Agile delivery on a shared codebase, not solo work",
 ];
 
 export async function getAutoTraderPassages(): Promise<Passage[]> {

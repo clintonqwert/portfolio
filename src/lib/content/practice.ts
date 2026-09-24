@@ -123,15 +123,25 @@ export async function getTrackRecord(): Promise<Role[]> {
  * a moving strip will actually catch.
  */
 export async function getSkillMarquee(): Promise<string[]> {
+  /*
+    Technologies only. This list used to mix tools with practices — "decision
+    records", "code review", "architecture guardrails" — which made the strip
+    read as a word cloud rather than a stack. Those are practices and they are
+    already stated as such on /history, where they can be explained rather than
+    skimmed.
+
+    Order is rough relevance, not alphabetical: the first few are what the
+    current work is built on, and a strip that scrolls is read from wherever it
+    happens to be, so the strongest names should not all sit together.
+  */
   return [
-    "TypeScript", "React 19", "Next.js App Router", "Node.js", "Server Components",
-    "React Server Actions", "Tailwind CSS", "Zod", "Vue.js", "PHP", "Python", "SQL",
-    "MySQL", "PostgreSQL", "Redis", "AWS", "Vercel", "Docker", "Cloudflare",
-    "GitHub Actions", "Lighthouse CI", "Core Web Vitals", "WCAG accessibility",
-    "Technical SEO", "Design tokens", "Claude API", "OpenAI API", "Structured outputs",
-    "Multi-agent pipelines", "Architecture guardrails", "Decision records", "Code review",
+    "TypeScript", "React", "Next.js", "Node.js", "Tailwind CSS", "Zod",
+    "Vue.js", "PHP", "Python", "MySQL", "PostgreSQL", "MongoDB", "Redis",
+    "WordPress", "AWS", "Vercel", "Docker", "Cloudflare", "GitHub Actions",
+    "Jest", "Lighthouse", "Claude", "OpenAI",
   ];
 }
+
 
 /** Tools, grouped. Current and prior-role. */
 export async function getStackGroups(): Promise<StackGroup[]> {

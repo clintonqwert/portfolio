@@ -5,7 +5,7 @@ import { CONTACT_HREF, LEDE, NAME, ROLE_TITLE } from "@/lib/content/profile";
 export const SITE_NAME = `${NAME} — ${ROLE_TITLE}`;
 export const SITE_DESCRIPTION = LEDE;
 
-const SITE_URL_FALLBACK = "https://clintonramonida.vercel.app";
+const SITE_URL_FALLBACK = "https://clintonramonida.ca";
 
 if (!process.env.NEXT_PUBLIC_SITE_URL && process.env.NODE_ENV === "production") {
   // Canonical URLs and JSON-LD silently become wrong rather than absent when the
