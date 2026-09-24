@@ -63,7 +63,7 @@ export function ThemeToggle({
             ? "Switch to light mode"
             : "Switch to dark mode"
       }
-      className={`inline-flex cursor-pointer items-center gap-2 rounded-sm px-2.5 py-1.5 font-mono text-[0.64rem] uppercase tracking-[0.08em] transition-colors duration-200 ${className ?? ""}`}
+      className={`inline-flex cursor-pointer items-center gap-2 rounded-sm px-2.5 py-1.5 font-mono text-3xs uppercase tracking-[0.08em] transition-colors duration-200 ${className ?? ""}`}
     >
       <svg
         aria-hidden="true"

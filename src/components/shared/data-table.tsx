@@ -17,7 +17,7 @@ function TableFrame({
   return (
     <div className="my-6 overflow-x-auto border border-line bg-panel">
       <table className="w-full border-collapse" style={{ minWidth }}>
-        <caption className="border-b border-line bg-sunk px-4 py-3 text-left font-mono text-[0.7rem] uppercase tracking-[0.1em] text-faint">
+        <caption className="border-b border-line bg-sunk px-4 py-3 text-left label text-2xs text-faint">
           {caption}
         </caption>
         {children}
@@ -27,8 +27,8 @@ function TableFrame({
 }
 
 const TH =
-  "border-b border-line px-4 py-2 text-left font-mono text-[0.68rem] uppercase tracking-[0.09em] text-faint font-normal";
-const TD = "border-b border-line px-4 py-3 align-top text-[0.92rem]";
+  "border-b border-line px-4 py-2 text-left font-mono text-2xs uppercase tracking-[0.09em] text-faint font-normal";
+const TD = "border-b border-line px-4 py-3 align-top text-base";
 
 export function AssertionTable({
   caption,
@@ -55,12 +55,12 @@ export function AssertionTable({
       <tbody>
         {rows.map((row) => (
           <tr key={row.name}>
-            <td className={`${TD} font-mono text-[0.84rem] text-ink`}>{row.name}</td>
-            <td className={`${TD} font-mono text-[0.84rem] text-muted`}>
+            <td className={`${TD} font-mono text-sm text-ink`}>{row.name}</td>
+            <td className={`${TD} font-mono text-sm text-muted`}>
               {row.threshold}
             </td>
             <td
-              className={`${TD} font-mono text-[0.84rem] ${
+              className={`${TD} font-mono text-sm ${
                 row.measured ? "text-signal" : "text-pass"
               }`}
             >
@@ -94,7 +94,7 @@ export function GapsTable({ rows }: { rows: Gap[] }) {
           <tr key={row.gap}>
             <th
               scope="row"
-              className={`${TD} font-mono text-[0.84rem] font-normal text-signal`}
+              className={`${TD} font-mono text-sm font-normal text-signal`}
             >
               {row.gap}
             </th>

@@ -31,16 +31,16 @@ export function ProfileCard() {
         className="portrait shrink-0 bg-sunk object-cover object-top shadow-[inset_0_0_0_1px_var(--color-rail-line)]"
       />
 
-      <div className="mt-[10px] flex items-start justify-between gap-2">
+      <div className="mt-2.5 flex items-start justify-between gap-2">
         <div className="min-w-0">
-          <p className="display text-[0.92rem] uppercase leading-[1.15] tracking-[0.02em] text-rail-ink">
+          <p className="display text-base uppercase leading-[1.15] tracking-[0.02em] text-rail-ink">
             {NAME}
             <span aria-hidden="true">.</span>
           </p>
-          <p className="mt-[2px] font-mono text-[0.62rem] uppercase leading-snug tracking-[0.09em] text-accent-bright">
+          <p className="mt-0.5 font-mono text-3xs uppercase leading-snug tracking-[0.09em] text-accent-bright">
             {ROLE_TITLE}
           </p>
-          <p className="mt-[2px] font-mono text-[0.64rem] text-rail-muted">{LOCATION}</p>
+          <p className="mt-0.5 meta text-rail-muted">{LOCATION}</p>
         </div>
         <ThemeToggle
           iconOnly

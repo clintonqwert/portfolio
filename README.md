@@ -67,15 +67,32 @@ scrolls, the prose panel does. Below 1024px the constraint is lifted and the
 page scrolls normally, because a single viewport on a phone means either three
 tiles or unreadable type.
 
+### CSS conventions
+
+Four class families, documented in full at the top of `src/app/globals.css`:
+**surface** (`.panel` `.tile` `.chip` `.rail`), **layout** (`.deck` `.flow`
+`.datagrid` `.marquee`), **type role** (`.display` `.label` `.meta`
+`.figure-value` `.figure-label`) and **media** (`.portrait`).
+
+A type role never sets colour — the same `.label` is accent on a tile head and
+faint in a figure — so colour stays a utility at the call site. A hyphen means
+"part of" (`.marquee-track`), never "variant of".
+
+Everything on a rhythm uses the scale. Arbitrary values are for genuine
+one-offs only and carry a comment saying why.
+
 ### Spacing
 
-A 4pt scale — 2 / 4 / 8 / 12 / 16 / 24 / 32 / 48, exposed as `--space-1` …
-`--space-8`. It replaced a Fibonacci run (3 / 5 / 8 / 13 / 21 / 34 / 55) in the
-2026-09-21 remodel: Fibonacci was coherent but loose at the top, and the design
-this now follows is dense at the small end, where ~1.6x steps are too coarse to
-be useful.
+Tailwind's scale on a 4px base unit (`--spacing`), so `p-2` is 8px and `gap-3`
+is 12px.
 
-One rule that is not a rhythm choice: the rail's contact links carry `py-[8px]`
+There used to be a second scale named `--space-1` … `--space-8`. It looked like
+the design system but no utility could reach it — `--space-*` is not a Tailwind
+namespace — so `p-3` never meant `--space-4`, and components wrote `p-[12px]`
+instead. That is where most of 238 arbitrary values came from. A token the
+framework cannot see is worse than no token, so there is one scale now.
+
+One rule that is not a rhythm choice: the rail's contact links carry `py-2`
 because anything less puts their touch target under the 24px WCAG 2.2 minimum.
 A scale sweep took them to 4px once and only Lighthouse noticed.
 

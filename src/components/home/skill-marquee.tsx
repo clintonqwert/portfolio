@@ -58,7 +58,7 @@ export function SkillMarquee({ skills }: { skills: string[] }) {
             {skills.map((skill) => (
               <li
                 key={skill}
-                className="relative flex shrink-0 items-center gap-[8px] whitespace-nowrap pr-[28px] after:absolute after:right-[14px] after:top-1/2 after:h-[14px] after:w-px after:-translate-y-1/2 after:bg-line after:content-['']"
+                className="relative flex shrink-0 items-center gap-2 whitespace-nowrap pr-7 after:absolute after:right-[14px] after:top-1/2 after:h-[14px] after:w-px after:-translate-y-1/2 after:bg-line after:content-['']"
               >
                 {LOGOS[skill] ? (
                   <svg
@@ -69,7 +69,7 @@ export function SkillMarquee({ skills }: { skills: string[] }) {
                     <use href={`#${symbolId(skill)}`} />
                   </svg>
                 ) : null}
-                <span className="font-mono text-[0.74rem] text-muted">{skill}</span>
+                <span className="font-mono text-xs text-muted">{skill}</span>
               </li>
             ))}
           </ul>

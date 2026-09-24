@@ -66,28 +66,26 @@ export const fonts = {
  * headings, and a dense 11–13px band below it for labels and metadata.
  */
 export const text = {
+  "3xs": "10px",
   "2xs": "11px",
   xs: "12px",
   sm: "13px",
+  md: "14px",
   base: "15px",
-  lg: "19px",
-  xl: "23px",
-  "2xl": "29px",
-  "3xl": "37px",
-  "4xl": "46px",
+  lg: "17px",
+  xl: "19px",
+  "2xl": "23px",
+  "3xl": "29px",
+  "4xl": "37px",
+  "5xl": "46px",
 } as const;
 
-/** 4pt spacing scale. */
-export const space = {
-  1: "2px",
-  2: "4px",
-  3: "8px",
-  4: "12px",
-  5: "16px",
-  6: "24px",
-  7: "32px",
-  8: "48px",
-} as const;
+/**
+ * Spacing is Tailwind's own scale on a 4px base unit: p-2 is 8px, gap-3 is
+ * 12px. Recorded here for reference, not for import — there is deliberately no
+ * second scale left to keep in sync.
+ */
+export const spacingBase = "4px";
 
 /** Corner radii. */
 export const radius = {

@@ -29,19 +29,19 @@ export function Tile({
   cta?: string;
 }) {
   const head = (
-    <div className="flex items-baseline justify-between gap-[8px] border-b border-line px-[12px] py-[8px]">
-      <span className="flex min-w-0 items-center gap-[8px] text-[0.66rem] uppercase tracking-[0.1em] text-ink">
+    <div className="flex items-baseline justify-between gap-2 border-b border-line px-3 py-2">
+      <span className="label flex min-w-0 items-center gap-2 text-ink">
         {/* The counter block, from the reference's page marker: ink with the
             number knocked out, rather than a faint grey numeral. */}
         {index ? (
-          <span className="chip shrink-0 px-[5px] py-[2px] font-mono text-[0.6rem] tabular-nums leading-none">
+          <span className="chip meta shrink-0 px-1.5 py-0.5 leading-none">
             {index}
           </span>
         ) : null}
         <span className="display truncate tracking-[0.08em]">{label}</span>
       </span>
       {cta ? (
-        <span className="shrink-0 font-mono text-[0.64rem] text-faint transition-colors group-hover:text-accent">
+        <span className="meta shrink-0 text-faint transition-colors group-hover:text-accent">
           {cta} →
         </span>
       ) : null}
@@ -51,7 +51,7 @@ export function Tile({
   const body = (
     <>
       {head}
-      <div className="flex min-h-0 flex-1 flex-col px-[12px] py-[12px]">{children}</div>
+      <div className="flex min-h-0 flex-1 flex-col px-3 py-3">{children}</div>
     </>
   );
 
@@ -72,15 +72,15 @@ export function Figure({ stat, size = "md" }: { stat: Stat; size?: "sm" | "md" }
     <div className="min-w-0">
       <div
         className={cn(
-          "font-mono font-medium leading-none tabular-nums tracking-[-0.025em] text-ink",
-          size === "sm" ? "text-[1.05rem]" : "text-[1.45rem]",
+          "figure-value text-ink",
+          size === "sm" ? "text-lg" : "text-2xl",
         )}
       >
         {stat.value}
       </div>
       {/* Clamped rather than truncated: at narrow widths a single line cut the
           labels to "PRERENDERED ROU…". Two lines still cannot overflow a cell. */}
-      <div className="mt-[4px] line-clamp-2 font-mono text-[0.6rem] uppercase leading-tight tracking-[0.07em] text-faint">
+      <div className="figure-label mt-1 line-clamp-2 text-faint">
         {stat.label}
       </div>
     </div>
@@ -115,7 +115,7 @@ export function TileShot({
         className="h-[var(--shot-h)] w-full rounded-md bg-sunk object-cover object-top shadow-[inset_0_0_0_1px_var(--color-line)]"
       />
       {image.isPlaceholder ? (
-        <figcaption className="mt-[2px] font-mono text-[0.58rem] text-faint">
+        <figcaption className="mt-0.5 meta text-faint">
           Screenshot pending
         </figcaption>
       ) : null}

@@ -62,7 +62,7 @@ export function RailNav({
               <Link
                 href={link.href}
                 aria-current={isActive ? "location" : undefined}
-                className={`block whitespace-nowrap px-2.5 py-1.5 font-display text-[0.78rem] font-medium uppercase tracking-[0.04em] no-underline transition-colors duration-200 ${
+                className={`block whitespace-nowrap px-2.5 py-1.5 font-display text-xs font-medium uppercase tracking-[0.04em] no-underline transition-colors duration-200 ${
                   isActive ? "chip" : "text-rail-muted"
                 }`}
               >
@@ -89,10 +89,10 @@ export function RailNav({
               href={link.href}
               aria-current={isActive ? "location" : undefined}
               aria-label={link.label}
-              // py-[6px] is a floor, not a rhythm choice: at this type size
+              // py-1.5 is a floor, not a rhythm choice: at this type size
               // anything less puts the row under the 24px WCAG 2.2 target
               // minimum. It shipped at 3px once and measured 22.8px.
-              className={`group relative flex items-baseline py-[6px] pl-[10px] no-underline transition-colors duration-200 ${
+              className={`group relative flex items-baseline py-1.5 pl-2.5 no-underline transition-colors duration-200 ${
                 isActive ? "text-rail-ink" : "text-rail-muted hover:text-rail-ink"
               }`}
             >
@@ -108,15 +108,15 @@ export function RailNav({
                 aria-hidden="true"
                 className={`font-display leading-none transition-colors ${
                   isActive
-                    ? "text-[1.18rem] font-bold text-rail-ink"
-                    : "text-[1.05rem] font-bold text-rail-ink"
+                    ? "text-xl font-bold text-rail-ink"
+                    : "text-lg font-bold text-rail-ink"
                 }`}
               >
                 {first}
               </span>
               <span
                 aria-hidden="true"
-                className={`font-display text-[0.74rem] uppercase leading-none tracking-[0.06em] ${
+                className={`font-display text-xs uppercase leading-none tracking-[0.06em] ${
                   isActive ? "font-semibold text-rail-ink" : "font-medium"
                 }`}
               >

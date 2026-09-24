@@ -33,39 +33,39 @@ export default async function HistoryPage() {
           earliest role off mid-word. */}
       <div className="grid min-h-0 gap-2 lg:grid-cols-[minmax(0,1.6fr)_minmax(0,1fr)_minmax(0,1fr)]">
         <section className="tile min-h-0 overflow-hidden">
-          <h2 className="border-b border-line px-[12px] py-[8px] font-mono text-[0.64rem] uppercase tracking-[0.1em] text-accent">
+          <h2 className="border-b border-line px-3 py-2 label text-accent">
             Track record
           </h2>
           {/* Scroll rather than clip: the width change alone is not a promise,
               and a truncated first job is worse than a scrollbar. */}
-          <div className="min-h-0 flex-1 overflow-y-auto px-[12px] py-[12px]">
+          <div className="min-h-0 flex-1 overflow-y-auto px-3 py-3">
             <TrackRecord roles={roles} />
           </div>
         </section>
 
         <section className="tile min-h-0 overflow-hidden">
-          <h2 className="border-b border-line px-[12px] py-[8px] font-mono text-[0.64rem] uppercase tracking-[0.1em] text-accent">
+          <h2 className="border-b border-line px-3 py-2 label text-accent">
             Tools
           </h2>
           {/* Scrolls like Track Record beside it. The stack list grew when the
               Convertus material landed, and a reference list that silently
               drops its last group is worse than one you scroll. */}
-          <div className="min-h-0 flex-1 overflow-y-auto px-[12px] py-[12px]">
+          <div className="min-h-0 flex-1 overflow-y-auto px-3 py-3">
             <StackGrid groups={groups} />
           </div>
         </section>
 
         <section className="tile min-h-0 overflow-hidden">
-          <h2 className="border-b border-line px-[12px] py-[8px] font-mono text-[0.64rem] uppercase tracking-[0.1em] text-accent">
+          <h2 className="border-b border-line px-3 py-2 label text-accent">
             Practice
           </h2>
-          <ul className="min-h-0 flex-1 space-y-[12px] overflow-hidden px-[12px] py-[12px]">
+          <ul className="min-h-0 flex-1 space-y-3 overflow-hidden px-3 py-3">
             {principles.map((principle) => (
               <li key={principle.title}>
-                <h3 className="font-display text-[0.88rem] font-semibold text-ink">
+                <h3 className="font-display text-md font-semibold text-ink">
                   {principle.title}
                 </h3>
-                <p className="mt-[2px] text-[0.8rem] leading-snug text-muted">
+                <p className="mt-0.5 text-sm leading-snug text-muted">
                   {principle.body}
                 </p>
               </li>

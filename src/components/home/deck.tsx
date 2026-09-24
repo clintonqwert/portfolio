@@ -37,26 +37,26 @@ export function Deck({
   return (
     <div className="flex flex-col gap-2 p-2 lg:h-full">
       {/* ── headline ─────────────────────────────────────────────────── */}
-      <header className="panel shrink-0 px-[16px] py-[12px]">
+      <header className="panel shrink-0 px-4 py-3">
         <h1 className="display-tight max-w-[38ch] text-[clamp(1.35rem,2.5vw,2rem)] leading-[1.1] text-ink">
           {HEADLINE}
         </h1>
-        <p className="mt-[4px] max-w-[70ch] text-[0.88rem] leading-snug text-muted">{LEDE}</p>
+        <p className="mt-1 max-w-[70ch] text-md leading-snug text-muted">{LEDE}</p>
 
         {/*
           The headline earns the attention; this line converts it. A reader
           could previously not answer seniority, location, arrangement or work
           authorisation from anywhere above the fold.
         */}
-        <ul className="mt-[8px] flex flex-wrap items-center gap-x-[12px] gap-y-[2px] font-mono text-[0.68rem] text-faint">
+        <ul className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-0.5 meta text-2xs text-faint">
           {FACTS.map((fact, i) => (
             <li
               key={fact}
               // The arrangement line is the longest and the least decisive of
               // the four. Below 1280 the strip wraps to three lines without it
               // gone, and the deck pays for every one of them.
-              className={`items-center gap-[12px] ${
-                i === 2 ? "hidden min-[1280px]:flex" : "flex"
+              className={`items-center gap-3 ${
+                i === 2 ? "hidden xl:flex" : "flex"
               }`}
             >
               {fact}
@@ -100,15 +100,15 @@ export function Deck({
           <div
             className={
               study.feature
-                ? "grid min-h-0 flex-1 gap-x-[16px] lg:grid-cols-2"
+                ? "grid min-h-0 flex-1 gap-x-4 lg:grid-cols-2"
                 : "flex min-h-0 flex-1 flex-col"
             }
           >
             <div className="min-h-0">
-              <p className="overflow-hidden text-[0.86rem] leading-snug text-muted">
+              <p className="overflow-hidden text-md leading-snug text-muted">
                 {study.summary}
               </p>
-              <ul className="mt-[12px] flex flex-wrap gap-x-[12px] gap-y-[2px] font-mono text-[0.64rem] text-faint">
+              <ul className="mt-3 flex flex-wrap gap-x-3 gap-y-0.5 meta text-faint">
                 {study.stack.map((tech) => (
                   <li key={tech}>{tech}</li>
                 ))}
@@ -126,8 +126,8 @@ export function Deck({
                   image={workImages[study.slug]!}
                   className={
                     study.feature
-                      ? "mt-[12px] hidden [--shot-h:104px] min-[1440px]:block min-[1680px]:[--shot-h:132px]"
-                      : "mt-[12px] hidden [--shot-h:104px] min-[1680px]:block"
+                      ? "mt-3 hidden [--shot-h:104px] wide:block wider:[--shot-h:132px]"
+                      : "mt-3 hidden [--shot-h:104px] wider:block"
                   }
                 />
               ) : null}
@@ -135,13 +135,13 @@ export function Deck({
 
             {study.assertions ? (
               <dl
-                className={`space-y-[4px] font-mono text-[0.68rem] ${
+                className={`space-y-1 font-mono text-2xs ${
                   study.feature
                     ? // The rule is vertical only once the interior is two columns.
                       // Stacked, the assertions ran straight into the stack list
                       // with nothing between them.
-                      "mt-[12px] border-t border-line pt-[12px] lg:mt-0 lg:border-l lg:border-t-0 lg:pl-[16px] lg:pt-0"
-                    : "mt-auto border-t border-line pt-[12px]"
+                      "mt-3 border-t border-line pt-3 lg:mt-0 lg:border-l lg:border-t-0 lg:pl-4 lg:pt-0"
+                    : "mt-auto border-t border-line pt-3"
                 }`}
               >
                 {study.assertions.rows
@@ -149,7 +149,7 @@ export function Deck({
                   .map((row) => (
                     <div
                       key={row.name}
-                      className="flex items-baseline justify-between gap-[12px]"
+                      className="flex items-baseline justify-between gap-3"
                     >
                       <dt className="min-w-0 truncate text-muted">{row.name}</dt>
                       <dd className={row.measured ? "shrink-0 text-signal" : "shrink-0 text-pass"}>
@@ -164,14 +164,14 @@ export function Deck({
               // the second let its longest engagement lead with a negative.
               <div className="mt-auto">
                 {study.stats.length > 0 ? (
-                  <div className="grid grid-cols-2 gap-[12px] border-t border-line pt-[12px]">
+                  <div className="grid grid-cols-2 gap-3 border-t border-line pt-3">
                     {study.stats.slice(0, 4).map((stat) => (
                       <Figure key={stat.label} stat={stat} size="sm" />
                     ))}
                   </div>
                 ) : null}
                 {study.note ? (
-                  <p className="mt-[12px] border-t border-line pt-[12px] font-mono text-[0.66rem] leading-snug text-faint">
+                  <p className="mt-3 border-t border-line pt-3 font-mono text-3xs leading-snug text-faint">
                     {study.note}
                   </p>
                 ) : null}
@@ -191,15 +191,15 @@ export function Deck({
           {/* Clamped below 1440, where this cell is ~250px wide and the lede
               runs to eleven lines. The ellipsis and the Read link together say
               there is more, which silent clipping did not. */}
-          <p className="line-clamp-3 shrink-0 text-[0.88rem] leading-snug text-muted min-[1280px]:line-clamp-4 min-[1680px]:line-clamp-5">
+          <p className="line-clamp-3 shrink-0 text-md leading-snug text-muted xl:line-clamp-4 wider:line-clamp-5">
             {autoTraderLede}
           </p>
-          <ul className="mt-[12px] hidden flex-wrap gap-x-[12px] gap-y-[2px] font-mono text-[0.64rem] text-faint min-[1280px]:flex">
+          <ul className="mt-3 hidden flex-wrap gap-x-3 gap-y-0.5 meta text-faint xl:flex">
             {["Vue", "Node.js", "PHP", "MySQL", "Redis", "AWS"].map((tech) => (
               <li key={tech}>{tech}</li>
             ))}
           </ul>
-          <ul className="mt-[12px] space-y-[4px] border-t border-line pt-[12px] text-[0.78rem] leading-snug text-muted">
+          <ul className="mt-3 space-y-1 border-t border-line pt-3 text-xs leading-snug text-muted">
             {/* At 1024 the cell is three lines shorter than the copy, and the
                 deck may not scroll. The last two points drop out there rather
                 than being clipped mid-sentence; all four are on /autotrader,
@@ -210,9 +210,12 @@ export function Deck({
                 // Measured per width: two points fit at 1024, all four at 1440.
                 // No slice — the array is exactly what ships, so adding a fifth
                 // point here shows up rather than silently disappearing.
-                className={`gap-[8px] ${i < 2 ? "flex" : "hidden min-[1440px]:flex"}`}
+                className={`gap-2 ${i < 2 ? "flex" : "hidden wide:flex"}`}
               >
-                <span aria-hidden="true" className="mt-[7px] size-[3px] shrink-0 rounded-full bg-accent" />
+                <span aria-hidden="true" // 7px is optical, not rhythm: it centres a 3px dot on the first
+                  // line of 0.78rem text. Snapping it to the scale visibly
+                  // drops the dot below the cap height.
+                  className="mt-[7px] size-[3px] shrink-0 rounded-full bg-accent" />
                 {point}
               </li>
             ))}
@@ -223,10 +226,10 @@ export function Deck({
               that can actually hold it. */}
           <TileShot
             image={autoSyncImage}
-            className="mt-[12px] hidden [--shot-h:88px] min-[1680px]:block"
+            className="mt-3 hidden [--shot-h:88px] wider:block"
           />
 
-          <div className="mt-auto flex gap-[16px] border-t border-line pt-[12px]">
+          <div className="mt-auto flex gap-4 border-t border-line pt-3">
             <Figure stat={{ value: "5 yrs", label: "Jan 2020 – Jun 2025" }} size="sm" />
             <Figure stat={{ value: "~0", label: "Downtime after rollout" }} size="sm" />
           </div>
@@ -238,7 +241,7 @@ export function Deck({
           index="05"
           href="/gaps"
           cta="All three"
-          className="bg-sunk min-[1024px]:col-start-5 min-[1024px]:col-end-10 min-[1024px]:row-start-5 min-[1024px]:row-end-9 min-[1440px]:col-end-13 min-[1440px]:row-end-7"
+          className="bg-sunk lg:col-start-5 lg:col-end-10 lg:row-start-5 lg:row-end-9 wide:col-end-13 wide:row-end-7"
         >
           {/*
             Gap, consequence, fix — the same three parts the table on /gaps
@@ -248,7 +251,7 @@ export function Deck({
             sat empty below them, which quietly did the one thing PRODUCT.md
             says this tile must never do.
           */}
-          <ul className="grid flex-1 grid-cols-1 gap-x-[21px] gap-y-[4px] overflow-hidden min-[1440px]:grid-cols-3 min-[1440px]:gap-y-[8px]">
+          <ul className="grid flex-1 grid-cols-1 gap-x-5 gap-y-1 overflow-hidden wide:grid-cols-3 wide:gap-y-2">
             {gaps.map((gap) => (
               <li key={gap.gap} className="flex items-baseline gap-2.5">
                 <span
@@ -256,16 +259,16 @@ export function Deck({
                   className="mt-1.5 size-1.5 shrink-0 rounded-full bg-signal"
                 />
                 <span className="min-w-0">
-                  <span className="font-mono text-[0.72rem] text-signal">{gap.gap}</span>
+                  <span className="font-mono text-2xs text-signal">{gap.gap}</span>
                   {/* The strip is half the height it was, so the consequence
                       clamps until there is room for all of it. */}
-                  <span className="line-clamp-2 block text-[0.78rem] leading-tight text-muted min-[1440px]:line-clamp-3 min-[1440px]:leading-snug min-[1680px]:line-clamp-none">
+                  <span className="line-clamp-2 block text-xs leading-tight text-muted wide:line-clamp-3 wide:leading-snug wider:line-clamp-none">
                     {gap.consequence}
                   </span>
-                  <span className="mt-[2px] hidden text-[0.74rem] leading-snug text-faint min-[1680px]:block">
+                  <span className="mt-0.5 hidden text-xs leading-snug text-faint wider:block">
                     {/* Labelled, because an unlabelled third line reads as more
                         consequence rather than as the plan. */}
-                    <span className="font-mono text-[0.68rem] uppercase tracking-[0.08em] text-accent">
+                    <span className="font-mono text-2xs uppercase tracking-[0.08em] text-accent">
                       Fix{" "}
                     </span>
                     {gap.fix}
@@ -280,12 +283,12 @@ export function Deck({
           label="Measured"
           href="/history"
           cta="History"
-          className="min-[1024px]:col-start-10 min-[1024px]:col-end-13 min-[1024px]:row-start-5 min-[1024px]:row-end-9 min-[1440px]:col-start-5 min-[1440px]:row-start-7"
+          className="lg:col-start-10 lg:col-end-13 lg:row-start-5 lg:row-end-9 wide:col-start-5 wide:row-start-7"
         >
           {/* Four across, not 2x2: this tile is now a wide half-height strip,
               so the figures run along it rather than stacking into a shape the
               cell no longer has. */}
-          <div className="grid flex-1 grid-cols-2 content-center gap-x-[16px] gap-y-[12px] min-[1440px]:grid-cols-4">
+          <div className="grid flex-1 grid-cols-2 content-center gap-x-4 gap-y-3 wide:grid-cols-4">
             {stats.map((stat) => (
               <Figure key={stat.label} stat={stat} size="sm" />
             ))}
