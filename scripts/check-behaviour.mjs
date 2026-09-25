@@ -47,9 +47,21 @@ const STUDY = "/work/riflessi";
 const browser = await puppeteer.launch({
   executablePath: CHROME,
   headless: "new",
-  // --no-sandbox only in CI: Ubuntu 24.04 runners restrict the user
-  // namespaces Chrome's sandbox needs, and the pages are our own build.
-  args: ["--hide-scrollbars", "--disable-gpu", ...(process.env.CI ? ["--no-sandbox"] : [])],
+  args: [
+    "--hide-scrollbars",
+    "--disable-gpu",
+    // A hover-capable fine pointer on every machine. Headless Chrome on a CI
+    // runner has no pointing device and reports (hover: none), so the deck's
+    // hover-only pan was never enabled there: the pan check failed, and the
+    // reduced-motion "does not pan" check passed for the wrong reason. CDP's
+    // setEmulatedMedia ignores hover and pointer on that build — only the
+    // prefers-* features took — so this is set in Blink's own settings.
+    // (2 = hover, 4 = fine.)
+    "--blink-settings=primaryHoverType=2,availableHoverTypes=2,primaryPointerType=4,availablePointerTypes=4",
+    // --no-sandbox only in CI: Ubuntu 24.04 runners restrict the user
+    // namespaces Chrome's sandbox needs, and the pages are our own build.
+    ...(process.env.CI ? ["--no-sandbox"] : []),
+  ],
 });
 
 let failures = 0;
@@ -63,28 +75,15 @@ const check = (ok, what) => {
 
 /**
  * Open a page with offsite requests dropped — analytics never resolve offline.
- *
- * The media environment is pinned rather than inherited. Headless Chrome on a
- * CI runner has no pointing device and reports `(hover: none)`, so the deck's
- * hover-only pan was never enabled there: the pan check failed, and worse, the
- * reduced-motion "does not pan" check passed for the wrong reason. Every page
- * gets a hover-capable fine pointer, so each check tests what it names.
- * (Through CDP directly: puppeteer's emulateMediaFeatures only accepts the
- * prefers-* features, and a second call would replace the first.)
+ * Hover and pointer come from the launch flags above; reduced motion is set
+ * per page, so a check that needs it says so.
  */
 async function open(path, { width, height, reduced = false }) {
   const page = await browser.newPage();
   await page.setViewport({ width, height });
-  const cdp = await page.createCDPSession();
-  await cdp.send("Emulation.setEmulatedMedia", {
-    features: [
-      { name: "hover", value: "hover" },
-      { name: "any-hover", value: "hover" },
-      { name: "pointer", value: "fine" },
-      { name: "any-pointer", value: "fine" },
-      { name: "prefers-reduced-motion", value: reduced ? "reduce" : "no-preference" },
-    ],
-  });
+  await page.emulateMediaFeatures([
+    { name: "prefers-reduced-motion", value: reduced ? "reduce" : "no-preference" },
+  ]);
   await page.setRequestInterception(true);
   page.on("request", (r) => {
     const host = new URL(r.url()).host;
