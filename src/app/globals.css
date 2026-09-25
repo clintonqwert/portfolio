@@ -244,6 +244,13 @@
       animation-iteration-count: 1 !important;
       transition-duration: 0.01ms !important;
     }
+
+    /* Scrollbar pseudo-elements aren't reached by the universal selector
+       above — they're a vendor box model, not a real ::before/::after —
+       so the fade needs its own explicit reduced-motion override. */
+    ::-webkit-scrollbar-thumb {
+      transition-duration: 0.01ms !important;
+    }
   }
 
   body {
@@ -293,8 +300,10 @@
   }
 
   ::-webkit-scrollbar {
-    width: 10px;
-    height: 10px;
+    /* 10% narrower than the first pass (10px), same reasoning as everywhere
+       else on the rail: a thin line, not a UI chrome element. */
+    width: 9px;
+    height: 9px;
   }
 
   ::-webkit-scrollbar-track {
@@ -308,6 +317,11 @@
        either side, not a stripe glued to the track's edge. */
     border: 2px solid transparent;
     background-clip: padding-box;
+    /* Chromium animates background-color on scrollbar pseudo-elements even
+       though they sit outside the normal box-model transition rules —
+       Firefox's scrollbar-color has no equivalent hook, so this is a
+       progressive enhancement rather than something to depend on. */
+    transition: background-color var(--duration-fast) var(--ease-out-quart);
   }
 
   ::-webkit-scrollbar-thumb:hover {
