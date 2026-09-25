@@ -92,9 +92,11 @@ export function GapsTable({ rows }: { rows: Gap[] }) {
       <tbody>
         {rows.map((row) => (
           <tr key={row.gap}>
+            {/* text-left: a <th> centres by default, which set each gap's
+                name off-axis from every other column's left edge. */}
             <th
               scope="row"
-              className={`${TD} font-mono text-sm font-normal text-signal`}
+              className={`${TD} text-left font-mono text-sm font-normal text-signal`}
             >
               {row.gap}
             </th>
