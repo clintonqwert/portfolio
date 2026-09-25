@@ -1,5 +1,8 @@
 import "server-only";
 
+import { getCaseStudies } from "@/lib/content/work";
+import type { PageLink } from "@/types/content";
+
 export interface NavLink {
   kind: "link";
   href: string;
@@ -70,4 +73,56 @@ export async function getNavLinks(): Promise<NavEntry[]> {
     { kind: "link", href: "/standard", label: "AI Engineering", index: "08" },
     { kind: "link", href: "/gaps", label: "Open gaps", index: "09" },
   ];
+}
+
+/**
+ * Every page off the deck, in the order the rail lists them.
+ *
+ * Derived from getNavLinks rather than written out again, so the reading path
+ * a page's footer offers can never disagree with the rail beside it. Case
+ * studies carry their own name and headline: the rail's "MyGarage" is
+ * capitalised only for its drop cap (see above), and a footer is not a rail.
+ */
+export async function getReadingOrder(): Promise<PageLink[]> {
+  const [entries, studies] = await Promise.all([getNavLinks(), getCaseStudies()]);
+  const pages: PageLink[] = [];
+  let group: PageLink["group"];
+
+  for (const entry of entries) {
+    if (entry.kind === "heading") {
+      group = { label: entry.label, href: entry.href };
+      if (entry.href && entry.index) {
+        pages.push({ href: entry.href, label: entry.label, index: entry.index });
+      }
+      continue;
+    }
+    // An unindented link closes the group above it.
+    if (!entry.indent) group = undefined;
+    if (entry.href === "/") continue;
+
+    const study = studies.find((s) => `/work/${s.slug}` === entry.href);
+    pages.push({
+      href: entry.href,
+      label: study?.name ?? entry.label,
+      index: entry.index,
+      group: entry.indent ? group : undefined,
+      summary: study?.headline,
+    });
+  }
+  return pages;
+}
+
+/** The page at `href`, and its neighbours on the reading path. */
+export async function getPagePosition(href: string): Promise<{
+  page: PageLink | undefined;
+  prev: PageLink | undefined;
+  next: PageLink | undefined;
+}> {
+  const pages = await getReadingOrder();
+  const i = pages.findIndex((p) => p.href === href);
+  return {
+    page: pages[i],
+    prev: i > 0 ? pages[i - 1] : undefined,
+    next: i >= 0 && i < pages.length - 1 ? pages[i + 1] : undefined,
+  };
 }

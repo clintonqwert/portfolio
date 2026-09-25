@@ -510,13 +510,19 @@
   /*
     Entrance enhances an already-visible default: content is never gated behind
     a transition, so headless renderers and background tabs still show it.
+
+    Scroll-driven, so there is no observer and no per-frame script: the
+    browser ties progress to the element's own passage through the viewport.
+    `--i` staggers siblings by shifting each one's range rather than by a
+    delay, which a scroll timeline has no use for. Browsers without
+    view-timeline support simply show everything, already in place.
   */
   @media (prefers-reduced-motion: no-preference) {
     @supports (animation-timeline: view()) {
       .rise {
         animation: rise linear both;
         animation-timeline: view();
-        animation-range: entry 0% entry 42%;
+        animation-range: entry calc(var(--i, 0) * 6%) entry calc(42% + var(--i, 0) * 6%);
       }
     }
   }
@@ -605,21 +611,446 @@
   }
 
   /*
-    Detail prose is one ordinary block column, capped for reading rather than
-    flowed into newspaper-style multi-column layout. The panel used to be
-    pinned to viewport height at >=1440px specifically so multi-column balance
-    had a fixed box to fill — which is exactly the problem: balance fills
-    whatever height it is given, so a short case study became three-line
-    columns sitting above a third of a screen of blank panel. Sized to its own
-    content instead, the page is only ever as tall as what is actually on it.
+    Chapter prose: one measured column at reading size. Not the 15px body —
+    the deck's density is the point of the deck, but a chapter is read
+    start to finish, and 17px/1.65 is what keeps a long paragraph from
+    feeling like a wall. Never flowed into multi-column: balance fills
+    whatever height it is given, which once turned every short case study
+    into three-line columns above a third of a screen of blank panel.
   */
   .flow {
-    /* The 75ch line-length cap lives on the tile itself (detail-view.tsx),
-       not here — capping only the text left the box stretched to its grid
-       track with the prose pinned to one edge, the same dead space as
-       before just turned sideways instead of underneath. */
-    font-size: 0.9rem;
-    line-height: 1.55;
+    max-width: 64ch;
+    font-size: var(--text-lg);
+    line-height: 1.65;
+  }
+
+  .flow > * + * {
+    margin-top: 1.1em;
+  }
+}
+
+@layer components {
+  /*
+    ── secondary pages ───────────────────────────────────────────────
+    Every route off the deck is a document the deck indexes: a hero that
+    holds the first viewport, then chapters that scroll. The deck is dense
+    because it is scanned; these are paced because they are read. The rail
+    stays fixed beside both, so moving between them never moves the frame.
+  */
+
+  /*
+    The page's measure and gutter, shared by the hero, every chapter and the
+    close so their edges line up the whole way down. Named for the drawing
+    sheet a title block sits on.
+  */
+  .sheet {
+    width: 100%;
+    max-width: 1240px;
+    margin-inline: auto;
+    padding-inline: calc(var(--spacing) * 5);
+  }
+
+  @media (min-width: 640px) {
+    .sheet {
+      padding-inline: calc(var(--spacing) * 8);
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .sheet {
+      padding-inline: calc(var(--spacing) * 12);
+    }
+  }
+
+  /*
+    The first viewport. Below lg the 89px mobile bar sits above it — measured
+    at 375 and 390 wide, where it does not wrap — so the hero takes what is
+    left rather than pushing its own scroll cue under the fold. At lg <main>
+    is exactly the viewport, and the hero is too.
+  */
+  .hero {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    min-height: calc(100svh - 89px);
+  }
+
+  @media (min-width: 1024px) {
+    .hero {
+      min-height: 100dvh;
+    }
+  }
+
+  /*
+    A drawing's title block: what, when, who, where to check it. Cells wrap
+    and grow to fill their row, so a short last row never leaves an empty
+    grey cell. Each cell draws its own right and bottom hairline outward and
+    the block clips them at its edge, so the only outer line is the ink rule.
+    `clip`, not `hidden`: nothing inside can scroll, and nothing is lost —
+    only the two stray hairlines at the far edges.
+  */
+  .titleblock {
+    display: flex;
+    flex-wrap: wrap;
+    overflow: clip;
+    border: var(--surface-border) solid var(--color-rule);
+  }
+
+  .titleblock > * {
+    flex: 1 1 9.5rem;
+    min-width: 0;
+    padding: calc(var(--spacing) * 2.5) calc(var(--spacing) * 3.5);
+    box-shadow:
+      var(--surface-border) 0 0 var(--color-line),
+      0 var(--surface-border) 0 var(--color-line);
+  }
+
+  /*
+    The scroll cue. A hero that fits its viewport exactly reads as a finished
+    page, so this sits at the bottom of the first viewport — wherever the
+    hero's own content ends — as an ink block that reads over text or image
+    alike. A bead runs down its track on a loop; the script only decides when
+    to hide it, once the first chapter has come up into view.
+  */
+  .scroll-cue {
+    position: absolute;
+    /* 64px above the fold: clear of the edge, and of the iOS home bar. */
+    top: calc(100svh - 89px - 4rem);
+    /* A paper ring, so the ink block still reads where it lands on a dark
+       screenshot — which, for two of the three captures, it does. */
+    box-shadow: 0 0 0 var(--surface-border) var(--color-canvas);
+    transition:
+      opacity var(--duration-normal) var(--ease-out-quart),
+      transform var(--duration-normal) var(--ease-out-quart);
+  }
+
+  @media (min-width: 1024px) {
+    .scroll-cue {
+      top: calc(100dvh - 4.5rem);
+    }
+  }
+
+  .scroll-cue[data-away="true"] {
+    opacity: 0;
+    transform: translateY(8px);
+    pointer-events: none;
+  }
+
+  .scroll-cue-track {
+    position: relative;
+    width: 1px;
+    height: 18px;
+    overflow: clip;
+    background-color: color-mix(in oklch, currentColor 30%, transparent);
+  }
+
+  /* Still, the bead rests mid-track: a tick on a line, which still points
+     down. Moving, it starts above the track and runs out of the bottom. */
+  .scroll-cue-bead {
+    position: absolute;
+    inset-inline: 0;
+    top: 0;
+    height: 7px;
+    background-color: currentColor;
+    transform: translateY(5.5px);
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .scroll-cue-bead {
+      transform: translateY(-100%);
+      animation: cue 1.8s var(--ease-out-quart) infinite;
+    }
+  }
+
+  @keyframes cue {
+    0% {
+      transform: translateY(-100%);
+    }
+    70%,
+    100% {
+      transform: translateY(18px);
+    }
+  }
+
+  /*
+    A chapter: a sticky head on the left, the argument on the right. The head
+    holds its place while the prose scrolls past it, so the reader always has
+    the chapter's name in view — the same job a running head does in print.
+    Sticky only where there are two columns to hold it against.
+  */
+  .chapter {
+    padding-block: clamp(3rem, 5.5vw, 5.25rem);
+  }
+
+  /*
+    Head and body get a grid of their own, and a full-width row (a diagram, a
+    table) sits under it rather than in it: a sticky element is held inside
+    its containing block, and when the wide row shared the grid the head rode
+    down over it.
+  */
+  .chapter-body {
+    display: grid;
+    gap: calc(var(--spacing) * 6);
+  }
+
+  .chapter-wide {
+    margin-top: calc(var(--spacing) * 10);
+  }
+
+  @media (min-width: 1024px) {
+    .chapter-body {
+      grid-template-columns: minmax(0, 4fr) minmax(0, 8fr);
+      column-gap: calc(var(--spacing) * 12);
+    }
+
+    .chapter-head {
+      position: sticky;
+      /* Clears the 44px chapter bar above it. */
+      top: calc(var(--spacing) * 16);
+      align-self: start;
+    }
+  }
+
+  /* The hairline after a chapter's number, drawn in as the chapter arrives. */
+  .chapter-rule {
+    height: var(--surface-border);
+    flex: 1;
+    background-color: currentColor;
+    opacity: 0.35;
+    transform-origin: left;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    @supports (animation-timeline: view()) {
+      .chapter-rule {
+        animation: draw linear both;
+        animation-timeline: view();
+        animation-range: entry 10% entry 80%;
+      }
+    }
+  }
+
+  @keyframes draw {
+    from {
+      transform: scaleX(0);
+    }
+    to {
+      transform: scaleX(1);
+    }
+  }
+
+  /*
+    A flow diagram: real steps of a real mechanism, boxed and joined by
+    arrows. Across at md and up, down below it. The arrow is each step's own
+    ::after so the list stays a plain <ol> — a connector element would be
+    announced as a list item.
+  */
+  .flowchart {
+    display: grid;
+    gap: calc(var(--spacing) * 8);
+    counter-reset: step;
+  }
+
+  @media (min-width: 768px) {
+    .flowchart {
+      grid-auto-flow: column;
+      grid-auto-columns: minmax(0, 1fr);
+      gap: calc(var(--spacing) * 10);
+    }
+  }
+
+  .flowchart > li {
+    position: relative;
+    counter-increment: step;
+    border: var(--surface-border) solid var(--color-line);
+    padding: calc(var(--spacing) * 4);
+  }
+
+  .flowchart > li::before {
+    content: counter(step, decimal-leading-zero);
+    display: block;
+    margin-bottom: calc(var(--spacing) * 3);
+    font-family: var(--font-mono);
+    font-size: var(--text-3xs);
+    letter-spacing: 0.1em;
+    color: var(--color-faint);
+  }
+
+  /* Downward arrow between stacked steps. */
+  .flowchart > li:not(:last-child)::after {
+    content: "";
+    position: absolute;
+    left: calc(var(--spacing) * 4);
+    top: 100%;
+    width: var(--surface-border);
+    height: calc(var(--spacing) * 8);
+    background:
+      linear-gradient(currentColor, currentColor) center / 1px 100% no-repeat;
+    color: var(--color-rule);
+    transform-origin: top;
+  }
+
+  @media (min-width: 768px) {
+    /* Rightward arrow across the gap between steps, with a drawn head. */
+    .flowchart > li:not(:last-child)::after {
+      left: 100%;
+      top: 50%;
+      width: calc(var(--spacing) * 10);
+      height: 9px;
+      translate: 0 -50%;
+      background:
+        linear-gradient(currentColor, currentColor) left center / calc(100% - 1px) 1px no-repeat,
+        conic-gradient(from 225deg at 100% 50%, currentColor 90deg, transparent 0) right center / 5px 9px no-repeat;
+      transform-origin: left;
+    }
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    @supports (animation-timeline: view()) {
+      .flowchart > li:not(:last-child)::after {
+        animation: draw-down linear both;
+        animation-timeline: view();
+        animation-range: entry calc(30% + var(--i, 0) * 8%) entry calc(70% + var(--i, 0) * 8%);
+      }
+
+      @media (min-width: 768px) {
+        .flowchart > li:not(:last-child)::after {
+          animation-name: draw;
+        }
+      }
+    }
+  }
+
+  @keyframes draw-down {
+    from {
+      transform: scaleY(0);
+    }
+    to {
+      transform: scaleY(1);
+    }
+  }
+
+  /*
+    A screenshot on a secondary page. The frame is a hairline that firms to
+    ink when the shot links to the live site, the same answer a deck tile
+    gives. The image drifts a little slower than the page as the hero leaves,
+    which is the whole of the parallax: a few dozen pixels, on the frame
+    rather than the image, so nothing is ever cropped to make room for it.
+  */
+  .shot-frame {
+    display: block;
+    border: var(--surface-border) solid var(--color-line);
+    background-color: var(--color-sunk);
+    transition: border-color var(--duration-fast) var(--ease-out-quart);
+  }
+
+  a.shot-frame:hover,
+  a.shot-frame:focus-visible {
+    border-color: var(--color-rule);
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .shot {
+      animation: unveil var(--duration-slow) var(--ease-out-quart) 120ms both;
+    }
+
+    @supports (animation-timeline: view()) {
+      .shot-drift {
+        animation: drift linear both;
+        animation-timeline: view();
+        animation-range: exit 0% exit 100%;
+      }
+    }
+  }
+
+  /* Starts almost fully shown: the shot is often the largest paint on the
+     page, and an image clipped to nothing would hold that measurement back. */
+  @keyframes unveil {
+    from {
+      clip-path: inset(0 0 6% 0);
+      opacity: 0.6;
+    }
+    to {
+      clip-path: inset(0);
+      opacity: 1;
+    }
+  }
+
+  @keyframes drift {
+    to {
+      transform: translateY(-40px);
+    }
+  }
+
+  /*
+    One entrance on load, for the hero's supporting parts — kicker, lede,
+    title block, cue. Not the headline and not the shot: those are what the
+    page is measured on first, and they arrive already in place. Starts at
+    30% rather than nothing, so a paused background tab still shows them.
+  */
+  @media (prefers-reduced-motion: no-preference) {
+    .enter {
+      animation: enter var(--duration-slow) var(--ease-out-quart) both;
+      animation-delay: calc(80ms + var(--i, 0) * 70ms);
+    }
+  }
+
+  @keyframes enter {
+    from {
+      opacity: 0.3;
+      transform: translateY(10px);
+    }
+  }
+
+  /*
+    The chapter bar: which chapter you are in, and how far down the page.
+    It lives in a zero-height sticky slot so it takes no room in the flow,
+    and slides in only once the hero has gone.
+  */
+  .chapterbar {
+    position: absolute;
+    inset-inline: 0;
+    top: 0;
+    background-color: var(--color-canvas);
+    border-bottom: var(--surface-border) solid var(--color-line);
+    transform: translateY(-100%);
+    transition: transform var(--duration-normal) var(--ease-out-quart);
+  }
+
+  .chapterbar[data-visible="true"] {
+    transform: none;
+  }
+
+  .chapterbar-progress {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: calc(var(--surface-border) * -1);
+    height: var(--surface-border);
+    background-color: var(--color-rule);
+    transform: scaleX(0);
+    transform-origin: left;
+  }
+
+  @supports (animation-timeline: scroll()) {
+    .chapterbar-progress {
+      animation: draw linear both;
+      animation-timeline: scroll(nearest block);
+    }
+  }
+
+  /* The chapter number ticks over when it changes, rather than swapping. */
+  @media (prefers-reduced-motion: no-preference) {
+    .tick {
+      animation: tick var(--duration-fast) var(--ease-out-quart) both;
+    }
+  }
+
+  @keyframes tick {
+    from {
+      opacity: 0;
+      transform: translateY(6px);
+    }
   }
 }
 

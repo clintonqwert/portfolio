@@ -133,3 +133,15 @@ export interface CaseStudy {
    */
   related?: { label: string; href: string }[];
 }
+
+/** One stop on the reading path: a page the rail links to, in rail order. */
+export interface PageLink {
+  href: string;
+  label: string;
+  /** The rail's index for the page, e.g. "02". */
+  index: string;
+  /** The group heading above it in the rail, when it sits in one. */
+  group?: { label: string; href?: string };
+  /** A line saying what the page argues — the headline, for a case study. */
+  summary?: string;
+}
