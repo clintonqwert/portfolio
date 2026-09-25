@@ -1,5 +1,6 @@
 import "server-only";
 
+import { TADVANTAGE_FEATURES_IMAGE, TADVANTAGE_SEO_IMAGE } from "@/lib/content/assets";
 import type { CaseStudy } from "@/types/content";
 
 /**
@@ -116,7 +117,9 @@ const CASE_STUDIES: readonly CaseStudy[] = [
     summary:
       "The platform behind dealer websites \u2014 built at Convertus, carried through the acquisition into AutoSync. Top all-time contributor across six and a half years.",
     period: "6.5 years \u00b7 Convertus \u2192 AutoTrader",
-    liveUrl: "autosyncmotors.com",
+    // The platform's own product site. autosyncmotors.com, the public demo
+    // dealer site, is shown on /autotrader and /work/mygarage instead.
+    liveUrl: "tadvantage.ca",
     // Proprietary — Convertus / AutoTrader internal platform.
     repoUrl: null,
     role: "Full-stack engineer",
@@ -148,6 +151,13 @@ const CASE_STUDIES: readonly CaseStudy[] = [
         paragraphs: [
           "Tadvantage is the WordPress multisite platform behind Convertus dealer websites \u2014 Project Achilles on the inside, which is the name anyone who worked on it will recognise. It carries ten OEM and dealer-group themes and thirty-five-plus custom plugins covering inventory, showroom, pricing, SEO, integrations and analytics, with Vue on the interactive surfaces and PHP underneath. Convertus is part of Trader Corporation, the company behind AutoTrader.ca.",
         ],
+        figure: {
+          image: TADVANTAGE_FEATURES_IMAGE,
+          // The figures in the grid are the product site's marketing, not
+          // this site's claims — the caption says whose they are.
+          caption:
+            "The feature list the website packages are sold on, in the product site\u2019s own words and numbers. My Garage is the myGarage case study.",
+        },
       },
       {
         heading: "Where I sat in it",
@@ -179,6 +189,10 @@ const CASE_STUDIES: readonly CaseStudy[] = [
         paragraphs: [
           "I built the SEO foundation \u2014 inventory sitemaps in English and French, Product and Breadcrumb schema with VIN as the identifier, canonical handling across the detail page, the search page and the print view \u2014 and maintained a fork of Yoast carrying inventory sitemap support through three major versions. I also built the Bill S-211 compliance pages that publish themselves to every dealer site in both languages, because a legal requirement nobody configures by hand is a legal requirement that actually gets met.",
         ],
+        figure: {
+          image: TADVANTAGE_SEO_IMAGE,
+          caption: "How the product site sells SEO to dealers.",
+        },
       },
       {
         heading: "What I would do differently",

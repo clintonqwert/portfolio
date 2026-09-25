@@ -2,8 +2,7 @@ import { SkillMarquee } from "@/components/home/skill-marquee";
 import { Figure, Tile, TileShot } from "@/components/home/tile";
 import { AUTOTRADER_POINTS } from "@/lib/content/experience";
 import { FACTS, HEADLINE, LEDE } from "@/lib/content/profile";
-import type { ImageSlot } from "@/lib/content/assets";
-import type { CaseStudy, Gap } from "@/types/content";
+import type { CaseStudy, Gap, ImageSlot } from "@/types/content";
 
 /**
  * The dashboard.
@@ -39,47 +38,71 @@ export function Deck({
   historyPrinciplesCount: number;
 }) {
   return (
-    <div className="flex flex-col gap-2 p-2 lg:h-full">
-      {/* ── headline ─────────────────────────────────────────────────── */}
-      <header className="panel shrink-0 px-4 py-3">
-        <h1 className="display-tight max-w-[38ch] text-[clamp(1.35rem,2.5vw,2rem)] leading-[1.1] text-ink">
-          {HEADLINE}
-        </h1>
-        <p className="mt-1 max-w-[70ch] text-md leading-snug text-muted">{LEDE}</p>
+    <div className="flex flex-col p-3 lg:h-full">
+      {/*
+        One panel instead of three: the headline, the marquee and the grid
+        used to be independent boxes with a gap-2 seam between each, which
+        spent 2x that gap on separators before a single tile got any of it.
+        Merged into one surface with internal dividers, that seam space goes
+        to the tiles instead — the reference's generous tile spacing came
+        from removing redundant chrome, not from a bigger padding number.
+      */}
+      {/*
+        No `panel` class here, and no border of any kind: a hairline around
+        the whole block read as a frame around a frame once the tiles inside
+        already carry their own. Canvas and panel are the same token in both
+        themes anyway (there's no "elevated surface" colour in this palette),
+        so this group is a layout container only — the tiles floating on the
+        canvas, gapped, are the whole drawing.
 
-        {/*
-          The headline earns the attention; this line converts it. A reader
-          could previously not answer seniority, location, arrangement or work
-          authorisation from anywhere above the fold.
-        */}
-        <ul className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-0.5 meta text-2xs text-faint">
-          {FACTS.map((fact, i) => (
-            <li
-              key={fact}
-              // The arrangement line is the longest and the least decisive of
-              // the four. Below 1280 the strip wraps to three lines without it
-              // gone, and the deck pays for every one of them.
-              className={`items-center gap-3 ${
-                i === 2 ? "hidden xl:flex" : "flex"
-              }`}
-            >
-              {fact}
-              {/* Separator by index: `last:` would match the span against its own
-                  li, where it is always last, and hide every one of them. */}
-              {i < FACTS.length - 1 ? (
-                <span aria-hidden="true" className="text-line">
-                  ·
-                </span>
-              ) : null}
-            </li>
-          ))}
-        </ul>
-      </header>
+        No overflow-hidden here: at short viewports the deck switches to
+        content-driven row heights and <main> takes over the scroll (see the
+        "Short desktop windows" rule below) — clipping this box would hide
+        that fallback instead of letting it work.
+      */}
+      <div className="flex min-h-0 flex-1 flex-col">
+        {/* ── headline ───────────────────────────────────────────────── */}
+        <header className="shrink-0 px-4 py-3">
+          <h1 className="display-tight max-w-[38ch] text-[clamp(1.35rem,2.5vw,2rem)] leading-[1.1] text-ink">
+            {HEADLINE}
+          </h1>
+          <p className="mt-1 max-w-[70ch] text-md leading-snug text-muted">{LEDE}</p>
 
-      <SkillMarquee skills={skills} />
+          {/*
+            The headline earns the attention; this line converts it. A reader
+            could previously not answer seniority, location, arrangement or work
+            authorisation from anywhere above the fold.
+          */}
+          <ul className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-0.5 meta text-2xs text-faint">
+            {FACTS.map((fact, i) => (
+              <li
+                key={fact}
+                // The arrangement line is the longest and the least decisive of
+                // the four. Below 1280 the strip wraps to three lines without it
+                // gone, and the deck pays for every one of them.
+                className={`items-center gap-3 ${
+                  i === 2 ? "hidden xl:flex" : "flex"
+                }`}
+              >
+                {fact}
+                {/* Separator by index: `last:` would match the span against its own
+                    li, where it is always last, and hide every one of them. */}
+                {i < FACTS.length - 1 ? (
+                  <span aria-hidden="true" className="text-line">
+                    ·
+                  </span>
+                ) : null}
+              </li>
+            ))}
+          </ul>
+        </header>
 
-      {/* ── main ─────────────────────────────────────────────────────── */}
-      <div className="deck lg:[grid-template-rows:repeat(8,minmax(0,1fr))]">
+        <div className="shrink-0 border-y border-line">
+          <SkillMarquee skills={skills} />
+        </div>
+
+        {/* ── main ─────────────────────────────────────────────────────── */}
+        <div className="deck min-h-0 flex-1 p-2 lg:[grid-template-rows:repeat(8,minmax(0,1fr))]">
       {studies.filter((s) => s.onDeck !== false).map((study, i) => (
         <Tile
           key={study.slug}
@@ -126,8 +149,13 @@ export function Deck({
               a sentence boundary, which reads as the exact collision this
               is fixing rather than a graceful truncation.
             */}
-            <div className="min-h-0 overflow-hidden">
-              <p className="line-clamp-2 text-md leading-snug text-muted">
+            <div className="flex min-h-0 flex-col overflow-hidden">
+              {/* shrink-0: line-clamp sets overflow:hidden, which drops a
+                  flex item's minimum height to zero — without this the
+                  summary, not the screenshot, gave up the height and was
+                  cut through mid-line. The shot is the only thing that may
+                  shrink. */}
+              <p className="line-clamp-2 shrink-0 text-md leading-snug text-muted">
                 {study.summary}
               </p>
               {/*
@@ -140,7 +168,7 @@ export function Deck({
                 study itself; the feature cell has room to keep it always.
               */}
               <ul
-                className={`mt-3 flex-wrap gap-x-3 gap-y-0.5 meta text-faint ${
+                className={`mt-2 shrink-0 flex-wrap gap-x-3 gap-y-0.5 meta text-faint ${
                   study.feature ? "flex" : "hidden wide:flex"
                 }`}
               >
@@ -150,23 +178,20 @@ export function Deck({
               </ul>
 
               {/*
-                The work, shown rather than only linked. Breakpoints come from
-                measuring free space per cell, not from taste: at 1440 only the
-                feature cell has room (137px), and the two narrow cells do not
-                get one until 1680 (163px and 143px). Below those widths the
-                tile is already full and an image would clip real content.
+                The work, shown rather than only linked. The shot shrinks to
+                whatever height its cell has left (see TileShot), so the gates
+                below are about whether that is enough to be worth showing:
+                at 1440 only the feature cell has room, and the two narrow
+                cells not until 1680. Below those widths a shot would be a
+                sliver.
               */}
               {workImages[study.slug] ? (
                 <TileShot
                   image={workImages[study.slug]!}
                   className={
                     study.feature
-                      ? "mt-3 hidden [--shot-h:104px] wide:block wider:[--shot-h:132px]"
-                      // mt-2 rather than mt-3: at 1680, the first width the
-                      // narrow cells reveal this at all, Tadvantage's stack
-                      // list (8 items, longest on the site) left only 3px to
-                      // spare before the gate's silent-clipping check fired.
-                      : "mt-2 hidden [--shot-h:104px] wider:block"
+                      ? "mt-3 hidden wide:flex"
+                      : "mt-2 hidden wider:flex"
                   }
                 />
               ) : null}
@@ -238,7 +263,7 @@ export function Deck({
               <li key={tech}>{tech}</li>
             ))}
           </ul>
-          <ul className="mt-3 space-y-1 border-t border-line pt-3 text-xs leading-snug text-muted">
+          <ul className="mt-2 space-y-1 border-t border-line pt-2 text-xs leading-snug text-muted">
             {/* At 1024 the cell is three lines shorter than the copy, and the
                 deck may not scroll. The last two points drop out there rather
                 than being clipped mid-sentence; all four are on /autotrader,
@@ -265,7 +290,7 @@ export function Deck({
               that can actually hold it. */}
           <TileShot
             image={autoSyncImage}
-            className="mt-3 hidden [--shot-h:88px] wider:block"
+            className="mt-3 hidden wider:flex"
           />
 
           <div className="mt-auto flex gap-4 border-t border-line pt-3">
@@ -282,14 +307,15 @@ export function Deck({
         */}
         <Tile
           label="History"
+          index="05"
           href="/history"
           cta="Track record"
           className="lg:col-start-5 lg:col-end-8 lg:row-start-5 lg:row-end-7"
         >
-          <p className="line-clamp-2 shrink-0 text-xs leading-tight text-muted wide:line-clamp-3 wide:leading-snug">
+          <p className="line-clamp-2 shrink-0 text-xs leading-none text-muted wide:line-clamp-3 wide:leading-snug">
             {historyLede}
           </p>
-          <div className="mt-auto flex gap-3 border-t border-line pt-0.5">
+          <div className="mt-auto flex gap-3 border-t border-line pt-0">
             <Figure
               stat={{ value: String(historyRolesCount), label: "Chapters, 2016–present" }}
               size="sm"
@@ -303,6 +329,7 @@ export function Deck({
 
         <Tile
           label="AI Engineering"
+          index="06"
           href="/standard"
           cta="How it works"
           className="lg:col-start-8 lg:col-end-13 lg:row-start-5 lg:row-end-7"
@@ -338,7 +365,7 @@ export function Deck({
             of the row beneath History and AI Engineering. */}
         <Tile
           label="Open gaps"
-          index="05"
+          index="07"
           href="/gaps"
           cta="All three"
           className="bg-sunk lg:col-start-5 lg:col-end-13 lg:row-start-7 lg:row-end-9"
@@ -358,7 +385,7 @@ export function Deck({
             column roughly 265px, which is what actually needed the room, not
             the column count.
           */}
-          <ul className="grid flex-1 grid-cols-1 gap-x-5 gap-y-1 overflow-hidden wide:grid-cols-3 wide:gap-y-2">
+          <ul className="grid flex-1 grid-cols-1 gap-x-5 gap-y-0 overflow-hidden wide:grid-cols-3 wide:gap-y-2">
             {gaps.map((gap) => (
               <li key={gap.gap} className="flex items-baseline gap-2.5">
                 <span
@@ -384,6 +411,7 @@ export function Deck({
           </ul>
         </Tile>
 
+        </div>
       </div>
     </div>
   );

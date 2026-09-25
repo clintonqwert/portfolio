@@ -7,6 +7,7 @@
     "check:claims": "node scripts/check-claims.mjs",
     "check:contrast": "node scripts/check-contrast.mjs",
     "check:overflow": "node scripts/check-overflow.mjs",
+    "check:behaviour": "node scripts/check-behaviour.mjs",
     "build": "npm run check:claims && npm run check:tokens && npm run check:logos && npm run check:contrast && next build",
     "start": "next start",
     "lint": "eslint .",

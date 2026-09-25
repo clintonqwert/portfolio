@@ -1,14 +1,20 @@
 import type { Metadata } from "next";
 
-import { DetailView } from "@/components/layout/detail-view";
+import { Chapter, type ChapterRef } from "@/components/shared/chapter";
+import { ChapterBar } from "@/components/layout/chapter-bar";
+import { PageClose } from "@/components/layout/page-close";
+import { JsonLd } from "@/components/shared/json-ld";
+import { PageHero } from "@/components/layout/page-hero";
 import { StackGrid, TrackRecord } from "@/components/shared/track-record";
+import { getPagePosition } from "@/lib/content/navigation";
 import {
   HISTORY_LEDE,
   getPrinciples,
   getStackGroups,
   getTrackRecord,
 } from "@/lib/content/practice";
-import { buildMetadata } from "@/lib/seo";
+import { CONTACT, CONTACT_HREF, RESUME } from "@/lib/content/profile";
+import { buildBreadcrumbJsonLd, buildMetadata } from "@/lib/seo";
 
 export const metadata: Metadata = buildMetadata({
   title: "History — track record, tools and practice",
@@ -16,67 +22,80 @@ export const metadata: Metadata = buildMetadata({
   path: "/history",
 });
 
+const TRAIL = [{ label: "Overview", href: "/" }, { label: "History" }];
+
 /**
- * Three panels rather than flowing prose: this route is block grids, and CSS
- * columns cannot paginate a grid — flowing it pushed the panel 1377px past its
- * own width. Side by side, each panel fits the viewport on its own.
+ * Three chapters, in the order the lede names them: the roles, the tools
+ * they were built with, and the principles the work is held to. These were
+ * three side-by-side panels that each scrolled inside themselves; as chapters
+ * they are simply read down the page.
  */
 export default async function HistoryPage() {
-  const [roles, groups, principles] = await Promise.all([
+  const [roles, groups, principles, { page, prev, next }] = await Promise.all([
     getTrackRecord(),
     getStackGroups(),
     getPrinciples(),
+    getPagePosition("/history"),
   ]);
 
+  const chapters: ChapterRef[] = [
+    { id: "track-record", number: "01", title: "Track record" },
+    { id: "tools", number: "02", title: "Tools" },
+    { id: "how-i-work", number: "03", title: "How I work" },
+  ];
+  const [record, tools, practice] = chapters as [ChapterRef, ChapterRef, ChapterRef];
+
   return (
-    <DetailView eyebrow="History" title="Track record, tools and practice" lede={HISTORY_LEDE} raw>
-      {/* Track record takes more of the row than it used to: Tools and Practice
-          both fit with room to spare while it overflowed by 132px, cutting the
-          earliest role off mid-word. */}
-      <div className="grid min-h-0 gap-2 lg:grid-cols-[minmax(0,1.6fr)_minmax(0,1fr)_minmax(0,1fr)]">
-        <section className="tile min-h-0 overflow-hidden">
-          <h2 className="border-b border-line px-3 py-2 label text-accent">
-            Track record
-          </h2>
-          {/* Scroll rather than clip: the width change alone is not a promise,
-              and a truncated first job is worse than a scrollbar. */}
-          <div className="min-h-0 flex-1 overflow-y-auto px-3 py-3">
-            <TrackRecord roles={roles} />
-          </div>
-        </section>
+    <article>
+      <JsonLd data={buildBreadcrumbJsonLd(TRAIL, "/history")} />
+      <ChapterBar index={page?.index} kicker="History" chapters={chapters} />
 
-        <section className="tile min-h-0 overflow-hidden">
-          <h2 className="border-b border-line px-3 py-2 label text-accent">
-            Tools
-          </h2>
-          {/* Scrolls like Track Record beside it. The stack list grew when the
-              Convertus material landed, and a reference list that silently
-              drops its last group is worse than one you scroll. */}
-          <div className="min-h-0 flex-1 overflow-y-auto px-3 py-3">
-            <StackGrid groups={groups} />
-          </div>
-        </section>
+      <PageHero
+        trail={TRAIL}
+        index={page?.index}
+        kicker="History"
+        title="Track record, tools and practice"
+        lede={HISTORY_LEDE}
+        specs={[
+          { label: "Track record", value: `${roles.length} entries, 2016–present` },
+          { label: "Tools", value: `${groups.length} groups` },
+          { label: "Practice", value: `${principles.length} principles` },
+        ]}
+        next={record.id}
+        cueLabel="Scroll to the track record — 3 chapters"
+      />
 
-        <section className="tile min-h-0 overflow-hidden">
-          <h2 className="border-b border-line px-3 py-2 label text-accent">
-            How I work
-          </h2>
-          <ul className="min-h-0 flex-1 space-y-3 overflow-hidden px-3 py-3">
-            {/* Not soft skills — six things the repositories are actually
-                held to, which is the difference between a claim and a check. */}
-            {principles.map((principle) => (
-              <li key={principle.title}>
-                <h3 className="font-display text-md font-semibold text-ink">
-                  {principle.title}
-                </h3>
-                <p className="mt-0.5 text-sm leading-snug text-muted">
-                  {principle.body}
-                </p>
-              </li>
-            ))}
-          </ul>
-        </section>
-      </div>
-    </DetailView>
+      <Chapter {...record}>
+        <TrackRecord roles={roles} />
+      </Chapter>
+
+      <Chapter {...tools}>
+        <StackGrid groups={groups} />
+      </Chapter>
+
+      <Chapter {...practice}>
+        {/* Not soft skills — six things the repositories are actually held
+            to, which is the difference between a claim and a check. */}
+        <ul className="grid border-t border-rule sm:grid-cols-2 sm:gap-x-10">
+          {principles.map((principle, i) => (
+            <li
+              key={principle.title}
+              className="rise border-b border-line py-5"
+              style={{ "--i": i % 2 } as React.CSSProperties}
+            >
+              <h3 className="display-tight text-xl leading-snug text-ink">{principle.title}</h3>
+              <p className="mt-1.5 text-base leading-relaxed text-muted">{principle.body}</p>
+            </li>
+          ))}
+        </ul>
+      </Chapter>
+
+      <PageClose
+        prev={prev}
+        next={next}
+        email={{ href: CONTACT_HREF.email, label: CONTACT.email }}
+        resume={RESUME}
+      />
+    </article>
   );
 }

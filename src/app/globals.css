@@ -1,4 +1,10 @@
 @import "tailwindcss";
+/*
+  Secondary pages — the hero, chapters, scroll cue, chapter bar and figures
+  every route off the deck is built from — live in their own file. The tokens
+  they draw on stay here, where check:tokens and check:contrast read them.
+*/
+@import "./article.css";
 
 /*
   MIRROR RULE: the colour tokens below are duplicated in
@@ -228,9 +234,20 @@
 
 @layer base {
   html {
+    /*
+      The mobile top bar's height: two rows, measured at 375 and 390 wide,
+      where it does not wrap. Every size in the bar is px (the type scale and
+      --spacing both are), so a reader's larger default font does not change
+      it. One number, used by the hero, the scroll cue and anchor offsets,
+      rather than the same 89px typed into each of them.
+    */
+    --bar-height: 89px;
+
     scroll-behavior: smooth;
-    /* The rail is fixed; anchored sections must clear the mobile top bar. */
-    scroll-padding-top: 5rem;
+    /* Anchored sections clear the sticky mobile bar, with a line of air. At
+       lg the document does not scroll — <main> does — so this is phone-only;
+       the desktop chapter bar is cleared by each section's own margin. */
+    scroll-padding-top: calc(var(--bar-height) + 1rem);
   }
 
   @media (prefers-reduced-motion: reduce) {
@@ -242,6 +259,13 @@
     *::after {
       animation-duration: 0.01ms !important;
       animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+
+    /* Scrollbar pseudo-elements aren't reached by the universal selector
+       above — they're a vendor box model, not a real ::before/::after —
+       so the fade needs its own explicit reduced-motion override. */
+    ::-webkit-scrollbar-thumb {
       transition-duration: 0.01ms !important;
     }
   }
@@ -281,6 +305,18 @@
   }
 
   /*
+    The same problem inside an ink block: the ring is accent, accent is ink,
+    and on the inverted Measured chapter it drew ink on ink — measured as the
+    identical colour, so keyboard focus simply vanished there, in both themes.
+    Inside a chip the ring is paper instead. A chip that is itself a link (the
+    résumé button, the scroll cue) is untouched: its ring sits outside it, on
+    the page.
+  */
+  .chip :focus-visible {
+    outline-color: var(--color-canvas);
+  }
+
+  /*
     A thin, square-edged scrollbar rather than the OS default — the same
     hairline-and-no-radius vocabulary as everything else, so the one element
     on the page a browser normally owns still reads as part of the drawing.
@@ -293,8 +329,10 @@
   }
 
   ::-webkit-scrollbar {
-    width: 10px;
-    height: 10px;
+    /* 10px -> 9px (10% narrower) -> 7px (a further 25% off that), same
+       reasoning each time: a thin line, not a UI chrome element. */
+    width: 7px;
+    height: 7px;
   }
 
   ::-webkit-scrollbar-track {
@@ -308,6 +346,11 @@
        either side, not a stripe glued to the track's edge. */
     border: 2px solid transparent;
     background-clip: padding-box;
+    /* Chromium animates background-color on scrollbar pseudo-elements even
+       though they sit outside the normal box-model transition rules —
+       Firefox's scrollbar-color has no equivalent hook, so this is a
+       progressive enhancement rather than something to depend on. */
+    transition: background-color var(--duration-fast) var(--ease-out-quart);
   }
 
   ::-webkit-scrollbar-thumb:hover {
@@ -496,13 +539,19 @@
   /*
     Entrance enhances an already-visible default: content is never gated behind
     a transition, so headless renderers and background tabs still show it.
+
+    Scroll-driven, so there is no observer and no per-frame script: the
+    browser ties progress to the element's own passage through the viewport.
+    `--i` staggers siblings by shifting each one's range rather than by a
+    delay, which a scroll timeline has no use for. Browsers without
+    view-timeline support simply show everything, already in place.
   */
   @media (prefers-reduced-motion: no-preference) {
     @supports (animation-timeline: view()) {
       .rise {
         animation: rise linear both;
         animation-timeline: view();
-        animation-range: entry 0% entry 42%;
+        animation-range: entry calc(var(--i, 0) * 6%) entry calc(42% + var(--i, 0) * 6%);
       }
     }
   }
@@ -527,7 +576,7 @@
   */
   .deck {
     display: grid;
-    gap: calc(var(--spacing) * 2);
+    gap: calc(var(--spacing) * 3);
   }
 
   @media (min-width: 1024px) {
@@ -583,48 +632,11 @@
   */
   a.tile:hover,
   a.tile:focus-visible {
-    box-shadow: inset 0 0 0 calc(var(--surface-border) + 0.5px) var(--color-rule);
-  }
-
-  /*
-    Detail prose flows into columns instead of scrolling: the panel fills with
-    text left-to-right, so a long passage fits one viewport without hiding any
-    of it. Clipping would have been the other way to stop the scroll, and it
-    makes the evidence unreadable.
-  */
-  .flow {
-    min-height: 0;
-    /* Narrower columns fit more of them in the panel before content spills. */
-    columns: 30ch auto;
-    column-gap: calc(var(--spacing) * 4);
-    column-rule: 1px solid var(--color-line);
-    font-size: 0.9rem;
-    line-height: 1.55;
-  }
-
-  /*
-    Passages must be allowed to split across columns. Holding each one together
-    with break-inside:avoid means any passage taller than the column cannot be
-    placed, and it overflows the panel instead of reflowing — which is what
-    pushed /work/tadvantage 259px past its own width.
-
-    Headings keep their first lines instead, which is the part that actually
-    matters for reading.
-  */
-  .flow :is(h2, h3) {
-    break-after: avoid-column;
-    break-inside: avoid-column;
-  }
-
-  .flow p {
-    orphans: 2;
-    widows: 2;
-  }
-
-  @media (max-width: 1023px) {
-    .flow {
-      columns: 1;
-    }
+    /* +1px rather than the +0.5px this shipped with: half a pixel read as
+       a rounding artefact more than a response. A full pixel is still no
+       layout shift (box-shadow, not border) but is now something a reader
+       actually registers as the tile answering the cursor. */
+    box-shadow: inset 0 0 0 calc(var(--surface-border) + 1px) var(--color-rule);
   }
 }
 

@@ -53,6 +53,33 @@ export interface Principle {
   body: string;
 }
 
+/** An image with the facts a frame needs to show it honestly. */
+export interface ImageSlot {
+  src: string;
+  /** A placeholder's only: where the real asset belongs once it exists. */
+  target?: string;
+  alt: string;
+  /** Intrinsic pixels, so a frame reserves the image's exact shape before it loads. */
+  width: number;
+  height: number;
+  isPlaceholder: boolean;
+  /**
+   * Where the capture was taken, as a reader would type it, and the page to
+   * open. A screenshot you can click through to is proof; one you cannot is a
+   * picture of a claim.
+   */
+  source?: { label: string; href: string };
+}
+
+/**
+ * A screenshot placed inside a passage, with a line saying what it shows.
+ * Not "Figure": that name is already the stat component on the deck tiles.
+ */
+export interface PassageFigure {
+  image: ImageSlot;
+  caption: string;
+}
+
 /** A term and what it means — the rows of a `Passage.list`. */
 export interface PassageTerm {
   term: string;
@@ -78,6 +105,12 @@ export interface Passage {
    * a decorative box-and-arrow graphic with nothing behind it would not.
    */
   diagram?: string[];
+  /**
+   * A screenshot of the thing the passage describes, shown under its prose.
+   * Placed in the chapter it illustrates rather than in a gallery at the end,
+   * so the evidence sits next to the claim it is evidence for.
+   */
+  figure?: PassageFigure;
 }
 
 /**
@@ -132,4 +165,16 @@ export interface CaseStudy {
    * content layer simple to author and to check.
    */
   related?: { label: string; href: string }[];
+}
+
+/** One stop on the reading path: a page the rail links to, in rail order. */
+export interface PageLink {
+  href: string;
+  label: string;
+  /** The rail's index for the page, e.g. "02". */
+  index: string;
+  /** The group heading above it in the rail, when it sits in one. */
+  group?: { label: string; href?: string };
+  /** A line saying what the page argues — the headline, for a case study. */
+  summary?: string;
 }

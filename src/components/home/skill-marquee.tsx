@@ -36,7 +36,7 @@ export function SkillMarquee({ skills }: { skills: string[] }) {
   const marks = skills.filter((skill) => LOGOS[skill]);
 
   return (
-    <section aria-label="Skills" className="marquee panel shrink-0 overflow-hidden">
+    <section aria-label="Skills" className="marquee shrink-0 overflow-hidden">
       {/* The sprite. aria-hidden and zero-sized: it is a definition, not content. */}
       <svg width="0" height="0" aria-hidden="true" className="absolute">
         <defs>
