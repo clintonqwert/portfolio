@@ -43,7 +43,7 @@ export function DetailView({
   raw?: boolean;
 }) {
   return (
-    <div className="flex flex-col gap-2 p-2">
+    <div className="flex flex-col gap-2 p-2 lg:gap-3 lg:p-3">
       <header className="tile shrink-0 px-4 py-3">
         <p className="label tracking-[0.12em] text-accent">
           <Link href="/" className="no-underline hover:underline">
@@ -81,7 +81,7 @@ export function DetailView({
 
       <div
         className={cn(
-          "grid items-start gap-2",
+          "grid items-start gap-3",
           aside ? "wide:grid-cols-[minmax(0,1fr)_320px]" : "",
         )}
       >

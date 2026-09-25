@@ -33,9 +33,9 @@ export default async function HistoryPage() {
       {/* Track record takes more of the row than it used to: Tools and Practice
           both fit with room to spare while it overflowed by 132px, cutting the
           earliest role off mid-word. */}
-      <div className="grid min-h-0 gap-2 lg:grid-cols-[minmax(0,1.6fr)_minmax(0,1fr)_minmax(0,1fr)]">
+      <div className="grid min-h-0 gap-3 lg:grid-cols-[minmax(0,1.6fr)_minmax(0,1fr)_minmax(0,1fr)]">
         <section className="tile min-h-0 overflow-hidden">
-          <h2 className="border-b border-line px-3 py-2 label text-accent">
+          <h2 className="border-b border-line px-4 py-2 label text-accent">
             Track record
           </h2>
           {/* Scroll rather than clip: the width change alone is not a promise,
@@ -46,7 +46,7 @@ export default async function HistoryPage() {
         </section>
 
         <section className="tile min-h-0 overflow-hidden">
-          <h2 className="border-b border-line px-3 py-2 label text-accent">
+          <h2 className="border-b border-line px-4 py-2 label text-accent">
             Tools
           </h2>
           {/* Scrolls like Track Record beside it. The stack list grew when the
@@ -58,7 +58,7 @@ export default async function HistoryPage() {
         </section>
 
         <section className="tile min-h-0 overflow-hidden">
-          <h2 className="border-b border-line px-3 py-2 label text-accent">
+          <h2 className="border-b border-line px-4 py-2 label text-accent">
             How I work
           </h2>
           <ul className="min-h-0 flex-1 space-y-3 overflow-hidden px-3 py-3">
