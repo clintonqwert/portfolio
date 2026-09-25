@@ -93,7 +93,9 @@ visible.
 
 ### CSS conventions
 
-Four class families, documented in full at the top of `src/app/globals.css`:
+Four class families, documented in full at the top of `src/app/globals.css`
+(tokens, base, the deck), with the secondary pages' layer in
+`src/app/article.css`, imported from it:
 **surface** (`.panel` `.tile` `.chip` `.rail`), **layout** (`.deck` `.flow`
 `.datagrid` `.marquee` `.sheet` `.hero` `.titleblock` `.chapter`
 `.flowchart`), **type role** (`.display` `.label` `.meta`

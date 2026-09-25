@@ -11,9 +11,9 @@ import { AVAILABILITY, CONTACT, CONTACT_HREF, NAME, RESUME } from "@/lib/content
  * The navigation rail. Fixed full-height chrome at ≥1024px, a horizontal bar
  * below that.
  *
- * Server component: these are anchors, so nothing here needs the browser and
- * the rail ships no JavaScript. Section highlighting would require a client
- * observer and is not worth the bytes on a page this short.
+ * Server component: these are anchors, so nothing here needs the browser. The
+ * one client part is RailNav, which reads the pathname to mark the page you
+ * are on.
  */
 export function SiteRail({ links }: { links: NavEntry[] }) {
   return (

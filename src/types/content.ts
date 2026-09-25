@@ -56,8 +56,8 @@ export interface Principle {
 /** An image with the facts a frame needs to show it honestly. */
 export interface ImageSlot {
   src: string;
-  /** Where the real asset belongs once it exists. */
-  target: string;
+  /** A placeholder's only: where the real asset belongs once it exists. */
+  target?: string;
   alt: string;
   /** Intrinsic pixels, so a frame reserves the image's exact shape before it loads. */
   width: number;
@@ -71,8 +71,11 @@ export interface ImageSlot {
   source?: { label: string; href: string };
 }
 
-/** A screenshot placed inside a passage, with a line saying what it shows. */
-export interface Figure {
+/**
+ * A screenshot placed inside a passage, with a line saying what it shows.
+ * Not "Figure": that name is already the stat component on the deck tiles.
+ */
+export interface PassageFigure {
   image: ImageSlot;
   caption: string;
 }
@@ -107,7 +110,7 @@ export interface Passage {
    * Placed in the chapter it illustrates rather than in a gallery at the end,
    * so the evidence sits next to the claim it is evidence for.
    */
-  figure?: Figure;
+  figure?: PassageFigure;
 }
 
 /**

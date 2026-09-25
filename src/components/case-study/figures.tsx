@@ -29,7 +29,7 @@ export function Figures({
         {stats.map((stat, i) => (
           <div
             key={stat.label}
-            className="rise flex min-w-0 flex-col-reverse justify-end gap-3 border-b border-canvas/25 py-6 pr-4 [container-type:inline-size] odd:border-r odd:border-r-canvas/25 even:pl-5"
+            className="rise flex min-w-0 flex-col-reverse justify-end gap-3 border-b border-canvas/25 py-6 pr-4 [container-type:inline-size] odd:not-last:border-r odd:not-last:border-r-canvas/25 even:pl-5"
             style={{ "--i": i % 2 } as React.CSSProperties}
           >
             {/* Term before value in the markup, which is the order a screen

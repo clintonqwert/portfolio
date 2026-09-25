@@ -14,11 +14,11 @@ export type { ImageSlot };
  * Every slot below is now a real capture of a public page, saved as WebP:
  *  - driftpilot.ca and riflessiautocare.vercel.app, taken 2026-09-25 in
  *    headless Chrome.
- *  - tadvantage.ca and autosyncmotors.com, taken by hand in an ordinary browser
- *    the same day. Both sit behind bot checks that refuse headless capture.
- *    The originals are full-page 2x PNGs (27 MB between them) and live in
- *    profile/work-originals/, out of this public repository; what ships is
- *    cropped from them.
+ *  - tadvantage.ca and autosyncmotors.com, supplied by the owner on
+ *    2026-09-25. Both sites sit behind bot checks that refuse headless
+ *    capture. The originals are full-page 2x PNGs (27 MB between them) and
+ *    live in profile/work-originals/, out of this public repository; what
+ *    ships is cropped from them.
  *
  * Crops are the page's first screen for a hero (16:10, 1600px — a hero
  * renders at up to ~600px wide, so that covers a 2x screen) and the page's
@@ -36,8 +36,9 @@ export type { ImageSlot };
  *    (DriftPilot has no relation to it), so its figures are AutoTrader's
  *    claims about AutoTrader's product, and the caption says so.
  *
- * TO REPLACE one: drop the file in public/work/, point `src` and `target` at
- * it, and set `width`/`height` to its own pixels. Do not screenshot internal
+ * TO REPLACE one: drop the file in public/work/, point `src` at it, set
+ * `width`/`height` to its own pixels, and drop `target` if it was a
+ * placeholder. Do not screenshot internal
  * Convertus or AutoTrader tooling — only the public sites.
  */
 
@@ -70,7 +71,6 @@ export const SCORES_IMAGE: ImageSlot = {
  */
 export const AUTOSYNC_IMAGE: ImageSlot = {
   src: "/work/autosync-hero.webp",
-  target: "/work/autosync-hero.webp",
   alt: "The AutoSync Motors demo dealer site, above the fold",
   width: 1600,
   height: 1000,
@@ -81,7 +81,6 @@ export const AUTOSYNC_IMAGE: ImageSlot = {
 /** The inventory listing on the same demo — shown in /autotrader's platform chapter. */
 export const AUTOSYNC_INVENTORY_IMAGE: ImageSlot = {
   src: "/work/autosync-inventory.webp",
-  target: "/work/autosync-inventory.webp",
   // All inventory, not the used listing: the capture reads "Véhicules à
   // Québec — 130 Items Matching" with new stock in it, which is the count the
   // homepage's Search (130) opens. /vehicles/used/ is a different page (88
@@ -103,7 +102,6 @@ export const AUTOSYNC_INVENTORY_IMAGE: ImageSlot = {
  */
 export const TADVANTAGE_FEATURES_IMAGE: ImageSlot = {
   src: "/work/tadvantage-features.webp",
-  target: "/work/tadvantage-features.webp",
   alt: "The Explore Features grid on tadvantage.ca: Quick View VDP, AutoTrader.ca IQ Badging, Video Solutions, Reputation Enhancement, Branded Overlays, Promo Builder, My Garage, and Video Fusion",
   width: 1440,
   height: 880,
@@ -113,7 +111,6 @@ export const TADVANTAGE_FEATURES_IMAGE: ImageSlot = {
 
 export const TADVANTAGE_SEO_IMAGE: ImageSlot = {
   src: "/work/tadvantage-seo.webp",
-  target: "/work/tadvantage-seo.webp",
   alt: "The SEO Solutions page on tadvantage.ca, with its SEO features: custom content, optimized vehicle landing pages, and blog posts",
   width: 1440,
   height: 1540,
@@ -125,7 +122,6 @@ export const TADVANTAGE_SEO_IMAGE: ImageSlot = {
 export const WORK_IMAGES: Record<string, ImageSlot> = {
   driftpilot: {
     src: "/work/driftpilot-hero.webp",
-    target: "/work/driftpilot-hero.webp",
     alt: "The DriftPilot studio site, above the fold",
     width: 1120,
     height: 600,
@@ -134,7 +130,6 @@ export const WORK_IMAGES: Record<string, ImageSlot> = {
   },
   riflessi: {
     src: "/work/riflessi-hero.webp",
-    target: "/work/riflessi-hero.webp",
     // The home page, not a configurator: that is what the capture shows, and
     // alt text describing something the image does not contain is a small lie.
     alt: "The Riflessi Auto Care home page, with the 3D vehicle hero rendered",
@@ -148,7 +143,6 @@ export const WORK_IMAGES: Record<string, ImageSlot> = {
   },
   tadvantage: {
     src: "/work/tadvantage-hero.webp",
-    target: "/work/tadvantage-hero.webp",
     alt: "tadvantage.ca, the platform's product site, above the fold",
     width: 1600,
     height: 1000,
@@ -157,7 +151,6 @@ export const WORK_IMAGES: Record<string, ImageSlot> = {
   },
   mygarage: {
     src: "/work/mygarage-hero.webp",
-    target: "/work/mygarage-hero.webp",
     alt: "The MyGarage page on the AutoSync demo: two viewed vehicles with price alerts, and the garage drawer open beside them",
     width: 1600,
     height: 1118,

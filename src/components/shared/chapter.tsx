@@ -43,10 +43,11 @@ export function Chapter({
     <section
       id={id}
       aria-labelledby={`${id}-title`}
-      data-chapter=""
       className={cn(
-        // scroll-mt clears the 44px chapter bar when a link lands here.
-        "scroll-mt-14",
+        // Clears the 44px chapter bar when a link lands here. Desktop only:
+        // the bar is, and on a phone the document's scroll-padding already
+        // clears the sticky top bar — both at once left a 47px dead gap.
+        "lg:scroll-mt-14",
         ink ? "chip" : "",
       )}
     >

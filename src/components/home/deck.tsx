@@ -178,11 +178,12 @@ export function Deck({
               </ul>
 
               {/*
-                The work, shown rather than only linked. Breakpoints come from
-                measuring free space per cell, not from taste: at 1440 only the
-                feature cell has room (137px), and the two narrow cells do not
-                get one until 1680 (163px and 143px). Below those widths the
-                tile is already full and an image would clip real content.
+                The work, shown rather than only linked. The shot shrinks to
+                whatever height its cell has left (see TileShot), so the gates
+                below are about whether that is enough to be worth showing:
+                at 1440 only the feature cell has room, and the two narrow
+                cells not until 1680. Below those widths a shot would be a
+                sliver.
               */}
               {workImages[study.slug] ? (
                 <TileShot
@@ -190,10 +191,6 @@ export function Deck({
                   className={
                     study.feature
                       ? "mt-3 hidden wide:flex"
-                      // mt-2 rather than mt-3: at 1680, the first width the
-                      // narrow cells reveal this at all, Tadvantage's stack
-                      // list (8 items, longest on the site) left only 3px to
-                      // spare before the gate's silent-clipping check fired.
                       : "mt-2 hidden wider:flex"
                   }
                 />
