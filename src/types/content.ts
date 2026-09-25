@@ -70,6 +70,14 @@ export interface Passage {
    * their reasons — and prose hides that shape from a reader who is skimming.
    */
   list?: PassageTerm[];
+  /**
+   * A short linear flow, rendered as labelled boxes joined by arrows. Reserved
+   * for the handful of places where the architecture actually IS a sequence —
+   * a pull request moving through a CI gate, a record moving through a service.
+   * That is evidence of a real mechanism, which is what earns it a diagram;
+   * a decorative box-and-arrow graphic with nothing behind it would not.
+   */
+  diagram?: string[];
 }
 
 /**
@@ -116,4 +124,12 @@ export interface CaseStudy {
   note?: string;
   /** Optional assertion table, with its caption. */
   assertions?: { caption: string; rows: Assertion[] };
+  /**
+   * Other pages worth reading next. Internal links a reader who is already
+   * interested earns for free — Tadvantage points at myGarage, myGarage points
+   * back. Kept as an explicit list rather than inline hyperlinks in prose,
+   * because passages render as plain paragraphs and staying that way keeps the
+   * content layer simple to author and to check.
+   */
+  related?: { label: string; href: string }[];
 }

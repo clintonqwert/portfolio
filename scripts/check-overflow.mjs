@@ -33,7 +33,7 @@ const CHROME =
 
 const ROUTES = [
   "/", "/standard", "/gaps", "/history", "/autotrader",
-  "/work/driftpilot", "/work/riflessi", "/work/tadvantage", "/work/luxury-tax",
+  "/work/driftpilot", "/work/riflessi", "/work/tadvantage", "/work/mygarage", "/work/luxury-tax",
 ];
 
 /** The shell is only viewport-fit at lg and up; below that it scrolls by design. */

@@ -2,15 +2,17 @@ import type { Metadata } from "next";
 
 import { DetailView } from "@/components/layout/detail-view";
 import { StackGrid, TrackRecord } from "@/components/shared/track-record";
-import { getPrinciples, getStackGroups, getTrackRecord } from "@/lib/content/practice";
+import {
+  HISTORY_LEDE,
+  getPrinciples,
+  getStackGroups,
+  getTrackRecord,
+} from "@/lib/content/practice";
 import { buildMetadata } from "@/lib/seo";
-
-const LEDE =
-  "Roles before the studio year, the tools they were built with, and the principles the current work is held to.";
 
 export const metadata: Metadata = buildMetadata({
   title: "History — track record, tools and practice",
-  description: LEDE,
+  description: HISTORY_LEDE,
   path: "/history",
 });
 
@@ -27,7 +29,7 @@ export default async function HistoryPage() {
   ]);
 
   return (
-    <DetailView eyebrow="History" title="Track record, tools and practice" lede={LEDE} raw>
+    <DetailView eyebrow="History" title="Track record, tools and practice" lede={HISTORY_LEDE} raw>
       {/* Track record takes more of the row than it used to: Tools and Practice
           both fit with room to spare while it overflowed by 132px, cutting the
           earliest role off mid-word. */}
@@ -57,9 +59,11 @@ export default async function HistoryPage() {
 
         <section className="tile min-h-0 overflow-hidden">
           <h2 className="border-b border-line px-3 py-2 label text-accent">
-            Practice
+            How I work
           </h2>
           <ul className="min-h-0 flex-1 space-y-3 overflow-hidden px-3 py-3">
+            {/* Not soft skills — six things the repositories are actually
+                held to, which is the difference between a claim and a check. */}
             {principles.map((principle) => (
               <li key={principle.title}>
                 <h3 className="font-display text-md font-semibold text-ink">

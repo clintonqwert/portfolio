@@ -2,6 +2,10 @@ import "server-only";
 
 import type { Gap, Principle, Role, StackGroup } from "@/types/content";
 
+/** Shared between /history and its dashboard tile, so the two never drift. */
+export const HISTORY_LEDE =
+  "Roles before the studio year, the tools they were built with, and the principles the current work is held to.";
+
 /** How I work — the six principles in the practice grid. */
 export async function getPrinciples(): Promise<Principle[]> {
   return [

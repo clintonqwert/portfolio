@@ -3,7 +3,7 @@ import { Figure, Tile, TileShot } from "@/components/home/tile";
 import { AUTOTRADER_POINTS } from "@/lib/content/experience";
 import { FACTS, HEADLINE, LEDE } from "@/lib/content/profile";
 import type { ImageSlot } from "@/lib/content/assets";
-import type { CaseStudy, Gap, Stat } from "@/types/content";
+import type { CaseStudy, Gap } from "@/types/content";
 
 /**
  * The dashboard.
@@ -16,15 +16,16 @@ import type { CaseStudy, Gap, Stat } from "@/types/content";
  * the headline and marquee need.
  */
 export function Deck({
-  stats,
   studies,
   gaps,
   skills,
   autoTraderLede,
   workImages,
   autoSyncImage,
+  historyLede,
+  historyRolesCount,
+  historyPrinciplesCount,
 }: {
-  stats: Stat[];
   studies: CaseStudy[];
   gaps: Gap[];
   skills: string[];
@@ -33,6 +34,9 @@ export function Deck({
   workImages: Record<string, ImageSlot>;
   /** AutoSync screenshot for the AutoTrader tile. */
   autoSyncImage: ImageSlot;
+  historyLede: string;
+  historyRolesCount: number;
+  historyPrinciplesCount: number;
 }) {
   return (
     <div className="flex flex-col gap-2 p-2 lg:h-full">
@@ -104,11 +108,42 @@ export function Deck({
                 : "flex min-h-0 flex-1 flex-col"
             }
           >
-            <div className="min-h-0">
-              <p className="overflow-hidden text-md leading-snug text-muted">
+            {/*
+              overflow-hidden here is load-bearing, not decoration: min-h-0
+              lets this box shrink below its content's natural size when the
+              flex column is tight on room, but nothing clipped what spilled
+              past the shrunk box — the sibling stats block below, positioned
+              by mt-auto against the shrunk box rather than the overflowing
+              text, rendered on top of it. Measured on Riflessi and
+              Tadvantage at 1024px: the summary text alone ran 115px into a
+              box the flex layout had already reduced well below that.
+
+              line-clamp-2 is deliberately conservative rather than sized to
+              the widest cell: at 1024px the narrow cells only have ~52px for
+              this block, and a clamp that fits inside that shows its own
+              ellipsis cleanly. A larger clamp still gets caught by
+              overflow-hidden above, but the cut lands mid-line instead of at
+              a sentence boundary, which reads as the exact collision this
+              is fixing rather than a graceful truncation.
+            */}
+            <div className="min-h-0 overflow-hidden">
+              <p className="line-clamp-2 text-md leading-snug text-muted">
                 {study.summary}
               </p>
-              <ul className="mt-3 flex flex-wrap gap-x-3 gap-y-0.5 meta text-faint">
+              {/*
+                Hidden below `wide` on the narrow cells (Riflessi, Tadvantage):
+                even a 2-line clamp on the summary left the check-overflow
+                gate reporting 22-65px of this list silently clipped at
+                1024-1280px, because overflow-hidden on the parent was
+                swallowing it rather than the ellipsis showing it was
+                shortened. The stack is still one click away on the case
+                study itself; the feature cell has room to keep it always.
+              */}
+              <ul
+                className={`mt-3 flex-wrap gap-x-3 gap-y-0.5 meta text-faint ${
+                  study.feature ? "flex" : "hidden wide:flex"
+                }`}
+              >
                 {study.stack.map((tech) => (
                   <li key={tech}>{tech}</li>
                 ))}
@@ -127,7 +162,11 @@ export function Deck({
                   className={
                     study.feature
                       ? "mt-3 hidden [--shot-h:104px] wide:block wider:[--shot-h:132px]"
-                      : "mt-3 hidden [--shot-h:104px] wider:block"
+                      // mt-2 rather than mt-3: at 1680, the first width the
+                      // narrow cells reveal this at all, Tadvantage's stack
+                      // list (8 items, longest on the site) left only 3px to
+                      // spare before the gate's silent-clipping check fired.
+                      : "mt-2 hidden [--shot-h:104px] wider:block"
                   }
                 />
               ) : null}
@@ -235,13 +274,74 @@ export function Deck({
           </div>
         </Tile>
 
-        {/* The page's argument, so it gets the sunk surface and the widest cell. */}
+        {/*
+          History used to have no dashboard presence at all — reachable only
+          by finding it last in the rail. It sits in the Open gaps' old spot,
+          at roughly half AI Engineering's width alongside it, because a
+          reader's own background belongs next to the work, not after it.
+        */}
+        <Tile
+          label="History"
+          href="/history"
+          cta="Track record"
+          className="lg:col-start-5 lg:col-end-8 lg:row-start-5 lg:row-end-7"
+        >
+          <p className="line-clamp-2 shrink-0 text-xs leading-tight text-muted wide:line-clamp-3 wide:leading-snug">
+            {historyLede}
+          </p>
+          <div className="mt-auto flex gap-3 border-t border-line pt-0.5">
+            <Figure
+              stat={{ value: String(historyRolesCount), label: "Chapters, 2016–present" }}
+              size="sm"
+            />
+            <Figure
+              stat={{ value: String(historyPrinciplesCount), label: "Practice principles" }}
+              size="sm"
+            />
+          </div>
+        </Tile>
+
+        <Tile
+          label="AI Engineering"
+          href="/standard"
+          cta="How it works"
+          className="lg:col-start-8 lg:col-end-13 lg:row-start-5 lg:row-end-7"
+        >
+          {/*
+            Unconditionally 4-across rather than gated behind `wide`: the tile
+            is now 5 of 12 columns at every width this appears at (it used to
+            be 3 of 12 below `wide`, too narrow for four side by side), and a
+            2x2 stack needed more height than the row has since it was halved
+            to make room for History alongside it.
+          */}
+          <div className="grid flex-1 grid-cols-4 content-center gap-x-3 gap-y-3">
+            <Figure
+              stat={{ value: "5", label: "Specialist AI roles" }}
+              size="sm"
+            />
+            <Figure
+              stat={{ value: "1", label: "May write files" }}
+              size="sm"
+            />
+            <Figure
+              stat={{ value: "44", label: "Documents in the standard" }}
+              size="sm"
+            />
+            <Figure
+              stat={{ value: "1,920", label: "Lines, cross-project" }}
+              size="sm"
+            />
+          </div>
+        </Tile>
+
+        {/* The page's argument, so it gets the sunk surface and the full width
+            of the row beneath History and AI Engineering. */}
         <Tile
           label="Open gaps"
           index="05"
           href="/gaps"
           cta="All three"
-          className="bg-sunk lg:col-start-5 lg:col-end-10 lg:row-start-5 lg:row-end-9 wide:col-end-13 wide:row-end-7"
+          className="bg-sunk lg:col-start-5 lg:col-end-13 lg:row-start-7 lg:row-end-9"
         >
           {/*
             Gap, consequence, fix — the same three parts the table on /gaps
@@ -250,6 +350,13 @@ export function Deck({
             were clamped to one line with `truncate` while a third of the tile
             sat empty below them, which quietly did the one thing PRODUCT.md
             says this tile must never do.
+
+            Below `wide` this row is one grid row instead of the four it used
+            to get, and three columns at 1024px is only ~150px each — narrow
+            enough that even a short title can wrap to two lines. Titles alone
+            fit that budget; the consequence only joins once `wide` gives each
+            column roughly 265px, which is what actually needed the room, not
+            the column count.
           */}
           <ul className="grid flex-1 grid-cols-1 gap-x-5 gap-y-1 overflow-hidden wide:grid-cols-3 wide:gap-y-2">
             {gaps.map((gap) => (
@@ -260,9 +367,7 @@ export function Deck({
                 />
                 <span className="min-w-0">
                   <span className="font-mono text-2xs text-signal">{gap.gap}</span>
-                  {/* The strip is half the height it was, so the consequence
-                      clamps until there is room for all of it. */}
-                  <span className="line-clamp-2 block text-xs leading-tight text-muted wide:line-clamp-3 wide:leading-snug wider:line-clamp-none">
+                  <span className="hidden line-clamp-2 text-xs leading-tight text-muted wide:block wide:line-clamp-3 wide:leading-snug wider:line-clamp-none">
                     {gap.consequence}
                   </span>
                   <span className="mt-0.5 hidden text-xs leading-snug text-faint wider:block">
@@ -277,22 +382,6 @@ export function Deck({
               </li>
             ))}
           </ul>
-        </Tile>
-
-        <Tile
-          label="Measured"
-          href="/history"
-          cta="History"
-          className="lg:col-start-10 lg:col-end-13 lg:row-start-5 lg:row-end-9 wide:col-start-5 wide:row-start-7"
-        >
-          {/* Four across, not 2x2: this tile is now a wide half-height strip,
-              so the figures run along it rather than stacking into a shape the
-              cell no longer has. */}
-          <div className="grid flex-1 grid-cols-2 content-center gap-x-4 gap-y-3 wide:grid-cols-4">
-            {stats.map((stat) => (
-              <Figure key={stat.label} stat={stat} size="sm" />
-            ))}
-          </div>
         </Tile>
 
       </div>

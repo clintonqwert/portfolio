@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Image from "next/image";
+import Link from "next/link";
 import { notFound } from "next/navigation";
 
 import { DetailView } from "@/components/layout/detail-view";
@@ -125,6 +126,24 @@ export default async function CaseStudyPage({
                     </div>
                   ))}
                 </dl>
+              </>
+            ) : null}
+
+            {study.related && study.related.length > 0 ? (
+              <>
+                <p className="mt-4 label text-accent">Related</p>
+                <ul className="mt-2 space-y-1.5 text-sm leading-snug">
+                  {study.related.map((r) => (
+                    <li key={r.href}>
+                      <Link
+                        href={r.href}
+                        className="text-accent underline decoration-1 underline-offset-[3px]"
+                      >
+                        {r.label}
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
               </>
             ) : null}
           </div>
