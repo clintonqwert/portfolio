@@ -19,7 +19,7 @@ import { WORK_IMAGES } from "@/lib/content/assets";
 import { getPagePosition } from "@/lib/content/navigation";
 import { CONTACT, CONTACT_HREF, RESUME } from "@/lib/content/profile";
 import { getCaseStudy, getCaseStudySlugs } from "@/lib/content/work";
-import { buildCaseStudyJsonLd, buildMetadata } from "@/lib/seo";
+import { buildBreadcrumbJsonLd, buildCaseStudyJsonLd, buildMetadata } from "@/lib/seo";
 import { readingMinutes } from "@/lib/utils";
 
 /** Every case study is known at build time, so every route prerenders. */
@@ -87,6 +87,12 @@ export default async function CaseStudyPage({
       : undefined;
   const chapters = [...prose, stack, ...(measured ? [measured] : [])];
 
+  const trail = [
+    { label: "Overview", href: "/" },
+    ...(page?.group ? [{ label: page.group.label, href: page.group.href }] : []),
+    { label: study.name },
+  ];
+
   const specs: Spec[] = [
     { label: "Period", value: study.period },
     { label: "Role", value: study.role },
@@ -118,16 +124,13 @@ export default async function CaseStudyPage({
           path,
         })}
       />
+      <JsonLd data={buildBreadcrumbJsonLd(trail, path)} />
 
       <article>
         <ChapterBar index={page?.index} kicker={study.name} chapters={chapters} />
 
         <PageHero
-          trail={[
-            { label: "Overview", href: "/" },
-            ...(page?.group ? [{ label: page.group.label, href: page.group.href }] : []),
-            { label: study.name },
-          ]}
+          trail={trail}
           index={page?.index}
           kicker={study.name}
           title={study.headline}

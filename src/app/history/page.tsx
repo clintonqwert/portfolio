@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import { Chapter, type ChapterRef } from "@/components/shared/chapter";
 import { ChapterBar } from "@/components/layout/chapter-bar";
 import { PageClose } from "@/components/layout/page-close";
+import { JsonLd } from "@/components/shared/json-ld";
 import { PageHero } from "@/components/layout/page-hero";
 import { StackGrid, TrackRecord } from "@/components/shared/track-record";
 import { getPagePosition } from "@/lib/content/navigation";
@@ -13,13 +14,15 @@ import {
   getTrackRecord,
 } from "@/lib/content/practice";
 import { CONTACT, CONTACT_HREF, RESUME } from "@/lib/content/profile";
-import { buildMetadata } from "@/lib/seo";
+import { buildBreadcrumbJsonLd, buildMetadata } from "@/lib/seo";
 
 export const metadata: Metadata = buildMetadata({
   title: "History — track record, tools and practice",
   description: HISTORY_LEDE,
   path: "/history",
 });
+
+const TRAIL = [{ label: "Overview", href: "/" }, { label: "History" }];
 
 /**
  * Three chapters, in the order the lede names them: the roles, the tools
@@ -44,10 +47,11 @@ export default async function HistoryPage() {
 
   return (
     <article>
+      <JsonLd data={buildBreadcrumbJsonLd(TRAIL, "/history")} />
       <ChapterBar index={page?.index} kicker="History" chapters={chapters} />
 
       <PageHero
-        trail={[{ label: "Overview", href: "/" }, { label: "History" }]}
+        trail={TRAIL}
         index={page?.index}
         kicker="History"
         title="Track record, tools and practice"

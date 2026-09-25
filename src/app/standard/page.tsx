@@ -2,12 +2,13 @@ import type { Metadata } from "next";
 
 import { ChapterBar } from "@/components/layout/chapter-bar";
 import { PageClose } from "@/components/layout/page-close";
+import { JsonLd } from "@/components/shared/json-ld";
 import { PageHero } from "@/components/layout/page-hero";
 import { PassageChapters, passageRefs } from "@/components/shared/passage-chapters";
 import { PROJECT_OS_LEDE, PROJECT_OS_RAIL, getProjectOsPassages } from "@/lib/content/experience";
 import { getPagePosition } from "@/lib/content/navigation";
 import { CONTACT, CONTACT_HREF, RESUME } from "@/lib/content/profile";
-import { buildMetadata } from "@/lib/seo";
+import { buildBreadcrumbJsonLd, buildMetadata } from "@/lib/seo";
 import { readingMinutes } from "@/lib/utils";
 
 export const metadata: Metadata = buildMetadata({
@@ -15,6 +16,8 @@ export const metadata: Metadata = buildMetadata({
   description: PROJECT_OS_LEDE,
   path: "/standard",
 });
+
+const TRAIL = [{ label: "Overview", href: "/" }, { label: "AI Engineering" }];
 
 export default async function StandardPage() {
   const [passages, { page, prev, next }] = await Promise.all([
@@ -25,10 +28,11 @@ export default async function StandardPage() {
 
   return (
     <article>
+      <JsonLd data={buildBreadcrumbJsonLd(TRAIL, "/standard")} />
       <ChapterBar index={page?.index} kicker="AI Engineering" chapters={chapters} />
 
       <PageHero
-        trail={[{ label: "Overview", href: "/" }, { label: "AI Engineering" }]}
+        trail={TRAIL}
         index={page?.index}
         kicker="AI Engineering"
         title="Project OS: standards that outlive one repository"

@@ -2,11 +2,12 @@ import type { Metadata } from "next";
 
 import { GapsTable } from "@/components/shared/data-table";
 import { PageClose } from "@/components/layout/page-close";
+import { JsonLd } from "@/components/shared/json-ld";
 import { PageHero } from "@/components/layout/page-hero";
 import { getPagePosition } from "@/lib/content/navigation";
 import { getGaps } from "@/lib/content/practice";
 import { CONTACT, CONTACT_HREF, RESUME } from "@/lib/content/profile";
-import { buildMetadata } from "@/lib/seo";
+import { buildBreadcrumbJsonLd, buildMetadata } from "@/lib/seo";
 
 const LEDE =
   "Written into the repositories with their consequences attached before any interviewer asked, because a gap you have named is a plan and a gap you have hidden is a liability.";
@@ -16,6 +17,8 @@ export const metadata: Metadata = buildMetadata({
   description: LEDE,
   path: "/gaps",
 });
+
+const TRAIL = [{ label: "Overview", href: "/" }, { label: "Open gaps" }];
 
 /**
  * One table, so one section and no chapter bar: numbering a single chapter
@@ -28,8 +31,9 @@ export default async function GapsPage() {
 
   return (
     <article>
+      <JsonLd data={buildBreadcrumbJsonLd(TRAIL, "/gaps")} />
       <PageHero
-        trail={[{ label: "Overview", href: "/" }, { label: "Open gaps" }]}
+        trail={TRAIL}
         index={page?.index}
         kicker="Open gaps"
         title="What I would fix first"
@@ -42,7 +46,7 @@ export default async function GapsPage() {
         cueLabel="Scroll to the table"
       />
 
-      <section id="the-gaps" aria-label="The gaps, in full" className="scroll-mt-14">
+      <section id="the-gaps" aria-label="The gaps, in full" className="lg:scroll-mt-14">
         <div className="sheet">
           <div className="rise border-t border-line py-[clamp(3rem,5.5vw,5.25rem)]">
             <GapsTable rows={gaps} />
