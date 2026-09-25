@@ -98,7 +98,7 @@ export function Deck({
           </ul>
         </header>
 
-        <div className="shrink-0">
+        <div className="shrink-0 border-y border-line">
           <SkillMarquee skills={skills} />
         </div>
 
