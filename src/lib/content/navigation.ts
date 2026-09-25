@@ -60,11 +60,14 @@ export async function getNavLinks(): Promise<NavEntry[]> {
     { kind: "link", href: "/work/mygarage", label: "MyGarage", index: "05", indent: true },
     { kind: "link", href: "/work/luxury-tax", label: "Luxury tax", index: "06", indent: true },
 
+    // History moved up: it's who the work belongs to, so it reads right after
+    // the work itself rather than after the process/meta pages. Open gaps
+    // moved to last on purpose — it is the appendix, not the opener.
+    { kind: "link", href: "/history", label: "History", index: "07" },
     // Same route as before ("Project OS"); relabelled because the label is
     // what a recruiter scans, and "AI Engineering" says what the page is
     // about where "Project OS" only names it.
-    { kind: "link", href: "/standard", label: "AI Engineering", index: "07" },
-    { kind: "link", href: "/gaps", label: "Open gaps", index: "08" },
-    { kind: "link", href: "/history", label: "History", index: "09" },
+    { kind: "link", href: "/standard", label: "AI Engineering", index: "08" },
+    { kind: "link", href: "/gaps", label: "Open gaps", index: "09" },
   ];
 }

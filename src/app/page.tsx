@@ -2,15 +2,23 @@ import { Deck } from "@/components/home/deck";
 import { JsonLd } from "@/components/shared/json-ld";
 import { AUTOSYNC_IMAGE, WORK_IMAGES } from "@/lib/content/assets";
 import { AUTOTRADER_LEDE } from "@/lib/content/experience";
-import { getGaps, getSkillMarquee } from "@/lib/content/practice";
+import {
+  HISTORY_LEDE,
+  getGaps,
+  getPrinciples,
+  getSkillMarquee,
+  getTrackRecord,
+} from "@/lib/content/practice";
 import { getCaseStudies } from "@/lib/content/work";
 import { buildPersonJsonLd } from "@/lib/seo";
 
 export default async function HomePage() {
-  const [studies, gaps, skills] = await Promise.all([
+  const [studies, gaps, skills, roles, principles] = await Promise.all([
     getCaseStudies(),
     getGaps(),
     getSkillMarquee(),
+    getTrackRecord(),
+    getPrinciples(),
   ]);
 
   return (
@@ -23,6 +31,9 @@ export default async function HomePage() {
         autoTraderLede={AUTOTRADER_LEDE}
         workImages={WORK_IMAGES}
         autoSyncImage={AUTOSYNC_IMAGE}
+        historyLede={HISTORY_LEDE}
+        historyRolesCount={roles.length}
+        historyPrinciplesCount={principles.length}
       />
     </>
   );

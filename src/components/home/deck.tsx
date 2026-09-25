@@ -22,6 +22,9 @@ export function Deck({
   autoTraderLede,
   workImages,
   autoSyncImage,
+  historyLede,
+  historyRolesCount,
+  historyPrinciplesCount,
 }: {
   studies: CaseStudy[];
   gaps: Gap[];
@@ -31,6 +34,9 @@ export function Deck({
   workImages: Record<string, ImageSlot>;
   /** AutoSync screenshot for the AutoTrader tile. */
   autoSyncImage: ImageSlot;
+  historyLede: string;
+  historyRolesCount: number;
+  historyPrinciplesCount: number;
 }) {
   return (
     <div className="flex flex-col gap-2 p-2 lg:h-full">
@@ -233,66 +239,47 @@ export function Deck({
           </div>
         </Tile>
 
-        {/* The page's argument, so it gets the sunk surface and the widest cell. */}
+        {/*
+          History used to have no dashboard presence at all — reachable only
+          by finding it last in the rail. It sits in the Open gaps' old spot,
+          at roughly half AI Engineering's width alongside it, because a
+          reader's own background belongs next to the work, not after it.
+        */}
         <Tile
-          label="Open gaps"
-          index="05"
-          href="/gaps"
-          cta="All three"
-          className="bg-sunk lg:col-start-5 lg:col-end-10 lg:row-start-5 lg:row-end-9 wide:col-end-13 wide:row-end-7"
+          label="History"
+          href="/history"
+          cta="Track record"
+          className="lg:col-start-5 lg:col-end-8 lg:row-start-5 lg:row-end-7"
         >
-          {/*
-            Gap, consequence, fix — the same three parts the table on /gaps
-            carries, so the tile is a summary of that page rather than a
-            different claim. The consequences wrap rather than truncate: they
-            were clamped to one line with `truncate` while a third of the tile
-            sat empty below them, which quietly did the one thing PRODUCT.md
-            says this tile must never do.
-          */}
-          <ul className="grid flex-1 grid-cols-1 gap-x-5 gap-y-1 overflow-hidden wide:grid-cols-3 wide:gap-y-2">
-            {gaps.map((gap) => (
-              <li key={gap.gap} className="flex items-baseline gap-2.5">
-                <span
-                  aria-hidden="true"
-                  className="mt-1.5 size-1.5 shrink-0 rounded-full bg-signal"
-                />
-                <span className="min-w-0">
-                  <span className="font-mono text-2xs text-signal">{gap.gap}</span>
-                  {/* The strip is half the height it was, so the consequence
-                      clamps until there is room for all of it. */}
-                  <span className="line-clamp-2 block text-xs leading-tight text-muted wide:line-clamp-3 wide:leading-snug wider:line-clamp-none">
-                    {gap.consequence}
-                  </span>
-                  <span className="mt-0.5 hidden text-xs leading-snug text-faint wider:block">
-                    {/* Labelled, because an unlabelled third line reads as more
-                        consequence rather than as the plan. */}
-                    <span className="font-mono text-2xs uppercase tracking-[0.08em] text-accent">
-                      Fix{" "}
-                    </span>
-                    {gap.fix}
-                  </span>
-                </span>
-              </li>
-            ))}
-          </ul>
+          <p className="line-clamp-2 shrink-0 text-xs leading-tight text-muted wide:line-clamp-3 wide:leading-snug">
+            {historyLede}
+          </p>
+          <div className="mt-auto flex gap-3 border-t border-line pt-0.5">
+            <Figure
+              stat={{ value: String(historyRolesCount), label: "Chapters, 2016–present" }}
+              size="sm"
+            />
+            <Figure
+              stat={{ value: String(historyPrinciplesCount), label: "Practice principles" }}
+              size="sm"
+            />
+          </div>
         </Tile>
 
-        {/*
-          Where "Measured" used to sit. That tile restated four numbers already
-          shown better elsewhere \u2014 years shipping duplicated the lede, live
-          sites duplicated having two case-study tiles right above it, reviewed
-          PRs was the sum of DriftPilot's and Riflessi's own counts, and the
-          Lighthouse figure was already an assertion row on DriftPilot's tile.
-          This is the AI story instead, which previously had no dashboard
-          presence at all \u2014 reachable only by finding it in the rail.
-        */}
         <Tile
           label="AI Engineering"
           href="/standard"
           cta="How it works"
-          className="lg:col-start-10 lg:col-end-13 lg:row-start-5 lg:row-end-9 wide:col-start-5 wide:row-start-7"
+          className="lg:col-start-8 lg:col-end-13 lg:row-start-5 lg:row-end-7"
         >
-          <div className="grid flex-1 grid-cols-2 content-center gap-x-4 gap-y-3 wide:grid-cols-4">
+          {/*
+            Unconditionally 4-across rather than gated behind `wide`: the tile
+            is now 5 of 12 columns at every width this appears at (it used to
+            be 3 of 12 below `wide`, too narrow for four side by side), and a
+            2x2 stack needed more height than the row has since it was halved
+            to make room for History alongside it.
+          */}
+          <div className="grid flex-1 grid-cols-4 content-center gap-x-3 gap-y-3">
             <Figure
               stat={{ value: "5", label: "Specialist AI roles" }}
               size="sm"
@@ -310,6 +297,56 @@ export function Deck({
               size="sm"
             />
           </div>
+        </Tile>
+
+        {/* The page's argument, so it gets the sunk surface and the full width
+            of the row beneath History and AI Engineering. */}
+        <Tile
+          label="Open gaps"
+          index="05"
+          href="/gaps"
+          cta="All three"
+          className="bg-sunk lg:col-start-5 lg:col-end-13 lg:row-start-7 lg:row-end-9"
+        >
+          {/*
+            Gap, consequence, fix — the same three parts the table on /gaps
+            carries, so the tile is a summary of that page rather than a
+            different claim. The consequences wrap rather than truncate: they
+            were clamped to one line with `truncate` while a third of the tile
+            sat empty below them, which quietly did the one thing PRODUCT.md
+            says this tile must never do.
+
+            Below `wide` this row is one grid row instead of the four it used
+            to get, and three columns at 1024px is only ~150px each — narrow
+            enough that even a short title can wrap to two lines. Titles alone
+            fit that budget; the consequence only joins once `wide` gives each
+            column roughly 265px, which is what actually needed the room, not
+            the column count.
+          */}
+          <ul className="grid flex-1 grid-cols-1 gap-x-5 gap-y-1 overflow-hidden wide:grid-cols-3 wide:gap-y-2">
+            {gaps.map((gap) => (
+              <li key={gap.gap} className="flex items-baseline gap-2.5">
+                <span
+                  aria-hidden="true"
+                  className="mt-1.5 size-1.5 shrink-0 rounded-full bg-signal"
+                />
+                <span className="min-w-0">
+                  <span className="font-mono text-2xs text-signal">{gap.gap}</span>
+                  <span className="hidden line-clamp-2 text-xs leading-tight text-muted wide:block wide:line-clamp-3 wide:leading-snug wider:line-clamp-none">
+                    {gap.consequence}
+                  </span>
+                  <span className="mt-0.5 hidden text-xs leading-snug text-faint wider:block">
+                    {/* Labelled, because an unlabelled third line reads as more
+                        consequence rather than as the plan. */}
+                    <span className="font-mono text-2xs uppercase tracking-[0.08em] text-accent">
+                      Fix{" "}
+                    </span>
+                    {gap.fix}
+                  </span>
+                </span>
+              </li>
+            ))}
+          </ul>
         </Tile>
 
       </div>
