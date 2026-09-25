@@ -1,19 +1,22 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { usePathname } from "next/navigation";
 
 import type { NavEntry } from "@/lib/content/navigation";
 
 /**
- * Rail navigation with an active-section indicator.
+ * Rail navigation that knows which page you are on.
  *
- * The only client component on the site. A single-page nav that cannot tell you
- * where you are is a list of links, not navigation — so this is worth the bytes.
+ * A nav that cannot tell you where you are is a list of links, not
+ * navigation. This used to find the current *section* by observing `#hash`
+ * targets, from when the site was one long page; every entry has been its own
+ * route since, so the observer found nothing and no link was ever marked —
+ * including on the case study you had just opened from the deck. The route
+ * is the location now, so the route is what is compared.
  *
- * Progressive enhancement: the links are real anchors and work before hydration;
- * the indicator is the only thing that needs JavaScript. IntersectionObserver
- * rather than a scroll listener, so there is no per-frame main-thread work.
+ * The links are real anchors and work before hydration; only the marker
+ * needs the pathname.
  */
 export function RailNav({
   links,
@@ -22,34 +25,8 @@ export function RailNav({
   links: NavEntry[];
   variant: "rail" | "bar";
 }) {
-  const [active, setActive] = useState<string | null>(null);
-
-  useEffect(() => {
-    const ids = links
-      .map((l) => ("href" in l && l.href ? l.href.split("#")[1] : undefined))
-      .filter((id): id is string => Boolean(id));
-
-    const sections = ids
-      .map((id) => document.getElementById(id))
-      .filter((el): el is HTMLElement => el !== null);
-
-    if (sections.length === 0) return;
-
-    // Top third of the viewport: a section counts as current once its heading
-    // has travelled up into the reading area, not when it first peeks in.
-    const observer = new IntersectionObserver(
-      (entries) => {
-        const visible = entries
-          .filter((e) => e.isIntersecting)
-          .sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top);
-        if (visible[0]) setActive(visible[0].target.id);
-      },
-      { rootMargin: "-12% 0px -66% 0px", threshold: 0 },
-    );
-
-    sections.forEach((el) => observer.observe(el));
-    return () => observer.disconnect();
-  }, [links]);
+  const pathname = usePathname();
+  const isCurrent = (href: string) => href === pathname;
 
   if (variant === "bar") {
     // A heading with no href (e.g. "DriftPilot Studio") is a label with
@@ -61,13 +38,12 @@ export function RailNav({
     return (
       <ul className="flex w-max gap-1 px-4 py-2">
         {items.map((link) => {
-          const id = link.href.split("#")[1];
-          const isActive = id === active;
+          const isActive = isCurrent(link.href);
           return (
             <li key={link.href}>
               <Link
                 href={link.href}
-                aria-current={isActive ? "location" : undefined}
+                aria-current={isActive ? "page" : undefined}
                 className={`block whitespace-nowrap px-2.5 py-1.5 font-display text-xs font-medium uppercase tracking-[0.04em] no-underline transition-colors duration-[var(--duration-fast)] ease-[var(--ease-out-quart)] ${
                   isActive ? "chip" : "text-rail-muted"
                 }`}
@@ -95,26 +71,29 @@ export function RailNav({
           // The mt-3 on the <li> is what actually separates this group from
           // the one above — margin, not padding, so it doesn't inflate the
           // link's own hit area past what it needs to be.
-          const headingClass = "block py-2 pl-2.5 label text-rail-muted";
+          const headingClass = "block py-2 pl-2.5 label";
+          const headingActive = entry.href ? isCurrent(entry.href) : false;
           return (
             <li key={entry.label} className="mt-3">
               {entry.href ? (
                 <Link
                   href={entry.href}
-                  className={`${headingClass} no-underline transition-colors duration-[var(--duration-fast)] ease-[var(--ease-out-quart)] hover:text-rail-ink`}
+                  aria-current={headingActive ? "page" : undefined}
+                  className={`${headingClass} no-underline transition-colors duration-[var(--duration-fast)] ease-[var(--ease-out-quart)] ${
+                    headingActive ? "font-medium text-rail-ink" : "text-rail-muted hover:text-rail-ink"
+                  }`}
                 >
                   {entry.label}
                 </Link>
               ) : (
-                <span className={headingClass}>{entry.label}</span>
+                <span className={`${headingClass} text-rail-muted`}>{entry.label}</span>
               )}
             </li>
           );
         }
 
         const link = entry;
-        const id = link.href.split("#")[1];
-        const isActive = id === active;
+        const isActive = isCurrent(link.href);
         // The drop cap is decorative splitting of one word, so the label is
         // given to assistive tech whole and the two spans are hidden from it.
         const [first = "", ...rest] = [...link.label];
@@ -122,7 +101,7 @@ export function RailNav({
           <li key={link.href}>
             <Link
               href={link.href}
-              aria-current={isActive ? "location" : undefined}
+              aria-current={isActive ? "page" : undefined}
               aria-label={link.label}
               // py-1.5 is a floor, not a rhythm choice: at this type size
               // anything less puts the row under the 24px WCAG 2.2 target
