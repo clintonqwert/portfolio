@@ -49,14 +49,21 @@ export function Deck({
         from removing redundant chrome, not from a bigger padding number.
       */}
       {/*
+        No `panel` class here, and no border of any kind: a hairline around
+        the whole block read as a frame around a frame once the tiles inside
+        already carry their own. Canvas and panel are the same token in both
+        themes anyway (there's no "elevated surface" colour in this palette),
+        so this group is a layout container only — the tiles floating on the
+        canvas, gapped, are the whole drawing.
+
         No overflow-hidden here: at short viewports the deck switches to
         content-driven row heights and <main> takes over the scroll (see the
         "Short desktop windows" rule below) — clipping this box would hide
         that fallback instead of letting it work.
       */}
-      <div className="panel flex min-h-0 flex-1 flex-col">
+      <div className="flex min-h-0 flex-1 flex-col">
         {/* ── headline ───────────────────────────────────────────────── */}
-        <header className="shrink-0 border-b border-line px-4 py-3">
+        <header className="shrink-0 px-4 py-3">
           <h1 className="display-tight max-w-[38ch] text-[clamp(1.35rem,2.5vw,2rem)] leading-[1.1] text-ink">
             {HEADLINE}
           </h1>
@@ -91,7 +98,7 @@ export function Deck({
           </ul>
         </header>
 
-        <div className="shrink-0 border-b border-line">
+        <div className="shrink-0">
           <SkillMarquee skills={skills} />
         </div>
 
@@ -299,11 +306,12 @@ export function Deck({
         */}
         <Tile
           label="History"
+          index="05"
           href="/history"
           cta="Track record"
           className="lg:col-start-5 lg:col-end-8 lg:row-start-5 lg:row-end-7"
         >
-          <p className="line-clamp-2 shrink-0 text-xs leading-tight text-muted wide:line-clamp-3 wide:leading-snug">
+          <p className="line-clamp-2 shrink-0 text-xs leading-none text-muted wide:line-clamp-3 wide:leading-snug">
             {historyLede}
           </p>
           <div className="mt-auto flex gap-3 border-t border-line pt-0">
@@ -320,6 +328,7 @@ export function Deck({
 
         <Tile
           label="AI Engineering"
+          index="06"
           href="/standard"
           cta="How it works"
           className="lg:col-start-8 lg:col-end-13 lg:row-start-5 lg:row-end-7"
@@ -355,7 +364,7 @@ export function Deck({
             of the row beneath History and AI Engineering. */}
         <Tile
           label="Open gaps"
-          index="05"
+          index="07"
           href="/gaps"
           cta="All three"
           className="bg-sunk lg:col-start-5 lg:col-end-13 lg:row-start-7 lg:row-end-9"
