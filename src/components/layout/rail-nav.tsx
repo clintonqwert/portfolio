@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 
-import type { NavLink } from "@/lib/content/navigation";
+import type { NavEntry } from "@/lib/content/navigation";
 
 /**
  * Rail navigation with an active-section indicator.
@@ -19,14 +19,14 @@ export function RailNav({
   links,
   variant,
 }: {
-  links: NavLink[];
+  links: NavEntry[];
   variant: "rail" | "bar";
 }) {
   const [active, setActive] = useState<string | null>(null);
 
   useEffect(() => {
     const ids = links
-      .map((l) => l.href.split("#")[1])
+      .map((l) => ("href" in l && l.href ? l.href.split("#")[1] : undefined))
       .filter((id): id is string => Boolean(id));
 
     const sections = ids
@@ -52,9 +52,15 @@ export function RailNav({
   }, [links]);
 
   if (variant === "bar") {
+    // A heading with no href (e.g. "DriftPilot Studio") is a label with
+    // nothing to open, so it is dropped from the flat mobile strip rather
+    // than rendered as a dead pill.
+    const items = links.filter(
+      (l): l is NavEntry & { href: string } => Boolean(l.href),
+    );
     return (
       <ul className="flex w-max gap-1 px-4 py-2">
-        {links.map((link) => {
+        {items.map((link) => {
           const id = link.href.split("#")[1];
           const isActive = id === active;
           return (
@@ -77,7 +83,33 @@ export function RailNav({
 
   return (
     <ul>
-      {links.map((link) => {
+      {links.map((entry) => {
+        if (entry.kind === "heading") {
+          // A section label above a cluster of related links, styled like
+          // every other small-caps label on the site rather than as a nav
+          // item — it is context, not a fourth level of the drop cap.
+          //
+          // py-2 rather than the smaller pt-4/pb-1 this shipped with first:
+          // that pairing measured 19px tall, under the WCAG 2.2 24px target
+          // floor, because label text is 10px against the real links' 12px.
+          // The mt-3 on the <li> is what actually separates this group from
+          // the one above — margin, not padding, so it doesn't inflate the
+          // link's own hit area past what it needs to be.
+          const headingClass = "block py-2 pl-2.5 label text-rail-muted";
+          return (
+            <li key={entry.label} className="mt-3">
+              {entry.href ? (
+                <Link href={entry.href} className={`${headingClass} no-underline hover:text-rail-ink`}>
+                  {entry.label}
+                </Link>
+              ) : (
+                <span className={headingClass}>{entry.label}</span>
+              )}
+            </li>
+          );
+        }
+
+        const link = entry;
         const id = link.href.split("#")[1];
         const isActive = id === active;
         // The drop cap is decorative splitting of one word, so the label is
@@ -92,9 +124,12 @@ export function RailNav({
               // py-1.5 is a floor, not a rhythm choice: at this type size
               // anything less puts the row under the 24px WCAG 2.2 target
               // minimum. It shipped at 3px once and measured 22.8px.
-              className={`group relative flex items-baseline py-1.5 pl-2.5 no-underline transition-colors duration-200 ${
-                isActive ? "text-rail-ink" : "text-rail-muted hover:text-rail-ink"
-              }`}
+              // Indented entries (myGarage under AutoTrader.ca, Riflessi
+              // under DriftPilot Studio) get extra left padding instead of a
+              // smaller type size, so the 24px target floor still holds.
+              className={`group relative flex items-baseline py-1.5 no-underline transition-colors duration-200 ${
+                link.indent ? "pl-6" : "pl-2.5"
+              } ${isActive ? "text-rail-ink" : "text-rail-muted hover:text-rail-ink"}`}
             >
               {/* Marked twice — the rule and the weight — so position never
                   rests on colour alone. Square, like everything else here. */}

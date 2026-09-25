@@ -4,7 +4,7 @@ import { RailNav } from "@/components/layout/rail-nav";
 import { ProfileCard } from "@/components/layout/profile-card";
 import { ThemeToggle } from "@/components/layout/theme-toggle";
 
-import type { NavLink } from "@/lib/content/navigation";
+import type { NavEntry } from "@/lib/content/navigation";
 import { AVAILABILITY, CONTACT, CONTACT_HREF, NAME, RESUME } from "@/lib/content/profile";
 
 /**
@@ -15,7 +15,7 @@ import { AVAILABILITY, CONTACT, CONTACT_HREF, NAME, RESUME } from "@/lib/content
  * the rail ships no JavaScript. Section highlighting would require a client
  * observer and is not worth the bytes on a page this short.
  */
-export function SiteRail({ links }: { links: NavLink[] }) {
+export function SiteRail({ links }: { links: NavEntry[] }) {
   return (
     <>
       {/* ── desktop rail ───────────────────────────────────────────────── */}

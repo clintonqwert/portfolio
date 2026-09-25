@@ -201,10 +201,11 @@ const CASE_STUDIES: readonly CaseStudy[] = [
     role: "Full-stack engineer",
     stack: ["PHP", "MySQL", "AWS RDS", "Node.js", "Vue.js"],
     /*
-      Kept off both the dashboard and the primary rail: this is a feature of
-      Tadvantage, not a peer of it, so it is reached through Tadvantage's own
-      "Related" link rather than sitting beside it as an equal entry. The
-      route and page are real and indexed — attached, not hidden.
+      Kept off the dashboard for the same reason Luxury tax is: the deck's
+      three case-study cells are already assigned. In the rail it is nested
+      under the "AutoTrader.ca" heading alongside Tadvantage and Luxury tax
+      (see navigation.ts) rather than sitting at the top level — a feature of
+      Tadvantage, not a peer of it — and it links back to Tadvantage below.
     */
     onDeck: false,
     stats: [],
