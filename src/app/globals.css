@@ -527,7 +527,7 @@
   */
   .deck {
     display: grid;
-    gap: calc(var(--spacing) * 2);
+    gap: calc(var(--spacing) * 2.5);
   }
 
   @media (min-width: 1024px) {

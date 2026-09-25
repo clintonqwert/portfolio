@@ -39,7 +39,7 @@ export function Deck({
   historyPrinciplesCount: number;
 }) {
   return (
-    <div className="flex flex-col gap-2 p-2 lg:h-full">
+    <div className="flex flex-col gap-2 p-2.5 lg:h-full">
       {/* ── headline ─────────────────────────────────────────────────── */}
       <header className="panel shrink-0 px-4 py-3">
         <h1 className="display-tight max-w-[38ch] text-[clamp(1.35rem,2.5vw,2rem)] leading-[1.1] text-ink">
@@ -238,7 +238,7 @@ export function Deck({
               <li key={tech}>{tech}</li>
             ))}
           </ul>
-          <ul className="mt-3 space-y-1 border-t border-line pt-3 text-xs leading-snug text-muted">
+          <ul className="mt-2 space-y-1 border-t border-line pt-2 text-xs leading-snug text-muted">
             {/* At 1024 the cell is three lines shorter than the copy, and the
                 deck may not scroll. The last two points drop out there rather
                 than being clipped mid-sentence; all four are on /autotrader,
@@ -289,7 +289,7 @@ export function Deck({
           <p className="line-clamp-2 shrink-0 text-xs leading-tight text-muted wide:line-clamp-3 wide:leading-snug">
             {historyLede}
           </p>
-          <div className="mt-auto flex gap-3 border-t border-line pt-0.5">
+          <div className="mt-auto flex gap-3 border-t border-line pt-0">
             <Figure
               stat={{ value: String(historyRolesCount), label: "Chapters, 2016–present" }}
               size="sm"
@@ -358,7 +358,7 @@ export function Deck({
             column roughly 265px, which is what actually needed the room, not
             the column count.
           */}
-          <ul className="grid flex-1 grid-cols-1 gap-x-5 gap-y-1 overflow-hidden wide:grid-cols-3 wide:gap-y-2">
+          <ul className="grid flex-1 grid-cols-1 gap-x-5 gap-y-0.5 overflow-hidden wide:grid-cols-3 wide:gap-y-2">
             {gaps.map((gap) => (
               <li key={gap.gap} className="flex items-baseline gap-2.5">
                 <span
