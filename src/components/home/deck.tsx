@@ -19,8 +19,7 @@ export function Deck({
   gaps,
   skills,
   autoTraderLede,
-  workImages,
-  autoSyncImage,
+  previews,
   historyLede,
   historyRolesCount,
   historyPrinciplesCount,
@@ -29,10 +28,11 @@ export function Deck({
   gaps: Gap[];
   skills: string[];
   autoTraderLede: string;
-  /** Case-study screenshots, keyed by slug. */
-  workImages: Record<string, ImageSlot>;
-  /** AutoSync screenshot for the AutoTrader tile. */
-  autoSyncImage: ImageSlot;
+  /**
+   * Whole-page screenshots the tiles window onto and pan down on hover, keyed
+   * by slug — AutoTrader, which has none, as "autotrader".
+   */
+  previews: Record<string, ImageSlot>;
   historyLede: string;
   historyRolesCount: number;
   historyPrinciplesCount: number;
@@ -185,9 +185,9 @@ export function Deck({
                 cells not until 1680. Below those widths a shot would be a
                 sliver.
               */}
-              {workImages[study.slug] ? (
+              {previews[study.slug] ? (
                 <TileShot
-                  image={workImages[study.slug]!}
+                  image={previews[study.slug]!}
                   className={
                     study.feature
                       ? "mt-3 hidden wide:flex"
@@ -285,13 +285,14 @@ export function Deck({
             ))}
           </ul>
           {/* autosyncmotors.com — the public demo of the platform these five
-              years were spent on. Gated like the others: this cell has 32px
-              spare at 1440 and 127px at 1680, so it only appears at the width
-              that can actually hold it. */}
-          <TileShot
-            image={autoSyncImage}
-            className="mt-3 hidden wider:flex"
-          />
+              years were spent on. Gated like the others: this cell only has
+              room for a window worth showing from 1680. */}
+          {previews.autotrader ? (
+            <TileShot
+              image={previews.autotrader}
+              className="mt-3 hidden wider:flex"
+            />
+          ) : null}
 
           <div className="mt-auto flex gap-4 border-t border-line pt-3">
             <Figure stat={{ value: "5 yrs", label: "Jan 2020 – Jun 2025" }} size="sm" />

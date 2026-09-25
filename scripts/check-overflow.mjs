@@ -113,6 +113,11 @@ try {
           // The scroll cue's bead runs out of its track on purpose — that is
           // the animation. Decorative and aria-hidden; nothing is lost.
           el.classList.contains("scroll-cue-track") ||
+          // A deck tile's screenshot is a window onto a whole page, which it
+          // pans down on hover. The page running past the window is the
+          // design, the image is one element with alt text, and every tile
+          // is still measured: this only exempts the window itself.
+          el.classList.contains("tile-shot-frame") ||
           // An ellipsis is a signpost, not a loss — the reader can see that
           // something was shortened, which is the whole difference. Both the
           // single-line (`truncate`) and multi-line (`line-clamp-N`) forms

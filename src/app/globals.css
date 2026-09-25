@@ -462,6 +462,74 @@
   }
 
   /*
+    A deck tile's screenshot: a fixed window onto a whole page.
+
+    One height for every shot on the deck: the room the most crowded tile has
+    left, so every window matches the smallest and none is cut to its own
+    letterbox. Measured, not chosen — the deck's rows are fractions of the
+    viewport, so that room grows with viewport height at half a pixel per
+    pixel, and a single px value was either tiny on a large screen or too
+    tall on a short one:
+
+      1440–1679 wide  only DriftPilot shows   room = 50dvh − 275px
+      >=1680 wide     all four; AutoTrader    room = 50dvh − 430px
+                      is the most crowded
+
+    Those fit every measurement to the pixel (1440×800…1000, 1680×900…1200,
+    1800×1000, 1920×960…1200; 2560-wide screens have ~19px more). The
+    formulas below leave 2px of slack. The 48px floor keeps a window worth
+    looking through; below it — a >=1680 viewport under ~956px tall — the
+    frame's `min-height: 0` lets the most crowded tile's window shrink under
+    the others rather than push the tile past its cell.
+
+    Size containment makes the frame a query container, so the pan below can
+    stop the page's bottom edge exactly at the window's bottom (100cqh) even
+    if the frame has shrunk. The outline is inset over the image — a hairline
+    drawn on top, where an inset shadow would sit hidden underneath it.
+  */
+  .tile-shot-frame {
+    --shot-h: clamp(48px, calc(50dvh - 277px), 360px);
+    height: var(--shot-h);
+    min-height: 0;
+    flex-shrink: 1;
+    overflow: hidden;
+    container-type: size;
+    background-color: var(--color-sunk);
+    outline: var(--surface-border) solid var(--color-line);
+    outline-offset: calc(var(--surface-border) * -1);
+  }
+
+  /* --breakpoint-wider (105rem): where the three narrow tiles show theirs. */
+  @media (min-width: 105rem) {
+    .tile-shot-frame {
+      --shot-h: clamp(48px, calc(50dvh - 432px), 360px);
+    }
+  }
+
+  .tile-shot-image {
+    display: block;
+    width: 100%;
+    height: auto;
+    /* Leaving: back to the top briskly, like letting go of a scroll. */
+    transition: transform var(--duration-slow) var(--ease-out-quart);
+  }
+
+  /*
+    Hovered or keyboard-focused: pan down the whole page at a steady pace
+    (--pan, set per image from its length). A short pause first, so a pointer
+    crossing the deck on its way somewhere else does not set every tile off.
+    Hover-capable pointers only: on touch there is no hover, and a tap opens
+    the case study, which shows the page properly anyway.
+  */
+  @media (hover: hover) and (prefers-reduced-motion: no-preference) {
+    a.tile:hover .tile-shot-image,
+    a.tile:focus-visible .tile-shot-image {
+      transform: translateY(calc(-100% + 100cqh));
+      transition: transform var(--pan, 4s) cubic-bezier(0.45, 0.05, 0.55, 0.95) 160ms;
+    }
+  }
+
+  /*
     ── type roles ──────────────────────────────────────────────────────
     Three jobs the mono face does, named once instead of being respelled at
     every call site. Each was previously a run of four or five utilities

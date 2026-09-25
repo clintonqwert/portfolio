@@ -9,6 +9,8 @@
  *
  *  - The deck is one viewport: zero scroll at >=1024 x >=760, and none of the
  *    secondary-page chrome (scroll cue, chapter bar) on it.
+ *  - Every screenshot window on the deck is the same height, and hovering a
+ *    tile pans its page.
  *  - Every id on every route is unique. Chapter ids come from headings; a
  *    duplicate would silently retarget the cue, the chapter bar and deep links.
  *  - The scroll cue shows on arrival, hides once scrolling starts, returns at
@@ -109,6 +111,36 @@ try {
     await page.close();
   }
 
+  // ── deck screenshots: one height, and a pan on hover ───────────────────
+  for (const [width, height] of [[1680, 1050], [1920, 1080]]) {
+    const page = await open("/", { width, height });
+    const heights = await page.evaluate(() =>
+      [...document.querySelectorAll(".tile-shot-frame")]
+        .filter((f) => f.offsetParent !== null)
+        .map((f) => Math.round(f.getBoundingClientRect().height)),
+    );
+    check(
+      heights.length === 4 && new Set(heights).size === 1,
+      `deck ${width}x${height} shows 4 screenshot windows of one height (${heights.join(", ")}px)`,
+    );
+
+    if (width === 1920) {
+      const tile = await page.$('a.tile[href="/work/tadvantage"]');
+      await tile.hover();
+      const panned = await becomes(
+        page,
+        () => {
+          const img = document.querySelector('a.tile[href="/work/tadvantage"] .tile-shot-image');
+          return img && new DOMMatrix(getComputedStyle(img).transform).m42 < -20;
+        },
+        undefined,
+        3000,
+      );
+      check(panned, "hovering a deck tile pans its screenshot");
+    }
+    await page.close();
+  }
+
   // ── unique ids, and visible focus inside ink blocks, on every route ─────
   for (const route of ROUTES) {
     const page = await open(route, { width: 1440, height: 900 });
@@ -199,6 +231,20 @@ try {
       await becomes(page, () => document.querySelector(".scroll-cue")?.dataset.away === "true"),
       "cue hides once scrolling starts, at 375px",
     );
+    await page.close();
+  }
+
+  // ── reduced motion: nothing loops, reveals or pans ─────────────────────
+  {
+    const page = await open("/", { width: 1920, height: 1080, reduced: true });
+    const tile = await page.$('a.tile[href="/work/tadvantage"]');
+    await tile.hover();
+    await new Promise((r) => setTimeout(r, 1200));
+    const moved = await page.evaluate(() => {
+      const img = document.querySelector('a.tile[href="/work/tadvantage"] .tile-shot-image');
+      return new DOMMatrix(getComputedStyle(img).transform).m42;
+    });
+    check(moved === 0, `reduced motion: hovering a deck tile does not pan (moved ${moved}px)`);
     await page.close();
   }
 

@@ -1,6 +1,6 @@
 import { Deck } from "@/components/home/deck";
 import { JsonLd } from "@/components/shared/json-ld";
-import { AUTOSYNC_IMAGE, WORK_IMAGES } from "@/lib/content/assets";
+import { DECK_PREVIEWS } from "@/lib/content/assets";
 import { AUTOTRADER_LEDE } from "@/lib/content/experience";
 import {
   HISTORY_LEDE,
@@ -29,8 +29,7 @@ export default async function HomePage() {
         gaps={gaps}
         skills={skills}
         autoTraderLede={AUTOTRADER_LEDE}
-        workImages={WORK_IMAGES}
-        autoSyncImage={AUTOSYNC_IMAGE}
+        previews={DECK_PREVIEWS}
         historyLede={HISTORY_LEDE}
         historyRolesCount={roles.length}
         historyPrinciplesCount={principles.length}

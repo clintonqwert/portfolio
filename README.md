@@ -63,6 +63,12 @@ bands: headline, a skills marquee, and the tile grid.
 and does not scroll: `body` is `overflow-hidden`, the deck is a 12×9 grid of
 `100dvh`, and any tile whose content could exceed its cell scrolls inside itself.
 
+From 1440px wide the work tiles carry a screenshot window: every window the
+same height (the room the most crowded tile has left, which grows with
+viewport height), onto a whole-page capture that pans down while the tile is
+hovered or focused — a scroll preview of the site. `check:behaviour` holds
+both the equal heights and the pan.
+
 Below 1024px the constraint is lifted and the page scrolls normally, because a
 single viewport on a phone means either three tiles or unreadable type.
 

@@ -161,3 +161,59 @@ export const WORK_IMAGES: Record<string, ImageSlot> = {
     },
   },
 };
+
+/**
+ * Whole-page previews for the deck tiles, keyed by slug (AutoTrader, which has
+ * no slug, as "autotrader").
+ *
+ * A tile shows a fixed window onto the top of the page and pans down it on
+ * hover, like scrolling the site — so these are full-page captures rather
+ * than the 16:10 heroes above, 800px wide for a ~390px window at 2x.
+ *
+ *  - Tadvantage and AutoSync are the owner's full-page originals, the AutoSync
+ *    one cropped at the right edge to keep its chat widget out.
+ *  - Riflessi was captured full-page in headless Chrome at 1440 wide, cut at
+ *    the end of its gallery, where the capture began repeating the page.
+ *  - DriftPilot is two cuts of the same full-page capture, joined on the black
+ *    between them: the hero down to just above its stat line, then "What we
+ *    build" through the process section. Left out are the results ticker and
+ *    "The work." case results — the studio's own marketing figures, which the
+ *    screenshot rule above keeps off this site, pan or no pan.
+ */
+export const DECK_PREVIEWS: Record<string, ImageSlot> = {
+  driftpilot: {
+    src: "/work/driftpilot-preview.webp",
+    alt: "The DriftPilot studio site, from the hero down through its services and delivery process",
+    width: 800,
+    height: 1860,
+    isPlaceholder: false,
+    source: { label: "driftpilot.ca", href: "https://driftpilot.ca" },
+  },
+  riflessi: {
+    src: "/work/riflessi-preview.webp",
+    alt: "The Riflessi Auto Care home page, from the 3D hero down through its services and the bay",
+    width: 800,
+    height: 4533,
+    isPlaceholder: false,
+    source: {
+      label: "riflessiautocare.vercel.app",
+      href: "https://riflessiautocare.vercel.app",
+    },
+  },
+  tadvantage: {
+    src: "/work/tadvantage-preview.webp",
+    alt: "The tadvantage.ca home page, top to bottom",
+    width: 800,
+    height: 1368,
+    isPlaceholder: false,
+    source: TADVANTAGE_SITE,
+  },
+  autotrader: {
+    src: "/work/autosync-preview.webp",
+    alt: "The AutoSync Motors demo dealer site, top to bottom",
+    width: 800,
+    height: 1254,
+    isPlaceholder: false,
+    source: { label: "autosyncmotors.com", href: "https://www.autosyncmotors.com/" },
+  },
+};

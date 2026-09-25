@@ -98,21 +98,21 @@ export function Figure({ stat, size = "md" }: { stat: Stat; size?: "sm" | "md" }
 }
 
 /**
- * A screenshot inside a tile.
+ * A screenshot inside a tile: a fixed window onto the top of a whole page,
+ * which pans down the page while the tile is hovered or keyboard-focused —
+ * a scroll preview of the site, returning to the top when the pointer leaves.
  *
- * The frame takes the image's own aspect ratio, so where the tile has room the
- * whole screen shows, uncropped. Where it does not, the frame is the one thing
- * in the tile allowed to give: it is a shrinkable flex item (`min-h-0`) and
- * the image crops from the bottom (`object-top`), because the top of a page is
- * the part that identifies it. The deck is exactly one viewport tall and a
- * tile cannot grow, so the picture adapts to the cell rather than the cell to
- * the picture.
+ * Every shot on the deck is the same height (`.tile-shot-frame`), set to the
+ * room the most crowded tile has, so the row reads as one set of windows
+ * rather than four pictures cropped to whatever each cell happened to leave.
+ * The frame may still shrink as a last resort at a viewport the deck was not
+ * measured at (`min-h-0`), so a tile can never be pushed past its cell.
  *
- * This replaced a fixed 88–132px strip, which cropped a 16:10 screen to a
- * letterbox slice at every width — the deck showed the top eighth of each site
- * and read as cut off. The parent must be a flex column for the shrink to
- * work; each caller also gates the shot behind the width at which its cell has
- * room for it at all.
+ * The pan runs at a steady pace rather than a fixed duration: a long page
+ * takes longer to pass than a short one, the way scrolling it would. It is a
+ * hover and focus enhancement only — off under reduced motion and on touch —
+ * and the window itself already shows the page's top, the part that
+ * identifies it.
  */
 export function TileShot({
   image,
@@ -121,19 +121,22 @@ export function TileShot({
   image: ImageSlot;
   className?: string;
 }) {
+  // ~1.75s per image-width of page: about 230px/s through a 390px window.
+  const pan = Math.min(10, Math.max(2.5, (image.height / image.width) * 1.75));
+
   return (
-    <figure className={cn("min-h-0 shrink flex-col", className)}>
-      <div
-        className="min-h-0 shrink overflow-hidden bg-sunk shadow-[inset_0_0_0_1px_var(--color-line)]"
-        style={{ aspectRatio: `${image.width} / ${image.height}` }}
-      >
+    <figure
+      className={cn("min-h-0 shrink flex-col", className)}
+      style={{ "--pan": `${pan.toFixed(2)}s` } as React.CSSProperties}
+    >
+      <div className="tile-shot-frame">
         <Image
           src={image.src}
           alt={image.alt}
           width={image.width}
           height={image.height}
-          sizes="(min-width: 1920px) 480px, 360px"
-          className="h-full w-full object-cover object-top"
+          sizes="(min-width: 1920px) 480px, 400px"
+          className="tile-shot-image"
         />
       </div>
       {image.isPlaceholder ? (
