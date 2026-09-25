@@ -41,8 +41,18 @@ export function Tile({
         <span className="display truncate tracking-[0.08em]">{label}</span>
       </span>
       {cta ? (
-        <span className="meta shrink-0 text-faint transition-colors group-hover:text-accent">
-          {cta} →
+        <span className="meta flex shrink-0 items-center gap-1 text-faint transition-colors duration-[var(--duration-fast)] ease-[var(--ease-out-quart)] group-hover:text-accent">
+          {cta}
+          {/* Decorative: the link's own accessible name already says where
+              it goes. The nudge is the same directional cue the rail's
+              drop-cap letters use on hover — reaching toward the content
+              rather than just changing colour. */}
+          <span
+            aria-hidden="true"
+            className="inline-block transition-transform duration-[var(--duration-fast)] ease-[var(--ease-out-quart)] group-hover:translate-x-0.5"
+          >
+            →
+          </span>
         </span>
       ) : null}
     </div>

@@ -597,7 +597,11 @@
   */
   a.tile:hover,
   a.tile:focus-visible {
-    box-shadow: inset 0 0 0 calc(var(--surface-border) + 0.5px) var(--color-rule);
+    /* +1px rather than the +0.5px this shipped with: half a pixel read as
+       a rounding artefact more than a response. A full pixel is still no
+       layout shift (box-shadow, not border) but is now something a reader
+       actually registers as the tile answering the cursor. */
+    box-shadow: inset 0 0 0 calc(var(--surface-border) + 1px) var(--color-rule);
   }
 
   /*
