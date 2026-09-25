@@ -954,6 +954,17 @@
       animation: unveil var(--duration-slow) var(--ease-out-quart) 120ms both;
     }
 
+    /* A figure further down opens as it rises into view, by the same
+       almost-shown unveil: it is never clipped to nothing, so a reader who
+       arrives by anchor link or with the timeline unsupported still sees it. */
+    @supports (animation-timeline: view()) {
+      .shot-reveal {
+        animation: unveil linear both;
+        animation-timeline: view();
+        animation-range: entry 0% entry 60%;
+      }
+    }
+
     @supports (animation-timeline: view()) {
       .shot-drift {
         animation: drift linear both;

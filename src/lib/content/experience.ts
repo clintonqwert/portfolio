@@ -1,5 +1,6 @@
 import "server-only";
 
+import { AUTOSYNC_INVENTORY_IMAGE } from "@/lib/content/assets";
 import type { Passage } from "@/types/content";
 
 /**
@@ -50,6 +51,10 @@ export async function getAutoTraderPassages(): Promise<Passage[]> {
       paragraphs: [
         "Five years of this was AutoSync \u2014 the platform thousands of Canadian dealerships run their inventory on. A large codebase I did not design, shared with other engineers, with Vue on the front end and Node.js, PHP, MySQL and REST APIs behind it. The PHP layer was a custom object-oriented architecture built in-house rather than on Laravel or Symfony, which meant the load-bearing questions were about our own architecture rather than about a framework\u2019s conventions.",
       ],
+      figure: {
+        image: AUTOSYNC_INVENTORY_IMAGE,
+        caption: "The inventory listing on the platform\u2019s public demo \u2014 the page shoppers search.",
+      },
     },
     {
       heading: "The caching work",

@@ -138,9 +138,8 @@ export default async function CaseStudyPage({
               <Shot
                 image={shot}
                 figure="01"
-                href={liveHref}
-                source={study.liveUrl ?? undefined}
-                priority
+                sizes="(min-width: 1280px) 560px, (min-width: 1024px) calc(100vw - 332px), 100vw"
+                hero
               />
             ) : undefined
           }
@@ -148,7 +147,7 @@ export default async function CaseStudyPage({
           cueLabel={`Scroll to the case study — ${chapters.length} chapters`}
         />
 
-        <PassageChapters passages={study.passages} refs={prose} />
+        <PassageChapters passages={study.passages} refs={prose} firstFigure={shot ? 2 : 1} />
 
         <Chapter
           id={stack.id}

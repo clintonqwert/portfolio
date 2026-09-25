@@ -1,4 +1,5 @@
 import { Chapter, type ChapterRef } from "@/components/shared/chapter";
+import { Shot } from "@/components/shared/shot";
 import { slugify } from "@/lib/utils";
 import type { Passage } from "@/types/content";
 
@@ -18,11 +19,18 @@ import type { Passage } from "@/types/content";
 export function PassageChapters({
   passages,
   refs,
+  firstFigure = 1,
 }: {
   passages: Passage[];
   /** From passageRefs — the page builds them once so the chapter bar shares them. */
   refs: ChapterRef[];
+  /** Number of the first figure in these chapters — 2 when the hero shows Fig. 01. */
+  firstFigure?: number;
 }) {
+  // Figures are numbered in reading order across the page, not per chapter.
+  let figureNumber = firstFigure;
+  const figureNumbers = passages.map((p) => (p.figure ? figureNumber++ : 0));
+
   return (
     <>
       {passages.map((passage, i) => (
@@ -39,6 +47,17 @@ export function PassageChapters({
             ))}
             {passage.list ? <TermList rows={passage.list} /> : null}
           </div>
+          {passage.figure ? (
+            <div className="mt-10">
+              <Shot
+                image={passage.figure.image}
+                figure={chapterNumber(figureNumbers[i]!)}
+                caption={passage.figure.caption}
+                // The prose column: ~700px at 1440, the full width below lg.
+                sizes="(min-width: 1024px) min(58vw, 740px), 100vw"
+              />
+            </div>
+          ) : null}
         </Chapter>
       ))}
     </>

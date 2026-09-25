@@ -75,7 +75,9 @@ The deck is scanned; these are read. The rail stays fixed beside both, and
 Each page is a **hero** that fills the first viewport (kicker with the rail's
 index chip, headline, lede, a ruled title block of facts and links, and a
 screenshot when a real one exists), then numbered **chapters** with a sticky
-head, then a **close** that offers the next page in rail order. Case studies
+head, then a **close** that offers the next page in rail order. A passage can
+carry a screenshot `figure`, shown inside the chapter it is evidence for and
+linked to the page it was captured from. Case studies
 add a parts-list Stack chapter and an inverted Measured chapter for their
 figures. Chapters keep the author's order; a page never grows a section its
 content does not have.

@@ -4,6 +4,8 @@ import { ChapterBar } from "@/components/layout/chapter-bar";
 import { PageClose } from "@/components/layout/page-close";
 import { PageHero } from "@/components/layout/page-hero";
 import { PassageChapters, passageRefs } from "@/components/shared/passage-chapters";
+import { Shot } from "@/components/shared/shot";
+import { AUTOSYNC_IMAGE } from "@/lib/content/assets";
 import { AUTOTRADER_LEDE, AUTOTRADER_RAIL, getAutoTraderPassages } from "@/lib/content/experience";
 import { getPagePosition } from "@/lib/content/navigation";
 import { CONTACT, CONTACT_HREF, RESUME } from "@/lib/content/profile";
@@ -27,8 +29,6 @@ export default async function AutoTraderPage() {
     <article>
       <ChapterBar index={page?.index} kicker={AUTOTRADER_RAIL.org} chapters={chapters} />
 
-      {/* No screenshot here: the AutoSync capture is still a placeholder (see
-          assets.ts), and a placeholder at hero size says nothing. */}
       <PageHero
         trail={[{ label: "Overview", href: "/" }, { label: "AutoTrader.ca" }]}
         index={page?.index}
@@ -44,11 +44,19 @@ export default async function AutoTraderPage() {
             value: `${readingMinutes(passages.flatMap((p) => p.paragraphs))} min`,
           },
         ]}
+        media={
+          <Shot
+            image={AUTOSYNC_IMAGE}
+            figure="01"
+            sizes="(min-width: 1280px) 560px, (min-width: 1024px) calc(100vw - 332px), 100vw"
+            hero
+          />
+        }
         next={chapters[0]!.id}
         cueLabel={`Scroll to the page — ${chapters.length} chapters`}
       />
 
-      <PassageChapters passages={passages} refs={chapters} />
+      <PassageChapters passages={passages} refs={chapters} firstFigure={2} />
 
       <PageClose
         prev={prev}
