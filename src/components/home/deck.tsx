@@ -108,11 +108,42 @@ export function Deck({
                 : "flex min-h-0 flex-1 flex-col"
             }
           >
-            <div className="min-h-0">
-              <p className="overflow-hidden text-md leading-snug text-muted">
+            {/*
+              overflow-hidden here is load-bearing, not decoration: min-h-0
+              lets this box shrink below its content's natural size when the
+              flex column is tight on room, but nothing clipped what spilled
+              past the shrunk box — the sibling stats block below, positioned
+              by mt-auto against the shrunk box rather than the overflowing
+              text, rendered on top of it. Measured on Riflessi and
+              Tadvantage at 1024px: the summary text alone ran 115px into a
+              box the flex layout had already reduced well below that.
+
+              line-clamp-2 is deliberately conservative rather than sized to
+              the widest cell: at 1024px the narrow cells only have ~52px for
+              this block, and a clamp that fits inside that shows its own
+              ellipsis cleanly. A larger clamp still gets caught by
+              overflow-hidden above, but the cut lands mid-line instead of at
+              a sentence boundary, which reads as the exact collision this
+              is fixing rather than a graceful truncation.
+            */}
+            <div className="min-h-0 overflow-hidden">
+              <p className="line-clamp-2 text-md leading-snug text-muted">
                 {study.summary}
               </p>
-              <ul className="mt-3 flex flex-wrap gap-x-3 gap-y-0.5 meta text-faint">
+              {/*
+                Hidden below `wide` on the narrow cells (Riflessi, Tadvantage):
+                even a 2-line clamp on the summary left the check-overflow
+                gate reporting 22-65px of this list silently clipped at
+                1024-1280px, because overflow-hidden on the parent was
+                swallowing it rather than the ellipsis showing it was
+                shortened. The stack is still one click away on the case
+                study itself; the feature cell has room to keep it always.
+              */}
+              <ul
+                className={`mt-3 flex-wrap gap-x-3 gap-y-0.5 meta text-faint ${
+                  study.feature ? "flex" : "hidden wide:flex"
+                }`}
+              >
                 {study.stack.map((tech) => (
                   <li key={tech}>{tech}</li>
                 ))}
@@ -131,7 +162,11 @@ export function Deck({
                   className={
                     study.feature
                       ? "mt-3 hidden [--shot-h:104px] wide:block wider:[--shot-h:132px]"
-                      : "mt-3 hidden [--shot-h:104px] wider:block"
+                      // mt-2 rather than mt-3: at 1680, the first width the
+                      // narrow cells reveal this at all, Tadvantage's stack
+                      // list (8 items, longest on the site) left only 3px to
+                      // spare before the gate's silent-clipping check fired.
+                      : "mt-2 hidden [--shot-h:104px] wider:block"
                   }
                 />
               ) : null}
