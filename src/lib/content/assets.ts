@@ -26,10 +26,15 @@ export type { ImageSlot };
  * AutoSync crops stop short of the site's chat widget, which is chrome, not
  * the platform.
  *
- * The DriftPilot capture stops above the studio site's stat line and results
- * ticker on purpose. Those are the studio's marketing figures, not anything a
- * repository here can back, and a screenshot on this site is still this site
- * making the claim.
+ * Marketing figures inside a screenshot follow one rule, set by whose they are:
+ *  - Our own are cropped out. The DriftPilot capture stops above the studio
+ *    site's stat line and results ticker: those are the studio's figures, no
+ *    repository here backs them, and a screenshot of your own site on your own
+ *    portfolio is you making the claim.
+ *  - A third party's product copy may appear, captioned as theirs. The
+ *    Tadvantage features grid is AutoTrader's own marketing for its platform
+ *    (DriftPilot has no relation to it), so its figures are AutoTrader's
+ *    claims about AutoTrader's product, and the caption says so.
  *
  * TO REPLACE one: drop the file in public/work/, point `src` and `target` at
  * it, and set `width`/`height` to its own pixels. Do not screenshot internal
@@ -77,13 +82,18 @@ export const AUTOSYNC_IMAGE: ImageSlot = {
 export const AUTOSYNC_INVENTORY_IMAGE: ImageSlot = {
   src: "/work/autosync-inventory.webp",
   target: "/work/autosync-inventory.webp",
-  alt: "The AutoSync demo's used-inventory listing: filters, top vehicles, and the vehicle card grid with finance and lease payments",
+  // All inventory, not the used listing: the capture reads "Véhicules à
+  // Québec — 130 Items Matching" with new stock in it, which is the count the
+  // homepage's Search (130) opens. /vehicles/used/ is a different page (88
+  // items, "Véhicules d'occasion"), and linking there sent the one-click check
+  // somewhere other than what the picture shows.
+  alt: "The AutoSync demo's inventory listing: filters, top vehicles, and the vehicle card grid with finance and lease payments",
   width: 1440,
   height: 1720,
   isPlaceholder: false,
   source: {
-    label: "autosyncmotors.com/vehicles/used",
-    href: "https://www.autosyncmotors.com/vehicles/used/",
+    label: "autosyncmotors.com/vehicles",
+    href: "https://www.autosyncmotors.com/vehicles/",
   },
 };
 
