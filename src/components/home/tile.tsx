@@ -80,7 +80,7 @@ export function Figure({ stat, size = "md" }: { stat: Stat; size?: "sm" | "md" }
       </div>
       {/* Clamped rather than truncated: at narrow widths a single line cut the
           labels to "PRERENDERED ROU…". Two lines still cannot overflow a cell. */}
-      <div className="figure-label mt-1 line-clamp-2 text-faint">
+      <div className="figure-label mt-0.5 line-clamp-2 text-faint">
         {stat.label}
       </div>
     </div>
