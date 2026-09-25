@@ -2,8 +2,7 @@ import { SkillMarquee } from "@/components/home/skill-marquee";
 import { Figure, Tile, TileShot } from "@/components/home/tile";
 import { AUTOTRADER_POINTS } from "@/lib/content/experience";
 import { FACTS, HEADLINE, LEDE } from "@/lib/content/profile";
-import type { ImageSlot } from "@/lib/content/assets";
-import type { CaseStudy, Gap } from "@/types/content";
+import type { CaseStudy, Gap, ImageSlot } from "@/types/content";
 
 /**
  * The dashboard.
@@ -150,8 +149,13 @@ export function Deck({
               a sentence boundary, which reads as the exact collision this
               is fixing rather than a graceful truncation.
             */}
-            <div className="min-h-0 overflow-hidden">
-              <p className="line-clamp-2 text-md leading-snug text-muted">
+            <div className="flex min-h-0 flex-col overflow-hidden">
+              {/* shrink-0: line-clamp sets overflow:hidden, which drops a
+                  flex item's minimum height to zero — without this the
+                  summary, not the screenshot, gave up the height and was
+                  cut through mid-line. The shot is the only thing that may
+                  shrink. */}
+              <p className="line-clamp-2 shrink-0 text-md leading-snug text-muted">
                 {study.summary}
               </p>
               {/*
@@ -164,7 +168,7 @@ export function Deck({
                 study itself; the feature cell has room to keep it always.
               */}
               <ul
-                className={`mt-2 flex-wrap gap-x-3 gap-y-0.5 meta text-faint ${
+                className={`mt-2 shrink-0 flex-wrap gap-x-3 gap-y-0.5 meta text-faint ${
                   study.feature ? "flex" : "hidden wide:flex"
                 }`}
               >
@@ -185,12 +189,12 @@ export function Deck({
                   image={workImages[study.slug]!}
                   className={
                     study.feature
-                      ? "mt-3 hidden [--shot-h:104px] wide:block wider:[--shot-h:132px]"
+                      ? "mt-3 hidden wide:flex"
                       // mt-2 rather than mt-3: at 1680, the first width the
                       // narrow cells reveal this at all, Tadvantage's stack
                       // list (8 items, longest on the site) left only 3px to
                       // spare before the gate's silent-clipping check fired.
-                      : "mt-2 hidden [--shot-h:104px] wider:block"
+                      : "mt-2 hidden wider:flex"
                   }
                 />
               ) : null}
@@ -289,7 +293,7 @@ export function Deck({
               that can actually hold it. */}
           <TileShot
             image={autoSyncImage}
-            className="mt-3 hidden [--shot-h:88px] wider:block"
+            className="mt-3 hidden wider:flex"
           />
 
           <div className="mt-auto flex gap-4 border-t border-line pt-3">
