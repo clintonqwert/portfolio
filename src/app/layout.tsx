@@ -74,6 +74,11 @@ export default async function RootLayout({
 
         <SiteRail links={navLinks} />
 
+        {/* The rail's own border-r frames the left edge; this is its mirror
+            on the right, so the whole >=1024px viewport reads as one ruled
+            page. Below that the rail itself is hidden, so this hides too. */}
+        <div aria-hidden="true" className="frame-line hidden lg:block" />
+
         <div className="lg:h-dvh lg:pl-[236px]">
           <main id="main" className="lg:h-full lg:overflow-y-auto">
             {children}

@@ -279,6 +279,54 @@
   .rail :focus-visible {
     outline-color: var(--color-accent-bright);
   }
+
+  /*
+    A thin, square-edged scrollbar rather than the OS default — the same
+    hairline-and-no-radius vocabulary as everything else, so the one element
+    on the page a browser normally owns still reads as part of the drawing.
+    Firefox first, since its scrollbar-color/-width properties need no
+    vendor prefix; WebKit's ::-webkit-scrollbar-* below covers the rest.
+  */
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: var(--color-line) transparent;
+  }
+
+  ::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background-color: var(--color-line);
+    border-radius: var(--radius-sm);
+    /* Clips the thumb inward so it reads as a bar with breathing room on
+       either side, not a stripe glued to the track's edge. */
+    border: 2px solid transparent;
+    background-clip: padding-box;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background-color: var(--color-rule);
+  }
+
+  /* The rail is dark chrome in both themes, so its scrollbar reads against
+     rail tokens rather than the canvas line colour used everywhere else. */
+  .rail {
+    scrollbar-color: var(--color-rail-line) transparent;
+  }
+
+  .rail::-webkit-scrollbar-thumb {
+    background-color: var(--color-rail-line);
+  }
+
+  .rail::-webkit-scrollbar-thumb:hover {
+    background-color: var(--color-accent-bright);
+  }
 }
 
 @layer components {
@@ -290,6 +338,25 @@
     background-color: var(--color-panel);
     border-radius: var(--radius-lg);
     box-shadow: inset 0 0 0 var(--surface-border) var(--color-line);
+  }
+
+  /*
+    A full-height rule at the page's outer edge, fixed so it holds its
+    position under scroll and runs behind the mobile header bar and the rail
+    alike rather than stopping at either. The rail's own border-r already
+    does this job on the left; this is its mirror on the right, so the whole
+    viewport reads as one ruled page rather than a rail bolted onto an
+    unframed content area. Decorative — aria-hidden at the call site.
+  */
+  .frame-line {
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    width: 1px;
+    background-color: var(--color-rail-line);
+    z-index: var(--z-sticky);
+    pointer-events: none;
   }
 
   /*

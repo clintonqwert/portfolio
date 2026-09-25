@@ -45,7 +45,7 @@ export function SiteRail({ links }: { links: NavEntry[] }) {
           <a
             href={RESUME.href}
             download
-            className="chip display flex items-center justify-between gap-2 px-3 py-2 text-2xs uppercase tracking-[0.08em] no-underline transition-opacity duration-200 hover:opacity-80"
+            className="chip display flex items-center justify-between gap-2 px-3 py-2 text-2xs uppercase tracking-[0.08em] no-underline transition-opacity duration-[var(--duration-fast)] ease-[var(--ease-out-quart)] hover:opacity-80"
           >
             Résumé
             <span aria-hidden="true">↓</span>
@@ -74,7 +74,7 @@ export function SiteRail({ links }: { links: NavEntry[] }) {
               <li key={href}>
                 <a
                   href={href}
-                  className="block truncate py-2 text-rail-muted no-underline transition-colors hover:text-accent-bright"
+                  className="block truncate py-2 text-rail-muted no-underline transition-colors duration-[var(--duration-fast)] ease-[var(--ease-out-quart)] hover:text-accent-bright"
                 >
                   {label}
                 </a>
