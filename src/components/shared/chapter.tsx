@@ -14,11 +14,12 @@ export interface ChapterRef {
  * bar counts them — and it sits in the same ink chip the deck's tile heads
  * use, so it reads as this system's numbering rather than decoration.
  *
- * `tone="ink"` inverts the chapter into a solid block: the treatment this
- * design reserves for what must be stopped on, used once per page at most.
- * Inside it every line of text is `canvas` on `ink`, a pair the contrast gate
- * already checks in both themes — hierarchy comes from size and case there,
- * not from a lighter grey that would need a pair of its own.
+ * `tone="ink"` inverts the chapter into a solid block — the `.chip` surface,
+ * which this design reserves for what must be stopped on, used once per page
+ * at most. Inside it every line of text is `canvas` on `ink`, a pair the
+ * contrast gate already checks in both themes — hierarchy comes from size and
+ * case there, not from a lighter grey that would need a pair of its own. Being
+ * a chip is also what turns the focus ring to paper inside it.
  */
 export function Chapter({
   id,
@@ -46,7 +47,7 @@ export function Chapter({
       className={cn(
         // scroll-mt clears the 44px chapter bar when a link lands here.
         "scroll-mt-14",
-        ink ? "bg-ink text-canvas" : "",
+        ink ? "chip" : "",
       )}
     >
       <div className="sheet">

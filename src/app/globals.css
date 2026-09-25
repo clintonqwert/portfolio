@@ -288,6 +288,18 @@
   }
 
   /*
+    The same problem inside an ink block: the ring is accent, accent is ink,
+    and on the inverted Measured chapter it drew ink on ink — measured as the
+    identical colour, so keyboard focus simply vanished there, in both themes.
+    Inside a chip the ring is paper instead. A chip that is itself a link (the
+    résumé button, the scroll cue) is untouched: its ring sits outside it, on
+    the page.
+  */
+  .chip :focus-visible {
+    outline-color: var(--color-canvas);
+  }
+
+  /*
     A thin, square-edged scrollbar rather than the OS default — the same
     hairline-and-no-radius vocabulary as everything else, so the one element
     on the page a browser normally owns still reads as part of the drawing.
