@@ -80,8 +80,13 @@ actually cannot verify from code.
 2. **Every claim checkable in one click.** Figures sit next to the live URL or
    public repository that proves them. An unverifiable number is worth less than
    no number.
-3. **Density over drama.** The reader is skimming for evidence, not being
-   courted. Information per screen beats theatre per scroll.
+3. **Dense where it is scanned, paced where it is read.** The reader is
+   skimming for evidence, not being courted. The deck is the index: one
+   viewport, information per screen over theatre per scroll. Every page it
+   opens is a document: a hero that answers what, why and how to check it,
+   then chapters at reading size with the room to be read. Motion there
+   serves orientation — where you are, that there is more — and never
+   performance for its own sake.
 4. **The gaps are load-bearing.** Weaknesses are published in the same visual
    register as strengths. Never soften, hide, or visually demote them.
 5. **Identity preservation — monochrome.** The palette is chroma 0 in both

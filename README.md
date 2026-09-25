@@ -36,9 +36,10 @@ ProjectOS `01-Engineering/coding-standards.md`.
 ```
 src/app/              Routes. Metadata and layout only, no markup that belongs in a component.
 src/components/
-  layout/             Site chrome — header, footer
+  layout/             Site chrome — rail, page hero, scroll cue, chapter bar, page close
   home/               Homepage-specific sections
-  shared/             Cross-page fragments — tables, stats, passages, JSON-LD
+  case-study/         Case-study-only sections — stack list, measured figures
+  shared/             Cross-page fragments — chapters, tables, screenshots, JSON-LD
   ui/                 Primitives and class recipes
 src/lib/content/      Typed async accessors. The only place facts live.
 src/lib/seo.ts        Central metadata and JSON-LD builders
@@ -61,17 +62,38 @@ bands: headline, a skills marquee, and the tile grid.
 and does not scroll: `body` is `overflow-hidden`, the deck is a 12×9 grid of
 `100dvh`, and any tile whose content could exceed its cell scrolls inside itself.
 
-Long-form prose lives in detail routes (`/autotrader`, `/gaps`, `/standard`,
-`/history`, `/work/[slug]`). Those are viewport-fixed too — the page never
-scrolls, the prose panel does. Below 1024px the constraint is lifted and the
-page scrolls normally, because a single viewport on a phone means either three
-tiles or unreadable type.
+Below 1024px the constraint is lifted and the page scrolls normally, because a
+single viewport on a phone means either three tiles or unreadable type.
+
+### Secondary pages
+
+Everything the deck links to — `/work/[slug]`, `/autotrader`, `/standard`,
+`/history`, `/gaps` — is a document that scrolls, deliberately unlike the deck.
+The deck is scanned; these are read. The rail stays fixed beside both, and
+`<main>` takes the scroll at ≥1024px, so the frame never moves.
+
+Each page is a **hero** that fills the first viewport (kicker with the rail's
+index chip, headline, lede, a ruled title block of facts and links, and a
+screenshot when a real one exists), then numbered **chapters** with a sticky
+head, then a **close** that offers the next page in rail order. Case studies
+add a parts-list Stack chapter and an inverted Measured chapter for their
+figures. Chapters keep the author's order; a page never grows a section its
+content does not have.
+
+A hero that fits its viewport reads as a finished page, so a **scroll cue**
+sits at the fold until the reader starts scrolling. At ≥1024px a **chapter
+bar** slides in once the hero has gone, naming the current chapter with a
+scroll-timeline progress line. Both are small IntersectionObserver clients;
+every other motion is CSS — scroll-driven where it tracks reading, off under
+`prefers-reduced-motion`, and never gating content that is otherwise
+visible.
 
 ### CSS conventions
 
 Four class families, documented in full at the top of `src/app/globals.css`:
 **surface** (`.panel` `.tile` `.chip` `.rail`), **layout** (`.deck` `.flow`
-`.datagrid` `.marquee`), **type role** (`.display` `.label` `.meta`
+`.datagrid` `.marquee` `.sheet` `.hero` `.titleblock` `.chapter`
+`.flowchart`), **type role** (`.display` `.label` `.meta`
 `.figure-value` `.figure-label`) and **media** (`.portrait`).
 
 A type role never sets colour — the same `.label` is accent on a tile head and
@@ -96,15 +118,16 @@ One rule that is not a rhythm choice: the rail's contact links carry `py-2`
 because anything less puts their touch target under the 24px WCAG 2.2 minimum.
 A scale sweep took them to 4px once and only Lighthouse noticed.
 
-### Sections do not scroll
+### Prose is one column
 
-Detail prose flows into CSS columns (`.flow`) that fill the panel across, rather
-than running past its bottom edge. Nothing is clipped: `/history` is block grids
-rather than paragraphs — columns cannot paginate a grid — so it uses `raw` mode
-and lays out three panels instead.
+Chapter prose (`.flow`) is one measured column at 17px, never CSS
+multi-column. Detail pages once flowed prose into columns to avoid scrolling,
+and column balance fills whatever height it is given — so every short case
+study became three-line columns over a third of a screen of blank panel.
 
-Both properties are measured, not assumed: every route is checked for page
-scroll, for column spill, and for silently clipped `overflow:hidden` boxes.
+Fit is measured, not assumed: every route is checked at seven viewports for
+tile spill, silently clipped `overflow:hidden` boxes, unreachable fixed
+panels and horizontal overflow.
 
 ### The marquee
 
