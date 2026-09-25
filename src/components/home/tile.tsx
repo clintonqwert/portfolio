@@ -29,7 +29,7 @@ export function Tile({
   cta?: string;
 }) {
   const head = (
-    <div className="flex items-baseline justify-between gap-2 border-b border-line px-3 py-2">
+    <div className="flex items-baseline justify-between gap-2 border-b border-line px-4 py-2">
       <span className="label flex min-w-0 items-center gap-2 text-ink">
         {/* The counter block, from the reference's page marker: ink with the
             number knocked out, rather than a faint grey numeral. */}

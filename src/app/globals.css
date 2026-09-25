@@ -300,10 +300,10 @@
   }
 
   ::-webkit-scrollbar {
-    /* 10% narrower than the first pass (10px), same reasoning as everywhere
-       else on the rail: a thin line, not a UI chrome element. */
-    width: 9px;
-    height: 9px;
+    /* 10px -> 9px (10% narrower) -> 7px (a further 25% off that), same
+       reasoning each time: a thin line, not a UI chrome element. */
+    width: 7px;
+    height: 7px;
   }
 
   ::-webkit-scrollbar-track {
