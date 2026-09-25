@@ -39,47 +39,64 @@ export function Deck({
   historyPrinciplesCount: number;
 }) {
   return (
-    <div className="flex flex-col gap-2 p-2.5 lg:h-full">
-      {/* ── headline ─────────────────────────────────────────────────── */}
-      <header className="panel shrink-0 px-4 py-3">
-        <h1 className="display-tight max-w-[38ch] text-[clamp(1.35rem,2.5vw,2rem)] leading-[1.1] text-ink">
-          {HEADLINE}
-        </h1>
-        <p className="mt-1 max-w-[70ch] text-md leading-snug text-muted">{LEDE}</p>
+    <div className="flex flex-col p-3 lg:h-full">
+      {/*
+        One panel instead of three: the headline, the marquee and the grid
+        used to be independent boxes with a gap-2 seam between each, which
+        spent 2x that gap on separators before a single tile got any of it.
+        Merged into one surface with internal dividers, that seam space goes
+        to the tiles instead — the reference's generous tile spacing came
+        from removing redundant chrome, not from a bigger padding number.
+      */}
+      {/*
+        No overflow-hidden here: at short viewports the deck switches to
+        content-driven row heights and <main> takes over the scroll (see the
+        "Short desktop windows" rule below) — clipping this box would hide
+        that fallback instead of letting it work.
+      */}
+      <div className="panel flex min-h-0 flex-1 flex-col">
+        {/* ── headline ───────────────────────────────────────────────── */}
+        <header className="shrink-0 border-b border-line px-4 py-3">
+          <h1 className="display-tight max-w-[38ch] text-[clamp(1.35rem,2.5vw,2rem)] leading-[1.1] text-ink">
+            {HEADLINE}
+          </h1>
+          <p className="mt-1 max-w-[70ch] text-md leading-snug text-muted">{LEDE}</p>
 
-        {/*
-          The headline earns the attention; this line converts it. A reader
-          could previously not answer seniority, location, arrangement or work
-          authorisation from anywhere above the fold.
-        */}
-        <ul className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-0.5 meta text-2xs text-faint">
-          {FACTS.map((fact, i) => (
-            <li
-              key={fact}
-              // The arrangement line is the longest and the least decisive of
-              // the four. Below 1280 the strip wraps to three lines without it
-              // gone, and the deck pays for every one of them.
-              className={`items-center gap-3 ${
-                i === 2 ? "hidden xl:flex" : "flex"
-              }`}
-            >
-              {fact}
-              {/* Separator by index: `last:` would match the span against its own
-                  li, where it is always last, and hide every one of them. */}
-              {i < FACTS.length - 1 ? (
-                <span aria-hidden="true" className="text-line">
-                  ·
-                </span>
-              ) : null}
-            </li>
-          ))}
-        </ul>
-      </header>
+          {/*
+            The headline earns the attention; this line converts it. A reader
+            could previously not answer seniority, location, arrangement or work
+            authorisation from anywhere above the fold.
+          */}
+          <ul className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-0.5 meta text-2xs text-faint">
+            {FACTS.map((fact, i) => (
+              <li
+                key={fact}
+                // The arrangement line is the longest and the least decisive of
+                // the four. Below 1280 the strip wraps to three lines without it
+                // gone, and the deck pays for every one of them.
+                className={`items-center gap-3 ${
+                  i === 2 ? "hidden xl:flex" : "flex"
+                }`}
+              >
+                {fact}
+                {/* Separator by index: `last:` would match the span against its own
+                    li, where it is always last, and hide every one of them. */}
+                {i < FACTS.length - 1 ? (
+                  <span aria-hidden="true" className="text-line">
+                    ·
+                  </span>
+                ) : null}
+              </li>
+            ))}
+          </ul>
+        </header>
 
-      <SkillMarquee skills={skills} />
+        <div className="shrink-0 border-b border-line">
+          <SkillMarquee skills={skills} />
+        </div>
 
-      {/* ── main ─────────────────────────────────────────────────────── */}
-      <div className="deck lg:[grid-template-rows:repeat(8,minmax(0,1fr))]">
+        {/* ── main ─────────────────────────────────────────────────────── */}
+        <div className="deck min-h-0 flex-1 p-2 lg:[grid-template-rows:repeat(8,minmax(0,1fr))]">
       {studies.filter((s) => s.onDeck !== false).map((study, i) => (
         <Tile
           key={study.slug}
@@ -140,7 +157,7 @@ export function Deck({
                 study itself; the feature cell has room to keep it always.
               */}
               <ul
-                className={`mt-3 flex-wrap gap-x-3 gap-y-0.5 meta text-faint ${
+                className={`mt-2 flex-wrap gap-x-3 gap-y-0.5 meta text-faint ${
                   study.feature ? "flex" : "hidden wide:flex"
                 }`}
               >
@@ -358,7 +375,7 @@ export function Deck({
             column roughly 265px, which is what actually needed the room, not
             the column count.
           */}
-          <ul className="grid flex-1 grid-cols-1 gap-x-5 gap-y-0.5 overflow-hidden wide:grid-cols-3 wide:gap-y-2">
+          <ul className="grid flex-1 grid-cols-1 gap-x-5 gap-y-0 overflow-hidden wide:grid-cols-3 wide:gap-y-2">
             {gaps.map((gap) => (
               <li key={gap.gap} className="flex items-baseline gap-2.5">
                 <span
@@ -384,6 +401,7 @@ export function Deck({
           </ul>
         </Tile>
 
+        </div>
       </div>
     </div>
   );
