@@ -68,7 +68,7 @@ export function RailNav({
               <Link
                 href={link.href}
                 aria-current={isActive ? "location" : undefined}
-                className={`block whitespace-nowrap px-2.5 py-1.5 font-display text-xs font-medium uppercase tracking-[0.04em] no-underline transition-colors duration-200 ${
+                className={`block whitespace-nowrap px-2.5 py-1.5 font-display text-xs font-medium uppercase tracking-[0.04em] no-underline transition-colors duration-[var(--duration-fast)] ease-[var(--ease-out-quart)] ${
                   isActive ? "chip" : "text-rail-muted"
                 }`}
               >
@@ -99,7 +99,10 @@ export function RailNav({
           return (
             <li key={entry.label} className="mt-3">
               {entry.href ? (
-                <Link href={entry.href} className={`${headingClass} no-underline hover:text-rail-ink`}>
+                <Link
+                  href={entry.href}
+                  className={`${headingClass} no-underline transition-colors duration-[var(--duration-fast)] ease-[var(--ease-out-quart)] hover:text-rail-ink`}
+                >
                   {entry.label}
                 </Link>
               ) : (
@@ -127,21 +130,26 @@ export function RailNav({
               // Indented entries (myGarage under AutoTrader.ca, Riflessi
               // under DriftPilot Studio) get extra left padding instead of a
               // smaller type size, so the 24px target floor still holds.
-              className={`group relative flex items-baseline py-1.5 no-underline transition-colors duration-200 ${
+              className={`group relative flex items-baseline py-1.5 no-underline transition-colors duration-[var(--duration-fast)] ease-[var(--ease-out-quart)] ${
                 link.indent ? "pl-6" : "pl-2.5"
               } ${isActive ? "text-rail-ink" : "text-rail-muted hover:text-rail-ink"}`}
             >
-              {/* Marked twice — the rule and the weight — so position never
-                  rests on colour alone. Square, like everything else here. */}
+              {/*
+                Marked twice — the rule and the weight — so position never
+                rests on colour alone. Square, like everything else here.
+                Reaching full opacity on hover too, not just on the active
+                page: a link should answer before it's clicked, the same way
+                a tile's hairline firms up under the cursor.
+              */}
               <span
                 aria-hidden="true"
-                className={`absolute left-0 top-[6px] bottom-[6px] w-[3px] bg-rail-ink transition-opacity duration-200 ${
-                  isActive ? "opacity-100" : "opacity-0"
+                className={`absolute left-0 top-[6px] bottom-[6px] w-[3px] bg-rail-ink transition-opacity duration-[var(--duration-fast)] ease-[var(--ease-out-quart)] ${
+                  isActive ? "opacity-100" : "opacity-0 group-hover:opacity-60"
                 }`}
               />
               <span
                 aria-hidden="true"
-                className={`font-display leading-none transition-colors ${
+                className={`font-display leading-none transition-[color,transform] duration-[var(--duration-fast)] ease-[var(--ease-out-quart)] group-hover:translate-x-0.5 ${
                   isActive
                     ? "text-xl font-bold text-rail-ink"
                     : "text-lg font-bold text-rail-ink"
@@ -151,7 +159,7 @@ export function RailNav({
               </span>
               <span
                 aria-hidden="true"
-                className={`font-display text-xs uppercase leading-none tracking-[0.06em] ${
+                className={`font-display text-xs uppercase leading-none tracking-[0.06em] transition-transform duration-[var(--duration-fast)] ease-[var(--ease-out-quart)] group-hover:translate-x-0.5 ${
                   isActive ? "font-semibold text-rail-ink" : "font-medium"
                 }`}
               >
