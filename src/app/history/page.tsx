@@ -57,9 +57,11 @@ export default async function HistoryPage() {
 
         <section className="tile min-h-0 overflow-hidden">
           <h2 className="border-b border-line px-3 py-2 label text-accent">
-            Practice
+            How I work
           </h2>
           <ul className="min-h-0 flex-1 space-y-3 overflow-hidden px-3 py-3">
+            {/* Not soft skills — six things the repositories are actually
+                held to, which is the difference between a claim and a check. */}
             {principles.map((principle) => (
               <li key={principle.title}>
                 <h3 className="font-display text-md font-semibold text-ink">

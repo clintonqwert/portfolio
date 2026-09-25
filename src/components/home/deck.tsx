@@ -3,7 +3,7 @@ import { Figure, Tile, TileShot } from "@/components/home/tile";
 import { AUTOTRADER_POINTS } from "@/lib/content/experience";
 import { FACTS, HEADLINE, LEDE } from "@/lib/content/profile";
 import type { ImageSlot } from "@/lib/content/assets";
-import type { CaseStudy, Gap, Stat } from "@/types/content";
+import type { CaseStudy, Gap } from "@/types/content";
 
 /**
  * The dashboard.
@@ -16,7 +16,6 @@ import type { CaseStudy, Gap, Stat } from "@/types/content";
  * the headline and marquee need.
  */
 export function Deck({
-  stats,
   studies,
   gaps,
   skills,
@@ -24,7 +23,6 @@ export function Deck({
   workImages,
   autoSyncImage,
 }: {
-  stats: Stat[];
   studies: CaseStudy[];
   gaps: Gap[];
   skills: string[];
@@ -279,19 +277,38 @@ export function Deck({
           </ul>
         </Tile>
 
+        {/*
+          Where "Measured" used to sit. That tile restated four numbers already
+          shown better elsewhere \u2014 years shipping duplicated the lede, live
+          sites duplicated having two case-study tiles right above it, reviewed
+          PRs was the sum of DriftPilot's and Riflessi's own counts, and the
+          Lighthouse figure was already an assertion row on DriftPilot's tile.
+          This is the AI story instead, which previously had no dashboard
+          presence at all \u2014 reachable only by finding it in the rail.
+        */}
         <Tile
-          label="Measured"
-          href="/history"
-          cta="History"
+          label="AI Engineering"
+          href="/standard"
+          cta="How it works"
           className="lg:col-start-10 lg:col-end-13 lg:row-start-5 lg:row-end-9 wide:col-start-5 wide:row-start-7"
         >
-          {/* Four across, not 2x2: this tile is now a wide half-height strip,
-              so the figures run along it rather than stacking into a shape the
-              cell no longer has. */}
           <div className="grid flex-1 grid-cols-2 content-center gap-x-4 gap-y-3 wide:grid-cols-4">
-            {stats.map((stat) => (
-              <Figure key={stat.label} stat={stat} size="sm" />
-            ))}
+            <Figure
+              stat={{ value: "5", label: "Specialist AI roles" }}
+              size="sm"
+            />
+            <Figure
+              stat={{ value: "1", label: "May write files" }}
+              size="sm"
+            />
+            <Figure
+              stat={{ value: "44", label: "Documents in the standard" }}
+              size="sm"
+            />
+            <Figure
+              stat={{ value: "1,920", label: "Lines, cross-project" }}
+              size="sm"
+            />
           </div>
         </Tile>
 

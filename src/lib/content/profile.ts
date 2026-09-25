@@ -1,7 +1,5 @@
 import "server-only";
 
-import type { Passage, Stat } from "@/types/content";
-
 /**
  * Published facts about Clinton Jay Ramonida — the single source of truth for
  * anything this site claims.
@@ -101,26 +99,15 @@ export const HEADLINE =
 export const LEDE =
   "Senior full-stack engineer — nine years of production web systems, five of them on automotive SaaS at national scale.";
 
-/** The four figures in the masthead strip. */
-export async function getHeadlineStats(): Promise<Stat[]> {
-  return [
-    // Labels are kept to two short lines so the strip's baselines stay level.
-    { value: "9", label: "Years shipping", detail: "production web" },
-    { value: "2", label: "Live sites", detail: "shipped solo" },
-    { value: "32", label: "Reviewed PRs", detail: "on own codebases" },
-    { value: "≥95", label: "Lighthouse perf", detail: "asserted on merge" },
-  ];
-}
-
-/** The opening position statement. */
-export async function getPositionPassages(): Promise<Passage[]> {
-  return [
-    {
-      paragraphs: [
-        "I spent five years at AutoTrader.ca building production features on AutoSync — the automotive SaaS platform serving thousands of Canadian dealerships — across Vue, Node.js, PHP and MySQL, with Redis caching and AWS infrastructure underneath.",
-        "Since 2026 I have designed and shipped two live sites end to end, under a performance budget that runs in CI and blocks my own merges when it fails. The second site reused the first’s architecture and shipped in five weeks, because the content layer sits behind typed accessors that can be replaced without touching a page or a component.",
-        "I write architecture guardrails and decision records, and I keep the known gaps in the same document as the wins. The gaps are further down this page.",
-      ],
-    },
-  ];
-}
+/*
+  A four-stat masthead summary and a standalone position statement used to
+  live here (getHeadlineStats, getPositionPassages). Both were retired
+  2026-09: every figure they carried is more specific somewhere else on the
+  page already — "9 years shipping" is the lede's "nine years", "2 live
+  sites" is the two case-study tiles that are already on the dashboard with
+  their own live URLs, "32 reviewed PRs" is the sum of DriftPilot's 21 and
+  Riflessi's 11 shown individually on their own tiles, and ">=95 Lighthouse"
+  is already an assertion row on DriftPilot's tile. Code that ships a
+  restatement of facts shown better elsewhere is exactly the kind of thing
+  this site's own gaps table calls out in other people's projects.
+*/

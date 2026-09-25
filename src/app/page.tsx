@@ -3,13 +3,11 @@ import { JsonLd } from "@/components/shared/json-ld";
 import { AUTOSYNC_IMAGE, WORK_IMAGES } from "@/lib/content/assets";
 import { AUTOTRADER_LEDE } from "@/lib/content/experience";
 import { getGaps, getSkillMarquee } from "@/lib/content/practice";
-import { getHeadlineStats } from "@/lib/content/profile";
 import { getCaseStudies } from "@/lib/content/work";
 import { buildPersonJsonLd } from "@/lib/seo";
 
 export default async function HomePage() {
-  const [stats, studies, gaps, skills] = await Promise.all([
-    getHeadlineStats(),
+  const [studies, gaps, skills] = await Promise.all([
     getCaseStudies(),
     getGaps(),
     getSkillMarquee(),
@@ -19,7 +17,6 @@ export default async function HomePage() {
     <>
       <JsonLd data={buildPersonJsonLd()} />
       <Deck
-        stats={stats}
         studies={studies}
         gaps={gaps}
         skills={skills}

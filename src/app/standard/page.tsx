@@ -6,7 +6,7 @@ import { PROJECT_OS_LEDE, PROJECT_OS_RAIL, getProjectOsPassages } from "@/lib/co
 import { buildMetadata } from "@/lib/seo";
 
 export const metadata: Metadata = buildMetadata({
-  title: "Project OS — standards that outlive one repository",
+  title: "AI Engineering — Project OS, standards that outlive one repository",
   description: PROJECT_OS_LEDE,
   path: "/standard",
 });
@@ -16,8 +16,9 @@ export default async function StandardPage() {
 
   return (
     <DetailView
-      eyebrow="Project OS"
-      title="Standards that outlive one repository"
+      eyebrow="AI Engineering"
+      title="Project OS: standards that outlive one repository"
+      lede={PROJECT_OS_LEDE}
       meta={[
         { label: "Size", value: `${PROJECT_OS_RAIL.documents}, ${PROJECT_OS_RAIL.lines}` },
         { label: "Roles", value: PROJECT_OS_RAIL.roles },

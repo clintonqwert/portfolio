@@ -40,12 +40,17 @@ const CASE_STUDIES: readonly CaseStudy[] = [
         { name: "Script weight", threshold: "< 260 kB", state: "237 kB", measured: true },
       ],
     },
+    related: [
+      { label: "How AI is allowed to touch this work", href: "/standard" },
+      { label: "Riflessi — proving the gate travels", href: "/work/riflessi" },
+    ],
     passages: [
       {
         paragraphs: [
           "Most teams treat performance as a discipline problem: everyone agrees the site should be fast, and it degrades anyway, one convenient dependency at a time. I moved the standard out of the review conversation and into the pipeline, where it cannot be forgotten or argued with under deadline.",
           "Every pull request against driftpilot.ca runs Lighthouse CI three times against a production build and asserts the median. A failure is a red check, not a comment.",
         ],
+        diagram: ["Pull request", "Production build", "Lighthouse × 3, median asserted", "Merge blocked on failure"],
       },
       {
         heading: "What the gate caught",
@@ -74,6 +79,7 @@ const CASE_STUDIES: readonly CaseStudy[] = [
     repoUrl: "github.com/clintonqwert/riflessiautocare",
     role: "Sole engineer · self-directed",
     stack: ["Next.js", "React Three Fiber", "glTF-Transform", "meshoptimizer"],
+    related: [{ label: "DriftPilot — the foundation this reused", href: "/work/driftpilot" }],
     stats: [
       { value: "5 weeks", label: "Empty repo to live", detail: "79 source files" },
       { value: "89%", label: "Hero asset reduction", detail: "19.07 MB → 2.05 MB" },
@@ -123,6 +129,10 @@ const CASE_STUDIES: readonly CaseStudy[] = [
       "Redis Cluster",
       "WP-CLI",
       "PHPUnit",
+    ],
+    related: [
+      { label: "myGarage \u2014 the feature that tested the data model", href: "/work/mygarage" },
+      { label: "Luxury tax \u2014 a chapter of this platform", href: "/work/luxury-tax" },
     ],
     stats: [
       { value: "1,682", label: "Commits \u2014 #1 of 100+ engineers" },
@@ -180,6 +190,61 @@ const CASE_STUDIES: readonly CaseStudy[] = [
     ],
   },
   {
+    slug: "mygarage",
+    name: "myGarage",
+    headline: "A saved-vehicle list that has to survive the vehicle changing under it",
+    summary:
+      "Saved vehicles, viewed history and price-drop alerts, stored so a shopper\u2019s list stays valid across dealer sites even after the vehicle sells.",
+    period: "2019 \u00b7 Convertus \u2014 Tadvantage platform",
+    liveUrl: null,
+    repoUrl: null,
+    role: "Full-stack engineer",
+    stack: ["PHP", "MySQL", "AWS RDS", "Node.js", "Vue.js"],
+    /*
+      Kept off both the dashboard and the primary rail: this is a feature of
+      Tadvantage, not a peer of it, so it is reached through Tadvantage's own
+      "Related" link rather than sitting beside it as an equal entry. The
+      route and page are real and indexed — attached, not hidden.
+    */
+    onDeck: false,
+    stats: [],
+    related: [{ label: "Tadvantage \u2014 the platform this shipped on", href: "/work/tadvantage" }],
+    passages: [
+      {
+        heading: "The constraint",
+        paragraphs: [
+          "A shopper saves a handful of vehicles, comes back a week later, and expects the list to still make sense \u2014 even though the inventory underneath it has not stood still. Vehicles sell. Prices change. A saved list that stores a snapshot of the vehicle is wrong within days.",
+        ],
+      },
+      {
+        heading: "A reference, not a copy",
+        paragraphs: [
+          "myGarage stores an advertisement ID against a user, not the vehicle\u2019s own details. A price alert holds the price at the moment the alert was set alongside the current one, so the comparison stays live rather than being baked in at save time. Sold or withdrawn stock is handled the same way a normal browse session would handle it, because nothing about the record depended on the vehicle still existing.",
+        ],
+      },
+      {
+        heading: "Why it lives outside any one dealer site",
+        paragraphs: [
+          "Tadvantage runs one WordPress multisite per dealer, but a shopper\u2019s garage has to survive them moving between dealer sites on the same platform. So the garage tables \u2014 saved vehicles, viewed history, price alerts, and a user record keyed to the platform\u2019s VMS identity \u2014 live in their own AWS RDS database, reached through a singleton connection, rather than in any one dealer site\u2019s own WordPress tables. That is the one decision that makes the rest of the feature possible: without it, a garage would be trapped on whichever site the shopper first landed on.",
+        ],
+        diagram: ["Dealer site A", "Shared AWS RDS \u2014 garage database", "Dealer site B"],
+      },
+      {
+        heading: "Closing the loop: price alerts",
+        paragraphs: [
+          "A Node.js service reads the alerts table, compares the stored price against current pricing from the platform\u2019s vehicle-management service, and sends a bilingual HTML email when a watched vehicle drops \u2014 with unsubscribe handling and monitoring on failure. Front end in Vue inside Tadvantage, back end in Node, one database between them, because the alternative was two sources of truth for the same price. Co-built with a colleague.",
+        ],
+        diagram: ["garage.alerts_vehicle", "Node price-check service", "Bilingual email + unsubscribe"],
+      },
+      {
+        heading: "What I would do differently",
+        paragraphs: [
+          "Save, remove and viewed events were never instrumented, so this case study cannot tell you how many shoppers used it \u2014 the same gap Tadvantage\u2019s main case study names. The mechanism is sound; the adoption evidence was never collected, and I would collect it now before shipping a feature like this again.",
+        ],
+      },
+    ],
+  },
+  {
     slug: "luxury-tax",
     name: "Luxury tax",
     headline: "A tax that had to be right in eleven places at once",
@@ -190,6 +255,7 @@ const CASE_STUDIES: readonly CaseStudy[] = [
     repoUrl: null,
     role: "Full-stack engineer",
     stack: ["PHP", "WordPress", "Vue.js", "Optimizely", "WP-CLI", "PHPUnit", "Jest"],
+    related: [{ label: "Tadvantage \u2014 the platform this shipped on", href: "/work/tadvantage" }],
     /*
       Kept off the dashboard. The deck is exactly one viewport tall and its
       three case-study cells are already assigned; a fourth would either

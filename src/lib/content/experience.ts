@@ -24,7 +24,7 @@ export const AUTOTRADER_LEDE =
   "Five years on the platform thousands of Canadian dealerships run their inventory on. The work I would point at first is the caching — and the outcome that mattered was stability, not speed.";
 
 export const PROJECT_OS_LEDE =
-  "The cross-project standard both sites are built against, including how five specialist AI roles are allowed to touch the work.";
+  "Five specialist AI roles are allowed to touch this work under a written standard \u2014 one may write files, four are report-only, and a human decides everything above that line.";
 
 /**
  * Short restatements of facts already published in the passages below, for the
@@ -107,20 +107,9 @@ export async function getProjectOsPassages(): Promise<Passage[]> {
       ],
     },
     {
-      heading: "What is deliberately absent",
-      paragraphs: [
-        "It includes a section listing what is deliberately absent, because unrecorded omissions get re-litigated every quarter by whoever arrives next. Adding one requires a written operating need. \u201cIt would be convenient\u201d is explicitly not a need.",
-      ],
-      list: [
-        { term: "No CMS", detail: "Content lives in typed accessors." },
-        { term: "No client-state library", detail: "Server components hold the state." },
-        { term: "No component library", detail: "The design system is the tokens." },
-      ],
-    },
-    {
       heading: "How AI is allowed to touch the work",
       paragraphs: [
-        "The same standard defines how I use AI on delivery work: five specialist roles under a separation of powers written into the role contracts, reporting findings on a P0/P1/P2 severity taxonomy for a human to decide on.",
+        "The same standard defines how I use AI on delivery work: five specialist roles under a separation of powers written into the role contracts, reporting findings on a P0/P1/P2 severity taxonomy for a human to decide on. This is process, not product \u2014 it is how I build software, including this site, not a customer-facing AI feature.",
       ],
       list: [
         { term: "Builder", detail: "May write files." },
@@ -140,6 +129,17 @@ export async function getProjectOsPassages(): Promise<Passage[]> {
       heading: "The tester\u2019s protocol",
       paragraphs: [
         "The tester\u2019s protocol puts it plainly: the pull request description is a claim, the diff is ground truth, and disagreement between them is itself a finding.",
+      ],
+    },
+    {
+      heading: "What is deliberately absent",
+      paragraphs: [
+        "The standard also lists what is deliberately absent from the stack, because unrecorded omissions get re-litigated every quarter by whoever arrives next. Adding one requires a written operating need. \u201cIt would be convenient\u201d is explicitly not a need.",
+      ],
+      list: [
+        { term: "No CMS", detail: "Content lives in typed accessors." },
+        { term: "No client-state library", detail: "Server components hold the state." },
+        { term: "No component library", detail: "The design system is the tokens." },
       ],
     },
   ];
