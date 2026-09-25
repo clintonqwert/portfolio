@@ -57,7 +57,9 @@ const VIEWPORTS = [
 const browser = await puppeteer.launch({
   executablePath: CHROME,
   headless: "new",
-  args: ["--hide-scrollbars", "--disable-gpu"],
+  // --no-sandbox only in CI: Ubuntu 24.04 runners restrict the user
+  // namespaces Chrome's sandbox needs, and the pages are our own build.
+  args: ["--hide-scrollbars", "--disable-gpu", ...(process.env.CI ? ["--no-sandbox"] : [])],
 });
 
 let failures = 0;
@@ -99,12 +101,18 @@ try {
         // column. In both cases the tile was the right height, so a check that
         // only asked the tile saw nothing wrong.
         //
-        // Only `hidden` counts as loss. `auto` is reachable by scrolling, and
-        // flagging it buried the real hits under the mobile nav and every
-        // horizontally-scrollable strip on the page — with one exception below.
+        // Only `hidden` and `clip` count as loss. `auto` is reachable by
+        // scrolling, and flagging it buried the real hits under the mobile nav
+        // and every horizontally-scrollable strip on the page — with one
+        // exception below. `clip` was once exempt by omission, which meant any
+        // content the title block ever cut off would have passed unseen.
+        const loses = (v) => v === "hidden" || v === "clip";
         const intentional = (el) =>
           el.classList.contains("sr-only") ||
           el.closest(".marquee") !== null ||
+          // The scroll cue's bead runs out of its track on purpose — that is
+          // the animation. Decorative and aria-hidden; nothing is lost.
+          el.classList.contains("scroll-cue-track") ||
           // An ellipsis is a signpost, not a loss — the reader can see that
           // something was shortened, which is the whole difference. Both the
           // single-line (`truncate`) and multi-line (`line-clamp-N`) forms
@@ -121,10 +129,10 @@ try {
           const tall = el.scrollHeight - el.clientHeight;
           const wide = el.scrollWidth - el.clientWidth;
 
-          if (cs.overflowY === "hidden" && tall > 2) {
+          if (loses(cs.overflowY) && tall > 2) {
             out.push(`clipped +${tall}px tall [${label(el)}]`);
           }
-          if (cs.overflowX === "hidden" && wide > 2) {
+          if (loses(cs.overflowX) && wide > 2) {
             out.push(`clipped +${wide}px wide [${label(el)}]`);
           }
           // A scrollable box holding more than twice its own width is the

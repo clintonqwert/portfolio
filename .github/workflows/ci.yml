@@ -42,6 +42,25 @@ jobs:
       - name: Build
         run: npm run build
 
+      # Fit and behaviour, against the build just made. check-overflow proves
+      # nothing spills or is silently clipped at seven viewports; check-behaviour
+      # proves the deck stays one viewport and the secondary pages' cue, chapter
+      # bar, ids, focus and reduced motion still do what they promise. The
+      # server is stopped afterwards so Lighthouse can start its own on :3000.
+      - name: Fit and behaviour
+        env:
+          CHROME_PATH: /usr/bin/google-chrome
+        run: |
+          ./node_modules/.bin/next start -p 3000 > /tmp/next.log 2>&1 &
+          SERVER=$!
+          trap 'kill $SERVER' EXIT
+          for i in $(seq 1 60); do
+            curl -sf http://127.0.0.1:3000/ > /dev/null && break
+            sleep 1
+          done
+          npm run check:overflow -- http://127.0.0.1:3000
+          npm run check:behaviour -- http://127.0.0.1:3000
+
       - name: Lighthouse budgets
         run: |
           npm install -g @lhci/cli@0.14.x

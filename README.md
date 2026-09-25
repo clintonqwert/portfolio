@@ -21,7 +21,8 @@ npm run dev
 | `npm run lint` | ESLint, `next/core-web-vitals` + TypeScript |
 | `npm run check:claims` | Scans the content layer for retired claims |
 | `npm run check:contrast` | WCAG 2.2 AA on both palettes, plus opacity modifiers |
-| `npm run check:overflow` | Panel spill and unreachable fixed panels, seven viewports; needs a server |
+| `npm run check:overflow` | Panel spill, silent clipping and unreachable fixed panels, seven viewports; needs a server |
+| `npm run check:behaviour` | Deck stays one viewport; unique ids; scroll cue, chapter bar, reduced motion and focus inside ink blocks; needs a server |
 | `npm run check:logos` | Skill logos match the generator and the skill list |
 | `npm run gen:logos` | Regenerate `src/lib/logos.ts` from simple-icons |
 
