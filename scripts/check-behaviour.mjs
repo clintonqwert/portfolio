@@ -61,13 +61,30 @@ const check = (ok, what) => {
   }
 };
 
-/** Open a page with offsite requests dropped — analytics never resolve offline. */
+/**
+ * Open a page with offsite requests dropped — analytics never resolve offline.
+ *
+ * The media environment is pinned rather than inherited. Headless Chrome on a
+ * CI runner has no pointing device and reports `(hover: none)`, so the deck's
+ * hover-only pan was never enabled there: the pan check failed, and worse, the
+ * reduced-motion "does not pan" check passed for the wrong reason. Every page
+ * gets a hover-capable fine pointer, so each check tests what it names.
+ * (Through CDP directly: puppeteer's emulateMediaFeatures only accepts the
+ * prefers-* features, and a second call would replace the first.)
+ */
 async function open(path, { width, height, reduced = false }) {
   const page = await browser.newPage();
   await page.setViewport({ width, height });
-  if (reduced) {
-    await page.emulateMediaFeatures([{ name: "prefers-reduced-motion", value: "reduce" }]);
-  }
+  const cdp = await page.createCDPSession();
+  await cdp.send("Emulation.setEmulatedMedia", {
+    features: [
+      { name: "hover", value: "hover" },
+      { name: "any-hover", value: "hover" },
+      { name: "pointer", value: "fine" },
+      { name: "any-pointer", value: "fine" },
+      { name: "prefers-reduced-motion", value: reduced ? "reduce" : "no-preference" },
+    ],
+  });
   await page.setRequestInterception(true);
   page.on("request", (r) => {
     const host = new URL(r.url()).host;
@@ -136,7 +153,19 @@ try {
         undefined,
         3000,
       );
-      check(panned, "hovering a deck tile pans its screenshot");
+      const state = await page.evaluate(() => ({
+        hover: matchMedia("(hover: hover)").matches,
+        hovered: document.querySelector('a.tile[href="/work/tadvantage"]').matches(":hover"),
+        y: Math.round(
+          new DOMMatrix(
+            getComputedStyle(document.querySelector('a.tile[href="/work/tadvantage"] .tile-shot-image')).transform,
+          ).m42,
+        ),
+      }));
+      check(
+        panned,
+        `hovering a deck tile pans its screenshot (hover media ${state.hover}, tile hovered ${state.hovered}, moved ${state.y}px)`,
+      );
     }
     await page.close();
   }
@@ -240,11 +269,18 @@ try {
     const tile = await page.$('a.tile[href="/work/tadvantage"]');
     await tile.hover();
     await new Promise((r) => setTimeout(r, 1200));
-    const moved = await page.evaluate(() => {
+    const { moved, hover } = await page.evaluate(() => {
       const img = document.querySelector('a.tile[href="/work/tadvantage"] .tile-shot-image');
-      return new DOMMatrix(getComputedStyle(img).transform).m42;
+      return {
+        moved: new DOMMatrix(getComputedStyle(img).transform).m42,
+        hover: matchMedia("(hover: hover)").matches,
+      };
     });
-    check(moved === 0, `reduced motion: hovering a deck tile does not pan (moved ${moved}px)`);
+    // Only meaningful with hover available — otherwise "no pan" proves nothing.
+    check(
+      hover && moved === 0,
+      `reduced motion: hovering a deck tile does not pan (hover media ${hover}, moved ${moved}px)`,
+    );
     await page.close();
   }
 
