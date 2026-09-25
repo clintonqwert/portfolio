@@ -5,14 +5,16 @@ import { cn } from "@/lib/utils";
 /**
  * A detail view.
  *
- * Long-form prose lives inside a dashboard shell fixed to one viewport by
- * flowing into CSS columns rather than scrolling.
+ * Ordinary block prose, sized to its own content, with <main> taking the
+ * scroll — the same way any article page works.
  *
- * The height is pinned only at 1440px and up. A multi-column box overflows in
- * the *inline* direction when its height is constrained — so below that width
- * the longest case study did not reflow, it ran 722px off the side of the page
- * where nothing could reach it. With the height left auto, the columns balance
- * and grow downwards instead, and <main> scrolls.
+ * This used to pin the panel to the viewport at >=1440px and flow the prose
+ * into CSS columns to fill it without scrolling. That forced every short case
+ * study — most of them — into a newspaper page of three-line columns sitting
+ * above a third of a screen of blank panel, because multi-column balance
+ * fills the height it is given whether or not there is enough prose to fill
+ * it. A page that is only as tall as what is actually on it does not have
+ * that problem, and reads as a normal page rather than a broadsheet.
  */
 export function DetailView({
   eyebrow,
@@ -41,7 +43,7 @@ export function DetailView({
   raw?: boolean;
 }) {
   return (
-    <div className="flex flex-col gap-2 p-2 wide:h-full">
+    <div className="flex flex-col gap-2 p-2">
       <header className="tile shrink-0 px-4 py-3">
         <p className="label tracking-[0.12em] text-accent">
           <Link href="/" className="no-underline hover:underline">
@@ -77,28 +79,24 @@ export function DetailView({
         ) : null}
       </header>
 
-      {/* No width cap: the prose flows into columns, so a wider panel simply
-          fits more of them. The old cap was from when this was one measured
-          column — keeping it limited /work/tadvantage to three columns when the
-          workspace had room for nearly five, and the content spilled. */}
       <div
         className={cn(
-          "grid min-h-0 flex-1 gap-2",
+          "grid items-start gap-2",
           aside ? "wide:grid-cols-[minmax(0,1fr)_320px]" : "",
         )}
       >
         {raw ? (
           children
         ) : (
-          <div className="tile min-h-0">
-            {/* Columns, not scroll: the prose fills the panel across rather
-                than running past its bottom edge. */}
-            <div className="flow flex-1 px-4 py-4 text-muted">
-              {children}
-            </div>
+          // max-w caps the box itself, not just the text inside it — a tile
+          // stretched to a 1fr track with 75ch of text pinned to its left
+          // edge left the same kind of dead space the column-balance fix
+          // just removed, just turned sideways instead of underneath.
+          <div className="tile max-w-[75ch]">
+            <div className="flow px-4 py-4 text-muted">{children}</div>
           </div>
         )}
-        {aside ? <div className="tile min-h-0">{aside}</div> : null}
+        {aside ? <div className="tile">{aside}</div> : null}
       </div>
     </div>
   );

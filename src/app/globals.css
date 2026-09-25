@@ -605,44 +605,21 @@
   }
 
   /*
-    Detail prose flows into columns instead of scrolling: the panel fills with
-    text left-to-right, so a long passage fits one viewport without hiding any
-    of it. Clipping would have been the other way to stop the scroll, and it
-    makes the evidence unreadable.
+    Detail prose is one ordinary block column, capped for reading rather than
+    flowed into newspaper-style multi-column layout. The panel used to be
+    pinned to viewport height at >=1440px specifically so multi-column balance
+    had a fixed box to fill — which is exactly the problem: balance fills
+    whatever height it is given, so a short case study became three-line
+    columns sitting above a third of a screen of blank panel. Sized to its own
+    content instead, the page is only ever as tall as what is actually on it.
   */
   .flow {
-    min-height: 0;
-    /* Narrower columns fit more of them in the panel before content spills. */
-    columns: 30ch auto;
-    column-gap: calc(var(--spacing) * 4);
-    column-rule: 1px solid var(--color-line);
+    /* The 75ch line-length cap lives on the tile itself (detail-view.tsx),
+       not here — capping only the text left the box stretched to its grid
+       track with the prose pinned to one edge, the same dead space as
+       before just turned sideways instead of underneath. */
     font-size: 0.9rem;
     line-height: 1.55;
-  }
-
-  /*
-    Passages must be allowed to split across columns. Holding each one together
-    with break-inside:avoid means any passage taller than the column cannot be
-    placed, and it overflows the panel instead of reflowing — which is what
-    pushed /work/tadvantage 259px past its own width.
-
-    Headings keep their first lines instead, which is the part that actually
-    matters for reading.
-  */
-  .flow :is(h2, h3) {
-    break-after: avoid-column;
-    break-inside: avoid-column;
-  }
-
-  .flow p {
-    orphans: 2;
-    widows: 2;
-  }
-
-  @media (max-width: 1023px) {
-    .flow {
-      columns: 1;
-    }
   }
 }
 
