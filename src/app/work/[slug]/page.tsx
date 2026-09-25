@@ -147,7 +147,7 @@ export default async function CaseStudyPage({
           cueLabel={`Scroll to the case study — ${chapters.length} chapters`}
         />
 
-        <PassageChapters passages={study.passages} refs={prose} firstFigure={shot ? 2 : 1} />
+        <PassageChapters passages={study.passages} firstFigure={shot ? 2 : 1} />
 
         <Chapter
           id={stack.id}

@@ -56,7 +56,7 @@ export default async function AutoTraderPage() {
         cueLabel={`Scroll to the page — ${chapters.length} chapters`}
       />
 
-      <PassageChapters passages={passages} refs={chapters} firstFigure={2} />
+      <PassageChapters passages={passages} firstFigure={2} />
 
       <PageClose
         prev={prev}

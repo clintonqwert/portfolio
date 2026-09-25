@@ -18,48 +18,56 @@ import type { Passage } from "@/types/content";
  */
 export function PassageChapters({
   passages,
-  refs,
+  start = 1,
   firstFigure = 1,
 }: {
   passages: Passage[];
-  /** From passageRefs — the page builds them once so the chapter bar shares them. */
-  refs: ChapterRef[];
+  /** Number of the first chapter. */
+  start?: number;
   /** Number of the first figure in these chapters — 2 when the hero shows Fig. 01. */
   firstFigure?: number;
 }) {
+  // Derived here from the same pure function the page calls for its chapter
+  // bar, rather than passed in beside `passages`: two parallel arrays could
+  // drift out of step, and one input cannot.
+  const refs = passageRefs(passages, start);
+
   // Figures are numbered in reading order across the page, not per chapter.
   let figureNumber = firstFigure;
   const figureNumbers = passages.map((p) => (p.figure ? figureNumber++ : 0));
 
   return (
     <>
-      {passages.map((passage, i) => (
-        <Chapter
-          key={refs[i]!.id}
-          id={refs[i]!.id}
-          number={refs[i]!.number}
-          title={refs[i]!.title}
-          wide={passage.diagram ? <FlowDiagram steps={passage.diagram} /> : undefined}
-        >
-          <div className="flow text-muted">
-            {passage.paragraphs.map((paragraph) => (
-              <p key={paragraph.slice(0, 48)}>{paragraph}</p>
-            ))}
-            {passage.list ? <TermList rows={passage.list} /> : null}
-          </div>
-          {passage.figure ? (
-            <div className="mt-10">
-              <Shot
-                image={passage.figure.image}
-                figure={chapterNumber(figureNumbers[i]!)}
-                caption={passage.figure.caption}
-                // The prose column: ~700px at 1440, the full width below lg.
-                sizes="(min-width: 1024px) min(58vw, 740px), 100vw"
-              />
+      {passages.map((passage, i) => {
+        const ref = refs[i]!;
+        return (
+          <Chapter
+            key={ref.id}
+            id={ref.id}
+            number={ref.number}
+            title={ref.title}
+            wide={passage.diagram ? <FlowDiagram steps={passage.diagram} /> : undefined}
+          >
+            <div className="flow text-muted">
+              {passage.paragraphs.map((paragraph) => (
+                <p key={paragraph.slice(0, 48)}>{paragraph}</p>
+              ))}
+              {passage.list ? <TermList rows={passage.list} /> : null}
             </div>
-          ) : null}
-        </Chapter>
-      ))}
+            {passage.figure ? (
+              <div className="mt-10">
+                <Shot
+                  image={passage.figure.image}
+                  figure={chapterNumber(figureNumbers[i]!)}
+                  caption={passage.figure.caption}
+                  // The prose column: ~700px at 1440, the full width below lg.
+                  sizes="(min-width: 1024px) min(58vw, 740px), 100vw"
+                />
+              </div>
+            ) : null}
+          </Chapter>
+        );
+      })}
     </>
   );
 }
@@ -75,13 +83,30 @@ export function chapterNumber(n: number): string {
 }
 
 /**
+ * Ids the page shell already uses: <main>, the hero and its heading, the
+ * chapters every case study appends, and the gaps table. A passage chapter
+ * never takes one of these, whatever its heading slugifies to.
+ */
+const SHELL_IDS = ["main", "top", "page-title", "stack", "measured", "the-gaps"];
+
+/**
  * Id, number and title for each passage's chapter, numbered from `start`.
- * Ids come from the heading, so a chapter can be linked to by name.
+ *
+ * Ids come from the heading, so a chapter can be linked to by name — and are
+ * unique on the page by construction. A second heading-less passage (two
+ * "overview"s) or a passage titled "Stack" once would have produced a
+ * duplicate id, and the scroll cue, the chapter bar and every deep link would
+ * quietly have targeted the first match. Repeats get a numeric suffix instead.
  */
 export function passageRefs(passages: Passage[], start = 1): ChapterRef[] {
+  const taken = new Set(SHELL_IDS);
   return passages.map((passage, i) => {
     const title = passageTitle(passage);
-    return { id: slugify(title), number: chapterNumber(start + i), title };
+    const base = slugify(title) || "chapter";
+    let id = base;
+    for (let n = 2; taken.has(id); n++) id = `${base}-${n}`;
+    taken.add(id);
+    return { id, number: chapterNumber(start + i), title };
   });
 }
 

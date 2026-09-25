@@ -46,7 +46,7 @@ export default async function StandardPage() {
         cueLabel={`Scroll to the page — ${chapters.length} chapters`}
       />
 
-      <PassageChapters passages={passages} refs={chapters} />
+      <PassageChapters passages={passages} />
 
       <PageClose
         prev={prev}
