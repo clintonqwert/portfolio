@@ -83,7 +83,7 @@ export async function getAutoTraderPassages(): Promise<Passage[]> {
     {
       heading: "What I would do differently",
       paragraphs: [
-        "I would have kept my own record. I can describe the caching work precisely and I cannot quantify it, because the dashboards belonged to the platform team and I took no figures with me. The mechanism survives; the evidence did not. Every project on this site since has a measurement written into it before the feature ships, and that habit started with not being able to answer this question.",
+        "I would have kept my own record. Every project on this site since has a measurement written into it before the feature ships \u2014 a habit that started with the one question this page cannot answer.",
       ],
     },
   ];
