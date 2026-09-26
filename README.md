@@ -81,6 +81,16 @@ the pan and the cursor.
 Below 1024px the constraint is lifted and the page scrolls normally, because a
 single viewport on a phone means either three tiles or unreadable type.
 
+Those figures are for the default 16px font. Every breakpoint is rem —
+Tailwind's own, which the CSS reads through `theme(--breakpoint-*)` — so a
+reader who has raised their default font reaches each layout later: at 20px the
+deck starts at 1280px, and holds one viewport from 950px tall rather than 760.
+When the deck's grid was switched on at a px 1024 instead, that reader got a
+12-column grid at 1100px under a page Tailwind had stacked. `check:overflow`
+measures three viewports at a 20px default for that reason. The few
+breakpoints script needs (an image's `sizes`, a `matchMedia`) are mirrored in
+`design-tokens.ts`, and `check:tokens` holds them to Tailwind's.
+
 ### Secondary pages
 
 Everything the deck links to — `/work/[slug]`, `/autotrader`, `/standard`,

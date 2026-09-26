@@ -1,7 +1,17 @@
 import Image from "next/image";
 
+import { media } from "@/lib/design-tokens";
 import { cn } from "@/lib/utils";
 import type { ImageSlot } from "@/types/content";
+
+/**
+ * `sizes` for a case-study hero's shot: beside the title from xl (half the
+ * sheet), the sheet's width beside the rail from lg (the viewport less the
+ * 236px rail and the sheet's gutters), and the viewport below that. The
+ * switches are the page's own breakpoints, from design-tokens, so the image
+ * is chosen for the layout the hero is actually in.
+ */
+export const HERO_SIZES = `${media.xl} 560px, ${media.lg} calc(100vw - 332px), 100vw`;
 
 /**
  * A screenshot shown at the size the work deserves, captioned like a figure on

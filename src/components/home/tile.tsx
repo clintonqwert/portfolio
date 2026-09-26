@@ -205,5 +205,11 @@ export function TileShot({
  * window, which is most of what read as blur. Stacked, the window spans the
  * tile, so it tracks the viewport; 56px under-counts the padding around it
  * (64px), which errs toward the sharper source, never the softer one.
+ *
+ * Only the first entry is a breakpoint, so only it follows the font. The px
+ * ones stay px: each says how wide a window draws at a viewport width, which
+ * the grid decides in pixels. Measured at a 20px default font, every window
+ * still gets its drawn width or more, bar 4% on the AutoTrader window at
+ * 2100px — a gap between the 1920 and 2400 entries at any font size.
  */
 const SHOT_SIZES = `${media.stacked} calc(100vw - 56px), (min-width: 2400px) 760px, (min-width: 1920px) 540px, (min-width: 1680px) 470px, 320px`;

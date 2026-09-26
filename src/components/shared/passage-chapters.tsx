@@ -1,5 +1,6 @@
 import { Chapter, type ChapterRef } from "@/components/shared/chapter";
 import { Shot } from "@/components/shared/shot";
+import { media } from "@/lib/design-tokens";
 import { slugify } from "@/lib/utils";
 import type { Passage } from "@/types/content";
 
@@ -61,7 +62,7 @@ export function PassageChapters({
                   figure={chapterNumber(figureNumbers[i]!)}
                   caption={passage.figure.caption}
                   // The prose column: ~700px at 1440, the full width below lg.
-                  sizes="(min-width: 1024px) min(58vw, 740px), 100vw"
+                  sizes={`${media.lg} min(58vw, 740px), 100vw`}
                 />
               </div>
             ) : null}
