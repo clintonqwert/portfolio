@@ -93,12 +93,10 @@
     opacity is not counted as painted until it arrives, which would push
     Largest Contentful Paint back by the whole stagger.
   */
+  /* The face itself is .display-hero (globals.css), shared with the deck's
+     headline and tile titles; the capitals are the hero's alone. */
   .hero-title {
-    font-family: var(--font-display);
-    font-variation-settings: "wdth" 112;
-    font-weight: 500;
     text-transform: uppercase;
-    letter-spacing: -0.012em;
     line-height: 1.04;
   }
 

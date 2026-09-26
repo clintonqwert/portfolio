@@ -71,7 +71,7 @@ export function Deck({
       <div className="flex min-h-0 flex-1 flex-col">
         {/* ── headline ───────────────────────────────────────────────── */}
         <header className="shrink-0 px-4 py-3">
-          <h1 className="display-tight max-w-[38ch] text-[clamp(1.35rem,2.5vw,2rem)] leading-[1.1] text-ink">
+          <h1 className="display-hero max-w-[38ch] text-[clamp(1.35rem,2.5vw,2rem)] leading-[1.1] text-ink">
             {HEADLINE}
           </h1>
           <p className="mt-1 max-w-[70ch] text-md leading-snug text-muted">{LEDE}</p>

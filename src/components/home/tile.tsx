@@ -42,7 +42,7 @@ export function Tile({
             {index}
           </span>
         ) : null}
-        <span className="display truncate tracking-[0.08em]">{label}</span>
+        <span className="display-hero truncate tracking-[0.08em]">{label}</span>
       </span>
       {cta ? (
         <span className="meta flex shrink-0 items-center gap-1 text-faint transition-colors duration-[var(--duration-fast)] ease-[var(--ease-out-quart)] group-hover:text-accent">

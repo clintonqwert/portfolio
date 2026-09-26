@@ -416,17 +416,27 @@
   }
 
   /*
-    The same face at normal width for running headlines. The deck's headline
-    is a full sentence, and setting that in expanded caps would shout rather
-    than speak — so the deck keeps it here, in sentence case.
+    The page heroes' face: the width axis at 112 and a medium weight, after
+    architech-template. The secondary-page hero (.hero-title in article.css)
+    sets it in capitals; the deck's headline and its tile titles share it by
+    the owner's decision on 2026-09-26, so the overview and the pages it
+    indexes speak in one voice.
 
-    The one deliberate exception is the secondary-page hero (.hero-title in
-    article.css): capitals at a medium weight, after architech-template, by
-    the owner's decision on 2026-09-25. It earns the caps by being the only
-    thing on its screen, set large with room around it; a sentence in caps
-    inside a dense dashboard is the case this rule is about. Recorded in
-    PRODUCT.md, so neither side gets "fixed" back.
+    The face is shared, the capitals are not. The deck's headline is a full
+    sentence, and a sentence in caps inside a dense dashboard would shout
+    rather than speak, so it stays in sentence case; the hero earns its caps
+    by being the only thing on its screen, set large with room around it
+    (2026-09-25). Recorded in PRODUCT.md, so neither gets "fixed" back.
   */
+  .display-hero {
+    font-family: var(--font-display);
+    font-variation-settings: "wdth" 112;
+    font-weight: 500;
+    letter-spacing: -0.012em;
+  }
+
+  /* The same family at near-normal width and bold, for running headlines
+     inside the pages: chapter titles, principles, roles. */
   .display-tight {
     font-family: var(--font-display);
     font-variation-settings: "wdth" 104;
