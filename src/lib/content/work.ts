@@ -1,6 +1,6 @@
 import "server-only";
 
-import { TADVANTAGE_FEATURES_IMAGE, TADVANTAGE_SEO_IMAGE } from "@/lib/content/assets";
+import { SCORES_IMAGE, TADVANTAGE_FEATURES_IMAGE, TADVANTAGE_SEO_IMAGE } from "@/lib/content/assets";
 import type { CaseStudy } from "@/types/content";
 
 /**
@@ -29,7 +29,13 @@ const CASE_STUDIES: readonly CaseStudy[] = [
       { value: "21", label: "Reviewed pull requests", detail: "88 commits" },
     ],
     assertions: {
-      caption: "lighthouserc.json — asserted on every pull request",
+      caption: "lighthouserc.json — budgets asserted on every pull request",
+      // The public run behind the Result column: every assertion passed on
+      // main's last CI run, the same commit the figure below re-runs.
+      evidence: {
+        label: "Last CI run on main, 30 Jul 2026 (14f649f): every budget passing — open the run",
+        href: "https://github.com/clintonqwert/driftpilot-site/actions/runs/30591364898",
+      },
       rows: [
         { name: "Performance", threshold: "≥ 95", state: "passing" },
         { name: "Accessibility", threshold: "≥ 98", state: "passing" },
@@ -38,7 +44,7 @@ const CASE_STUDIES: readonly CaseStudy[] = [
         { name: "Largest contentful paint", threshold: "< 1500 ms", state: "passing" },
         { name: "Cumulative layout shift", threshold: "< 0.05", state: "passing" },
         { name: "Total blocking time", threshold: "< 150 ms", state: "passing" },
-        { name: "Script weight", threshold: "< 260 kB", state: "237 kB", measured: true },
+        { name: "Script weight", threshold: "< 260 kB", state: "237 kB on PR #17", measured: true },
       ],
     },
     related: [
@@ -59,6 +65,13 @@ const CASE_STUDIES: readonly CaseStudy[] = [
           "The gate earns its keep by catching what review misses. It stopped a WebGL shader path that hit 39 seconds of total blocking time on software renderers, a footer contrast pair below WCAG minimum, and a third-party scheduling embed that quietly blew the script budget.",
           "One budget was re-baselined during the project: the original 110 kB script ceiling was fiction against a framework-plus-shader reality measured at 237 kB, so I moved the number deliberately and wrote down why. Measurement can justify moving a threshold. Silently deleting a failing assertion to get a green check cannot — that distinction is the whole value of having the gate.",
         ],
+        figure: {
+          image: SCORES_IMAGE,
+          // Measured, and said how: a local re-run of the repository's own
+          // gate, not a CI report and not a mock-up (see SCORES_IMAGE).
+          caption:
+            "The gate re-run on 26 Sep 2026: the repository\u2019s own lighthouserc.json against a production build of main, desktop preset, on my machine rather than a CI runner. The homepage\u2019s median of three runs \u2014 LCP 663 ms, TBT 0 ms, CLS 0 \u2014 and every run on all three gated routes passed every budget.",
+        },
       },
       {
         heading: "The rest of the build",

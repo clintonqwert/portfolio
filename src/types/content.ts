@@ -172,7 +172,15 @@ export interface CaseStudy {
    */
   note?: string;
   /** Optional assertion table, with its caption. */
-  assertions?: { caption: string; rows: Assertion[] };
+  assertions?: {
+    caption: string;
+    rows: Assertion[];
+    /**
+     * Where a reader can see the budgets pass for themselves — a public CI
+     * run. The thresholds are goals the gate enforces; this is the result.
+     */
+    evidence?: { label: string; href: string };
+  };
   /**
    * Other pages worth reading next. Internal links a reader who is already
    * interested earns for free — Tadvantage points at myGarage, myGarage points

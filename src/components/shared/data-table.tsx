@@ -10,10 +10,13 @@ function TableFrame({
   caption,
   children,
   minWidth,
+  footer,
 }: {
   caption: string;
   children: React.ReactNode;
   minWidth: string;
+  /** Below the table, inside its frame: where to check what it says. */
+  footer?: React.ReactNode;
 }) {
   return (
     <div className="my-6 overflow-x-auto border border-line bg-panel">
@@ -23,6 +26,7 @@ function TableFrame({
         </caption>
         {children}
       </table>
+      {footer}
     </div>
   );
 }
@@ -31,25 +35,47 @@ const TH =
   "border-b border-line px-4 py-2 text-left font-mono text-2xs uppercase tracking-[0.09em] text-faint font-normal";
 const TD = "border-b border-line px-4 py-3 align-top text-base";
 
+/**
+ * Budgets and their result, kept apart: the Budget column is what the gate
+ * enforces, a goal; Result is what a run measured. The evidence link, when
+ * there is one, is a public run where the reader can check the result.
+ */
 export function AssertionTable({
   caption,
   rows,
+  evidence,
 }: {
   caption: string;
   rows: Assertion[];
+  evidence?: { label: string; href: string };
 }) {
   return (
-    <TableFrame caption={caption} minWidth="520px">
+    <TableFrame
+      caption={caption}
+      minWidth="520px"
+      footer={
+        evidence ? (
+          <p className="px-4 py-3 meta text-2xs text-faint">
+            <a
+              href={evidence.href}
+              className="py-2 text-muted underline decoration-1 underline-offset-[3px] hover:text-ink hover:decoration-2"
+            >
+              {evidence.label}
+            </a>
+          </p>
+        ) : undefined
+      }
+    >
       <thead>
         <tr>
           <th scope="col" className={TH}>
             Assertion
           </th>
           <th scope="col" className={TH}>
-            Threshold
+            Budget
           </th>
           <th scope="col" className={TH}>
-            State
+            Result
           </th>
         </tr>
       </thead>

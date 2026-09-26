@@ -161,6 +161,7 @@ export default async function CaseStudyPage({
               <AssertionTable
                 caption={study.assertions.caption}
                 rows={study.assertions.rows}
+                evidence={study.assertions.evidence}
               />
             ) : undefined
           }

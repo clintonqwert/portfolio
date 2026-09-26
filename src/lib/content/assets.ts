@@ -45,21 +45,30 @@ export type { ImageSlot };
 const TADVANTAGE_SITE = { label: "tadvantage.ca", href: "https://tadvantage.ca/" } as const;
 
 /**
- * Lighthouse scores for driftpilot.ca.
+ * Lighthouse scores for driftpilot.ca, on /work/driftpilot.
  *
- * NOT CURRENTLY RENDERED, and still a placeholder. It was in the Measured tile
- * until that tile became a half-height strip with no room for it. The slot is
- * kept because the asset is still worth having — the deck asserts >=95 four
- * times, and a real run is the difference between asserting that and showing
- * it. /work/driftpilot is the obvious home. 1200x400, scores legible.
+ * A real run, not a mock-up: DriftPilot's own gate re-run on 2026-09-26 with
+ * the repository's lighthouserc.json (desktop preset, three runs a route)
+ * against a production build of its main branch at 14f649f, on this machine
+ * rather than a CI runner. Its CI keeps reports only when a run fails, so
+ * there was no CI report to capture. This is the homepage's median run; all
+ * nine runs across the three gated routes passed every budget. The report
+ * header, uncropped, shows the local URL it was run against.
+ *
+ * To refresh: build driftpilot-site, serve it, `lhci collect` the three
+ * routes with --settings.preset=desktop, `lhci assert` with its config, and
+ * capture the median report's header at 720px wide, 2x.
  */
 export const SCORES_IMAGE: ImageSlot = {
-  src: "/work/placeholder-scores.svg",
-  target: "/work/driftpilot-lighthouse.png",
-  alt: "Lighthouse scores for driftpilot.ca: performance, accessibility, best practices and SEO",
-  width: 1200,
-  height: 400,
-  isPlaceholder: true,
+  src: "/work/driftpilot-lighthouse.webp",
+  alt: "Lighthouse report header for a production build of driftpilot.ca: Performance 100, Accessibility 100, Best Practices 96, SEO 100",
+  width: 1440,
+  height: 284,
+  isPlaceholder: false,
+  source: {
+    label: "lighthouserc.json",
+    href: "https://github.com/clintonqwert/driftpilot-site/blob/main/lighthouserc.json",
+  },
 };
 
 /**
