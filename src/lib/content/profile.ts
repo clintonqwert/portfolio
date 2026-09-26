@@ -97,7 +97,7 @@ export const HEADLINE =
   "I make the quality bar something the pipeline enforces, not something the team remembers.";
 
 export const LEDE =
-  "Senior full-stack engineer — nine years of production web systems, five of them on automotive SaaS at national scale.";
+  "Senior full-stack engineer — nine years of production web systems, six and a half of them on automotive SaaS at national scale.";
 
 /*
   A four-stat masthead summary and a standalone position statement used to

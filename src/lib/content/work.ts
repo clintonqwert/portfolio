@@ -43,7 +43,7 @@ const CASE_STUDIES: readonly CaseStudy[] = [
     },
     related: [
       { label: "How AI is allowed to touch this work", href: "/standard" },
-      { label: "Riflessi — proving the gate travels", href: "/work/riflessi" },
+      { label: "Riflessi — proving the foundation travels", href: "/work/riflessi" },
     ],
     passages: [
       {
@@ -113,7 +113,7 @@ const CASE_STUDIES: readonly CaseStudy[] = [
   {
     slug: "tadvantage",
     name: "Tadvantage",
-    headline: "Six years on a dealer platform, and the parts I put my name on",
+    headline: "Six and a half years on a dealer platform, and the parts I put my name on",
     summary:
       "The platform behind dealer websites \u2014 built at Convertus, carried through the acquisition into AutoSync. Top all-time contributor across six and a half years.",
     period: "6.5 years \u00b7 Convertus \u2192 AutoTrader",
@@ -149,7 +149,7 @@ const CASE_STUDIES: readonly CaseStudy[] = [
       {
         heading: "What it is",
         paragraphs: [
-          "Tadvantage is the WordPress multisite platform behind Convertus dealer websites \u2014 Project Achilles on the inside, which is the name anyone who worked on it will recognise. It carries ten OEM and dealer-group themes and thirty-five-plus custom plugins covering inventory, showroom, pricing, SEO, integrations and analytics, with Vue on the interactive surfaces and PHP underneath. Convertus is part of Trader Corporation, the company behind AutoTrader.ca.",
+          "Tadvantage is the WordPress multisite platform behind Convertus dealer websites. It carries ten OEM and dealer-group themes and thirty-five-plus custom plugins covering inventory, showroom, pricing, SEO, integrations and analytics, with Vue on the interactive surfaces and PHP underneath. Convertus is part of Trader Corporation, the company behind AutoTrader.ca.",
         ],
       },
       {

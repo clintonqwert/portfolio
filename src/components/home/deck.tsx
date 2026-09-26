@@ -86,10 +86,12 @@ export function Deck({
               <li
                 key={fact}
                 // The arrangement line is the longest and the least decisive of
-                // the four. Below 1280 the strip wraps to three lines without it
-                // gone, and the deck pays for every one of them.
+                // the four. On the one-viewport deck from lg to xl the strip
+                // wraps to three lines with it, and the deck pays for every one
+                // of them, so it goes there. Stacked, the page scrolls and has
+                // the room: a recruiter on a phone should not lose it.
                 className={`items-center gap-3 ${
-                  i === 2 ? "hidden xl:flex" : "flex"
+                  i === 2 ? "flex lg:hidden xl:flex" : "flex"
                 }`}
               >
                 {fact}

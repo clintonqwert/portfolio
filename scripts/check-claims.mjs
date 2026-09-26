@@ -59,6 +59,10 @@ const RETIRED = [
     /Riflessi[^.]{0,60}\b(client|contract)\b/i,
     "Riflessi was self-directed and unpaid",
   ],
+  [
+    /Project Achilles/i,
+    "a former employer's internal codename: it tells a reader nothing and is not this site's to publish",
+  ],
 ];
 
 /** @returns {string[]} every .ts/.tsx path under dir, depth-first. */
