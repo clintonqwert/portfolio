@@ -35,6 +35,7 @@ export function Deck({
   historyLede,
   historyRolesCount,
   historyPrinciplesCount,
+  indexes,
 }: {
   studies: CaseStudy[];
   gaps: Gap[];
@@ -48,10 +49,17 @@ export function Deck({
   historyLede: string;
   historyRolesCount: number;
   historyPrinciplesCount: number;
+  /**
+   * Each page's number, by href, from the rail. A tile shows the number its
+   * page carries everywhere else — rail, hero, chapter bar, the close that
+   * offers it next — rather than its position in this grid, which the rail
+   * does not follow: the sub-pages count, and the grid is laid out for fit.
+   */
+  indexes: Record<string, string>;
 }) {
   // The feature study first: the wide cell is the first cell, so it leads the
-  // grid on a desktop and the stack on a phone, and the tiles number in the
-  // order they are read. The sort is stable, so the rest keep their order.
+  // grid on a desktop and the stack on a phone. The sort is stable, so the
+  // rest keep their order.
   const deckStudies = studies
     .filter((s) => s.onDeck !== false)
     .sort((a, b) => Number(b.feature === true) - Number(a.feature === true));
@@ -131,7 +139,7 @@ export function Deck({
         <Tile
           key={study.slug}
           label={study.name}
-          index={`0${i + 1}`}
+          index={indexes[`/work/${study.slug}`]}
           href={`/work/${study.slug}`}
           cta="Case study"
           className={[
@@ -296,7 +304,7 @@ export function Deck({
 
         <Tile
           label="AutoTrader.ca — AutoSync"
-          index="04"
+          index={indexes["/autotrader"]}
           href="/autotrader"
           cta="Read"
           className="lg:col-start-1 lg:col-end-5 lg:row-start-5 lg:row-end-9"
@@ -360,7 +368,7 @@ export function Deck({
         */}
         <Tile
           label="History"
-          index="05"
+          index={indexes["/history"]}
           href="/history"
           cta="Track record"
           className="lg:col-start-5 lg:col-end-8 lg:row-start-5 lg:row-end-7"
@@ -382,7 +390,7 @@ export function Deck({
 
         <Tile
           label="How I use AI"
-          index="06"
+          index={indexes["/standard"]}
           href="/standard"
           cta="How it works"
           className="lg:col-start-8 lg:col-end-13 lg:row-start-5 lg:row-end-7"
@@ -418,7 +426,7 @@ export function Deck({
             of the row beneath History and How I use AI. */}
         <Tile
           label="Open gaps"
-          index="07"
+          index={indexes["/gaps"]}
           href="/gaps"
           cta={`All ${COUNT_WORDS[gaps.length] ?? gaps.length}`}
           className="bg-sunk lg:col-start-5 lg:col-end-13 lg:row-start-7 lg:row-end-9"

@@ -10,16 +10,18 @@ import {
   getSkillMarquee,
   getTrackRecord,
 } from "@/lib/content/practice";
+import { getReadingOrder } from "@/lib/content/navigation";
 import { getCaseStudies } from "@/lib/content/work";
 import { buildPersonJsonLd } from "@/lib/seo";
 
 export default async function HomePage() {
-  const [studies, gaps, skills, roles, principles] = await Promise.all([
+  const [studies, gaps, skills, roles, principles, pages] = await Promise.all([
     getCaseStudies(),
     getGaps(),
     getSkillMarquee(),
     getTrackRecord(),
     getPrinciples(),
+    getReadingOrder(),
   ]);
 
   return (
@@ -37,6 +39,7 @@ export default async function HomePage() {
         historyLede={HISTORY_LEDE}
         historyRolesCount={roles.length}
         historyPrinciplesCount={principles.length}
+        indexes={Object.fromEntries(pages.map((p) => [p.href, p.index]))}
       />
     </>
   );

@@ -27,6 +27,8 @@
  *    Under reduced motion no page is fetched or panned, and with Save-Data on
  *    no page is fetched for being scrolled past.
  *  - A screenshot the deck hides at its width is never fetched.
+ *  - The reading path: the rail's order, every page's hero number, every deck
+ *    tile's number and every page's "next" agree, AutoTrader.ca first.
  *  - A case study's screen recording fetches nothing until seen, plays in view,
  *    keeps a reader's pause, and never starts itself under reduced motion or
  *    Save-Data.
@@ -403,6 +405,54 @@ try {
       );
     }
     await page.close();
+  }
+
+  // ── the reading path ────────────────────────────────────────────────────
+  // The rail's order is the site's: AutoTrader.ca and its pages first, then
+  // the studio's, then the practice pages (owner's decision, 2026-09-26).
+  // Every page carries its rail number in its hero, a deck tile shows the
+  // number of the page it opens, and each page's close offers the next page
+  // in rail order — so a reader following "Next" walks the rail exactly.
+  {
+    const PATH = [
+      "/autotrader", "/work/tadvantage", "/work/mygarage", "/work/luxury-tax",
+      "/work/driftpilot", "/work/riflessi", "/history", "/standard", "/gaps",
+    ];
+    const number = (href) => String(PATH.indexOf(href) + 1).padStart(2, "0");
+
+    const page = await open("/", { width: 1440, height: 900 });
+    const rail = await page.evaluate(() =>
+      [...document.querySelectorAll('.rail nav[aria-label="Sections"] a[href]')]
+        .map((a) => a.getAttribute("href"))
+        .filter((href) => href !== "/"),
+    );
+    check(
+      JSON.stringify(rail) === JSON.stringify(PATH),
+      `rail runs AutoTrader.ca, its pages, the studio's, then practice (${rail.join(" ")})`,
+    );
+    const tiles = await page.evaluate(() =>
+      [...document.querySelectorAll("a.tile")].map((a) => [a.getAttribute("href"), a.querySelector(".chip")?.textContent.trim()]),
+    );
+    const misnumbered = tiles.filter(([href, n]) => n !== number(href));
+    check(
+      tiles.length === 7 && misnumbered.length === 0,
+      `every deck tile shows its page's rail number (${tiles.map(([h, n]) => `${n} ${h}`).join(", ")})`,
+    );
+    await page.close();
+
+    for (const [i, href] of PATH.entries()) {
+      const p = await open(href, { width: 1440, height: 900 });
+      const r = await p.evaluate(() => ({
+        hero: document.querySelector("#top .chip")?.textContent.trim(),
+        next: document.querySelector('nav[aria-label="Keep reading"] > a[href]')?.getAttribute("href") ?? null,
+      }));
+      const want = PATH[i + 1] ?? null;
+      check(
+        r.hero === number(href) && r.next === want,
+        `${href}: hero numbered ${r.hero} (want ${number(href)}), next ${r.next} (want ${want})`,
+      );
+      await p.close();
+    }
   }
 
   // ── a case study's screen recording ─────────────────────────────────────
