@@ -1,9 +1,9 @@
 import type { Metadata } from "next";
 
-import { CONTACT_HREF, LEDE, NAME, ROLE_TITLE } from "@/lib/content/profile";
+import { CONTACT_HREF, DESCRIPTION, NAME, ROLE_TITLE } from "@/lib/content/profile";
 
 export const SITE_NAME = `${NAME} — ${ROLE_TITLE}`;
-export const SITE_DESCRIPTION = LEDE;
+export const SITE_DESCRIPTION = DESCRIPTION;
 
 const SITE_URL_FALLBACK = "https://clintonramonida.ca";
 
