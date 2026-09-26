@@ -116,8 +116,9 @@ export function Figure({ stat, size = "md" }: { stat: Stat; size?: "sm" | "md" }
  * top, which is all the frame shows. The whole page is an <img> that is always
  * in the DOM but has no `src` until DeckPointer sees intent — a pointer or
  * keyboard focus on the tile, or on a phone the tile nearing the viewport —
- * and copies it in from `data-src`. It is always
- * there because an element switched in from `display: none` has no previous
+ * and copies it in from `data-src`. It stays hidden until that fetch
+ * arrives, since a sized image with no source draws a broken-image icon. It
+ * is always there because an element switched in from `display: none` has no previous
  * style to transition from, so the pan would jump rather than glide; and it
  * is not lazy-loaded because a lazy image in view loads anyway. The window is
  * a crop of the page's top, so the page lands exactly over it.

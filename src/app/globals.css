@@ -580,6 +580,14 @@
     transition: transform var(--duration-slow) var(--ease-out-quart);
   }
 
+  /* Hidden until its fetch has arrived. An image element with a size and no
+     source draws the browser's broken-image icon: Chrome put one in the
+     corner of every window until a hover gave it a page, and on a phone
+     saving data or reducing motion it would have stayed there for good. */
+  .tile-shot-image:not([data-loaded]) {
+    visibility: hidden;
+  }
+
   /*
     Hovered or keyboard-focused: pan down the whole page at a steady pace
     (--pan, set per image from its length). A short pause first, so a pointer

@@ -160,6 +160,15 @@ function loadPreview(tile: Element) {
 
 function load(img: HTMLImageElement) {
   if (!img.dataset.src) return;
+  // Shown once it has arrived (see .tile-shot-image). Until then the window
+  // beneath is the picture, and a fetch that fails leaves it that way.
+  img.addEventListener(
+    "load",
+    () => {
+      img.dataset.loaded = "true";
+    },
+    { once: true },
+  );
   const narrow = window.matchMedia(media.stacked).matches;
   const srcset = narrow ? img.dataset.srcsetNarrow : img.dataset.srcset;
   if (srcset) img.srcset = srcset;
