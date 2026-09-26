@@ -15,7 +15,8 @@ import { media } from "@/lib/design-tokens";
  *     scrolls past, so the signal is the tile coming within 300px of the
  *     viewport, and the lighter q75 encode is used. Nowhere the pan cannot
  *     run — reduced motion, or no scroll timelines on a phone — is a whole
- *     page fetched at all.
+ *     page fetched at all, nor on a phone whose reader has asked to save
+ *     data: scrolling past is not asking for a page the way hovering one is.
  *
  *  2. The tile cursor: a square that shatters into a grid, spreads, flies
  *     apart and settles back into one — after the image-hover cursor on
@@ -48,7 +49,7 @@ export function DeckPointer() {
       detachPointer?.();
       detachScroll?.();
       detachPointer = canPan.matches ? attach(deck, cursor, fine) : undefined;
-      detachScroll = scrollPan.matches && timelines ? loadNearViewport(deck) : undefined;
+      detachScroll = scrollPan.matches && timelines && !savingData() ? loadNearViewport(deck) : undefined;
     };
     sync();
     canPan.addEventListener("change", sync);
@@ -166,6 +167,16 @@ function load(img: HTMLImageElement) {
   delete img.dataset.src;
   delete img.dataset.srcset;
   delete img.dataset.srcsetNarrow;
+}
+
+/**
+ * Whether the reader has asked to save data: Save-Data, or the media feature
+ * where a browser ships it. The window then stays at its page's top. The CSS
+ * pan still runs, over an image with no source, which draws nothing.
+ */
+function savingData(): boolean {
+  const { connection } = navigator as Navigator & { connection?: { saveData?: boolean } };
+  return connection?.saveData === true || window.matchMedia("(prefers-reduced-data: reduce)").matches;
 }
 
 /** Phones: load each page as its tile comes within 300px of the viewport. */

@@ -24,6 +24,8 @@
  *    loads as it nears the viewport and pans as it scrolls past. The same at
  *    1023px, and at 1100px with a 20px default font, where the rem breakpoint
  *    still stacks the tiles: layout, pan and loader agree on where it ends.
+ *    Under reduced motion no page is fetched or panned, and with Save-Data on
+ *    no page is fetched for being scrolled past.
  *  - A screenshot the deck hides at its width is never fetched.
  *  - Under prefers-reduced-motion nothing loops or reveals.
  *  - Keyboard focus is visible inside every ink block. The ring is accent and
@@ -86,14 +88,16 @@ const check = (ok, what) => {
  * Hover and pointer come from the launch flags above; reduced motion is set
  * per page, so a check that needs it says so.
  */
-async function open(path, { width, height, reduced = false, font }) {
+async function open(path, { width, height, reduced = false, font, saveData = false }) {
   const page = await browser.newPage();
   await page.setViewport({ width, height });
-  // A reader's default font size, as a browser setting: rem media queries
-  // follow it, px ones do not.
-  if (font) {
+  // Two reader settings that live in the browser rather than the page: a
+  // default font size (rem media queries follow it, px ones do not), and
+  // Save-Data (navigator.connection.saveData).
+  if (font || saveData) {
     const cdp = await page.createCDPSession();
-    await cdp.send("Page.setFontSizes", { fontSizes: { standard: font } });
+    if (font) await cdp.send("Page.setFontSizes", { fontSizes: { standard: font } });
+    if (saveData) await cdp.send("Emulation.setDataSaverOverride", { dataSaverEnabled: true });
   }
   await page.emulateMediaFeatures([
     { name: "prefers-reduced-motion", value: reduced ? "reduce" : "no-preference" },
@@ -316,13 +320,14 @@ try {
   // breakpoint (64rem = 1280px there) still stacks the tiles. The layout
   // comes from the lg: utilities, the pan from globals.css and the loader
   // from DeckPointer; all three have to agree on where "stacked" ends.
-  for (const { width, height, font, reduced = false } of [
+  for (const { width, height, font, reduced = false, saveData = false } of [
     { width: 390, height: 844 },
     { width: 390, height: 844, reduced: true },
+    { width: 390, height: 844, saveData: true },
     { width: 1023, height: 800 },
     { width: 1100, height: 800, font: 20 },
   ]) {
-    const page = await open("/", { width, height, reduced, font });
+    const page = await open("/", { width, height, reduced, font, saveData });
     const at = `${width}px${font ? ` at a ${font}px default font` : ""}`;
     if (!reduced) {
       const profile = await page.evaluate(() => {
@@ -352,22 +357,30 @@ try {
     const state = () =>
       page.evaluate(() => {
         const img = document.querySelector(".tile-shot-frame img.tile-shot-image");
+        const top = document.querySelector(".tile-shot-frame img.tile-shot-window");
         return {
           loaded: Boolean(img.getAttribute("src")) && img.complete && img.naturalWidth > 0,
           y: Math.round(new DOMMatrix(getComputedStyle(img).transform).m42),
+          window: top.complete && top.naturalWidth > 0,
         };
       });
-    if (!reduced) {
+    if (!reduced && !saveData) {
       const panned = await becomes(page, () => {
         const img = document.querySelector(".tile-shot-frame img.tile-shot-image");
         return img.complete && img.naturalWidth > 0 && new DOMMatrix(getComputedStyle(img).transform).m42 < -20;
       });
       const s = await state();
       check(panned, `stacked (${at}): scrolling a tile loads its page and pans it (loaded ${s.loaded}, moved ${s.y}px)`);
-    } else {
+    } else if (reduced) {
       await new Promise((r) => setTimeout(r, 800));
       const s = await state();
       check(!s.loaded && s.y === 0, `stacked (${at}), reduced motion: no page fetch and no pan (loaded ${s.loaded}, moved ${s.y}px)`);
+    } else {
+      // Saving data: the window still shows the page's top; the page itself
+      // is never fetched for being scrolled past.
+      await new Promise((r) => setTimeout(r, 800));
+      const s = await state();
+      check(s.window && !s.loaded, `stacked (${at}), saving data: the window shows and no page is fetched (window ${s.window}, loaded ${s.loaded})`);
     }
     await page.close();
   }
