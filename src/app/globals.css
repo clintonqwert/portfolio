@@ -503,7 +503,9 @@
     height: var(--shot-h);
     min-height: 0;
     flex-shrink: 1;
-    overflow: hidden;
+    /* clip, not hidden: hidden would make the frame a scroll container,
+       which a view timeline would bind to instead of the page. */
+    overflow: clip;
     container-type: size;
     background-color: var(--color-sunk);
     outline: var(--surface-border) solid var(--color-line);
@@ -524,8 +526,46 @@
     height: auto;
   }
 
+  /*
+    Phones and tablets. The tiles stack full-width, so every work tile has
+    room for its window, sized to the tile's width rather than the desktop
+    formula. With no hover to hold, the reader's scroll drives the pan: the
+    frame names a view timeline, and the page runs top to bottom while the
+    window is fully on screen. Scroll-driven, so there is no script and no
+    listener; where the timeline is unsupported the window simply stays put,
+    showing the page's top.
+
+    (width < 64rem) is Tailwind's lg, and media.stacked in design-tokens.ts:
+    DeckPointer loads the pages on that constant, so the two must agree —
+    three sites here, one there. In rem, not px, so they move with the lg:
+    utilities for a reader with a larger default font.
+  */
+  @media (width < 64rem) {
+    .tile-shot-frame {
+      --shot-h: clamp(160px, 56vw, 300px);
+      view-timeline: --shot block;
+    }
+  }
+
+  @media (width < 64rem) and (prefers-reduced-motion: no-preference) {
+    @supports (animation-timeline: view()) {
+      .tile-shot-image {
+        animation: shot-scroll linear both;
+        animation-timeline: --shot;
+        animation-range: contain 0% contain 100%;
+      }
+    }
+  }
+
+  @keyframes shot-scroll {
+    to {
+      transform: translateY(calc(-100% + 100cqh));
+    }
+  }
+
   /* The whole page, laid exactly over the window (the window is a crop of
-     its top) and empty until DeckPointer gives it a source on intent. */
+     its top) and empty until DeckPointer gives it a source: on intent on the
+     desktop deck, as its tile nears the viewport on a phone. */
   .tile-shot-image {
     position: absolute;
     left: 0;
@@ -542,9 +582,10 @@
     (--pan, set per image from its length). A short pause first, so a pointer
     crossing the deck on its way somewhere else does not set every tile off.
     Hover-capable pointers only: on touch there is no hover, and a tap opens
-    the case study, which shows the page properly anyway.
+    the case study, which shows the page properly anyway. From lg only (see
+    media.stacked), so a narrow window with a mouse gets one pan, not two.
   */
-  @media (hover: hover) and (prefers-reduced-motion: no-preference) {
+  @media (width >= 64rem) and (hover: hover) and (prefers-reduced-motion: no-preference) {
     a.tile:hover .tile-shot-image,
     a.tile:focus-visible .tile-shot-image {
       transform: translateY(calc(-100% + 100cqh));
@@ -553,7 +594,7 @@
   }
 
   /*
-    The cursor over a deck tile (TileCursor): a square that shatters into a
+    The cursor over a deck tile (DeckPointer): a square that shatters into a
     4×4 grid, spreads, flies apart and settles back into one, on a 1.64s
     loop — the timing of the image-hover cursor on architech-template.
     Ink squares with a paper hairline, drawn as a drop-shadow on the group
@@ -763,13 +804,15 @@
     }
   }
 
+  /* Movement only. It used to fade up from 40% too, which left text in the
+     lower part of the screen below contrast while it was being read —
+     Lighthouse flagged the stack list on a phone. A rise without the fade
+     still reads as arriving, at full contrast throughout. */
   @keyframes rise {
     from {
-      opacity: 0.4;
       transform: translateY(14px);
     }
     to {
-      opacity: 1;
       transform: none;
     }
   }

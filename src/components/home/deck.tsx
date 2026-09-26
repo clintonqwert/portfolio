@@ -140,7 +140,7 @@ export function Deck({
             }
           >
             {/*
-              overflow-hidden here is load-bearing, not decoration: min-h-0
+              Clipping here is load-bearing, not decoration: min-h-0
               lets this box shrink below its content's natural size when the
               flex column is tight on room, but nothing clipped what spilled
               past the shrunk box — the sibling stats block below, positioned
@@ -157,7 +157,11 @@ export function Deck({
               a sentence boundary, which reads as the exact collision this
               is fixing rather than a graceful truncation.
             */}
-            <div className="flex min-h-0 flex-col overflow-hidden">
+            {/* overflow-clip, not -hidden: a hidden box is a scroll container,
+                and the phone pan's view timeline binds to the nearest one —
+                so the shot inside tracked a box that never scrolls, and never
+                moved. clip crops the same without becoming a scroller. */}
+            <div className="flex min-h-0 flex-col overflow-clip">
               {/* shrink-0: line-clamp sets overflow:hidden, which drops a
                   flex item's minimum height to zero — without this the
                   summary, not the screenshot, gave up the height and was
@@ -186,20 +190,21 @@ export function Deck({
               </ul>
 
               {/*
-                The work, shown rather than only linked. The shot shrinks to
+                The work, shown rather than only linked. On a phone the tiles
+                stack full-width, so every one has room and the shot pans as
+                it scrolls past. On the desktop deck the shot shrinks to
                 whatever height its cell has left (see TileShot), so the gates
-                below are about whether that is enough to be worth showing:
-                at 1440 only the feature cell has room, and the two narrow
-                cells not until 1680. Below those widths a shot would be a
-                sliver.
+                are about whether that is enough to be worth showing: at 1440
+                only the feature cell has room, and the two narrow cells not
+                until 1680. Between 1024 and those widths it would be a sliver.
               */}
               {previews[study.slug] ? (
                 <TileShot
                   preview={previews[study.slug]!}
                   className={
                     study.feature
-                      ? "mt-3 hidden wide:flex"
-                      : "mt-2 hidden wider:flex"
+                      ? "mt-3 flex lg:hidden wide:flex"
+                      : "mt-2 flex lg:hidden wider:flex"
                   }
                 />
               ) : null}
@@ -298,7 +303,7 @@ export function Deck({
           {previews.autotrader ? (
             <TileShot
               preview={previews.autotrader}
-              className="mt-3 hidden wider:flex"
+              className="mt-3 flex lg:hidden wider:flex"
             />
           ) : null}
 

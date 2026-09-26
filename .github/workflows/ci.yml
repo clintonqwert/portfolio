@@ -65,3 +65,12 @@ jobs:
         run: |
           npm install -g @lhci/cli@0.14.x
           lhci autorun
+
+      # The same budgets on a phone: Lighthouse's default mobile emulation
+      # (slow 4G, 4x CPU). Every run was desktop until #9, and three
+      # accessibility failures sat at 96 until a mobile run was done by hand.
+      # Floors sit a step under what #9 measured — / at 88–91 and LCP
+      # 3.5–3.9s, the case studies at 95–96 and 2.7–2.9s — so they catch a
+      # slide without failing on runner noise. Raise them as the numbers do.
+      - name: Lighthouse budgets (mobile)
+        run: lhci autorun --config=lighthouserc.mobile.json

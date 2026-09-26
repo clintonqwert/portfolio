@@ -67,7 +67,12 @@ and does not scroll: `body` is `overflow-hidden`, the deck is a 12×9 grid of
 From 1440px wide the work tiles carry a screenshot window: every window the
 same height (the room the most crowded tile has left, which grows with
 viewport height), onto a whole-page capture that pans down while the tile is
-hovered or focused — a scroll preview of the site. Over a tile the pointer
+hovered or focused — a scroll preview of the site. On a phone the tiles stack
+full-width, every work tile shows its window, and the page pans as the tile
+scrolls past (a CSS view timeline, no script; with Save-Data on, each window
+stays on the page's top and no whole page is fetched); the overview there
+also opens with the rail's profile — portrait, role, availability and contact
+links — which the slim mobile bar has no room for. Over a tile the pointer
 becomes a square that shatters and re-forms (after the image-hover cursor on
 architech-template.webflow.io, rebuilt in CSS); fine hover-capable pointers
 only, never under reduced motion. `check:behaviour` holds the equal heights,
@@ -211,7 +216,18 @@ on localhost; field data will come from Speed Insights after the first deploy.
 `lighthouserc.json` carries the ProjectOS budget: performance ≥ 0.95,
 accessibility ≥ 0.98, SEO ≥ 0.95, best practices ≥ 0.90, LCP < 1500 ms,
 CLS < 0.05, TBT < 150 ms, script < 260 kB. It runs in CI against a production
-build, median of three runs.
+build, three runs a page, each budget held against the best of the three
+(LHCI's default aggregation).
+
+`lighthouserc.mobile.json` runs `/`, `/work/riflessi` and `/gaps` under
+Lighthouse's default mobile emulation (slow 4G, 4× CPU), since every run was
+desktop until the first mobile one found three accessibility failures. Every
+page: accessibility ≥ 0.98, SEO ≥ 0.95, best practices ≥ 0.90, CLS < 0.05,
+TBT < 200 ms. Performance ≥ 0.85 and LCP < 4500 ms on `/`; ≥ 0.90 and
+< 3500 ms on the rest. Those two are floors a step under what was measured on
+2026-09-26 — `/` at 0.88–0.91 with LCP 3.5–3.9 s, the other two at 0.95–0.96
+and 2.7–2.9 s — to catch a slide without failing on runner noise. Raise them
+as the numbers improve.
 
 Fonts are self-hosted through `next/font`, which removes the only third-party
 request and reserves metrics so swapping in the real face causes no layout shift.

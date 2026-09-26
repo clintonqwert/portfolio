@@ -1,6 +1,7 @@
 import Image, { getImageProps } from "next/image";
 import Link from "next/link";
 
+import { media } from "@/lib/design-tokens";
 import { cn } from "@/lib/utils";
 import type { DeckPreview, Stat } from "@/types/content";
 
@@ -114,16 +115,18 @@ export function Figure({ stat, size = "md" }: { stat: Stat; size?: "sm" | "md" }
  * Two images, one on the other. At rest only the window loads: the page's
  * top, which is all the frame shows. The whole page is an <img> that is always
  * in the DOM but has no `src` until DeckPointer sees intent — a pointer or
- * keyboard focus on the tile — and copies it in from `data-src`. It is always
+ * keyboard focus on the tile, or on a phone the tile nearing the viewport —
+ * and copies it in from `data-src`. It is always
  * there because an element switched in from `display: none` has no previous
  * style to transition from, so the pan would jump rather than glide; and it
  * is not lazy-loaded because a lazy image in view loads anyway. The window is
  * a crop of the page's top, so the page lands exactly over it.
  *
- * The pan runs at a steady pace rather than a fixed duration: a long page
- * takes longer to pass than a short one, the way scrolling it would. It is a
- * hover and focus enhancement only — off under reduced motion and on touch,
- * where the whole page is never fetched at all.
+ * On the desktop deck the pan runs on hover or focus at a steady pace: a long
+ * page takes longer to pass than a short one, the way scrolling it would. On
+ * a phone there is no hover, so the page pans as the tile scrolls past — the
+ * reader's own scroll drives it (.tile-shot-frame's view timeline). Off under
+ * reduced motion either way, and then the whole page is never fetched.
  */
 export function TileShot({
   preview,
@@ -136,14 +139,19 @@ export function TileShot({
   // ~1.75s per image-width of page: about 230px/s through a 390px window.
   const pan = Math.min(10, Math.max(2.5, (page.height / page.width) * 1.75));
 
-  const { props: whole } = getImageProps({
+  const common = {
     src: page.src,
     alt: "",
     width: page.width,
     height: page.height,
     sizes: SHOT_SIZES,
-    quality: 90,
-  });
+  } as const;
+  const { props: whole } = getImageProps({ ...common, quality: 90 });
+  // Phones pan the page as it scrolls by rather than on a held hover, so it
+  // is passing, not studied: a lighter encode is the right trade there.
+  const {
+    props: { srcSet: narrowSrcSet },
+  } = getImageProps({ ...common, quality: 75 });
 
   return (
     <figure
@@ -158,6 +166,10 @@ export function TileShot({
           height={top.height}
           sizes={SHOT_SIZES}
           quality={90}
+          // Lazy, including the feature tile's: it is hidden at 1024–1439, and
+          // a hidden lazy image is never fetched. Eager measured no faster on
+          // a phone, where it is the first screen's largest paint — Lighthouse
+          // mobile on /, median of five: 3447ms lazy, 3485ms eager.
           className="tile-shot-window"
         />
         {/* The whole page, for the pan. No src until intent (see above); the
@@ -167,6 +179,7 @@ export function TileShot({
         <img
           data-src={whole.src}
           data-srcset={whole.srcSet}
+          data-srcset-narrow={narrowSrcSet}
           sizes={whole.sizes}
           width={whole.width}
           height={whole.height}
@@ -189,7 +202,8 @@ export function TileShot({
  * Widest window at each width — the AutoTrader tile's, ~450px at 1728 and
  * ~520px at 1920 — so no tile is handed a source narrower than it draws.
  * Undersizing this once upscaled an 800px image into a 904-device-pixel
- * window, which is most of what read as blur.
+ * window, which is most of what read as blur. Stacked, the window spans the
+ * tile, so it tracks the viewport; 56px under-counts the padding around it
+ * (64px), which errs toward the sharper source, never the softer one.
  */
-const SHOT_SIZES =
-  "(min-width: 2400px) 760px, (min-width: 1920px) 540px, (min-width: 1680px) 470px, 320px";
+const SHOT_SIZES = `${media.stacked} calc(100vw - 56px), (min-width: 2400px) 760px, (min-width: 1920px) 540px, (min-width: 1680px) 470px, 320px`;

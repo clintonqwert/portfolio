@@ -13,8 +13,17 @@ type Theme = "light" | "dark";
  * mirroring in an effect causes a cascading render, and would also drift if
  * anything else changed the attribute.
  *
- * The server snapshot is null: the server cannot know a stored preference, and
- * rendering a neutral label is more honest than guessing and hydrating wrong.
+ * The server cannot know the reader's theme (a stored choice, else the system
+ * setting), so its snapshot is light, the script's own fallback. The icon, the
+ * word and the name all follow it together, and hydration swaps all three at
+ * once for a reader on dark.
+ *
+ * The state is said once, in the name ("Dark theme — switch to light"), not
+ * also in aria-pressed. With both, a screen reader announced "Dark theme —
+ * switch to light, toggle button, pressed": the name naming an action and
+ * "pressed" a state, two answers to one question. A pressed toggle would need
+ * a name that never changes, and this one has to change — it starts with the
+ * word on screen (see the button).
  */
 function subscribe(onChange: () => void) {
   const observer = new MutationObserver(onChange);
@@ -28,7 +37,7 @@ function subscribe(onChange: () => void) {
 const getSnapshot = (): Theme =>
   document.documentElement.dataset.theme === "dark" ? "dark" : "light";
 
-const getServerSnapshot = (): null => null;
+const getServerSnapshot = (): Theme => "light";
 
 export function ThemeToggle({
   className,
@@ -55,14 +64,11 @@ export function ThemeToggle({
     <button
       type="button"
       onClick={toggle}
-      aria-pressed={theme === null ? undefined : isDark}
-      aria-label={
-        theme === null
-          ? "Toggle dark mode"
-          : isDark
-            ? "Switch to light mode"
-            : "Switch to dark mode"
-      }
+      // The name starts with the word on screen ("Dark"/"Light"), so a
+      // voice-control user can say what they see (WCAG 2.5.3, Label in
+      // Name). "Switch to light mode" under a visible "Dark" was flagged by
+      // Lighthouse on the mobile bar, the one place the word shows.
+      aria-label={isDark ? "Dark theme — switch to light" : "Light theme — switch to dark"}
       className={`inline-flex cursor-pointer items-center gap-2 rounded-sm px-2.5 py-1.5 font-mono text-3xs uppercase tracking-[0.08em] transition-colors duration-200 ${className ?? ""}`}
     >
       <svg
@@ -85,7 +91,7 @@ export function ThemeToggle({
       </svg>
       {/* Fixed width so the control does not resize when toggled; wide enough
           for "Light", which is the longer of the two labels. The icon-only
-          variant still carries the state in aria-label and aria-pressed. */}
+          variant still carries the state in its name. */}
       {iconOnly ? null : (
         <span className="w-[3.1rem] text-left">{isDark ? "Dark" : "Light"}</span>
       )}

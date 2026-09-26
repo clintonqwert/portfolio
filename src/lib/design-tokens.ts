@@ -113,6 +113,25 @@ export const duration = {
 } as const;
 
 /**
+ * Media conditions that script needs as well as CSS — read by matchMedia or
+ * written into an image's `sizes`, so spelled once here rather than in each.
+ *
+ * `stacked` is everything below Tailwind's `lg` (64rem), where the rail gives
+ * way to the slim bar and the deck's tiles stack: the phone profile card, and
+ * the screenshots that pan as they scroll past. In rem like every breakpoint
+ * on the site (see globals.css), so a reader with a larger default font gets
+ * this layout later, and the pan, its loader and the image sizes move with
+ * the lg: utilities instead of staying at 1024px while the layout does not.
+ *
+ * CSS cannot read a variable in a media query, so globals.css writes
+ * `(width < 64rem)` out where the pan needs it, each with a pointer back here.
+ * check:behaviour holds the two together, at a 20px default font as well.
+ */
+export const media = {
+  stacked: "(width < 64rem)",
+} as const;
+
+/**
  * Dark theme overrides. Mirrors the [data-theme="dark"] block in globals.css.
  * Desaturated navy surfaces rather than inverted values; the accent lifts
  * because the light-mode teal reads muddy on a dark surface.
