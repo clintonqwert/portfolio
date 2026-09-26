@@ -29,7 +29,11 @@ export function Tile({
   cta?: string;
 }) {
   const head = (
-    <div className="flex items-baseline justify-between gap-2 border-b border-line px-4 py-2">
+    // Head and body share one inset at every width, so a tile's text lines
+    // up under its own title — they were 16px and 12px, a visible 4px step.
+    // 12px up to 1280, where the narrow cells are ~200px and each pixel of
+    // inset re-wraps a stat label; 16px above, as in the spacing reference.
+    <div className="flex items-baseline justify-between gap-2 border-b border-line px-3 py-2 xl:px-4">
       <span className="label flex min-w-0 items-center gap-2 text-ink">
         {/* The counter block, from the reference's page marker: ink with the
             number knocked out, rather than a faint grey numeral. */}
@@ -61,7 +65,7 @@ export function Tile({
   const body = (
     <>
       {head}
-      <div className="flex min-h-0 flex-1 flex-col px-3 py-3">{children}</div>
+      <div className="flex min-h-0 flex-1 flex-col px-3 py-3 xl:px-4">{children}</div>
     </>
   );
 
@@ -135,7 +139,13 @@ export function TileShot({
           alt={image.alt}
           width={image.width}
           height={image.height}
-          sizes="(min-width: 1920px) 480px, 400px"
+          // Widest window at each width — the AutoTrader tile's, ~450px at
+          // 1728 and ~520px at 1920 — so no tile is handed a source narrower
+          // than it draws. Undersizing this once upscaled an 800px image
+          // into a 904-device-pixel window, which is most of what read as
+          // blur.
+          sizes="(min-width: 2400px) 760px, (min-width: 1920px) 540px, (min-width: 1680px) 470px, 320px"
+          quality={90}
           className="tile-shot-image"
         />
       </div>

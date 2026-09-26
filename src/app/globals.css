@@ -471,13 +471,14 @@
     pixel, and a single px value was either tiny on a large screen or too
     tall on a short one:
 
-      1440–1679 wide  only DriftPilot shows   room = 50dvh − 275px
-      >=1680 wide     all four; AutoTrader    room = 50dvh − 430px
+      1440–1679 wide  only DriftPilot shows   room = 50dvh − 277px
+      >=1680 wide     all four; AutoTrader    room = 50dvh − 432px
                       is the most crowded
 
     Those fit every measurement to the pixel (1440×800…1000, 1680×900…1200,
-    1800×1000, 1920×960…1200; 2560-wide screens have ~19px more). The
-    formulas below leave 2px of slack. The 48px floor keeps a window worth
+    1800×1000, 1920×960…1200; 2560-wide screens have ~19px more), re-taken
+    after the 16px tile gutters and insets went in, which cost every window
+    2px. The formulas below leave 2px of slack. The 48px floor keeps a window worth
     looking through; below it — a >=1680 viewport under ~956px tall — the
     frame's `min-height: 0` lets the most crowded tile's window shrink under
     the others rather than push the tile past its cell.
@@ -488,7 +489,7 @@
     drawn on top, where an inset shadow would sit hidden underneath it.
   */
   .tile-shot-frame {
-    --shot-h: clamp(48px, calc(50dvh - 277px), 360px);
+    --shot-h: clamp(48px, calc(50dvh - 279px), 360px);
     height: var(--shot-h);
     min-height: 0;
     flex-shrink: 1;
@@ -502,7 +503,7 @@
   /* --breakpoint-wider (105rem): where the three narrow tiles show theirs. */
   @media (min-width: 105rem) {
     .tile-shot-frame {
-      --shot-h: clamp(48px, calc(50dvh - 432px), 360px);
+      --shot-h: clamp(48px, calc(50dvh - 434px), 360px);
     }
   }
 
@@ -645,6 +646,18 @@
   .deck {
     display: grid;
     gap: calc(var(--spacing) * 3);
+  }
+
+  /*
+    16px gutters from 1280, where the deck has the room to spend on air
+    between tiles. At 1024 the same 4px more per gap cost ~28px across the
+    grid's eight rows, and the narrow case-study cells, which had two lines
+    of summary to spare, clipped by up to 19px. 12px there.
+  */
+  @media (min-width: 1280px) {
+    .deck {
+      gap: calc(var(--spacing) * 4);
+    }
   }
 
   @media (min-width: 1024px) {
