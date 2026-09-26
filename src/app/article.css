@@ -39,6 +39,10 @@
     The page's measure and gutter, shared by the hero, every chapter and the
     close so their edges line up the whole way down. Named for the drawing
     sheet a title block sits on.
+
+    Every width query in this file is Tailwind's own breakpoint
+    (theme(--breakpoint-*)), so these layouts switch where the lg: utilities
+    and the rail do, including for a reader with a larger default font.
   */
   .sheet {
     width: 100%;
@@ -47,13 +51,13 @@
     padding-inline: calc(var(--spacing) * 5);
   }
 
-  @media (min-width: 640px) {
+  @media (width >= theme(--breakpoint-sm)) {
     .sheet {
       padding-inline: calc(var(--spacing) * 8);
     }
   }
 
-  @media (min-width: 1024px) {
+  @media (width >= theme(--breakpoint-lg)) {
     .sheet {
       padding-inline: calc(var(--spacing) * 12);
     }
@@ -71,7 +75,7 @@
     min-height: calc(100svh - var(--bar-height));
   }
 
-  @media (min-width: 1024px) {
+  @media (width >= theme(--breakpoint-lg)) {
     .hero {
       min-height: 100dvh;
     }
@@ -89,12 +93,10 @@
     opacity is not counted as painted until it arrives, which would push
     Largest Contentful Paint back by the whole stagger.
   */
+  /* The face itself is .display-hero (globals.css), shared with the deck's
+     headline and tile titles; the capitals are the hero's alone. */
   .hero-title {
-    font-family: var(--font-display);
-    font-variation-settings: "wdth" 112;
-    font-weight: 500;
     text-transform: uppercase;
-    letter-spacing: -0.012em;
     line-height: 1.04;
   }
 
@@ -252,7 +254,7 @@
     margin-top: calc(var(--spacing) * 10);
   }
 
-  @media (min-width: 1024px) {
+  @media (width >= theme(--breakpoint-lg)) {
     .chapter-body {
       grid-template-columns: minmax(0, 4fr) minmax(0, 8fr);
       column-gap: calc(var(--spacing) * 12);
@@ -306,7 +308,7 @@
     counter-reset: step;
   }
 
-  @media (min-width: 768px) {
+  @media (width >= theme(--breakpoint-md)) {
     .flowchart {
       grid-auto-flow: column;
       grid-auto-columns: minmax(0, 1fr);
@@ -345,7 +347,7 @@
     transform-origin: top;
   }
 
-  @media (min-width: 768px) {
+  @media (width >= theme(--breakpoint-md)) {
     /* Rightward arrow across the gap between steps, with a drawn head. */
     .flowchart > li:not(:last-child)::after {
       left: 100%;
@@ -368,7 +370,7 @@
         animation-range: entry calc(30% + var(--i, 0) * 8%) entry calc(70% + var(--i, 0) * 8%);
       }
 
-      @media (min-width: 768px) {
+      @media (width >= theme(--breakpoint-md)) {
         .flowchart > li:not(:last-child)::after {
           animation-name: draw;
         }

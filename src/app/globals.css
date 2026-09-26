@@ -416,17 +416,27 @@
   }
 
   /*
-    The same face at normal width for running headlines. The deck's headline
-    is a full sentence, and setting that in expanded caps would shout rather
-    than speak — so the deck keeps it here, in sentence case.
+    The page heroes' face: the width axis at 112 and a medium weight, after
+    architech-template. The secondary-page hero (.hero-title in article.css)
+    sets it in capitals; the deck's headline and its tile titles share it by
+    the owner's decision on 2026-09-26, so the overview and the pages it
+    indexes speak in one voice.
 
-    The one deliberate exception is the secondary-page hero (.hero-title in
-    article.css): capitals at a medium weight, after architech-template, by
-    the owner's decision on 2026-09-25. It earns the caps by being the only
-    thing on its screen, set large with room around it; a sentence in caps
-    inside a dense dashboard is the case this rule is about. Recorded in
-    PRODUCT.md, so neither side gets "fixed" back.
+    The face is shared, the capitals are not. The deck's headline is a full
+    sentence, and a sentence in caps inside a dense dashboard would shout
+    rather than speak, so it stays in sentence case; the hero earns its caps
+    by being the only thing on its screen, set large with room around it
+    (2026-09-25). Recorded in PRODUCT.md, so neither gets "fixed" back.
   */
+  .display-hero {
+    font-family: var(--font-display);
+    font-variation-settings: "wdth" 112;
+    font-weight: 500;
+    letter-spacing: -0.012em;
+  }
+
+  /* The same family at near-normal width and bold, for running headlines
+     inside the pages: chapter titles, principles, roles. */
   .display-tight {
     font-family: var(--font-display);
     font-variation-settings: "wdth" 104;
@@ -440,28 +450,30 @@
     The rail has 78px of slack at a 768px viewport and 360px at 1050px, so a
     single size is either timid on a large screen or overflows a small one.
     These three steps were measured against that slack rather than chosen for
-    looking right in one window.
+    looking right in one window. In rem (760 / 900 / 1040px at the default
+    font), because the slack is what the rail's text leaves, and that text
+    grows with a reader's larger default font while a px step would not.
   */
   .portrait {
     width: 104px;
     height: 104px;
   }
 
-  @media (min-height: 760px) {
+  @media (height >= 47.5rem) {
     .portrait {
       width: 128px;
       height: 128px;
     }
   }
 
-  @media (min-height: 900px) {
+  @media (height >= 56.25rem) {
     .portrait {
       width: 168px;
       height: 168px;
     }
   }
 
-  @media (min-height: 1040px) {
+  @media (height >= 65rem) {
     .portrait {
       width: 203px;
       height: 203px;
@@ -512,8 +524,8 @@
     outline-offset: calc(var(--surface-border) * -1);
   }
 
-  /* --breakpoint-wider (105rem): where the three narrow tiles show theirs. */
-  @media (min-width: 105rem) {
+  /* wider: where the three narrow tiles show theirs. */
+  @media (width >= theme(--breakpoint-wider)) {
     .tile-shot-frame {
       --shot-h: clamp(48px, calc(50dvh - 434px), 360px);
     }
@@ -535,19 +547,20 @@
     listener; where the timeline is unsupported the window simply stays put,
     showing the page's top.
 
-    (width < 64rem) is Tailwind's lg, and media.stacked in design-tokens.ts:
-    DeckPointer loads the pages on that constant, so the two must agree —
-    three sites here, one there. In rem, not px, so they move with the lg:
-    utilities for a reader with a larger default font.
+    theme(--breakpoint-lg) is Tailwind's lg itself, resolved at build, so the
+    pan switches exactly where the lg: utilities do — for a reader with a
+    larger default font too. DeckPointer loads the pages on the same
+    breakpoint through media.stacked in design-tokens.ts, which check:tokens
+    holds to Tailwind's.
   */
-  @media (width < 64rem) {
+  @media (width < theme(--breakpoint-lg)) {
     .tile-shot-frame {
       --shot-h: clamp(160px, 56vw, 300px);
       view-timeline: --shot block;
     }
   }
 
-  @media (width < 64rem) and (prefers-reduced-motion: no-preference) {
+  @media (width < theme(--breakpoint-lg)) and (prefers-reduced-motion: no-preference) {
     @supports (animation-timeline: view()) {
       .tile-shot-image {
         animation: shot-scroll linear both;
@@ -577,6 +590,14 @@
     transition: transform var(--duration-slow) var(--ease-out-quart);
   }
 
+  /* Hidden until its fetch has arrived. An image element with a size and no
+     source draws the browser's broken-image icon: Chrome put one in the
+     corner of every window until a hover gave it a page, and on a phone
+     saving data or reducing motion it would have stayed there for good. */
+  .tile-shot-image:not([data-loaded]) {
+    visibility: hidden;
+  }
+
   /*
     Hovered or keyboard-focused: pan down the whole page at a steady pace
     (--pan, set per image from its length). A short pause first, so a pointer
@@ -585,7 +606,7 @@
     the case study, which shows the page properly anyway. From lg only (see
     media.stacked), so a narrow window with a mouse gets one pan, not two.
   */
-  @media (width >= 64rem) and (hover: hover) and (prefers-reduced-motion: no-preference) {
+  @media (width >= theme(--breakpoint-lg)) and (hover: hover) and (prefers-reduced-motion: no-preference) {
     a.tile:hover .tile-shot-image,
     a.tile:focus-visible .tile-shot-image {
       transform: translateY(calc(-100% + 100cqh));
@@ -777,7 +798,9 @@
     min-width: 0;
   }
 
-  @media (max-width: 900px) {
+  /* 56.25rem: 900px at the default font, and later for a larger one, where
+     the 148px label column holds less of each label. */
+  @media (width <= 56.25rem) {
     .datagrid {
       grid-template-columns: 1fr;
       gap: 12px;
@@ -823,6 +846,11 @@
     The dashboard occupies exactly one viewport at >=1024px and never scrolls.
     Below that the tiles stack and the page scrolls normally — forcing a single
     viewport onto a phone means either three tiles or unreadable type.
+
+    Every query here is Tailwind's own breakpoint (theme(--breakpoint-*)),
+    because the tiles' spans are lg: utilities. When the grid was switched on
+    at a px 1024 instead, a reader with a 20px default font got a 12-column
+    grid at 1100px under a page Tailwind had stacked: twelve 77px tiles.
   */
   .deck {
     display: grid;
@@ -835,13 +863,13 @@
     grid's eight rows, and the narrow case-study cells, which had two lines
     of summary to spare, clipped by up to 19px. 12px there.
   */
-  @media (min-width: 1280px) {
+  @media (width >= theme(--breakpoint-xl)) {
     .deck {
       gap: calc(var(--spacing) * 4);
     }
   }
 
-  @media (min-width: 1024px) {
+  @media (width >= theme(--breakpoint-lg)) {
     .deck {
       /* Fills whatever the headline and marquee leave, rather than assuming the
          viewport height itself — the bands above it are not fixed-height. */
@@ -863,8 +891,11 @@
     <main> already scrolls, so the deck stops being a fixed frame at a height
     where it cannot honestly be one. The no-scroll promise still holds wherever
     there is room to keep it.
+
+    47.5rem is 760px at the default font. A larger font needs more height for
+    the same eight rows, so the line moves with it.
   */
-  @media (min-width: 1024px) and (max-height: 759px) {
+  @media (width >= theme(--breakpoint-lg)) and (height < 47.5rem) {
     .deck {
       flex: none;
       grid-auto-rows: minmax(min-content, 1fr);

@@ -86,11 +86,13 @@ actually cannot verify from code.
    opens is a document: a hero that answers what, why and how to check it,
    then chapters at reading size with the room to be read. Motion there
    serves orientation — where you are, that there is more — and never
-   performance for its own sake. The two layers are set differently on
+   performance for its own sake. The two layers share one headline face —
+   Archivo widened, at a medium weight, after architech-template, whose
+   cursor and scroll cue the site also borrows — on the hero, the deck's
+   headline and its tile titles (2026-09-26). They differ in case on
    purpose: the deck's headline stays in sentence case, while a secondary
-   page's hero headline is set in capitals at a medium weight, alone on its
-   screen with room around it (a decision of 2026-09-25, after
-   architech-template, whose cursor and scroll cue the site also borrows).
+   page's hero headline is set in capitals, alone on its screen with room
+   around it (2026-09-25).
 4. **The gaps are load-bearing.** Weaknesses are published in the same visual
    register as strengths. Never soften, hide, or visually demote them.
 5. **Identity preservation — monochrome.** The palette is chroma 0 in both

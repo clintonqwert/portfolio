@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 /**
- * Fail the build when the two copies of the palette disagree.
+ * Fail the build when the two copies of the palette disagree, or when the
+ * breakpoints script mirrors stop matching Tailwind's.
  *
  * The palette lives twice: as CSS custom properties in src/app/globals.css, and
  * as a typed module in src/lib/design-tokens.ts. CLAUDE.md says to change both
@@ -75,8 +76,42 @@ for (const [label, fromCss, fromTs] of [
   }
 }
 
+/*
+  The breakpoints script uses. CSS reads Tailwind's own through
+  theme(--breakpoint-*), but a `sizes` attribute or a matchMedia cannot, so
+  design-tokens.ts mirrors the ones they need. Compared against Tailwind's
+  defaults as overridden or extended by globals.css' @theme — the values the
+  lg: utilities actually compile to.
+*/
+{
+  const declared = (src) =>
+    Object.fromEntries(
+      [...src.matchAll(/--breakpoint-([\w-]+):\s*([\d.]+rem)/g)].map(([, k, v]) => [k, v]),
+    );
+  const tailwind = {
+    ...declared(readFileSync("node_modules/tailwindcss/theme.css", "utf8")),
+    ...declared(css),
+  };
+  const from = ts.indexOf("export const breakpoints");
+  if (from === -1) throw new Error("object not found: breakpoints");
+  const body = ts.slice(from, ts.indexOf("\n} as const;", from));
+  const mirrored = [...body.matchAll(/(\w+):\s*"([\d.]+rem)"/g)];
+  if (mirrored.length === 0) throw new Error("no breakpoints parsed from design-tokens.ts");
+
+  const bad = mirrored
+    .filter(([, name, value]) => tailwind[name] !== value)
+    .map(([, name, value]) => `${name}: ts ${value} vs tailwind ${tailwind[name] ?? "(none)"}`);
+  if (bad.length === 0) {
+    console.log(`PASS | breakpoints ${mirrored.length} match Tailwind's`);
+  } else {
+    failures += bad.length;
+    console.error("FAIL | breakpoints disagree with Tailwind's:");
+    for (const line of bad) console.error(`     | ${line}`);
+  }
+}
+
 if (failures > 0) {
   console.error(`\nFAILED: ${failures} token mismatch(es) — change both files together`);
   process.exit(1);
 }
-console.log("\nPALETTE MIRRORS MATCH");
+console.log("\nPALETTE AND BREAKPOINT MIRRORS MATCH");

@@ -42,7 +42,7 @@ export function Tile({
             {index}
           </span>
         ) : null}
-        <span className="display truncate tracking-[0.08em]">{label}</span>
+        <span className="display-hero truncate tracking-[0.08em]">{label}</span>
       </span>
       {cta ? (
         <span className="meta flex shrink-0 items-center gap-1 text-faint transition-colors duration-[var(--duration-fast)] ease-[var(--ease-out-quart)] group-hover:text-accent">
@@ -116,8 +116,9 @@ export function Figure({ stat, size = "md" }: { stat: Stat; size?: "sm" | "md" }
  * top, which is all the frame shows. The whole page is an <img> that is always
  * in the DOM but has no `src` until DeckPointer sees intent — a pointer or
  * keyboard focus on the tile, or on a phone the tile nearing the viewport —
- * and copies it in from `data-src`. It is always
- * there because an element switched in from `display: none` has no previous
+ * and copies it in from `data-src`. It stays hidden until that fetch
+ * arrives, since a sized image with no source draws a broken-image icon. It
+ * is always there because an element switched in from `display: none` has no previous
  * style to transition from, so the pan would jump rather than glide; and it
  * is not lazy-loaded because a lazy image in view loads anyway. The window is
  * a crop of the page's top, so the page lands exactly over it.
@@ -205,5 +206,11 @@ export function TileShot({
  * window, which is most of what read as blur. Stacked, the window spans the
  * tile, so it tracks the viewport; 56px under-counts the padding around it
  * (64px), which errs toward the sharper source, never the softer one.
+ *
+ * Only the first entry is a breakpoint, so only it follows the font. The px
+ * ones stay px: each says how wide a window draws at a viewport width, which
+ * the grid decides in pixels. Measured at a 20px default font, every window
+ * still gets its drawn width or more, bar 4% on the AutoTrader window at
+ * 2100px — a gap between the 1920 and 2400 entries at any font size.
  */
 const SHOT_SIZES = `${media.stacked} calc(100vw - 56px), (min-width: 2400px) 760px, (min-width: 1920px) 540px, (min-width: 1680px) 470px, 320px`;

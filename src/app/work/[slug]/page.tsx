@@ -13,7 +13,7 @@ import {
   chapterNumber,
   passageRefs,
 } from "@/components/shared/passage-chapters";
-import { Shot } from "@/components/shared/shot";
+import { HERO_SIZES, Shot } from "@/components/shared/shot";
 import { StackList } from "@/components/case-study/stack-list";
 import { WORK_IMAGES } from "@/lib/content/assets";
 import { getPagePosition } from "@/lib/content/navigation";
@@ -141,7 +141,7 @@ export default async function CaseStudyPage({
               <Shot
                 image={shot}
                 figure="01"
-                sizes="(min-width: 1280px) 560px, (min-width: 1024px) calc(100vw - 332px), 100vw"
+                sizes={HERO_SIZES}
                 hero
               />
             ) : undefined

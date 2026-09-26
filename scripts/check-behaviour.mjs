@@ -175,11 +175,17 @@ try {
 
     const rest = await page.evaluate(() => ({
       pages: [...document.querySelectorAll("img.tile-shot-image")].filter((i) => i.getAttribute("src")).length,
+      // A sized image with no source draws a broken-image icon; at rest the
+      // page image must draw nothing at all over its window.
+      drawn: [...document.querySelectorAll(".tile-shot-frame")]
+        .filter((f) => f.offsetParent !== null)
+        .filter((f) => getComputedStyle(f.querySelector("img.tile-shot-image")).visibility !== "hidden").length,
       shards: document
         .getAnimations()
         .filter((a) => a.animationName?.startsWith("shard") && a.playState === "running").length,
     }));
     check(rest.pages === 0, `deck ${width}x${height} fetches no whole-page preview at rest (${rest.pages} loaded)`);
+    check(rest.drawn === 0, `deck ${width}x${height} draws no empty page image over a window at rest (${rest.drawn} drawn)`);
     check(rest.shards === 0, `deck ${width}x${height} runs no cursor animation at rest (${rest.shards} running)`);
 
     if (width === 1920) {
@@ -210,9 +216,12 @@ try {
 
       const loaded = await becomes(page, () => {
         const img = document.querySelector('a.tile[href="/work/tadvantage"] img.tile-shot-image');
-        return img?.getAttribute("src") && img.complete && img.naturalWidth > 0;
+        return (
+          img?.getAttribute("src") && img.complete && img.naturalWidth > 0 &&
+          getComputedStyle(img).visibility === "visible"
+        );
       });
-      check(loaded, "hovering a deck tile fetches its whole-page preview");
+      check(loaded, "hovering a deck tile fetches its whole-page preview and shows it once it arrives");
 
       // The tile cursor: on, following, running its loop, and the arrow kept.
       const box = await tile.boundingBox();
@@ -362,12 +371,16 @@ try {
           loaded: Boolean(img.getAttribute("src")) && img.complete && img.naturalWidth > 0,
           y: Math.round(new DOMMatrix(getComputedStyle(img).transform).m42),
           window: top.complete && top.naturalWidth > 0,
+          hidden: getComputedStyle(img).visibility === "hidden",
         };
       });
     if (!reduced && !saveData) {
       const panned = await becomes(page, () => {
         const img = document.querySelector(".tile-shot-frame img.tile-shot-image");
-        return img.complete && img.naturalWidth > 0 && new DOMMatrix(getComputedStyle(img).transform).m42 < -20;
+        return (
+          img.complete && img.naturalWidth > 0 && getComputedStyle(img).visibility === "visible" &&
+          new DOMMatrix(getComputedStyle(img).transform).m42 < -20
+        );
       });
       const s = await state();
       check(panned, `stacked (${at}): scrolling a tile loads its page and pans it (loaded ${s.loaded}, moved ${s.y}px)`);
@@ -375,12 +388,16 @@ try {
       await new Promise((r) => setTimeout(r, 800));
       const s = await state();
       check(!s.loaded && s.y === 0, `stacked (${at}), reduced motion: no page fetch and no pan (loaded ${s.loaded}, moved ${s.y}px)`);
+      check(s.hidden, `stacked (${at}), reduced motion: the unfetched page image draws nothing (hidden ${s.hidden})`);
     } else {
       // Saving data: the window still shows the page's top; the page itself
       // is never fetched for being scrolled past.
       await new Promise((r) => setTimeout(r, 800));
       const s = await state();
-      check(s.window && !s.loaded, `stacked (${at}), saving data: the window shows and no page is fetched (window ${s.window}, loaded ${s.loaded})`);
+      check(
+        s.window && !s.loaded && s.hidden,
+        `stacked (${at}), saving data: the window shows, no page is fetched, and the empty page image draws nothing (window ${s.window}, loaded ${s.loaded}, hidden ${s.hidden})`,
+      );
     }
     await page.close();
   }

@@ -102,7 +102,7 @@ export function PageHero({
               id="page-title"
               aria-label={title}
               className={cn(
-                "hero-title mt-5 text-ink",
+                "display-hero hero-title mt-5 text-ink",
                 media
                   ? "text-[clamp(2rem,3.4vw,3.4rem)]"
                   : "max-w-[24ch] text-[clamp(2.25rem,4.4vw,4.25rem)]",

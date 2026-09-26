@@ -113,22 +113,32 @@ export const duration = {
 } as const;
 
 /**
- * Media conditions that script needs as well as CSS — read by matchMedia or
- * written into an image's `sizes`, so spelled once here rather than in each.
+ * Tailwind's breakpoints, for script. CSS reads them from Tailwind itself —
+ * `@media (width >= theme(--breakpoint-lg))` resolves at build — but script
+ * cannot: an image's `sizes` is rendered on the server, and matchMedia wants
+ * a string. So the ones script uses are mirrored here, and check:tokens fails
+ * the build if they stop matching Tailwind's.
  *
- * `stacked` is everything below Tailwind's `lg` (64rem), where the rail gives
- * way to the slim bar and the deck's tiles stack: the phone profile card, and
- * the screenshots that pan as they scroll past. In rem like every breakpoint
- * on the site (see globals.css), so a reader with a larger default font gets
- * this layout later, and the pan, its loader and the image sizes move with
- * the lg: utilities instead of staying at 1024px while the layout does not.
- *
- * CSS cannot read a variable in a media query, so globals.css writes
- * `(width < 64rem)` out where the pan needs it, each with a pointer back here.
- * check:behaviour holds the two together, at a 20px default font as well.
+ * In rem, like every breakpoint on the site (see globals.css): a reader with a
+ * larger default font reaches each one later, and a `sizes` or a matchMedia
+ * written in px would describe a layout the page is no longer in.
+ */
+export const breakpoints = {
+  /** The rail appears and the deck becomes a grid. */
+  lg: "64rem",
+  /** A case-study hero sets its shot beside the title. */
+  xl: "80rem",
+} as const;
+
+/**
+ * Media conditions built from them. `stacked` is everything below lg, where
+ * the rail gives way to the slim bar and the deck's tiles stack: the phone
+ * profile card, and the screenshots that pan as they scroll past.
  */
 export const media = {
-  stacked: "(width < 64rem)",
+  stacked: `(width < ${breakpoints.lg})`,
+  lg: `(width >= ${breakpoints.lg})`,
+  xl: `(width >= ${breakpoints.xl})`,
 } as const;
 
 /**

@@ -5,7 +5,7 @@ import { PageClose } from "@/components/layout/page-close";
 import { JsonLd } from "@/components/shared/json-ld";
 import { PageHero } from "@/components/layout/page-hero";
 import { PassageChapters, passageRefs } from "@/components/shared/passage-chapters";
-import { Shot } from "@/components/shared/shot";
+import { HERO_SIZES, Shot } from "@/components/shared/shot";
 import { AUTOSYNC_IMAGE } from "@/lib/content/assets";
 import { AUTOTRADER_LEDE, AUTOTRADER_RAIL, getAutoTraderPassages } from "@/lib/content/experience";
 import { getPagePosition } from "@/lib/content/navigation";
@@ -52,7 +52,7 @@ export default async function AutoTraderPage() {
           <Shot
             image={AUTOSYNC_IMAGE}
             figure="01"
-            sizes="(min-width: 1280px) 560px, (min-width: 1024px) calc(100vw - 332px), 100vw"
+            sizes={HERO_SIZES}
             hero
           />
         }

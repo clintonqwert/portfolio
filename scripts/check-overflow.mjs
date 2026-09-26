@@ -52,6 +52,15 @@ const VIEWPORTS = [
   // and at this height the rail was hiding two of its five contact links.
   { name: "1440x700", width: 1440, height: 700 },
   { name: "375x812", width: 375, height: 812 },
+  // A reader who has raised their browser's default font size, here to 20px
+  // (125%). Every breakpoint follows it, being rem, so the same widths land
+  // in different layouts: 1100 is below lg (64rem = 1280px) and stacks, and
+  // 1440x900 is a short desktop window (under 47.5rem = 950px tall). Media
+  // queries written in px once ignored it and put a desktop grid under a
+  // stacked page. The text is a quarter larger, so tiles fit or clip anew.
+  { name: "1100x800 at 20px", width: 1100, height: 800, font: 20 },
+  { name: "1440x900 at 20px", width: 1440, height: 900, font: 20 },
+  { name: "1920x1080 at 20px", width: 1920, height: 1080, font: 20 },
 ];
 
 const browser = await puppeteer.launch({
@@ -74,9 +83,13 @@ try {
     else r.continue().catch(() => {});
   });
 
+  // The default font size is a browser setting, not a page one: CDP sets it.
+  const cdp = await page.createCDPSession();
+
   for (const vp of VIEWPORTS) {
     console.log(`── ${vp.name} ──`);
     await page.setViewport({ width: vp.width, height: vp.height });
+    await cdp.send("Page.setFontSizes", { fontSizes: { standard: vp.font ?? 16 } });
 
     for (const route of ROUTES) {
       await page.goto(`${ORIGIN}${route}`, { waitUntil: "load", timeout: 30000 });
