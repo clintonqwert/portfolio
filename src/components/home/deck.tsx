@@ -201,7 +201,6 @@ export function Deck({
               {previews[study.slug] ? (
                 <TileShot
                   preview={previews[study.slug]!}
-                  priority={study.feature === true}
                   className={
                     study.feature
                       ? "mt-3 flex lg:hidden wide:flex"

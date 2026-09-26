@@ -114,7 +114,8 @@ export function Figure({ stat, size = "md" }: { stat: Stat; size?: "sm" | "md" }
  * Two images, one on the other. At rest only the window loads: the page's
  * top, which is all the frame shows. The whole page is an <img> that is always
  * in the DOM but has no `src` until DeckPointer sees intent — a pointer or
- * keyboard focus on the tile — and copies it in from `data-src`. It is always
+ * keyboard focus on the tile, or on a phone the tile nearing the viewport —
+ * and copies it in from `data-src`. It is always
  * there because an element switched in from `display: none` has no previous
  * style to transition from, so the pan would jump rather than glide; and it
  * is not lazy-loaded because a lazy image in view loads anyway. The window is
@@ -129,18 +130,9 @@ export function Figure({ stat, size = "md" }: { stat: Stat; size?: "sm" | "md" }
 export function TileShot({
   preview,
   className,
-  priority = false,
 }: {
   preview: DeckPreview;
   className?: string;
-  /**
-   * Fetch the window at once, not lazily. For the first work tile: on a phone
-   * its window is in the first screen and the largest paint there, and a lazy
-   * image waits for layout before it even asks — mobile LCP went to 3.4s
-   * until it stopped waiting. The price is ~40 kB fetched for nothing at
-   * 1024–1439, the one band where this tile hides its shot.
-   */
-  priority?: boolean;
 }) {
   const { window: top, page } = preview;
   // ~1.75s per image-width of page: about 230px/s through a 390px window.
@@ -173,8 +165,10 @@ export function TileShot({
           height={top.height}
           sizes={SHOT_SIZES}
           quality={90}
-          loading={priority ? "eager" : "lazy"}
-          fetchPriority={priority ? "high" : undefined}
+          // Lazy, including the feature tile's: it is hidden at 1024–1439, and
+          // a hidden lazy image is never fetched. Eager measured no faster on
+          // a phone, where it is the first screen's largest paint — Lighthouse
+          // mobile on /, median of five: 3447ms lazy, 3485ms eager.
           className="tile-shot-window"
         />
         {/* The whole page, for the pan. No src until intent (see above); the

@@ -129,6 +129,21 @@ try {
     });
     check(r.main <= 1 && r.doc <= 1, `deck ${width}x${height} does not scroll (main +${r.main}px, page +${r.doc}px)`);
     check(r.chrome === 0, `deck ${width}x${height} has no scroll cue or chapter bar`);
+
+    // A shot the deck hides at this width costs nothing. The feature tile's
+    // window was once fetched eagerly, and so fetched at 1024–1439 for a
+    // cell that never shows it. Negative, so it waits out a settle first.
+    await new Promise((r) => setTimeout(r, 500));
+    const wasted = await page.evaluate(() => {
+      const fetched = performance.getEntriesByType("resource").map((e) => e.name);
+      return [...document.querySelectorAll(".tile-shot-frame")]
+        .filter((f) => f.offsetParent === null)
+        .flatMap((f) => [...f.querySelectorAll("img")])
+        .map((img) => (img.getAttribute("srcset") ?? img.dataset.srcset ?? "").match(/url=([^&]+)/)?.[1])
+        .filter((url) => url && fetched.some((name) => name.includes(`url=${url}&`)))
+        .map((url) => decodeURIComponent(url));
+    });
+    check(wasted.length === 0, `deck ${width}x${height} fetches no hidden screenshot (${wasted.join(", ") || "none"})`);
     await page.close();
   }
 

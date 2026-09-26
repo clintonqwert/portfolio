@@ -526,8 +526,6 @@
     height: auto;
   }
 
-  /* The whole page, laid exactly over the window (the window is a crop of
-     its top) and empty until DeckPointer gives it a source on intent. */
   /*
     Phones and tablets. The tiles stack full-width, so every work tile has
     room for its window, sized to the tile's width rather than the desktop
@@ -560,6 +558,9 @@
     }
   }
 
+  /* The whole page, laid exactly over the window (the window is a crop of
+     its top) and empty until DeckPointer gives it a source: on intent on the
+     desktop deck, as its tile nears the viewport on a phone. */
   .tile-shot-image {
     position: absolute;
     left: 0;
@@ -587,7 +588,7 @@
   }
 
   /*
-    The cursor over a deck tile (TileCursor): a square that shatters into a
+    The cursor over a deck tile (DeckPointer): a square that shatters into a
     4×4 grid, spreads, flies apart and settles back into one, on a 1.64s
     loop — the timing of the image-hover cursor on architech-template.
     Ink squares with a paper hairline, drawn as a drop-shadow on the group
