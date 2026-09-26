@@ -81,7 +81,20 @@ export function Tile({
 }
 
 /** Compact figure used inside tiles. */
-export function Figure({ stat, size = "md" }: { stat: Stat; size?: "sm" | "md" }) {
+export function Figure({
+  stat,
+  size = "md",
+  lines = 2,
+}: {
+  stat: Stat;
+  size?: "sm" | "md";
+  /**
+   * How many lines the label may take before its ellipsis. Two holds most
+   * cells; a label that carries the claim itself — "#1 of 100+ engineers" —
+   * gets three where its cell is narrow, rather than losing its point.
+   */
+  lines?: 2 | 3;
+}) {
   return (
     <div className="min-w-0">
       <div
@@ -94,7 +107,7 @@ export function Figure({ stat, size = "md" }: { stat: Stat; size?: "sm" | "md" }
       </div>
       {/* Clamped rather than truncated: at narrow widths a single line cut the
           labels to "PRERENDERED ROU…". Two lines still cannot overflow a cell. */}
-      <div className="figure-label mt-0.5 line-clamp-2 text-faint">
+      <div className={cn("figure-label mt-0.5 text-faint", lines === 3 ? "line-clamp-3" : "line-clamp-2")}>
         {stat.label}
       </div>
     </div>

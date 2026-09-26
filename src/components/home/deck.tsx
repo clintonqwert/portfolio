@@ -135,6 +135,70 @@ export function Deck({
 
         {/* ── main ─────────────────────────────────────────────────────── */}
         <div className="deck min-h-0 flex-1 p-2 lg:[grid-template-rows:repeat(8,minmax(0,1fr))]">
+        {/*
+          The grid reads in the rail's order, 01 to 09, left to right and down
+          (owner's decision, 2026-09-26): AutoTrader.ca opens the top row with
+          the platform's case study beside it, and the markup runs in the same
+          order, so a phone stacks the tiles as the rail lists their pages.
+        */}
+        <Tile
+          label="AutoTrader.ca — AutoSync"
+          index={indexes["/autotrader"]}
+          href="/autotrader"
+          cta="Read"
+          className="lg:col-start-1 lg:col-end-5 lg:row-start-1 lg:row-end-5"
+        >
+          {/* Clamped below 1440, where this cell is ~250px wide and the lede
+              runs to eleven lines. The ellipsis and the Read link together say
+              there is more, which silent clipping did not. */}
+          <p className="line-clamp-3 shrink-0 text-md leading-snug text-muted xl:line-clamp-4 wider:line-clamp-5">
+            {autoTraderLede}
+          </p>
+          <ul className="mt-3 hidden flex-wrap gap-x-3 gap-y-0.5 meta text-faint xl:flex">
+            {["Vue", "Node.js", "PHP", "MySQL", "Redis", "AWS"].map((tech) => (
+              <li key={tech}>{tech}</li>
+            ))}
+          </ul>
+          <ul className="mt-2 space-y-1 border-t border-line pt-2 text-xs leading-snug text-muted">
+            {/* At 1024 the cell is three lines shorter than the copy, and the
+                deck may not scroll. The last two points drop out there rather
+                than being clipped mid-sentence; all four are on /autotrader,
+                which the tile links to. */}
+            {AUTOTRADER_POINTS.map((point, i) => (
+              <li
+                key={point}
+                // Measured per width: two points fit at 1024, all four at 1440.
+                // No slice — the array is exactly what ships, so adding a fifth
+                // point here shows up rather than silently disappearing.
+                className={`gap-2 ${i < 2 ? "flex" : "hidden wide:flex"}`}
+              >
+                <span aria-hidden="true" // 7px is optical, not rhythm: it centres a 3px dot on the first
+                  // line of 0.78rem text. Snapping it to the scale visibly
+                  // drops the dot below the cap height.
+                  className="mt-[7px] size-[3px] shrink-0 rounded-full bg-accent" />
+                {point}
+              </li>
+            ))}
+          </ul>
+          {/* autosyncmotors.com — the public demo of the platform these five
+              years were spent on. Gated like the others: this cell only has
+              room for a window worth showing from 1680. */}
+          {previews.autotrader ? (
+            <TileShot
+              preview={previews.autotrader}
+              className="mt-3 flex lg:hidden wider:flex"
+            />
+          ) : null}
+
+          <div className="mt-auto flex gap-4 border-t border-line pt-3">
+            <Figure stat={{ value: "5 yrs", label: "Jan 2020 – Jun 2025" }} size="sm" />
+            {/* "Observed": no dashboard figure exists for it, and /autotrader
+                says so. A stat that looks measured must not be one that was
+                only seen. */}
+            <Figure stat={{ value: "~0", label: "Observed downtime after rollout" }} size="sm" />
+          </div>
+        </Tile>
+
       {deckStudies.map((study, i) => (
         <Tile
           key={study.slug}
@@ -142,17 +206,19 @@ export function Deck({
           index={indexes[`/work/${study.slug}`]}
           href={`/work/${study.slug}`}
           cta="Case study"
-          className={[
-            // Variant cells: the feature study takes half the row with a
-            // two-column interior; the other two split the remainder. Equal
-            // cells would assert the three are equivalent, and they are not.
+          className={
+            // Variant cells: the feature study takes the widest cell, five
+            // columns with a two-column interior, beside AutoTrader.ca; the
+            // next closes the top row, and the third opens the bottom one.
+            // Equal cells would assert the three are equivalent, and they
+            // are not. It was six columns until AutoTrader.ca moved up beside
+            // it — twelve columns cannot hold 4 + 6 + 3.
             study.feature
-              ? "lg:col-start-1 lg:col-end-7"
+              ? "lg:col-start-5 lg:col-end-10 lg:row-start-1 lg:row-end-5"
               : i === 1
-                ? "lg:col-start-7 lg:col-end-10"
-                : "lg:col-start-10 lg:col-end-13",
-            "lg:row-start-1 lg:row-end-5",
-          ].join(" ")}
+                ? "lg:col-start-10 lg:col-end-13 lg:row-start-1 lg:row-end-5"
+                : "lg:col-start-1 lg:col-end-4 lg:row-start-5 lg:row-end-9"
+          }
         >
           {/* The wide cell splits into summary and data; the narrow cells
               stack them. Same content, proportioned to the room. */}
@@ -267,12 +333,13 @@ export function Deck({
                       <li
                         key={point}
                         // Measured per width against what the stats and the
-                        // note leave: none at 1024, one from 1280, three from
-                        // 1440, all five from 1680. They drop out whole rather
-                        // than being clipped mid-sentence, and every one is on
-                        // the case study the tile opens.
+                        // note leave in a five-column cell: none at 1024, one
+                        // from 1280, two from 1440, all five from 1680. They
+                        // drop out whole rather than being clipped
+                        // mid-sentence, and every one is on the case study
+                        // the tile opens.
                         className={`gap-2 ${
-                          h === 0 ? "hidden xl:flex" : h < 3 ? "hidden wide:flex" : "hidden wider:flex"
+                          h === 0 ? "hidden xl:flex" : h === 1 ? "hidden wide:flex" : "hidden wider:flex"
                         }`}
                       >
                         <span aria-hidden="true" // 7px centres a 3px dot on the first line of 0.78rem text.
@@ -286,7 +353,10 @@ export function Deck({
                   {study.stats.length > 0 ? (
                     <div className="grid grid-cols-2 gap-3 border-t border-line pt-3">
                       {study.stats.slice(0, 4).map((stat) => (
-                        <Figure key={stat.label} stat={stat} size="sm" />
+                        // Three lines in the feature cell: at five columns
+                        // "Commits — #1 of 100+ engineers" needs them from 1024
+                        // to 1440, and two cut the claim to "#1 of 100+…".
+                        <Figure key={stat.label} stat={stat} size="sm" lines={study.feature ? 3 : 2} />
                       ))}
                     </div>
                   ) : null}
@@ -302,76 +372,18 @@ export function Deck({
         </Tile>
       ))}
 
-        <Tile
-          label="AutoTrader.ca — AutoSync"
-          index={indexes["/autotrader"]}
-          href="/autotrader"
-          cta="Read"
-          className="lg:col-start-1 lg:col-end-5 lg:row-start-5 lg:row-end-9"
-        >
-          {/* Clamped below 1440, where this cell is ~250px wide and the lede
-              runs to eleven lines. The ellipsis and the Read link together say
-              there is more, which silent clipping did not. */}
-          <p className="line-clamp-3 shrink-0 text-md leading-snug text-muted xl:line-clamp-4 wider:line-clamp-5">
-            {autoTraderLede}
-          </p>
-          <ul className="mt-3 hidden flex-wrap gap-x-3 gap-y-0.5 meta text-faint xl:flex">
-            {["Vue", "Node.js", "PHP", "MySQL", "Redis", "AWS"].map((tech) => (
-              <li key={tech}>{tech}</li>
-            ))}
-          </ul>
-          <ul className="mt-2 space-y-1 border-t border-line pt-2 text-xs leading-snug text-muted">
-            {/* At 1024 the cell is three lines shorter than the copy, and the
-                deck may not scroll. The last two points drop out there rather
-                than being clipped mid-sentence; all four are on /autotrader,
-                which the tile links to. */}
-            {AUTOTRADER_POINTS.map((point, i) => (
-              <li
-                key={point}
-                // Measured per width: two points fit at 1024, all four at 1440.
-                // No slice — the array is exactly what ships, so adding a fifth
-                // point here shows up rather than silently disappearing.
-                className={`gap-2 ${i < 2 ? "flex" : "hidden wide:flex"}`}
-              >
-                <span aria-hidden="true" // 7px is optical, not rhythm: it centres a 3px dot on the first
-                  // line of 0.78rem text. Snapping it to the scale visibly
-                  // drops the dot below the cap height.
-                  className="mt-[7px] size-[3px] shrink-0 rounded-full bg-accent" />
-                {point}
-              </li>
-            ))}
-          </ul>
-          {/* autosyncmotors.com — the public demo of the platform these five
-              years were spent on. Gated like the others: this cell only has
-              room for a window worth showing from 1680. */}
-          {previews.autotrader ? (
-            <TileShot
-              preview={previews.autotrader}
-              className="mt-3 flex lg:hidden wider:flex"
-            />
-          ) : null}
-
-          <div className="mt-auto flex gap-4 border-t border-line pt-3">
-            <Figure stat={{ value: "5 yrs", label: "Jan 2020 – Jun 2025" }} size="sm" />
-            {/* "Observed": no dashboard figure exists for it, and /autotrader
-                says so. A stat that looks measured must not be one that was
-                only seen. */}
-            <Figure stat={{ value: "~0", label: "Observed downtime after rollout" }} size="sm" />
-          </div>
-        </Tile>
-
         {/*
           History used to have no dashboard presence at all — reachable only
-          by finding it last in the rail. It sits in the Open gaps' old spot,
-          at roughly half the AI tile's width alongside it, because a
-          reader's own background belongs next to the work, not after it.
+          by finding it last in the rail. It sits beside the last case study,
+          at half the AI tile's width, because a reader's own background
+          belongs next to the work, not after it.
         */}
         <Tile
           label="History"
           index={indexes["/history"]}
           href="/history"
           cta="Track record"
-          className="lg:col-start-5 lg:col-end-8 lg:row-start-5 lg:row-end-7"
+          className="lg:col-start-4 lg:col-end-7 lg:row-start-5 lg:row-end-7"
         >
           <p className="line-clamp-2 shrink-0 text-xs leading-none text-muted wide:line-clamp-3 wide:leading-snug">
             {historyLede}
@@ -393,11 +405,11 @@ export function Deck({
           index={indexes["/standard"]}
           href="/standard"
           cta="How it works"
-          className="lg:col-start-8 lg:col-end-13 lg:row-start-5 lg:row-end-7"
+          className="lg:col-start-7 lg:col-end-13 lg:row-start-5 lg:row-end-7"
         >
           {/*
             Unconditionally 4-across rather than gated behind `wide`: the tile
-            is now 5 of 12 columns at every width this appears at (it used to
+            is now 6 of 12 columns at every width this appears at (it used to
             be 3 of 12 below `wide`, too narrow for four side by side), and a
             2x2 stack needed more height than the row has since it was halved
             to make room for History alongside it.
@@ -429,7 +441,7 @@ export function Deck({
           index={indexes["/gaps"]}
           href="/gaps"
           cta={`All ${COUNT_WORDS[gaps.length] ?? gaps.length}`}
-          className="bg-sunk lg:col-start-5 lg:col-end-13 lg:row-start-7 lg:row-end-9"
+          className="bg-sunk lg:col-start-4 lg:col-end-13 lg:row-start-7 lg:row-end-9"
         >
           {/*
             Gap, status, consequence — the same parts the table on /gaps
