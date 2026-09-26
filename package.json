@@ -8,6 +8,7 @@
     "check:contrast": "node scripts/check-contrast.mjs",
     "check:overflow": "node scripts/check-overflow.mjs",
     "check:behaviour": "node scripts/check-behaviour.mjs",
+    "measure:shots": "node scripts/measure-shots.mjs",
     "build": "npm run check:claims && npm run check:tokens && npm run check:logos && npm run check:contrast && next build",
     "start": "next start",
     "lint": "eslint .",
