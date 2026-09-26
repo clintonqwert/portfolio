@@ -92,12 +92,25 @@ export const FACTS = [
   "Canadian citizen — no sponsorship required",
 ] as const;
 
-/** The statement above the fold. Shorter and harder than the résumé summary. */
+/**
+ * The statement above the fold: who this is and the experience behind it,
+ * for a reader who gives the page thirty seconds. It used to be the position
+ * line below, with the role in the lede; the owner swapped them on 2026-09-26
+ * after an outside review — lead with the role and the automotive platform.
+ */
 export const HEADLINE =
+  "Senior full-stack engineer — six and a half years on a national automotive SaaS platform.";
+
+/** The position, under the headline. Shorter and harder than the résumé summary. */
+export const LEDE =
   "I make the quality bar something the pipeline enforces, not something the team remembers.";
 
-export const LEDE =
-  "Senior full-stack engineer — nine years of production web systems, five of them on automotive SaaS at national scale.";
+/**
+ * For search results and link previews: the headline's facts with the whole
+ * career around them, since a snippet has room for one sentence and no page.
+ */
+export const DESCRIPTION =
+  "Senior full-stack engineer — nine years of production web systems, six and a half of them on a national automotive SaaS platform.";
 
 /*
   A four-stat masthead summary and a standalone position statement used to

@@ -104,7 +104,7 @@ export async function getTrackRecord(): Promise<Role[]> {
       title: "Senior Software Engineer, Full-Stack",
       org: "AutoTrader.ca — AutoSync",
       summary:
-        "Production features on a national automotive SaaS platform. Implemented and tuned Redis Object Cache Pro against AWS-hosted Redis; network-level downtime dropped to near zero after rollout.",
+        "Production features on a national automotive SaaS platform. Implemented and tuned Redis Object Cache Pro against AWS-hosted Redis; observed network-level downtime dropped to near zero after rollout.",
     },
     {
       period: "Nov 2018 – Jan 2020",

@@ -1,6 +1,6 @@
 import { ImageResponse } from "next/og";
 
-import { FACTS, HEADLINE, LOCATION, NAME, ROLE_TITLE } from "@/lib/content/profile";
+import { FACTS, LEDE, LOCATION, NAME, ROLE_TITLE } from "@/lib/content/profile";
 
 /**
  * The Open Graph card, generated at build time rather than shipped as a PNG.
@@ -73,7 +73,9 @@ export default async function OpengraphImage() {
               maxWidth: 940,
             }}
           >
-            {HEADLINE}
+            {/* The position, not the headline: the card already names the
+                role above, and the headline starts with it. */}
+            {LEDE}
           </div>
         </div>
 

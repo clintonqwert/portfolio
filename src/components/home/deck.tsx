@@ -86,10 +86,12 @@ export function Deck({
               <li
                 key={fact}
                 // The arrangement line is the longest and the least decisive of
-                // the four. Below 1280 the strip wraps to three lines without it
-                // gone, and the deck pays for every one of them.
+                // the four. On the one-viewport deck from lg to xl the strip
+                // wraps to three lines with it, and the deck pays for every one
+                // of them, so it goes there. Stacked, the page scrolls and has
+                // the room: a recruiter on a phone should not lose it.
                 className={`items-center gap-3 ${
-                  i === 2 ? "hidden xl:flex" : "flex"
+                  i === 2 ? "flex lg:hidden xl:flex" : "flex"
                 }`}
               >
                 {fact}
@@ -309,14 +311,17 @@ export function Deck({
 
           <div className="mt-auto flex gap-4 border-t border-line pt-3">
             <Figure stat={{ value: "5 yrs", label: "Jan 2020 – Jun 2025" }} size="sm" />
-            <Figure stat={{ value: "~0", label: "Downtime after rollout" }} size="sm" />
+            {/* "Observed": no dashboard figure exists for it, and /autotrader
+                says so. A stat that looks measured must not be one that was
+                only seen. */}
+            <Figure stat={{ value: "~0", label: "Observed downtime after rollout" }} size="sm" />
           </div>
         </Tile>
 
         {/*
           History used to have no dashboard presence at all — reachable only
           by finding it last in the rail. It sits in the Open gaps' old spot,
-          at roughly half AI Engineering's width alongside it, because a
+          at roughly half the AI tile's width alongside it, because a
           reader's own background belongs next to the work, not after it.
         */}
         <Tile
@@ -342,7 +347,7 @@ export function Deck({
         </Tile>
 
         <Tile
-          label="AI Engineering"
+          label="How I use AI"
           index="06"
           href="/standard"
           cta="How it works"
@@ -376,7 +381,7 @@ export function Deck({
         </Tile>
 
         {/* The page's argument, so it gets the sunk surface and the full width
-            of the row beneath History and AI Engineering. */}
+            of the row beneath History and How I use AI. */}
         <Tile
           label="Open gaps"
           index="07"

@@ -67,10 +67,12 @@ export async function getNavLinks(): Promise<NavEntry[]> {
     // the work itself rather than after the process/meta pages. Open gaps
     // moved to last on purpose — it is the appendix, not the opener.
     { kind: "link", href: "/history", label: "History", index: "07" },
-    // Same route as before ("Project OS"); relabelled because the label is
-    // what a recruiter scans, and "AI Engineering" says what the page is
-    // about where "Project OS" only names it.
-    { kind: "link", href: "/standard", label: "AI Engineering", index: "08" },
+    // Same route as before ("Project OS"). The label is what a recruiter
+    // scans, so it says what the page is about. It was "AI Engineering"
+    // until 2026-09-26: the page is how AI is used to deliver this work, not
+    // an AI product, and a label that reads as a job title markets a role
+    // the work does not yet show. "How I use AI" is what the page is.
+    { kind: "link", href: "/standard", label: "How I use AI", index: "08" },
     { kind: "link", href: "/gaps", label: "Open gaps", index: "09" },
   ];
 }
