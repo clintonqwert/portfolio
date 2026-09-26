@@ -67,7 +67,7 @@ export function ChapterBar({
             {index ? (
               <span className="chip meta px-1.5 py-0.5 leading-none">{index}</span>
             ) : null}
-            <span className="display truncate tracking-[0.08em]">{kicker}</span>
+            <span className="display-hero truncate tracking-[0.08em]">{kicker}</span>
           </span>
 
           {chapter ? (

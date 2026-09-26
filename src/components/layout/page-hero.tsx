@@ -92,7 +92,7 @@ export function PageHero({
               {index ? (
                 <span className="chip meta px-1.5 py-0.5 leading-none">{index}</span>
               ) : null}
-              <span className="display tracking-[0.08em]">{kicker}</span>
+              <span className="display-hero tracking-[0.08em]">{kicker}</span>
             </p>
 
             {/* One span per word, so each can rise a beat after the last
