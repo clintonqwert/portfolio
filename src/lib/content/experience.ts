@@ -59,7 +59,47 @@ export async function getAutoTraderPassages(): Promise<Passage[]> {
     {
       heading: "The caching work",
       paragraphs: [
-        "The work I would point at first is the caching. I implemented and tuned Redis Object Cache Pro against AWS-hosted Redis. Caching is usually sold as a speed improvement, and it was one \u2014 but the result that actually mattered was stability. After rollout, network-level downtime dropped to near zero. The platform stopped falling over, which is a different and better outcome than pages loading faster.",
+        "The work I would point at first is the caching. Caching is usually sold as a speed improvement, and it was one \u2014 but the result that actually mattered was stability. The platform stopped falling over, which is a different and better outcome than pages loading faster.",
+      ],
+      /*
+        Problem, ownership, decision, trade-off, rollout, outcome: the shape a
+        hiring manager reads a senior engineer's work in (an outside review,
+        2026-09-26). Every row restates what this page and Tadvantage's
+        Performance passage already publish; none adds a claim. "My part"
+        names what was mine inside team work, and the outcome says it was
+        observed, because the next passage explains why there is no figure.
+      */
+      list: [
+        {
+          term: "Problem",
+          detail:
+            "Network-level downtime on the platform thousands of Canadian dealerships run their inventory on \u2014 dealer sites offline, not slow.",
+        },
+        {
+          term: "My part",
+          detail:
+            "On a team, in a codebase I did not design: I created the object-caching repository, implemented and tuned Redis Object Cache Pro against AWS-hosted Redis, and later rolled page caching out across the fleet.",
+        },
+        {
+          term: "Decision",
+          detail:
+            "Object caching against shared Redis clusters, configured for many sites on one cluster: key prefixes, global groups, prefetching and connection timeouts.",
+        },
+        {
+          term: "Trade-off",
+          detail:
+            "Page caching stops where a stale page would be wrong: the inventory and showroom routes are excluded, because they can never be served stale.",
+        },
+        {
+          term: "Rollout",
+          detail:
+            "Load-tested on a dedicated environment before it went near production. Page caching went to the whole fleet with WP-CLI, wired into the deploy scripts so every new dealer site got it automatically.",
+        },
+        {
+          term: "Outcome",
+          detail:
+            "Observed network-level downtime dropped to near zero after rollout. Observed, not measured \u2014 the next section says why there is no figure.",
+        },
       ],
     },
     {
