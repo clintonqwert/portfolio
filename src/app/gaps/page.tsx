@@ -9,8 +9,11 @@ import { getGaps } from "@/lib/content/practice";
 import { CONTACT, CONTACT_HREF, RESUME } from "@/lib/content/profile";
 import { buildBreadcrumbJsonLd, buildMetadata } from "@/lib/seo";
 
+// "Written down", not "written into the repositories": the original three are
+// in the repositories, but "No CMS yet" joined on 2026-09-25 from the owner's
+// roadmap, and the lede has to stay true of every row it introduces.
 const LEDE =
-  "Written into the repositories with their consequences attached before any interviewer asked, because a gap you have named is a plan and a gap you have hidden is a liability.";
+  "Written down with their consequences attached before any interviewer asked, because a gap you have named is a plan and a gap you have hidden is a liability.";
 
 export const metadata: Metadata = buildMetadata({
   title: "Open gaps — what I would fix first",

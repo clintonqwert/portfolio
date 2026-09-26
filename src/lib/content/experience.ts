@@ -142,10 +142,14 @@ export async function getProjectOsPassages(): Promise<Passage[]> {
         "The standard also lists what is deliberately absent from the stack, because unrecorded omissions get re-litigated every quarter by whoever arrives next. Adding one requires a written operating need. \u201cIt would be convenient\u201d is explicitly not a need.",
       ],
       list: [
+        // The term is the standard's own ("No CMS", ProjectOS stack.md). The
+        // roadmap is the owner's, stated as such, and lives on /gaps — this
+        // list is introduced as what the standard says, so it must not say
+        // more than the standard does.
         {
-          term: "No CMS yet",
+          term: "No CMS",
           detail:
-            "On the roadmap. Content lives in typed accessors, with an inactive CMS adapter kept behind them, so the contract exists before the need does.",
+            "Content lives in typed accessors. Absent by decision for now \u2014 a CMS is on my roadmap (see Open gaps).",
         },
         { term: "No client-state library", detail: "Server components hold the state." },
         { term: "No component library", detail: "The design system is the tokens." },
