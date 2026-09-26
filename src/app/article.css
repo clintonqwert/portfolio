@@ -144,9 +144,10 @@
     The scroll cue, after the one on architech-template: a thread with a dot
     resting at its top and two more dropping down it, shrinking to nothing as
     they fall, half a cycle apart — "there is more below" said as motion.
-    A hero that fits its viewport reads as a finished page, so this sits at
-    the bottom of the first viewport, wherever the hero's own content ends.
-    The script only decides when to hide it: once scrolling has started.
+    A hero that fits its viewport reads as a finished page, so this closes the
+    hero: at the bottom of the screen when the content fits, after the content
+    when it does not (see PageHero). The script only decides when to hide it:
+    once scrolling has started.
 
     Round dots, where everything else here is square: the dot is the motif
     being borrowed, and the palette keeps the few genuinely round things for
@@ -154,10 +155,7 @@
     readable where it crosses a dark screenshot.
   */
   .scroll-cue {
-    position: absolute;
-    /* 112px above the fold: the 88px thread, and a clear 24px under it. */
-    top: calc(100svh - var(--bar-height) - 7rem);
-    display: flex;
+    display: inline-flex;
     align-items: flex-start;
     gap: calc(var(--spacing) * 2.5);
     color: var(--color-ink);
@@ -167,16 +165,15 @@
       transform var(--duration-normal) var(--ease-out-quart);
   }
 
-  @media (min-width: 1024px) {
-    .scroll-cue {
-      top: calc(100dvh - 7rem);
-    }
-  }
-
   .scroll-cue[data-away="true"] {
     opacity: 0;
     transform: translateY(8px);
     pointer-events: none;
+  }
+
+  /* Gone is gone: no dots falling behind zero opacity. */
+  .scroll-cue[data-away="true"] .scroll-cue-drop {
+    animation-play-state: paused;
   }
 
   .scroll-cue-thread {

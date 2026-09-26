@@ -38,7 +38,7 @@ export function ScrollCue({ target, label }: { target: string; label: string }) 
           `transform` and `opacity` would stop the link's own fade-out transition. */}
       <div
         aria-hidden={away}
-        className="sheet enter pointer-events-none absolute inset-x-0 top-0"
+        className="enter mt-auto pt-10"
         style={{ "--i": 5 } as React.CSSProperties}
       >
         <a
@@ -54,7 +54,7 @@ export function ScrollCue({ target, label }: { target: string; label: string }) 
             el.scrollIntoView({ behavior: still ? "auto" : "smooth", block: "start" });
             history.replaceState(null, "", `#${target}`);
           }}
-          className="scroll-cue pointer-events-auto no-underline"
+          className="scroll-cue no-underline"
         >
           <span className="scroll-cue-thread" aria-hidden="true">
             <span className="scroll-cue-dot" />
