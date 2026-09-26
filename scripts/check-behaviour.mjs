@@ -10,7 +10,7 @@
  *  - The deck is one viewport: zero scroll at >=1024 x >=760, and none of the
  *    secondary-page chrome (scroll cue, chapter bar) on it.
  *  - Every screenshot window on the deck is the same height, and hovering a
- *    tile pans its page.
+ *    tile pans its page and brings up the tile cursor.
  *  - Every id on every route is unique. Chapter ids come from headings; a
  *    duplicate would silently retarget the cue, the chapter bar and deep links.
  *  - The scroll cue shows on arrival, hides once scrolling starts, returns at
@@ -165,6 +165,20 @@ try {
         panned,
         `hovering a deck tile pans its screenshot (hover media ${state.hover}, tile hovered ${state.hovered}, moved ${state.y}px)`,
       );
+
+      // The tile cursor: on, following, and the native arrow hidden only
+      // because the script is running (the deck is marked).
+      const box = await tile.boundingBox();
+      await page.mouse.move(box.x + box.width / 2, box.y + box.height / 2, { steps: 4 });
+      const cursor = await becomes(page, () => {
+        const c = document.querySelector(".tile-cursor");
+        return (
+          c?.dataset.active === "true" &&
+          document.querySelector("[data-tile-cursor]") !== null &&
+          c.style.transform.startsWith("translate3d")
+        );
+      });
+      check(cursor, "hovering a deck tile brings up the tile cursor, following the pointer");
     }
     await page.close();
   }
@@ -280,6 +294,8 @@ try {
       hover && moved === 0,
       `reduced motion: hovering a deck tile does not pan (hover media ${hover}, moved ${moved}px)`,
     );
+    const cursorOn = await page.evaluate(() => document.querySelector("[data-tile-cursor]") !== null);
+    check(!cursorOn, "reduced motion: the tile cursor never switches on, and the arrow stays");
     await page.close();
   }
 
@@ -287,7 +303,7 @@ try {
   {
     const page = await open(STUDY, { width: 1440, height: 900, reduced: true });
     const moving = await page.evaluate(() =>
-      [".scroll-cue-bead", ".rise", ".enter", ".shot"]
+      [".scroll-cue-drop", ".rise", ".enter", ".shot", ".hero-word"]
         .map((sel) => [sel, document.querySelector(sel)])
         .filter(([, el]) => el && getComputedStyle(el).animationName !== "none")
         .map(([sel]) => sel),

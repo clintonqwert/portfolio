@@ -110,9 +110,9 @@ try {
         const intentional = (el) =>
           el.classList.contains("sr-only") ||
           el.closest(".marquee") !== null ||
-          // The scroll cue's bead runs out of its track on purpose — that is
-          // the animation. Decorative and aria-hidden; nothing is lost.
-          el.classList.contains("scroll-cue-track") ||
+          // The scroll cue's dots fall the length of its thread and shrink
+          // away — that is the animation. Decorative and aria-hidden.
+          el.classList.contains("scroll-cue-thread") ||
           // A deck tile's screenshot is a window onto a whole page, which it
           // pans down on hover. The page running past the window is the
           // design, the image is one element with alt text, and every tile

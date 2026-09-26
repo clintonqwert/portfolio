@@ -1,5 +1,6 @@
 import { SkillMarquee } from "@/components/home/skill-marquee";
 import { Figure, Tile, TileShot } from "@/components/home/tile";
+import { TileCursor } from "@/components/home/tile-cursor";
 import { GapStatus } from "@/components/shared/gap-status";
 import { AUTOTRADER_POINTS } from "@/lib/content/experience";
 import { FACTS, HEADLINE, LEDE } from "@/lib/content/profile";
@@ -43,6 +44,8 @@ export function Deck({
 }) {
   return (
     <div className="flex flex-col p-3 lg:h-full">
+      {/* Follows the pointer over any link tile; watches this element. */}
+      <TileCursor />
       {/*
         One panel instead of three: the headline, the marquee and the grid
         used to be independent boxes with a gap-2 seam between each, which

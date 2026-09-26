@@ -78,6 +78,45 @@
   }
 
   /*
+    The hero headline, after architech-template's: capitals at a medium
+    weight, set large, each word rising into place a beat after the one
+    before. Archivo widened a little rather than a second family — the
+    reference's Montserrat is a wide geometric, and the width axis gets most
+    of that without another font download.
+
+    Words start at 15% and a short way down, never at nothing: the headline
+    is often the largest paint on the page, and an element held at zero
+    opacity is not counted as painted until it arrives, which would push
+    Largest Contentful Paint back by the whole stagger.
+  */
+  .hero-title {
+    font-family: var(--font-display);
+    font-variation-settings: "wdth" 112;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: -0.012em;
+    line-height: 1.04;
+  }
+
+  .hero-word {
+    display: inline-block;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .hero-word {
+      animation: word-rise 900ms cubic-bezier(0.16, 1, 0.3, 1) both;
+      animation-delay: calc(80ms + var(--w, 0) * 55ms);
+    }
+  }
+
+  @keyframes word-rise {
+    from {
+      opacity: 0.15;
+      transform: translateY(0.4em);
+    }
+  }
+
+  /*
     A drawing's title block: what, when, who, where to check it. Cells wrap
     and grow to fill their row, so a short last row never leaves an empty
     grey cell. Each cell draws its own right and bottom hairline outward and
@@ -102,19 +141,27 @@
   }
 
   /*
-    The scroll cue. A hero that fits its viewport exactly reads as a finished
-    page, so this sits at the bottom of the first viewport — wherever the
-    hero's own content ends — as an ink block that reads over text or image
-    alike. A bead runs down its track on a loop; the script only decides when
-    to hide it, once the first chapter has come up into view.
+    The scroll cue, after the one on architech-template: a thread with a dot
+    resting at its top and two more dropping down it, shrinking to nothing as
+    they fall, half a cycle apart — "there is more below" said as motion.
+    A hero that fits its viewport reads as a finished page, so this sits at
+    the bottom of the first viewport, wherever the hero's own content ends.
+    The script only decides when to hide it: once scrolling has started.
+
+    Round dots, where everything else here is square: the dot is the motif
+    being borrowed, and the palette keeps the few genuinely round things for
+    exactly this — markers, not surfaces. A paper halo keeps the thread
+    readable where it crosses a dark screenshot.
   */
   .scroll-cue {
     position: absolute;
-    /* 64px above the fold: clear of the edge, and of the iOS home bar. */
-    top: calc(100svh - var(--bar-height) - 4rem);
-    /* A paper ring, so the ink block still reads where it lands on a dark
-       screenshot — which, for two of the three captures, it does. */
-    box-shadow: 0 0 0 var(--surface-border) var(--color-canvas);
+    /* 112px above the fold: the 88px thread, and a clear 24px under it. */
+    top: calc(100svh - var(--bar-height) - 7rem);
+    display: flex;
+    align-items: flex-start;
+    gap: calc(var(--spacing) * 2.5);
+    color: var(--color-ink);
+    filter: drop-shadow(0 0 1px var(--color-canvas));
     transition:
       opacity var(--duration-normal) var(--ease-out-quart),
       transform var(--duration-normal) var(--ease-out-quart);
@@ -122,7 +169,7 @@
 
   @media (min-width: 1024px) {
     .scroll-cue {
-      top: calc(100dvh - 4.5rem);
+      top: calc(100dvh - 7rem);
     }
   }
 
@@ -132,39 +179,54 @@
     pointer-events: none;
   }
 
-  .scroll-cue-track {
+  .scroll-cue-thread {
     position: relative;
-    width: 1px;
-    height: 18px;
-    overflow: clip;
-    background-color: color-mix(in oklch, currentColor 30%, transparent);
+    width: 11px;
+    height: 88px;
+    flex-shrink: 0;
   }
 
-  /* Still, the bead rests mid-track: a tick on a line, which still points
-     down. Moving, it starts above the track and runs out of the bottom. */
-  .scroll-cue-bead {
+  .scroll-cue-thread::before {
+    content: "";
     position: absolute;
-    inset-inline: 0;
-    top: 0;
-    height: 7px;
+    left: 5px;
+    top: 5px;
+    bottom: 0;
+    width: var(--surface-border);
     background-color: currentColor;
-    transform: translateY(5.5px);
+  }
+
+  .scroll-cue-dot {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 11px;
+    height: 11px;
+    border-radius: 9999px;
+    background-color: currentColor;
+  }
+
+  /* Still, only the resting dot shows: the thread still points down. */
+  .scroll-cue-drop {
+    display: none;
   }
 
   @media (prefers-reduced-motion: no-preference) {
-    .scroll-cue-bead {
-      transform: translateY(-100%);
-      animation: cue 1.8s var(--ease-out-quart) infinite;
+    .scroll-cue-drop {
+      display: block;
+      animation: drop 1.84s cubic-bezier(0.55, 0, 0.85, 0.45) infinite;
+      animation-delay: var(--delay, 0s);
     }
   }
 
-  @keyframes cue {
-    0% {
-      transform: translateY(-100%);
+  /* Falls the thread's length (88 − 11) and shrinks to 6%, as the reference
+     does: gathering speed, then gone. */
+  @keyframes drop {
+    from {
+      transform: translateY(0) scale(1);
     }
-    70%,
-    100% {
-      transform: translateY(18px);
+    to {
+      transform: translateY(77px) scale(0.06);
     }
   }
 

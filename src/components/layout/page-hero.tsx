@@ -98,19 +98,31 @@ export function PageHero({
               <span className="display tracking-[0.08em]">{kicker}</span>
             </p>
 
+            {/* One span per word, so each can rise a beat after the last
+                (.hero-word). The heading is named from the plain title, so
+                assistive tech reads the sentence, not a list of words. */}
             <h1
               id="page-title"
-              // Leading after the size, in the same string: tailwind-merge
-              // drops a leading-* that comes before a text-* size, since a
-              // size utility can carry its own line height.
+              aria-label={title}
               className={cn(
-                "display-tight mt-5 text-ink",
+                "hero-title mt-5 text-ink",
                 media
-                  ? "max-w-[18ch] text-[clamp(2.25rem,4.4vw,4rem)] leading-[1.02]"
-                  : "max-w-[22ch] text-[clamp(2.25rem,5vw,4.5rem)] leading-[1.02]",
+                  ? "text-[clamp(2rem,3.4vw,3.4rem)]"
+                  : "max-w-[24ch] text-[clamp(2.25rem,4.4vw,4.25rem)]",
               )}
             >
-              {title}
+              {title.split(" ").map((word, i, words) => (
+                <span key={i}>
+                  <span
+                    aria-hidden="true"
+                    className="hero-word"
+                    style={{ "--w": i } as React.CSSProperties}
+                  >
+                    {word}
+                  </span>
+                  {i < words.length - 1 ? " " : null}
+                </span>
+              ))}
             </h1>
 
             {lede ? (

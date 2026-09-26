@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from "react";
 
 /**
  * "There is more below", for a hero that fills its viewport and so reads as a
- * finished page.
+ * finished page: a thread with dots dropping down it (see .scroll-cue).
  *
  * A real link to the first chapter, so it is also the keyboard's way down. The
  * loop is CSS; this only decides when the cue has done its job: once the
@@ -54,12 +54,17 @@ export function ScrollCue({ target, label }: { target: string; label: string }) 
             el.scrollIntoView({ behavior: still ? "auto" : "smooth", block: "start" });
             history.replaceState(null, "", `#${target}`);
           }}
-          className="scroll-cue chip pointer-events-auto flex items-center gap-2.5 px-3 py-2 no-underline"
+          className="scroll-cue pointer-events-auto no-underline"
         >
-          <span className="label leading-none">Scroll</span>
-          <span className="scroll-cue-track" aria-hidden="true">
-            <span className="scroll-cue-bead" />
+          <span className="scroll-cue-thread" aria-hidden="true">
+            <span className="scroll-cue-dot" />
+            <span className="scroll-cue-dot scroll-cue-drop" />
+            <span
+              className="scroll-cue-dot scroll-cue-drop"
+              style={{ "--delay": "0.92s" } as React.CSSProperties}
+            />
           </span>
+          <span className="label pt-px leading-none text-ink">Scroll</span>
         </a>
       </div>
     </>

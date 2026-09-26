@@ -531,6 +531,117 @@
   }
 
   /*
+    The cursor over a deck tile (TileCursor): a square that shatters into a
+    4×4 grid, spreads, flies apart and settles back into one, on a 1.64s
+    loop — the timing of the image-hover cursor on architech-template.
+    Ink squares with a paper hairline, drawn as a drop-shadow on the group
+    so the packed square has no seams: readable on a tile's paper and on a
+    dark screenshot alike, in both themes, without a raw colour.
+
+    It grows in with an exponential ease over a second and shrinks away
+    faster, as the reference does. The native cursor is hidden only on a
+    deck the script has marked, so a failed script never loses the arrow.
+  */
+  .tile-cursor {
+    position: fixed;
+    left: 0;
+    top: 0;
+    z-index: var(--z-overlay);
+    width: 0;
+    height: 0;
+    pointer-events: none;
+  }
+
+  .tile-cursor-burst {
+    position: absolute;
+    left: 0;
+    top: 0;
+    filter: drop-shadow(0 0 1px var(--color-canvas));
+    transform: scale(0);
+    opacity: 0;
+    transition:
+      transform 450ms var(--ease-out-quart),
+      opacity var(--duration-fast) var(--ease-out-quart);
+  }
+
+  .tile-cursor[data-active="true"] .tile-cursor-burst {
+    transform: scale(1);
+    opacity: 1;
+    transition:
+      transform 1000ms cubic-bezier(0.16, 1, 0.3, 1),
+      opacity 500ms cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  /* 8.5px cells on an 8px pitch: the half-pixel overlap keeps anti-aliasing
+     from drawing seams through the packed square. */
+  .tile-cursor-shard {
+    position: absolute;
+    left: -4.25px;
+    top: -4.25px;
+    width: 8.5px;
+    height: 8.5px;
+    background-color: var(--color-ink);
+    animation: shard 1.64s cubic-bezier(0.45, 0, 0.55, 1) infinite;
+  }
+
+  .tile-cursor-main {
+    animation-name: shard-main;
+  }
+
+  [data-tile-cursor] a.tile {
+    cursor: none;
+  }
+
+  /* Packed small → packed large → gaps open → spread with jitter → flung
+     out to nothing. At 0% the sixteen half-size cells make one 16px square;
+     the surviving shard ends the cycle as exactly that square, so the loop
+     has no seam. */
+  @keyframes shard {
+    0% {
+      transform: translate(calc(var(--x) * 4px), calc(var(--y) * 4px)) scale(0.5);
+    }
+    20% {
+      transform: translate(calc(var(--x) * 8px), calc(var(--y) * 8px)) scale(1);
+    }
+    30% {
+      transform: translate(calc(var(--x) * 10px), calc(var(--y) * 10px)) scale(0.85);
+    }
+    48% {
+      transform: translate(calc(var(--x) * 14px + var(--jx)), calc(var(--y) * 14px + var(--jy)))
+        scale(0.75);
+    }
+    72%,
+    100% {
+      transform: translate(
+          calc(var(--x) * 24px + var(--jx) * 2),
+          calc(var(--y) * 24px + var(--jy) * 2)
+        )
+        scale(0);
+    }
+  }
+
+  @keyframes shard-main {
+    0% {
+      transform: translate(calc(var(--x) * 4px), calc(var(--y) * 4px)) scale(0.5);
+    }
+    20% {
+      transform: translate(calc(var(--x) * 8px), calc(var(--y) * 8px)) scale(1);
+    }
+    30% {
+      transform: translate(calc(var(--x) * 10px), calc(var(--y) * 10px)) scale(0.85);
+    }
+    48% {
+      transform: translate(calc(var(--x) * 14px), calc(var(--y) * 14px)) scale(0.75);
+    }
+    72% {
+      transform: translate(0, 0) scale(1.4) rotate(45deg);
+    }
+    100% {
+      transform: translate(0, 0) scale(2) rotate(90deg);
+    }
+  }
+
+  /*
     ── type roles ──────────────────────────────────────────────────────
     Three jobs the mono face does, named once instead of being respelled at
     every call site. Each was previously a run of four or five utilities

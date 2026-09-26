@@ -66,8 +66,11 @@ and does not scroll: `body` is `overflow-hidden`, the deck is a 12×9 grid of
 From 1440px wide the work tiles carry a screenshot window: every window the
 same height (the room the most crowded tile has left, which grows with
 viewport height), onto a whole-page capture that pans down while the tile is
-hovered or focused — a scroll preview of the site. `check:behaviour` holds
-both the equal heights and the pan.
+hovered or focused — a scroll preview of the site. Over a tile the pointer
+becomes a square that shatters and re-forms (after the image-hover cursor on
+architech-template.webflow.io, rebuilt in CSS); fine hover-capable pointers
+only, never under reduced motion. `check:behaviour` holds the equal heights,
+the pan and the cursor.
 
 Below 1024px the constraint is lifted and the page scrolls normally, because a
 single viewport on a phone means either three tiles or unreadable type.
@@ -89,8 +92,11 @@ add a parts-list Stack chapter and an inverted Measured chapter for their
 figures. Chapters keep the author's order; a page never grows a section its
 content does not have.
 
-A hero that fits its viewport reads as a finished page, so a **scroll cue**
-sits at the fold until the reader starts scrolling. At ≥1024px a **chapter
+The hero headline is set in capitals at a medium weight, its words rising
+in turn. A hero that fits its viewport reads as a finished page, so a
+**scroll cue** — a thread with dots dropping down it, both after
+architech-template.webflow.io — sits at the fold until the reader starts
+scrolling. At ≥1024px a **chapter
 bar** slides in once the hero has gone, naming the current chapter with a
 scroll-timeline progress line. Both are small IntersectionObserver clients;
 every other motion is CSS — scroll-driven where it tracks reading, off under
