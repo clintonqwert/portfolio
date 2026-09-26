@@ -321,7 +321,7 @@ export function Deck({
         {/*
           History used to have no dashboard presence at all — reachable only
           by finding it last in the rail. It sits in the Open gaps' old spot,
-          at roughly half AI Engineering's width alongside it, because a
+          at roughly half the AI tile's width alongside it, because a
           reader's own background belongs next to the work, not after it.
         */}
         <Tile
@@ -347,7 +347,7 @@ export function Deck({
         </Tile>
 
         <Tile
-          label="AI Engineering"
+          label="How I use AI"
           index="06"
           href="/standard"
           cta="How it works"
@@ -381,7 +381,7 @@ export function Deck({
         </Tile>
 
         {/* The page's argument, so it gets the sunk surface and the full width
-            of the row beneath History and AI Engineering. */}
+            of the row beneath History and How I use AI. */}
         <Tile
           label="Open gaps"
           index="07"

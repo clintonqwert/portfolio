@@ -12,12 +12,12 @@ import { buildBreadcrumbJsonLd, buildMetadata } from "@/lib/seo";
 import { readingMinutes } from "@/lib/utils";
 
 export const metadata: Metadata = buildMetadata({
-  title: "AI Engineering — Project OS, standards that outlive one repository",
+  title: "How I use AI — Project OS, standards that outlive one repository",
   description: PROJECT_OS_LEDE,
   path: "/standard",
 });
 
-const TRAIL = [{ label: "Overview", href: "/" }, { label: "AI Engineering" }];
+const TRAIL = [{ label: "Overview", href: "/" }, { label: "How I use AI" }];
 
 export default async function StandardPage() {
   const [passages, { page, prev, next }] = await Promise.all([
@@ -29,12 +29,12 @@ export default async function StandardPage() {
   return (
     <article>
       <JsonLd data={buildBreadcrumbJsonLd(TRAIL, "/standard")} />
-      <ChapterBar index={page?.index} kicker="AI Engineering" chapters={chapters} />
+      <ChapterBar index={page?.index} kicker="How I use AI" chapters={chapters} />
 
       <PageHero
         trail={TRAIL}
         index={page?.index}
-        kicker="AI Engineering"
+        kicker="How I use AI"
         title="Project OS: standards that outlive one repository"
         lede={PROJECT_OS_LEDE}
         specs={[
