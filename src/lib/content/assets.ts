@@ -1,6 +1,6 @@
 import "server-only";
 
-import type { ImageSlot } from "@/types/content";
+import type { DeckPreview, ImageSlot } from "@/types/content";
 
 export type { ImageSlot };
 
@@ -187,40 +187,54 @@ export const WORK_IMAGES: Record<string, ImageSlot> = {
  *    "The work." case results — the studio's own marketing figures, which the
  *    screenshot rule above keeps off this site, pan or no pan.
  */
-export const DECK_PREVIEWS: Record<string, ImageSlot> = {
-  driftpilot: {
-    src: "/work/driftpilot-preview.webp",
+export const DECK_PREVIEWS: Record<string, DeckPreview> = {
+  driftpilot: preview("driftpilot", 2790, {
     alt: "The DriftPilot studio site, from the hero down through its services and delivery process",
-    width: 1200,
-    height: 2790,
-    isPlaceholder: false,
     source: { label: "driftpilot.ca", href: "https://driftpilot.ca" },
-  },
-  riflessi: {
-    src: "/work/riflessi-preview.webp",
+  }),
+  riflessi: preview("riflessi", 6800, {
     alt: "The Riflessi Auto Care home page, from the 3D hero down through its services and the bay",
-    width: 1200,
-    height: 6800,
-    isPlaceholder: false,
     source: {
       label: "riflessiautocare.vercel.app",
       href: "https://riflessiautocare.vercel.app",
     },
-  },
-  tadvantage: {
-    src: "/work/tadvantage-preview.webp",
+  }),
+  tadvantage: preview("tadvantage", 2052, {
     alt: "The tadvantage.ca home page, top to bottom",
-    width: 1200,
-    height: 2052,
-    isPlaceholder: false,
     source: TADVANTAGE_SITE,
-  },
-  autotrader: {
-    src: "/work/autosync-preview.webp",
+  }),
+  autotrader: preview("autosync", 1881, {
     alt: "The AutoSync Motors demo dealer site, top to bottom",
-    width: 1200,
-    height: 1881,
-    isPlaceholder: false,
     source: { label: "autosyncmotors.com", href: "https://www.autosyncmotors.com/" },
-  },
+  }),
 };
+
+/**
+ * One deck preview from its two files: `<name>-window.webp`, the page's first
+ * 780px (at 1200 wide, a 0.65 ratio — taller than any window the deck draws,
+ * 268×173 at 1440 being the squarest), and `<name>-preview.webp`, the page.
+ * At rest a tile shows only the window: measured at 1728@2x, fetching all four
+ * whole pages up front cost 598 kB for the ~130px strips on show.
+ */
+function preview(
+  name: string,
+  pageHeight: number,
+  meta: Pick<ImageSlot, "alt" | "source">,
+): DeckPreview {
+  return {
+    window: {
+      src: `/work/${name}-window.webp`,
+      width: 1200,
+      height: 780,
+      isPlaceholder: false,
+      ...meta,
+    },
+    page: {
+      src: `/work/${name}-preview.webp`,
+      width: 1200,
+      height: pageHeight,
+      isPlaceholder: false,
+      ...meta,
+    },
+  };
+}

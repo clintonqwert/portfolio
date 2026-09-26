@@ -1,10 +1,10 @@
 import { SkillMarquee } from "@/components/home/skill-marquee";
 import { Figure, Tile, TileShot } from "@/components/home/tile";
-import { TileCursor } from "@/components/home/tile-cursor";
+import { DeckPointer } from "@/components/home/deck-pointer";
 import { GapStatus } from "@/components/shared/gap-status";
 import { AUTOTRADER_POINTS } from "@/lib/content/experience";
 import { FACTS, HEADLINE, LEDE } from "@/lib/content/profile";
-import type { CaseStudy, Gap, ImageSlot } from "@/types/content";
+import type { CaseStudy, DeckPreview, Gap } from "@/types/content";
 
 /** "All four", not "All 4": the tile's call to action reads as a phrase. */
 const COUNT_WORDS = ["none", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine"];
@@ -37,15 +37,16 @@ export function Deck({
    * Whole-page screenshots the tiles window onto and pan down on hover, keyed
    * by slug — AutoTrader, which has none, as "autotrader".
    */
-  previews: Record<string, ImageSlot>;
+  previews: Record<string, DeckPreview>;
   historyLede: string;
   historyRolesCount: number;
   historyPrinciplesCount: number;
 }) {
   return (
     <div className="flex flex-col p-3 lg:h-full">
-      {/* Follows the pointer over any link tile; watches this element. */}
-      <TileCursor />
+      {/* The tile cursor, and loading each tile's whole-page preview on
+          intent. Watches this element. */}
+      <DeckPointer />
       {/*
         One panel instead of three: the headline, the marquee and the grid
         used to be independent boxes with a gap-2 seam between each, which
@@ -194,7 +195,7 @@ export function Deck({
               */}
               {previews[study.slug] ? (
                 <TileShot
-                  image={previews[study.slug]!}
+                  preview={previews[study.slug]!}
                   className={
                     study.feature
                       ? "mt-3 hidden wide:flex"
@@ -296,7 +297,7 @@ export function Deck({
               room for a window worth showing from 1680. */}
           {previews.autotrader ? (
             <TileShot
-              image={previews.autotrader}
+              preview={previews.autotrader}
               className="mt-3 hidden wider:flex"
             />
           ) : null}

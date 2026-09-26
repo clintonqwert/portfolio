@@ -416,9 +416,16 @@
   }
 
   /*
-    The same face at normal width for running headlines. The site's headline is
-    a full sentence; setting that in expanded caps would shout rather than
-    speak, which the reference never does — it reserves caps for single words.
+    The same face at normal width for running headlines. The deck's headline
+    is a full sentence, and setting that in expanded caps would shout rather
+    than speak — so the deck keeps it here, in sentence case.
+
+    The one deliberate exception is the secondary-page hero (.hero-title in
+    article.css): capitals at a medium weight, after architech-template, by
+    the owner's decision on 2026-09-25. It earns the caps by being the only
+    thing on its screen, set large with room around it; a sentence in caps
+    inside a dense dashboard is the case this rule is about. Recorded in
+    PRODUCT.md, so neither side gets "fixed" back.
   */
   .display-tight {
     font-family: var(--font-display);
@@ -478,7 +485,9 @@
     Those fit every measurement to the pixel (1440×800…1000, 1680×900…1200,
     1800×1000, 1920×960…1200; 2560-wide screens have ~19px more), re-taken
     after the 16px tile gutters and insets went in, which cost every window
-    2px. The formulas below leave 2px of slack. The 48px floor keeps a window worth
+    2px. The formulas below leave 2px of slack. Re-take them with
+    `npm run measure:shots` whenever the deck's content or spacing changes;
+    check:behaviour fails if the windows stop matching. The 48px floor keeps a window worth
     looking through; below it — a >=1680 viewport under ~956px tall — the
     frame's `min-height: 0` lets the most crowded tile's window shrink under
     the others rather than push the tile past its cell.
@@ -490,6 +499,7 @@
   */
   .tile-shot-frame {
     --shot-h: clamp(48px, calc(50dvh - 279px), 360px);
+    position: relative;
     height: var(--shot-h);
     min-height: 0;
     flex-shrink: 1;
@@ -507,7 +517,19 @@
     }
   }
 
+  /* At rest: the page's top, which is all the window shows. */
+  .tile-shot-window {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+
+  /* The whole page, laid exactly over the window (the window is a crop of
+     its top) and empty until DeckPointer gives it a source on intent. */
   .tile-shot-image {
+    position: absolute;
+    left: 0;
+    top: 0;
     display: block;
     width: 100%;
     height: auto;
@@ -539,8 +561,12 @@
     dark screenshot alike, in both themes, without a raw colour.
 
     It grows in with an exponential ease over a second and shrinks away
-    faster, as the reference does. The native cursor is hidden only on a
-    deck the script has marked, so a failed script never loses the arrow.
+    faster, as the reference does, riding beside the arrow rather than
+    replacing it (DeckPointer) — an enlarged or high-contrast system cursor
+    is someone's accessibility setting, and a tile is no place to take it.
+    The loop is paused unless the cursor is showing: sixteen squares
+    animating forever behind zero opacity was work on every visit, touch
+    devices included, for nothing on screen.
   */
   .tile-cursor {
     position: fixed;
@@ -582,14 +608,15 @@
     height: 8.5px;
     background-color: var(--color-ink);
     animation: shard 1.64s cubic-bezier(0.45, 0, 0.55, 1) infinite;
+    animation-play-state: paused;
+  }
+
+  .tile-cursor[data-active="true"] .tile-cursor-shard {
+    animation-play-state: running;
   }
 
   .tile-cursor-main {
     animation-name: shard-main;
-  }
-
-  [data-tile-cursor] a.tile {
-    cursor: none;
   }
 
   /* Packed small → packed large → gaps open → spread with jitter → flung

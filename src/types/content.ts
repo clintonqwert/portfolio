@@ -78,6 +78,16 @@ export interface ImageSlot {
 }
 
 /**
+ * A deck tile's screenshot: the top of a page, shown at rest, and the whole
+ * page, fetched only when a reader shows intent to pan it. The window is a
+ * crop of the page's top, so the two line up and the swap cannot be seen.
+ */
+export interface DeckPreview {
+  window: ImageSlot;
+  page: ImageSlot;
+}
+
+/**
  * A screenshot placed inside a passage, with a line saying what it shows.
  * Not "Figure": that name is already the stat component on the deck tiles.
  */

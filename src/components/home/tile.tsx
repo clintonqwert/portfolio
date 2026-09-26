@@ -1,9 +1,8 @@
-import Image from "next/image";
+import Image, { getImageProps } from "next/image";
 import Link from "next/link";
 
 import { cn } from "@/lib/utils";
-import type { ImageSlot } from "@/types/content";
-import type { Stat } from "@/types/content";
+import type { DeckPreview, Stat } from "@/types/content";
 
 /**
  * A dashboard tile.
@@ -112,21 +111,39 @@ export function Figure({ stat, size = "md" }: { stat: Stat; size?: "sm" | "md" }
  * The frame may still shrink as a last resort at a viewport the deck was not
  * measured at (`min-h-0`), so a tile can never be pushed past its cell.
  *
+ * Two images, one on the other. At rest only the window loads: the page's
+ * top, which is all the frame shows. The whole page is an <img> that is always
+ * in the DOM but has no `src` until DeckPointer sees intent — a pointer or
+ * keyboard focus on the tile — and copies it in from `data-src`. It is always
+ * there because an element switched in from `display: none` has no previous
+ * style to transition from, so the pan would jump rather than glide; and it
+ * is not lazy-loaded because a lazy image in view loads anyway. The window is
+ * a crop of the page's top, so the page lands exactly over it.
+ *
  * The pan runs at a steady pace rather than a fixed duration: a long page
  * takes longer to pass than a short one, the way scrolling it would. It is a
- * hover and focus enhancement only — off under reduced motion and on touch —
- * and the window itself already shows the page's top, the part that
- * identifies it.
+ * hover and focus enhancement only — off under reduced motion and on touch,
+ * where the whole page is never fetched at all.
  */
 export function TileShot({
-  image,
+  preview,
   className,
 }: {
-  image: ImageSlot;
+  preview: DeckPreview;
   className?: string;
 }) {
+  const { window: top, page } = preview;
   // ~1.75s per image-width of page: about 230px/s through a 390px window.
-  const pan = Math.min(10, Math.max(2.5, (image.height / image.width) * 1.75));
+  const pan = Math.min(10, Math.max(2.5, (page.height / page.width) * 1.75));
+
+  const { props: whole } = getImageProps({
+    src: page.src,
+    alt: "",
+    width: page.width,
+    height: page.height,
+    sizes: SHOT_SIZES,
+    quality: 90,
+  });
 
   return (
     <figure
@@ -135,21 +152,31 @@ export function TileShot({
     >
       <div className="tile-shot-frame">
         <Image
-          src={image.src}
-          alt={image.alt}
-          width={image.width}
-          height={image.height}
-          // Widest window at each width — the AutoTrader tile's, ~450px at
-          // 1728 and ~520px at 1920 — so no tile is handed a source narrower
-          // than it draws. Undersizing this once upscaled an 800px image
-          // into a 904-device-pixel window, which is most of what read as
-          // blur.
-          sizes="(min-width: 2400px) 760px, (min-width: 1920px) 540px, (min-width: 1680px) 470px, 320px"
+          src={top.src}
+          alt={top.alt}
+          width={top.width}
+          height={top.height}
+          sizes={SHOT_SIZES}
           quality={90}
+          className="tile-shot-window"
+        />
+        {/* The whole page, for the pan. No src until intent (see above); the
+            optimizer's srcset rides along in data attributes. Decorative
+            beside the window, which carries the description. */}
+        {/* eslint-disable-next-line @next/next/no-img-element -- deferred on purpose; next/image cannot hold a src back */}
+        <img
+          data-src={whole.src}
+          data-srcset={whole.srcSet}
+          sizes={whole.sizes}
+          width={whole.width}
+          height={whole.height}
+          alt=""
+          aria-hidden="true"
+          decoding="async"
           className="tile-shot-image"
         />
       </div>
-      {image.isPlaceholder ? (
+      {top.isPlaceholder ? (
         <figcaption className="mt-0.5 shrink-0 meta text-faint">
           Screenshot pending
         </figcaption>
@@ -157,3 +184,12 @@ export function TileShot({
     </figure>
   );
 }
+
+/**
+ * Widest window at each width — the AutoTrader tile's, ~450px at 1728 and
+ * ~520px at 1920 — so no tile is handed a source narrower than it draws.
+ * Undersizing this once upscaled an 800px image into a 904-device-pixel
+ * window, which is most of what read as blur.
+ */
+const SHOT_SIZES =
+  "(min-width: 2400px) 760px, (min-width: 1920px) 540px, (min-width: 1680px) 470px, 320px";

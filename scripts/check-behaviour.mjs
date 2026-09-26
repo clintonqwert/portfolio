@@ -9,8 +9,10 @@
  *
  *  - The deck is one viewport: zero scroll at >=1024 x >=760, and none of the
  *    secondary-page chrome (scroll cue, chapter bar) on it.
- *  - Every screenshot window on the deck is the same height, and hovering a
- *    tile pans its page and brings up the tile cursor.
+ *  - Every screenshot window on the deck is the same height. At rest no tile
+ *    has fetched its whole page and no cursor animation is running; hovering
+ *    a tile loads its page, pans it, and brings up the tile cursor beside an
+ *    arrow that stays.
  *  - Every id on every route is unique. Chapter ids come from headings; a
  *    duplicate would silently retarget the cue, the chapter bar and deep links.
  *  - The scroll cue shows on arrival, hides once scrolling starts, returns at
@@ -140,6 +142,15 @@ try {
       `deck ${width}x${height} shows 4 screenshot windows of one height (${heights.join(", ")}px)`,
     );
 
+    const rest = await page.evaluate(() => ({
+      pages: [...document.querySelectorAll("img.tile-shot-image")].filter((i) => i.getAttribute("src")).length,
+      shards: document
+        .getAnimations()
+        .filter((a) => a.animationName?.startsWith("shard") && a.playState === "running").length,
+    }));
+    check(rest.pages === 0, `deck ${width}x${height} fetches no whole-page preview at rest (${rest.pages} loaded)`);
+    check(rest.shards === 0, `deck ${width}x${height} runs no cursor animation at rest (${rest.shards} running)`);
+
     if (width === 1920) {
       const tile = await page.$('a.tile[href="/work/tadvantage"]');
       await tile.hover();
@@ -166,19 +177,26 @@ try {
         `hovering a deck tile pans its screenshot (hover media ${state.hover}, tile hovered ${state.hovered}, moved ${state.y}px)`,
       );
 
-      // The tile cursor: on, following, and the native arrow hidden only
-      // because the script is running (the deck is marked).
+      const loaded = await becomes(page, () => {
+        const img = document.querySelector('a.tile[href="/work/tadvantage"] img.tile-shot-image');
+        return img?.getAttribute("src") && img.complete && img.naturalWidth > 0;
+      });
+      check(loaded, "hovering a deck tile fetches its whole-page preview");
+
+      // The tile cursor: on, following, running its loop, and the arrow kept.
       const box = await tile.boundingBox();
       await page.mouse.move(box.x + box.width / 2, box.y + box.height / 2, { steps: 4 });
       const cursor = await becomes(page, () => {
         const c = document.querySelector(".tile-cursor");
+        const tileEl = document.querySelector('a.tile[href="/work/tadvantage"]');
         return (
           c?.dataset.active === "true" &&
-          document.querySelector("[data-tile-cursor]") !== null &&
-          c.style.transform.startsWith("translate3d")
+          c.style.transform.startsWith("translate3d") &&
+          getComputedStyle(tileEl).cursor !== "none" &&
+          document.getAnimations().some((a) => a.animationName === "shard" && a.playState === "running")
         );
       });
-      check(cursor, "hovering a deck tile brings up the tile cursor, following the pointer");
+      check(cursor, "hovering a deck tile brings up the tile cursor beside the arrow, running");
     }
     await page.close();
   }
@@ -294,8 +312,14 @@ try {
       hover && moved === 0,
       `reduced motion: hovering a deck tile does not pan (hover media ${hover}, moved ${moved}px)`,
     );
-    const cursorOn = await page.evaluate(() => document.querySelector("[data-tile-cursor]") !== null);
-    check(!cursorOn, "reduced motion: the tile cursor never switches on, and the arrow stays");
+    const after = await page.evaluate(() => ({
+      cursor: document.querySelector(".tile-cursor")?.dataset.active,
+      pages: [...document.querySelectorAll("img.tile-shot-image")].filter((i) => i.getAttribute("src")).length,
+    }));
+    check(
+      after.cursor === "false" && after.pages === 0,
+      `reduced motion: no tile cursor and no whole-page fetch on hover (cursor ${after.cursor}, ${after.pages} loaded)`,
+    );
     await page.close();
   }
 
