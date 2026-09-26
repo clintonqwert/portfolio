@@ -797,13 +797,15 @@
     }
   }
 
+  /* Movement only. It used to fade up from 40% too, which left text in the
+     lower part of the screen below contrast while it was being read —
+     Lighthouse flagged the stack list on a phone. A rise without the fade
+     still reads as arriving, at full contrast throughout. */
   @keyframes rise {
     from {
-      opacity: 0.4;
       transform: translateY(14px);
     }
     to {
-      opacity: 1;
       transform: none;
     }
   }

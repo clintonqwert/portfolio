@@ -56,13 +56,11 @@ export function ThemeToggle({
       type="button"
       onClick={toggle}
       aria-pressed={theme === null ? undefined : isDark}
-      aria-label={
-        theme === null
-          ? "Toggle dark mode"
-          : isDark
-            ? "Switch to light mode"
-            : "Switch to dark mode"
-      }
+      // The name starts with the word on screen ("Dark"/"Light"), so a
+      // voice-control user can say what they see (WCAG 2.5.3, Label in
+      // Name). "Switch to light mode" under a visible "Dark" was flagged by
+      // Lighthouse on the mobile bar, the one place the word shows.
+      aria-label={isDark ? "Dark theme — switch to light" : "Light theme — switch to dark"}
       className={`inline-flex cursor-pointer items-center gap-2 rounded-sm px-2.5 py-1.5 font-mono text-3xs uppercase tracking-[0.08em] transition-colors duration-200 ${className ?? ""}`}
     >
       <svg

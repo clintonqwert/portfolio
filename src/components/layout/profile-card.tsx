@@ -27,7 +27,11 @@ export function ProfileCard() {
         alt={PORTRAIT.alt}
         width={208}
         height={208}
-        priority
+        // Not `priority`: that preloads it, and below lg the rail is hidden,
+        // so phones fetched a portrait they never show (Lighthouse,
+        // offscreen-images). Lazy and hidden means never fetched; on a desktop
+        // it is in view at load and arrives at once.
+        fetchPriority="high"
         className="portrait shrink-0 bg-sunk object-cover object-top shadow-[inset_0_0_0_1px_var(--color-rail-line)]"
       />
 
