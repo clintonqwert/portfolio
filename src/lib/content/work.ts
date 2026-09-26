@@ -10,9 +10,6 @@ import type { CaseStudy } from "@/types/content";
 const CASE_STUDIES: readonly CaseStudy[] = [
   {
     slug: "driftpilot",
-    // Carries the wide cell: it is the only study with an enforced budget to
-    // show, so it has the most that rewards the extra room.
-    feature: true,
     name: "DriftPilot",
     headline: "A performance budget that blocks the merge",
     summary:
@@ -125,6 +122,11 @@ const CASE_STUDIES: readonly CaseStudy[] = [
   },
   {
     slug: "tadvantage",
+    // Carries the wide cell, first on the deck: six and a half years on the
+    // platform is the longest and largest body of work here, and the
+    // automotive experience is what the roles this site is for hire on.
+    // Owner's decision, 2026-09-26. It was DriftPilot's, for its budget table.
+    feature: true,
     name: "Tadvantage",
     headline: "Six and a half years on a dealer platform, and the parts I put my name on",
     summary:
@@ -149,6 +151,16 @@ const CASE_STUDIES: readonly CaseStudy[] = [
     related: [
       { label: "myGarage \u2014 the feature that tested the data model", href: "/work/mygarage" },
       { label: "Luxury tax \u2014 a chapter of this platform", href: "/work/luxury-tax" },
+    ],
+    // Each restates a passage below: releases ("Where I sat in it"), luxury
+    // tax ("Pricing"), caching ("Performance"), SEO ("The unglamorous half"),
+    // IQ Badging. Ordered by weight; the deck shows as many as fit.
+    highlights: [
+      "Owned production releases, v3 through v12.7",
+      "Canada\u2019s luxury tax through every price surface, flagged dealer by dealer",
+      "Object Cache Pro on shared Redis clusters; page caching fleet-wide",
+      "The SEO foundation: bilingual inventory sitemaps, VIN-keyed schema",
+      "IQ Badging built once, as one Vue component on every vehicle card",
     ],
     stats: [
       { value: "1,682", label: "Commits \u2014 #1 of 100+ engineers" },

@@ -137,10 +137,16 @@ export interface CaseStudy {
   slug: string;
   /**
    * Gives this study the double-width cell on the dashboard, with a
-   * two-column interior. One study carries it — the one with the most
-   * verifiable detail. Equal cells would claim the three are equivalent.
+   * two-column interior, and puts it first. One study carries it. Equal
+   * cells would claim the three are equivalent.
    */
   feature?: boolean;
+  /**
+   * The wide cell's right column, for a feature study with no assertion
+   * table to put there: what was mine, each a short restatement of
+   * something the passages below already publish. Never a new claim.
+   */
+  highlights?: string[];
   /** Short name used in navigation and cards. */
   name: string;
   /** Sentence-case headline — the argument the case study makes. */

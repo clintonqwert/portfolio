@@ -6,6 +6,13 @@ import { AUTOTRADER_POINTS } from "@/lib/content/experience";
 import { FACTS, HEADLINE, LEDE } from "@/lib/content/profile";
 import type { CaseStudy, DeckPreview, Gap } from "@/types/content";
 
+/**
+ * The wide cell's right column, whatever fills it: ruled off above while the
+ * interior is stacked, beside it once it is two columns. Stacked, the column
+ * ran straight into the stack list with nothing between them.
+ */
+const FEATURE_ASIDE = "mt-3 border-t border-line pt-3 lg:mt-0 lg:border-l lg:border-t-0 lg:pl-4 lg:pt-0";
+
 /** "All four", not "All 4": the tile's call to action reads as a phrase. */
 const COUNT_WORDS = ["none", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine"];
 
@@ -42,6 +49,13 @@ export function Deck({
   historyRolesCount: number;
   historyPrinciplesCount: number;
 }) {
+  // The feature study first: the wide cell is the first cell, so it leads the
+  // grid on a desktop and the stack on a phone, and the tiles number in the
+  // order they are read. The sort is stable, so the rest keep their order.
+  const deckStudies = studies
+    .filter((s) => s.onDeck !== false)
+    .sort((a, b) => Number(b.feature === true) - Number(a.feature === true));
+
   return (
     <div className="flex flex-col p-3 lg:h-full">
       {/* The tile cursor, and loading each tile's whole-page preview on
@@ -113,7 +127,7 @@ export function Deck({
 
         {/* ── main ─────────────────────────────────────────────────────── */}
         <div className="deck min-h-0 flex-1 p-2 lg:[grid-template-rows:repeat(8,minmax(0,1fr))]">
-      {studies.filter((s) => s.onDeck !== false).map((study, i) => (
+      {deckStudies.map((study, i) => (
         <Tile
           key={study.slug}
           label={study.name}
@@ -215,12 +229,7 @@ export function Deck({
             {study.assertions ? (
               <dl
                 className={`space-y-1 font-mono text-2xs ${
-                  study.feature
-                    ? // The rule is vertical only once the interior is two columns.
-                      // Stacked, the assertions ran straight into the stack list
-                      // with nothing between them.
-                      "mt-3 border-t border-line pt-3 lg:mt-0 lg:border-l lg:border-t-0 lg:pl-4 lg:pt-0"
-                    : "mt-auto border-t border-line pt-3"
+                  study.feature ? FEATURE_ASIDE : "mt-auto border-t border-line pt-3"
                 }`}
               >
                 {study.assertions.rows
@@ -241,19 +250,44 @@ export function Deck({
               // Stats and the caveat are no longer either/or. Tadvantage has
               // tenure worth quoting and no adoption figures, and showing only
               // the second let its longest engagement lead with a negative.
-              <div className="mt-auto">
-                {study.stats.length > 0 ? (
-                  <div className="grid grid-cols-2 gap-3 border-t border-line pt-3">
-                    {study.stats.slice(0, 4).map((stat) => (
-                      <Figure key={stat.label} stat={stat} size="sm" />
+              // In the wide cell they sit at the foot of the right column,
+              // under what was mine there.
+              <div className={study.feature ? `flex min-h-0 flex-col ${FEATURE_ASIDE}` : "mt-auto"}>
+                {study.feature && study.highlights ? (
+                  <ul className="hidden space-y-1 text-xs leading-snug text-muted xl:block">
+                    {study.highlights.map((point, h) => (
+                      <li
+                        key={point}
+                        // Measured per width against what the stats and the
+                        // note leave: none at 1024, one from 1280, three from
+                        // 1440, all five from 1680. They drop out whole rather
+                        // than being clipped mid-sentence, and every one is on
+                        // the case study the tile opens.
+                        className={`gap-2 ${
+                          h === 0 ? "hidden xl:flex" : h < 3 ? "hidden wide:flex" : "hidden wider:flex"
+                        }`}
+                      >
+                        <span aria-hidden="true" // 7px centres a 3px dot on the first line of 0.78rem text.
+                          className="mt-[7px] size-[3px] shrink-0 rounded-full bg-accent" />
+                        {point}
+                      </li>
                     ))}
-                  </div>
+                  </ul>
                 ) : null}
-                {study.note ? (
-                  <p className="mt-3 border-t border-line pt-3 font-mono text-3xs leading-snug text-faint">
-                    {study.note}
-                  </p>
-                ) : null}
+                <div className={study.feature ? "mt-auto pt-3" : undefined}>
+                  {study.stats.length > 0 ? (
+                    <div className="grid grid-cols-2 gap-3 border-t border-line pt-3">
+                      {study.stats.slice(0, 4).map((stat) => (
+                        <Figure key={stat.label} stat={stat} size="sm" />
+                      ))}
+                    </div>
+                  ) : null}
+                  {study.note ? (
+                    <p className="mt-3 border-t border-line pt-3 font-mono text-3xs leading-snug text-faint">
+                      {study.note}
+                    </p>
+                  ) : null}
+                </div>
               </div>
             )}
           </div>
