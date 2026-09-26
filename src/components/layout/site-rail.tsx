@@ -5,7 +5,8 @@ import { ProfileCard } from "@/components/layout/profile-card";
 import { ThemeToggle } from "@/components/layout/theme-toggle";
 
 import type { NavEntry } from "@/lib/content/navigation";
-import { AVAILABILITY, CONTACT, CONTACT_HREF, NAME, RESUME } from "@/lib/content/profile";
+import { Availability, ContactLinks } from "@/components/layout/profile-details";
+import { NAME, RESUME } from "@/lib/content/profile";
 
 /**
  * The navigation rail. Fixed full-height chrome at ≥1024px, a horizontal bar
@@ -35,12 +36,7 @@ export function SiteRail({ links }: { links: NavEntry[] }) {
         </div>
 
         <div className="border-t border-rail-line pt-3">
-          {/* Availability, stated rather than buried — a reviewer should not
-              have to hunt for whether this person is open to work. */}
-          <p className="mb-3 flex items-center gap-2 meta text-rail-muted">
-            <span aria-hidden="true" className="size-[6px] shrink-0 rounded-full bg-pass" />
-            {AVAILABILITY}
-          </p>
+          <Availability className="mb-3" />
 
           <a
             href={RESUME.href}
@@ -51,36 +47,9 @@ export function SiteRail({ links }: { links: NavEntry[] }) {
             <span aria-hidden="true">↓</span>
           </a>
 
-          {/*
-            The site's argument is that every claim is checkable. These are how
-            a reader checks — they were previously only in JSON-LD, which is to
-            say invisible to the human being asked to verify.
-          */}
-          {/*
-            py-2 is a floor, not a rhythm choice: it is what keeps each link
-            above the 24px WCAG 2.2 target-size minimum at this type size. A
-            spacing-scale sweep once took it to py-1 — 23.3px — and only
-            Lighthouse caught it, because a token check cannot see geometry.
-          */}
-          <ul className="mt-2 font-mono text-3xs">
-            {(
-              [
-                [CONTACT_HREF.email, CONTACT.email],
-                [CONTACT_HREF.github, CONTACT.github],
-                [CONTACT_HREF.linkedin, CONTACT.linkedin],
-                [CONTACT_HREF.studio, CONTACT.studio],
-              ] as const
-            ).map(([href, label]) => (
-              <li key={href}>
-                <a
-                  href={href}
-                  className="block truncate py-2 text-rail-muted no-underline transition-colors duration-[var(--duration-fast)] ease-[var(--ease-out-quart)] hover:text-accent-bright"
-                >
-                  {label}
-                </a>
-              </li>
-            ))}
-          </ul>
+          <div className="mt-2">
+            <ContactLinks layout="stack" />
+          </div>
         </div>
       </div>
 

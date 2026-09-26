@@ -1,4 +1,5 @@
 import { Deck } from "@/components/home/deck";
+import { MobileProfile } from "@/components/layout/mobile-profile";
 import { JsonLd } from "@/components/shared/json-ld";
 import { DECK_PREVIEWS } from "@/lib/content/assets";
 import { AUTOTRADER_LEDE } from "@/lib/content/experience";
@@ -24,6 +25,9 @@ export default async function HomePage() {
   return (
     <>
       <JsonLd data={buildPersonJsonLd()} />
+      {/* Phones only: the rail's portrait, role and contacts, which the
+          slim mobile bar has no room for. */}
+      <MobileProfile />
       <Deck
         studies={studies}
         gaps={gaps}
