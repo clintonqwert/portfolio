@@ -90,6 +90,11 @@ const PAIRS = [
   ["rail-muted", "rail", 4.5],
   ["accent-bright", "rail", 4.5],
   ["canvas", "ink", 4.5],
+  // The sunk surface carries text too: the Open gaps tile and the table
+  // captions. Its gap statuses are `faint` at 10px, which measured 4.95:1 —
+  // passing, but unguarded until these rows existed.
+  ["faint", "sunk", 4.5],
+  ["muted", "sunk", 4.5],
 ];
 
 let failures = 0;

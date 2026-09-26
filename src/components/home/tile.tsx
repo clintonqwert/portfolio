@@ -1,9 +1,8 @@
-import Image from "next/image";
+import Image, { getImageProps } from "next/image";
 import Link from "next/link";
 
 import { cn } from "@/lib/utils";
-import type { ImageSlot } from "@/types/content";
-import type { Stat } from "@/types/content";
+import type { DeckPreview, Stat } from "@/types/content";
 
 /**
  * A dashboard tile.
@@ -29,7 +28,11 @@ export function Tile({
   cta?: string;
 }) {
   const head = (
-    <div className="flex items-baseline justify-between gap-2 border-b border-line px-4 py-2">
+    // Head and body share one inset at every width, so a tile's text lines
+    // up under its own title — they were 16px and 12px, a visible 4px step.
+    // 12px up to 1280, where the narrow cells are ~200px and each pixel of
+    // inset re-wraps a stat label; 16px above, as in the spacing reference.
+    <div className="flex items-baseline justify-between gap-2 border-b border-line px-3 py-2 xl:px-4">
       <span className="label flex min-w-0 items-center gap-2 text-ink">
         {/* The counter block, from the reference's page marker: ink with the
             number knocked out, rather than a faint grey numeral. */}
@@ -61,7 +64,7 @@ export function Tile({
   const body = (
     <>
       {head}
-      <div className="flex min-h-0 flex-1 flex-col px-3 py-3">{children}</div>
+      <div className="flex min-h-0 flex-1 flex-col px-3 py-3 xl:px-4">{children}</div>
     </>
   );
 
@@ -98,45 +101,82 @@ export function Figure({ stat, size = "md" }: { stat: Stat; size?: "sm" | "md" }
 }
 
 /**
- * A screenshot inside a tile.
+ * A screenshot inside a tile: a fixed window onto the top of a whole page,
+ * which pans down the page while the tile is hovered or keyboard-focused —
+ * a scroll preview of the site, returning to the top when the pointer leaves.
  *
- * The frame takes the image's own aspect ratio, so where the tile has room the
- * whole screen shows, uncropped. Where it does not, the frame is the one thing
- * in the tile allowed to give: it is a shrinkable flex item (`min-h-0`) and
- * the image crops from the bottom (`object-top`), because the top of a page is
- * the part that identifies it. The deck is exactly one viewport tall and a
- * tile cannot grow, so the picture adapts to the cell rather than the cell to
- * the picture.
+ * Every shot on the deck is the same height (`.tile-shot-frame`), set to the
+ * room the most crowded tile has, so the row reads as one set of windows
+ * rather than four pictures cropped to whatever each cell happened to leave.
+ * The frame may still shrink as a last resort at a viewport the deck was not
+ * measured at (`min-h-0`), so a tile can never be pushed past its cell.
  *
- * This replaced a fixed 88–132px strip, which cropped a 16:10 screen to a
- * letterbox slice at every width — the deck showed the top eighth of each site
- * and read as cut off. The parent must be a flex column for the shrink to
- * work; each caller also gates the shot behind the width at which its cell has
- * room for it at all.
+ * Two images, one on the other. At rest only the window loads: the page's
+ * top, which is all the frame shows. The whole page is an <img> that is always
+ * in the DOM but has no `src` until DeckPointer sees intent — a pointer or
+ * keyboard focus on the tile — and copies it in from `data-src`. It is always
+ * there because an element switched in from `display: none` has no previous
+ * style to transition from, so the pan would jump rather than glide; and it
+ * is not lazy-loaded because a lazy image in view loads anyway. The window is
+ * a crop of the page's top, so the page lands exactly over it.
+ *
+ * The pan runs at a steady pace rather than a fixed duration: a long page
+ * takes longer to pass than a short one, the way scrolling it would. It is a
+ * hover and focus enhancement only — off under reduced motion and on touch,
+ * where the whole page is never fetched at all.
  */
 export function TileShot({
-  image,
+  preview,
   className,
 }: {
-  image: ImageSlot;
+  preview: DeckPreview;
   className?: string;
 }) {
+  const { window: top, page } = preview;
+  // ~1.75s per image-width of page: about 230px/s through a 390px window.
+  const pan = Math.min(10, Math.max(2.5, (page.height / page.width) * 1.75));
+
+  const { props: whole } = getImageProps({
+    src: page.src,
+    alt: "",
+    width: page.width,
+    height: page.height,
+    sizes: SHOT_SIZES,
+    quality: 90,
+  });
+
   return (
-    <figure className={cn("min-h-0 shrink flex-col", className)}>
-      <div
-        className="min-h-0 shrink overflow-hidden bg-sunk shadow-[inset_0_0_0_1px_var(--color-line)]"
-        style={{ aspectRatio: `${image.width} / ${image.height}` }}
-      >
+    <figure
+      className={cn("min-h-0 shrink flex-col", className)}
+      style={{ "--pan": `${pan.toFixed(2)}s` } as React.CSSProperties}
+    >
+      <div className="tile-shot-frame">
         <Image
-          src={image.src}
-          alt={image.alt}
-          width={image.width}
-          height={image.height}
-          sizes="(min-width: 1920px) 480px, 360px"
-          className="h-full w-full object-cover object-top"
+          src={top.src}
+          alt={top.alt}
+          width={top.width}
+          height={top.height}
+          sizes={SHOT_SIZES}
+          quality={90}
+          className="tile-shot-window"
+        />
+        {/* The whole page, for the pan. No src until intent (see above); the
+            optimizer's srcset rides along in data attributes. Decorative
+            beside the window, which carries the description. */}
+        {/* eslint-disable-next-line @next/next/no-img-element -- deferred on purpose; next/image cannot hold a src back */}
+        <img
+          data-src={whole.src}
+          data-srcset={whole.srcSet}
+          sizes={whole.sizes}
+          width={whole.width}
+          height={whole.height}
+          alt=""
+          aria-hidden="true"
+          decoding="async"
+          className="tile-shot-image"
         />
       </div>
-      {image.isPlaceholder ? (
+      {top.isPlaceholder ? (
         <figcaption className="mt-0.5 shrink-0 meta text-faint">
           Screenshot pending
         </figcaption>
@@ -144,3 +184,12 @@ export function TileShot({
     </figure>
   );
 }
+
+/**
+ * Widest window at each width — the AutoTrader tile's, ~450px at 1728 and
+ * ~520px at 1920 — so no tile is handed a source narrower than it draws.
+ * Undersizing this once upscaled an 800px image into a 904-device-pixel
+ * window, which is most of what read as blur.
+ */
+const SHOT_SIZES =
+  "(min-width: 2400px) 760px, (min-width: 1920px) 540px, (min-width: 1680px) 470px, 320px";

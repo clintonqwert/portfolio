@@ -9,6 +9,10 @@
  *
  *  - The deck is one viewport: zero scroll at >=1024 x >=760, and none of the
  *    secondary-page chrome (scroll cue, chapter bar) on it.
+ *  - Every screenshot window on the deck is the same height. At rest no tile
+ *    has fetched its whole page and no cursor animation is running; hovering
+ *    a tile loads its page, pans it, and brings up the tile cursor beside an
+ *    arrow that stays.
  *  - Every id on every route is unique. Chapter ids come from headings; a
  *    duplicate would silently retarget the cue, the chapter bar and deep links.
  *  - The scroll cue shows on arrival, hides once scrolling starts, returns at
@@ -45,9 +49,21 @@ const STUDY = "/work/riflessi";
 const browser = await puppeteer.launch({
   executablePath: CHROME,
   headless: "new",
-  // --no-sandbox only in CI: Ubuntu 24.04 runners restrict the user
-  // namespaces Chrome's sandbox needs, and the pages are our own build.
-  args: ["--hide-scrollbars", "--disable-gpu", ...(process.env.CI ? ["--no-sandbox"] : [])],
+  args: [
+    "--hide-scrollbars",
+    "--disable-gpu",
+    // A hover-capable fine pointer on every machine. Headless Chrome on a CI
+    // runner has no pointing device and reports (hover: none), so the deck's
+    // hover-only pan was never enabled there: the pan check failed, and the
+    // reduced-motion "does not pan" check passed for the wrong reason. CDP's
+    // setEmulatedMedia ignores hover and pointer on that build — only the
+    // prefers-* features took — so this is set in Blink's own settings.
+    // (2 = hover, 4 = fine.)
+    "--blink-settings=primaryHoverType=2,availableHoverTypes=2,primaryPointerType=4,availablePointerTypes=4",
+    // --no-sandbox only in CI: Ubuntu 24.04 runners restrict the user
+    // namespaces Chrome's sandbox needs, and the pages are our own build.
+    ...(process.env.CI ? ["--no-sandbox"] : []),
+  ],
 });
 
 let failures = 0;
@@ -59,13 +75,17 @@ const check = (ok, what) => {
   }
 };
 
-/** Open a page with offsite requests dropped — analytics never resolve offline. */
+/**
+ * Open a page with offsite requests dropped — analytics never resolve offline.
+ * Hover and pointer come from the launch flags above; reduced motion is set
+ * per page, so a check that needs it says so.
+ */
 async function open(path, { width, height, reduced = false }) {
   const page = await browser.newPage();
   await page.setViewport({ width, height });
-  if (reduced) {
-    await page.emulateMediaFeatures([{ name: "prefers-reduced-motion", value: "reduce" }]);
-  }
+  await page.emulateMediaFeatures([
+    { name: "prefers-reduced-motion", value: reduced ? "reduce" : "no-preference" },
+  ]);
   await page.setRequestInterception(true);
   page.on("request", (r) => {
     const host = new URL(r.url()).host;
@@ -106,6 +126,78 @@ try {
     });
     check(r.main <= 1 && r.doc <= 1, `deck ${width}x${height} does not scroll (main +${r.main}px, page +${r.doc}px)`);
     check(r.chrome === 0, `deck ${width}x${height} has no scroll cue or chapter bar`);
+    await page.close();
+  }
+
+  // ── deck screenshots: one height, and a pan on hover ───────────────────
+  for (const [width, height] of [[1680, 1050], [1920, 1080]]) {
+    const page = await open("/", { width, height });
+    const heights = await page.evaluate(() =>
+      [...document.querySelectorAll(".tile-shot-frame")]
+        .filter((f) => f.offsetParent !== null)
+        .map((f) => Math.round(f.getBoundingClientRect().height)),
+    );
+    check(
+      heights.length === 4 && new Set(heights).size === 1,
+      `deck ${width}x${height} shows 4 screenshot windows of one height (${heights.join(", ")}px)`,
+    );
+
+    const rest = await page.evaluate(() => ({
+      pages: [...document.querySelectorAll("img.tile-shot-image")].filter((i) => i.getAttribute("src")).length,
+      shards: document
+        .getAnimations()
+        .filter((a) => a.animationName?.startsWith("shard") && a.playState === "running").length,
+    }));
+    check(rest.pages === 0, `deck ${width}x${height} fetches no whole-page preview at rest (${rest.pages} loaded)`);
+    check(rest.shards === 0, `deck ${width}x${height} runs no cursor animation at rest (${rest.shards} running)`);
+
+    if (width === 1920) {
+      const tile = await page.$('a.tile[href="/work/tadvantage"]');
+      await tile.hover();
+      const panned = await becomes(
+        page,
+        () => {
+          const img = document.querySelector('a.tile[href="/work/tadvantage"] .tile-shot-image');
+          return img && new DOMMatrix(getComputedStyle(img).transform).m42 < -20;
+        },
+        undefined,
+        3000,
+      );
+      const state = await page.evaluate(() => ({
+        hover: matchMedia("(hover: hover)").matches,
+        hovered: document.querySelector('a.tile[href="/work/tadvantage"]').matches(":hover"),
+        y: Math.round(
+          new DOMMatrix(
+            getComputedStyle(document.querySelector('a.tile[href="/work/tadvantage"] .tile-shot-image')).transform,
+          ).m42,
+        ),
+      }));
+      check(
+        panned,
+        `hovering a deck tile pans its screenshot (hover media ${state.hover}, tile hovered ${state.hovered}, moved ${state.y}px)`,
+      );
+
+      const loaded = await becomes(page, () => {
+        const img = document.querySelector('a.tile[href="/work/tadvantage"] img.tile-shot-image');
+        return img?.getAttribute("src") && img.complete && img.naturalWidth > 0;
+      });
+      check(loaded, "hovering a deck tile fetches its whole-page preview");
+
+      // The tile cursor: on, following, running its loop, and the arrow kept.
+      const box = await tile.boundingBox();
+      await page.mouse.move(box.x + box.width / 2, box.y + box.height / 2, { steps: 4 });
+      const cursor = await becomes(page, () => {
+        const c = document.querySelector(".tile-cursor");
+        const tileEl = document.querySelector('a.tile[href="/work/tadvantage"]');
+        return (
+          c?.dataset.active === "true" &&
+          c.style.transform.startsWith("translate3d") &&
+          getComputedStyle(tileEl).cursor !== "none" &&
+          document.getAnimations().some((a) => a.animationName === "shard" && a.playState === "running")
+        );
+      });
+      check(cursor, "hovering a deck tile brings up the tile cursor beside the arrow, running");
+    }
     await page.close();
   }
 
@@ -202,11 +294,40 @@ try {
     await page.close();
   }
 
+  // ── reduced motion: nothing loops, reveals or pans ─────────────────────
+  {
+    const page = await open("/", { width: 1920, height: 1080, reduced: true });
+    const tile = await page.$('a.tile[href="/work/tadvantage"]');
+    await tile.hover();
+    await new Promise((r) => setTimeout(r, 1200));
+    const { moved, hover } = await page.evaluate(() => {
+      const img = document.querySelector('a.tile[href="/work/tadvantage"] .tile-shot-image');
+      return {
+        moved: new DOMMatrix(getComputedStyle(img).transform).m42,
+        hover: matchMedia("(hover: hover)").matches,
+      };
+    });
+    // Only meaningful with hover available — otherwise "no pan" proves nothing.
+    check(
+      hover && moved === 0,
+      `reduced motion: hovering a deck tile does not pan (hover media ${hover}, moved ${moved}px)`,
+    );
+    const after = await page.evaluate(() => ({
+      cursor: document.querySelector(".tile-cursor")?.dataset.active,
+      pages: [...document.querySelectorAll("img.tile-shot-image")].filter((i) => i.getAttribute("src")).length,
+    }));
+    check(
+      after.cursor === "false" && after.pages === 0,
+      `reduced motion: no tile cursor and no whole-page fetch on hover (cursor ${after.cursor}, ${after.pages} loaded)`,
+    );
+    await page.close();
+  }
+
   // ── reduced motion ──────────────────────────────────────────────────────
   {
     const page = await open(STUDY, { width: 1440, height: 900, reduced: true });
     const moving = await page.evaluate(() =>
-      [".scroll-cue-bead", ".rise", ".enter", ".shot"]
+      [".scroll-cue-drop", ".rise", ".enter", ".shot", ".hero-word"]
         .map((sel) => [sel, document.querySelector(sel)])
         .filter(([, el]) => el && getComputedStyle(el).animationName !== "none")
         .map(([sel]) => sel),

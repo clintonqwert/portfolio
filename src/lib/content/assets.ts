@@ -1,6 +1,6 @@
 import "server-only";
 
-import type { ImageSlot } from "@/types/content";
+import type { DeckPreview, ImageSlot } from "@/types/content";
 
 export type { ImageSlot };
 
@@ -161,3 +161,80 @@ export const WORK_IMAGES: Record<string, ImageSlot> = {
     },
   },
 };
+
+/**
+ * Whole-page previews for the deck tiles, keyed by slug (AutoTrader, which has
+ * no slug, as "autotrader").
+ *
+ * A tile shows a fixed window onto the top of the page and pans down it on
+ * hover, like scrolling the site — so these are full-page captures rather
+ * than the 16:10 heroes above.
+ *
+ * 1200px wide at q82, downsampled from 2x sources. A whole desktop page in a
+ * ~450px window is nearly all fine text, so sharpness is the whole job: the
+ * first cut was 800px from 1x captures at q68, which the widest window had
+ * to upscale and which then lost a second round to the optimizer's q75 —
+ * that is what read as blur. TileShot asks for q90 (see next.config.ts).
+ *
+ *  - Tadvantage and AutoSync are the owner's full-page 2x originals, the
+ *    AutoSync one cropped at the right edge to keep its chat widget out.
+ *  - Riflessi was captured at 1440 wide and 2x in headless Chrome, in bands
+ *    stitched top to bottom — one page, contiguous — and cut at the end of
+ *    its gallery.
+ *  - DriftPilot is two cuts of the same full-page 2x capture, joined on the
+ *    black between them: the hero down to just above its stat line, then "What we
+ *    build" through the process section. Left out are the results ticker and
+ *    "The work." case results — the studio's own marketing figures, which the
+ *    screenshot rule above keeps off this site, pan or no pan.
+ */
+export const DECK_PREVIEWS: Record<string, DeckPreview> = {
+  driftpilot: preview("driftpilot", 2790, {
+    alt: "The DriftPilot studio site, from the hero down through its services and delivery process",
+    source: { label: "driftpilot.ca", href: "https://driftpilot.ca" },
+  }),
+  riflessi: preview("riflessi", 6800, {
+    alt: "The Riflessi Auto Care home page, from the 3D hero down through its services and the bay",
+    source: {
+      label: "riflessiautocare.vercel.app",
+      href: "https://riflessiautocare.vercel.app",
+    },
+  }),
+  tadvantage: preview("tadvantage", 2052, {
+    alt: "The tadvantage.ca home page, top to bottom",
+    source: TADVANTAGE_SITE,
+  }),
+  autotrader: preview("autosync", 1881, {
+    alt: "The AutoSync Motors demo dealer site, top to bottom",
+    source: { label: "autosyncmotors.com", href: "https://www.autosyncmotors.com/" },
+  }),
+};
+
+/**
+ * One deck preview from its two files: `<name>-window.webp`, the page's first
+ * 780px (at 1200 wide, a 0.65 ratio — taller than any window the deck draws,
+ * 268×173 at 1440 being the squarest), and `<name>-preview.webp`, the page.
+ * At rest a tile shows only the window: measured at 1728@2x, fetching all four
+ * whole pages up front cost 598 kB for the ~130px strips on show.
+ */
+function preview(
+  name: string,
+  pageHeight: number,
+  meta: Pick<ImageSlot, "alt" | "source">,
+): DeckPreview {
+  return {
+    window: {
+      src: `/work/${name}-window.webp`,
+      width: 1200,
+      height: 780,
+      isPlaceholder: false,
+      ...meta,
+    },
+    page: {
+      src: `/work/${name}-preview.webp`,
+      width: 1200,
+      height: pageHeight,
+      isPlaceholder: false,
+      ...meta,
+    },
+  };
+}

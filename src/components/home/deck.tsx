@@ -1,8 +1,13 @@
 import { SkillMarquee } from "@/components/home/skill-marquee";
 import { Figure, Tile, TileShot } from "@/components/home/tile";
+import { DeckPointer } from "@/components/home/deck-pointer";
+import { GapStatus } from "@/components/shared/gap-status";
 import { AUTOTRADER_POINTS } from "@/lib/content/experience";
 import { FACTS, HEADLINE, LEDE } from "@/lib/content/profile";
-import type { CaseStudy, Gap, ImageSlot } from "@/types/content";
+import type { CaseStudy, DeckPreview, Gap } from "@/types/content";
+
+/** "All four", not "All 4": the tile's call to action reads as a phrase. */
+const COUNT_WORDS = ["none", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine"];
 
 /**
  * The dashboard.
@@ -19,8 +24,7 @@ export function Deck({
   gaps,
   skills,
   autoTraderLede,
-  workImages,
-  autoSyncImage,
+  previews,
   historyLede,
   historyRolesCount,
   historyPrinciplesCount,
@@ -29,16 +33,20 @@ export function Deck({
   gaps: Gap[];
   skills: string[];
   autoTraderLede: string;
-  /** Case-study screenshots, keyed by slug. */
-  workImages: Record<string, ImageSlot>;
-  /** AutoSync screenshot for the AutoTrader tile. */
-  autoSyncImage: ImageSlot;
+  /**
+   * Whole-page screenshots the tiles window onto and pan down on hover, keyed
+   * by slug — AutoTrader, which has none, as "autotrader".
+   */
+  previews: Record<string, DeckPreview>;
   historyLede: string;
   historyRolesCount: number;
   historyPrinciplesCount: number;
 }) {
   return (
     <div className="flex flex-col p-3 lg:h-full">
+      {/* The tile cursor, and loading each tile's whole-page preview on
+          intent. Watches this element. */}
+      <DeckPointer />
       {/*
         One panel instead of three: the headline, the marquee and the grid
         used to be independent boxes with a gap-2 seam between each, which
@@ -185,9 +193,9 @@ export function Deck({
                 cells not until 1680. Below those widths a shot would be a
                 sliver.
               */}
-              {workImages[study.slug] ? (
+              {previews[study.slug] ? (
                 <TileShot
-                  image={workImages[study.slug]!}
+                  preview={previews[study.slug]!}
                   className={
                     study.feature
                       ? "mt-3 hidden wide:flex"
@@ -285,13 +293,14 @@ export function Deck({
             ))}
           </ul>
           {/* autosyncmotors.com — the public demo of the platform these five
-              years were spent on. Gated like the others: this cell has 32px
-              spare at 1440 and 127px at 1680, so it only appears at the width
-              that can actually hold it. */}
-          <TileShot
-            image={autoSyncImage}
-            className="mt-3 hidden wider:flex"
-          />
+              years were spent on. Gated like the others: this cell only has
+              room for a window worth showing from 1680. */}
+          {previews.autotrader ? (
+            <TileShot
+              preview={previews.autotrader}
+              className="mt-3 hidden wider:flex"
+            />
+          ) : null}
 
           <div className="mt-auto flex gap-4 border-t border-line pt-3">
             <Figure stat={{ value: "5 yrs", label: "Jan 2020 – Jun 2025" }} size="sm" />
@@ -367,44 +376,30 @@ export function Deck({
           label="Open gaps"
           index="07"
           href="/gaps"
-          cta="All three"
+          cta={`All ${COUNT_WORDS[gaps.length] ?? gaps.length}`}
           className="bg-sunk lg:col-start-5 lg:col-end-13 lg:row-start-7 lg:row-end-9"
         >
           {/*
-            Gap, consequence, fix — the same three parts the table on /gaps
+            Gap, status, consequence — the same parts the table on /gaps
             carries, so the tile is a summary of that page rather than a
-            different claim. The consequences wrap rather than truncate: they
-            were clamped to one line with `truncate` while a third of the tile
-            sat empty below them, which quietly did the one thing PRODUCT.md
-            says this tile must never do.
+            different claim. Four across at every desktop width: the tile is
+            two short grid rows, and a 2×2 of name-plus-status needed nearly
+            twice the height it has below 1680 (measured: +26 to +42px).
 
-            Below `wide` this row is one grid row instead of the four it used
-            to get, and three columns at 1024px is only ~150px each — narrow
-            enough that even a short title can wrap to two lines. Titles alone
-            fit that budget; the consequence only joins once `wide` gives each
-            column roughly 265px, which is what actually needed the room, not
-            the column count.
+            Consequences join only where they fit with a visible ellipsis:
+            two lines from `wide`, three from `wider`. Below `wide` the names
+            and their status are what fit honestly — the full rows are one
+            click away.
           */}
-          <ul className="grid flex-1 grid-cols-1 gap-x-5 gap-y-0 overflow-hidden wide:grid-cols-3 wide:gap-y-2">
+          <ul className="grid flex-1 grid-cols-2 content-start gap-x-5 gap-y-2.5 overflow-hidden lg:grid-cols-4">
             {gaps.map((gap) => (
-              <li key={gap.gap} className="flex items-baseline gap-2.5">
-                <span
-                  aria-hidden="true"
-                  className="mt-1.5 size-1.5 shrink-0 rounded-full bg-signal"
-                />
-                <span className="min-w-0">
-                  <span className="font-mono text-2xs text-signal">{gap.gap}</span>
-                  <span className="hidden line-clamp-2 text-xs leading-tight text-muted wide:block wide:line-clamp-3 wide:leading-snug wider:line-clamp-none">
-                    {gap.consequence}
-                  </span>
-                  <span className="mt-0.5 hidden text-xs leading-snug text-faint wider:block">
-                    {/* Labelled, because an unlabelled third line reads as more
-                        consequence rather than as the plan. */}
-                    <span className="font-mono text-2xs uppercase tracking-[0.08em] text-accent">
-                      Fix{" "}
-                    </span>
-                    {gap.fix}
-                  </span>
+              <li key={gap.gap} className="min-w-0">
+                <span className="block font-mono text-2xs leading-snug text-signal">
+                  {gap.gap}
+                </span>
+                <GapStatus status={gap.status} className="mt-1 text-faint" />
+                <span className="mt-1 hidden text-xs leading-snug text-muted wide:line-clamp-2 wider:line-clamp-3">
+                  {gap.consequence}
                 </span>
               </li>
             ))}

@@ -37,11 +37,16 @@ export async function getPrinciples(): Promise<Principle[]> {
 }
 
 /**
- * Unfixed weaknesses, published deliberately.
+ * Unfixed weaknesses, published deliberately: a gap you have named is a plan,
+ * and a gap you have hidden is a liability. Each carries its status, set by
+ * the owner (2026-09-25): in development now, or on the roadmap.
  *
- * These are recorded in the repositories with their consequences attached. They
- * are on this site for the same reason they are in the repos: a gap you have
- * named is a plan, and a gap you have hidden is a liability.
+ * Provenance differs, and /gaps' lede is worded to stay true of every row. The
+ * first three are recorded in the repositories with their consequences
+ * attached. "No CMS yet" joined on 2026-09-25 from the owner's roadmap: what
+ * backs it is ProjectOS recording the CMS as absent by decision and DriftPilot
+ * keeping an inactive adapter behind its typed accessors so the contract
+ * exists before the need does — not a gap entry in a repository yet.
  */
 export async function getGaps(): Promise<Gap[]> {
   return [
@@ -50,18 +55,28 @@ export async function getGaps(): Promise<Gap[]> {
       consequence:
         "Zero automated coverage in either project. The lead-capture path — the only revenue path — has no regression tests.",
       fix: "Test the revenue path first: Zod schema, spam gates, and the webhook client’s retry, backoff and timeout behaviour.",
+      status: "roadmap",
     },
     {
       gap: "No error monitoring",
       consequence:
         "On total webhook failure a lead survives only as a log line, while the visitor still sees a thank-you page. Silent loss.",
       fix: "Fallback email queue on total failure, plus alerting. Open TODO in the webhook client since day one.",
+      status: "in-development",
     },
     {
       gap: "No perf gate on the second site",
       consequence:
         "Riflessi ships without the Lighthouse budget that protects DriftPilot, so regressions reach the live site undetected.",
-      fix: "Port the existing config into its CI. Deliberately deferred for launch, recorded with its consequence.",
+      fix: "Port the existing config into its CI. Deferred for launch and recorded with its consequence; now being ported.",
+      status: "in-development",
+    },
+    {
+      gap: "No CMS yet",
+      consequence:
+        "Content lives in typed accessors in the repository, so a copy change ships as a pull request and a deploy.",
+      fix: "Switch on the CMS adapter DriftPilot already keeps behind those accessors: the contract exists, so only the content source changes.",
+      status: "roadmap",
     },
   ];
 }

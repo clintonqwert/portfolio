@@ -31,6 +31,12 @@ export interface Gap {
   gap: string;
   consequence: string;
   fix: string;
+  /**
+   * Where the fix stands. A gap is not a confession that stops there: each
+   * one is either being worked on now or scheduled, and saying which is the
+   * difference between a list of weaknesses and a plan.
+   */
+  status: "in-development" | "roadmap";
 }
 
 /** One position in the track record. */
@@ -69,6 +75,16 @@ export interface ImageSlot {
    * picture of a claim.
    */
   source?: { label: string; href: string };
+}
+
+/**
+ * A deck tile's screenshot: the top of a page, shown at rest, and the whole
+ * page, fetched only when a reader shows intent to pan it. The window is a
+ * crop of the page's top, so the two line up and the swap cannot be seen.
+ */
+export interface DeckPreview {
+  window: ImageSlot;
+  page: ImageSlot;
 }
 
 /**

@@ -1,5 +1,6 @@
 import Link from "next/link";
 
+import { cn } from "@/lib/utils";
 import type { PageLink } from "@/types/content";
 
 /**
@@ -59,7 +60,10 @@ export function PageClose({
             </Link>
           ) : null}
 
-          <div className="mt-10 grid gap-10 md:grid-cols-2">
+          {/* Spaced from the next-page block above it — and only then: on the
+              last page of the reading path there is none, and the margin
+              was a gap above nothing. */}
+          <div className={cn("grid gap-10 md:grid-cols-2", next ? "mt-10" : "")}>
             {prev ? (
               <div>
                 <p className="label text-faint">Previous</p>

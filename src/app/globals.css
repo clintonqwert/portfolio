@@ -416,9 +416,16 @@
   }
 
   /*
-    The same face at normal width for running headlines. The site's headline is
-    a full sentence; setting that in expanded caps would shout rather than
-    speak, which the reference never does — it reserves caps for single words.
+    The same face at normal width for running headlines. The deck's headline
+    is a full sentence, and setting that in expanded caps would shout rather
+    than speak — so the deck keeps it here, in sentence case.
+
+    The one deliberate exception is the secondary-page hero (.hero-title in
+    article.css): capitals at a medium weight, after architech-template, by
+    the owner's decision on 2026-09-25. It earns the caps by being the only
+    thing on its screen, set large with room around it; a sentence in caps
+    inside a dense dashboard is the case this rule is about. Recorded in
+    PRODUCT.md, so neither side gets "fixed" back.
   */
   .display-tight {
     font-family: var(--font-display);
@@ -458,6 +465,206 @@
     .portrait {
       width: 203px;
       height: 203px;
+    }
+  }
+
+  /*
+    A deck tile's screenshot: a fixed window onto a whole page.
+
+    One height for every shot on the deck: the room the most crowded tile has
+    left, so every window matches the smallest and none is cut to its own
+    letterbox. Measured, not chosen — the deck's rows are fractions of the
+    viewport, so that room grows with viewport height at half a pixel per
+    pixel, and a single px value was either tiny on a large screen or too
+    tall on a short one:
+
+      1440–1679 wide  only DriftPilot shows   room = 50dvh − 277px
+      >=1680 wide     all four; AutoTrader    room = 50dvh − 432px
+                      is the most crowded
+
+    Those fit every measurement to the pixel (1440×800…1000, 1680×900…1200,
+    1800×1000, 1920×960…1200; 2560-wide screens have ~19px more), re-taken
+    after the 16px tile gutters and insets went in, which cost every window
+    2px. The formulas below leave 2px of slack. Re-take them with
+    `npm run measure:shots` whenever the deck's content or spacing changes;
+    check:behaviour fails if the windows stop matching. The 48px floor keeps a window worth
+    looking through; below it — a >=1680 viewport under ~956px tall — the
+    frame's `min-height: 0` lets the most crowded tile's window shrink under
+    the others rather than push the tile past its cell.
+
+    Size containment makes the frame a query container, so the pan below can
+    stop the page's bottom edge exactly at the window's bottom (100cqh) even
+    if the frame has shrunk. The outline is inset over the image — a hairline
+    drawn on top, where an inset shadow would sit hidden underneath it.
+  */
+  .tile-shot-frame {
+    --shot-h: clamp(48px, calc(50dvh - 279px), 360px);
+    position: relative;
+    height: var(--shot-h);
+    min-height: 0;
+    flex-shrink: 1;
+    overflow: hidden;
+    container-type: size;
+    background-color: var(--color-sunk);
+    outline: var(--surface-border) solid var(--color-line);
+    outline-offset: calc(var(--surface-border) * -1);
+  }
+
+  /* --breakpoint-wider (105rem): where the three narrow tiles show theirs. */
+  @media (min-width: 105rem) {
+    .tile-shot-frame {
+      --shot-h: clamp(48px, calc(50dvh - 434px), 360px);
+    }
+  }
+
+  /* At rest: the page's top, which is all the window shows. */
+  .tile-shot-window {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+
+  /* The whole page, laid exactly over the window (the window is a crop of
+     its top) and empty until DeckPointer gives it a source on intent. */
+  .tile-shot-image {
+    position: absolute;
+    left: 0;
+    top: 0;
+    display: block;
+    width: 100%;
+    height: auto;
+    /* Leaving: back to the top briskly, like letting go of a scroll. */
+    transition: transform var(--duration-slow) var(--ease-out-quart);
+  }
+
+  /*
+    Hovered or keyboard-focused: pan down the whole page at a steady pace
+    (--pan, set per image from its length). A short pause first, so a pointer
+    crossing the deck on its way somewhere else does not set every tile off.
+    Hover-capable pointers only: on touch there is no hover, and a tap opens
+    the case study, which shows the page properly anyway.
+  */
+  @media (hover: hover) and (prefers-reduced-motion: no-preference) {
+    a.tile:hover .tile-shot-image,
+    a.tile:focus-visible .tile-shot-image {
+      transform: translateY(calc(-100% + 100cqh));
+      transition: transform var(--pan, 4s) cubic-bezier(0.45, 0.05, 0.55, 0.95) 160ms;
+    }
+  }
+
+  /*
+    The cursor over a deck tile (TileCursor): a square that shatters into a
+    4×4 grid, spreads, flies apart and settles back into one, on a 1.64s
+    loop — the timing of the image-hover cursor on architech-template.
+    Ink squares with a paper hairline, drawn as a drop-shadow on the group
+    so the packed square has no seams: readable on a tile's paper and on a
+    dark screenshot alike, in both themes, without a raw colour.
+
+    It grows in with an exponential ease over a second and shrinks away
+    faster, as the reference does, riding beside the arrow rather than
+    replacing it (DeckPointer) — an enlarged or high-contrast system cursor
+    is someone's accessibility setting, and a tile is no place to take it.
+    The loop is paused unless the cursor is showing: sixteen squares
+    animating forever behind zero opacity was work on every visit, touch
+    devices included, for nothing on screen.
+  */
+  .tile-cursor {
+    position: fixed;
+    left: 0;
+    top: 0;
+    z-index: var(--z-overlay);
+    width: 0;
+    height: 0;
+    pointer-events: none;
+  }
+
+  .tile-cursor-burst {
+    position: absolute;
+    left: 0;
+    top: 0;
+    filter: drop-shadow(0 0 1px var(--color-canvas));
+    transform: scale(0);
+    opacity: 0;
+    transition:
+      transform 450ms var(--ease-out-quart),
+      opacity var(--duration-fast) var(--ease-out-quart);
+  }
+
+  .tile-cursor[data-active="true"] .tile-cursor-burst {
+    transform: scale(1);
+    opacity: 1;
+    transition:
+      transform 1000ms cubic-bezier(0.16, 1, 0.3, 1),
+      opacity 500ms cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  /* 8.5px cells on an 8px pitch: the half-pixel overlap keeps anti-aliasing
+     from drawing seams through the packed square. */
+  .tile-cursor-shard {
+    position: absolute;
+    left: -4.25px;
+    top: -4.25px;
+    width: 8.5px;
+    height: 8.5px;
+    background-color: var(--color-ink);
+    animation: shard 1.64s cubic-bezier(0.45, 0, 0.55, 1) infinite;
+    animation-play-state: paused;
+  }
+
+  .tile-cursor[data-active="true"] .tile-cursor-shard {
+    animation-play-state: running;
+  }
+
+  .tile-cursor-main {
+    animation-name: shard-main;
+  }
+
+  /* Packed small → packed large → gaps open → spread with jitter → flung
+     out to nothing. At 0% the sixteen half-size cells make one 16px square;
+     the surviving shard ends the cycle as exactly that square, so the loop
+     has no seam. */
+  @keyframes shard {
+    0% {
+      transform: translate(calc(var(--x) * 4px), calc(var(--y) * 4px)) scale(0.5);
+    }
+    20% {
+      transform: translate(calc(var(--x) * 8px), calc(var(--y) * 8px)) scale(1);
+    }
+    30% {
+      transform: translate(calc(var(--x) * 10px), calc(var(--y) * 10px)) scale(0.85);
+    }
+    48% {
+      transform: translate(calc(var(--x) * 14px + var(--jx)), calc(var(--y) * 14px + var(--jy)))
+        scale(0.75);
+    }
+    72%,
+    100% {
+      transform: translate(
+          calc(var(--x) * 24px + var(--jx) * 2),
+          calc(var(--y) * 24px + var(--jy) * 2)
+        )
+        scale(0);
+    }
+  }
+
+  @keyframes shard-main {
+    0% {
+      transform: translate(calc(var(--x) * 4px), calc(var(--y) * 4px)) scale(0.5);
+    }
+    20% {
+      transform: translate(calc(var(--x) * 8px), calc(var(--y) * 8px)) scale(1);
+    }
+    30% {
+      transform: translate(calc(var(--x) * 10px), calc(var(--y) * 10px)) scale(0.85);
+    }
+    48% {
+      transform: translate(calc(var(--x) * 14px), calc(var(--y) * 14px)) scale(0.75);
+    }
+    72% {
+      transform: translate(0, 0) scale(1.4) rotate(45deg);
+    }
+    100% {
+      transform: translate(0, 0) scale(2) rotate(90deg);
     }
   }
 
@@ -577,6 +784,18 @@
   .deck {
     display: grid;
     gap: calc(var(--spacing) * 3);
+  }
+
+  /*
+    16px gutters from 1280, where the deck has the room to spend on air
+    between tiles. At 1024 the same 4px more per gap cost ~28px across the
+    grid's eight rows, and the narrow case-study cells, which had two lines
+    of summary to spare, clipped by up to 19px. 12px there.
+  */
+  @media (min-width: 1280px) {
+    .deck {
+      gap: calc(var(--spacing) * 4);
+    }
   }
 
   @media (min-width: 1024px) {

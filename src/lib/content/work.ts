@@ -151,13 +151,6 @@ const CASE_STUDIES: readonly CaseStudy[] = [
         paragraphs: [
           "Tadvantage is the WordPress multisite platform behind Convertus dealer websites \u2014 Project Achilles on the inside, which is the name anyone who worked on it will recognise. It carries ten OEM and dealer-group themes and thirty-five-plus custom plugins covering inventory, showroom, pricing, SEO, integrations and analytics, with Vue on the interactive surfaces and PHP underneath. Convertus is part of Trader Corporation, the company behind AutoTrader.ca.",
         ],
-        figure: {
-          image: TADVANTAGE_FEATURES_IMAGE,
-          // The figures in the grid are the product site's marketing, not
-          // this site's claims — the caption says whose they are.
-          caption:
-            "The feature list the website packages are sold on, in the product site\u2019s own words and numbers. My Garage is the myGarage case study.",
-        },
       },
       {
         heading: "Where I sat in it",
@@ -171,6 +164,21 @@ const CASE_STUDIES: readonly CaseStudy[] = [
         paragraphs: [
           "A price appears in more places than anyone expects: four search-result card versions, the vehicle detail page, the quick view, the inventory carousel, and a calculator with cash, finance and lease tabs. If any one of them disagrees with another, the customer stops trusting the number and the dealer carries the compliance risk. I built Canada\u2019s federal luxury tax through all of them, behind a feature flag so it could go out dealer by dealer.",
         ],
+      },
+      {
+        // From the owner's own account of the work. What IQ Badging is comes
+        // from the product site's public feature list, shown in the figure.
+        heading: "IQ Badging, one component on every card",
+        paragraphs: [
+          "AutoTrader.ca IQ Badging marks a vehicle as a Good Price or a Great Price against the market, on the search results and on the vehicle detail page. I integrated the newly available AutoTrader data behind it, then built the badge once, as a Vue component, so the same badge from the same data renders on every vehicle card the platform draws \u2014 in different places across the site, and inside different components. I added WordPress options to configure it.",
+        ],
+        figure: {
+          image: TADVANTAGE_FEATURES_IMAGE,
+          // The figures in the grid are the product site's marketing, not
+          // this site's claims — the caption says whose they are.
+          caption:
+            "AutoTrader.ca IQ Badging and My Garage among the features the website packages are sold on, in the product site\u2019s own words and numbers. My Garage is the myGarage case study.",
+        },
       },
       {
         heading: "Performance",
