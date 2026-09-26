@@ -1,6 +1,7 @@
 import Image, { getImageProps } from "next/image";
 import Link from "next/link";
 
+import { media } from "@/lib/design-tokens";
 import { cn } from "@/lib/utils";
 import type { DeckPreview, Stat } from "@/types/content";
 
@@ -201,7 +202,8 @@ export function TileShot({
  * Widest window at each width — the AutoTrader tile's, ~450px at 1728 and
  * ~520px at 1920 — so no tile is handed a source narrower than it draws.
  * Undersizing this once upscaled an 800px image into a 904-device-pixel
- * window, which is most of what read as blur.
+ * window, which is most of what read as blur. Stacked, the window spans the
+ * tile, so it tracks the viewport; 56px under-counts the padding around it
+ * (64px), which errs toward the sharper source, never the softer one.
  */
-const SHOT_SIZES =
-  "(max-width: 1023px) calc(100vw - 56px), (min-width: 2400px) 760px, (min-width: 1920px) 540px, (min-width: 1680px) 470px, 320px";
+const SHOT_SIZES = `${media.stacked} calc(100vw - 56px), (min-width: 2400px) 760px, (min-width: 1920px) 540px, (min-width: 1680px) 470px, 320px`;

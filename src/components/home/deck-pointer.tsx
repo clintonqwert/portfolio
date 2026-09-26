@@ -2,6 +2,8 @@
 
 import { useEffect, useRef } from "react";
 
+import { media } from "@/lib/design-tokens";
+
 /**
  * The deck's pointer behaviour, in one small island mounted as a child of the
  * deck and watching its parent:
@@ -34,8 +36,10 @@ export function DeckPointer() {
 
     const canPan = window.matchMedia("(hover: hover) and (prefers-reduced-motion: no-preference)");
     const fine = window.matchMedia("(pointer: fine)");
-    // The phone pan (see .tile-shot-frame): scroll-driven, below lg.
-    const scrollPan = window.matchMedia("(max-width: 1023px) and (prefers-reduced-motion: no-preference)");
+    // The phone pan (see .tile-shot-frame): scroll-driven, below lg. The same
+    // three conditions as the CSS that runs it — width, motion, support — so
+    // no page is fetched that will not pan.
+    const scrollPan = window.matchMedia(`${media.stacked} and (prefers-reduced-motion: no-preference)`);
     const timelines = CSS.supports("animation-timeline: view()");
 
     let detachPointer: (() => void) | undefined;
@@ -155,7 +159,7 @@ function loadPreview(tile: Element) {
 
 function load(img: HTMLImageElement) {
   if (!img.dataset.src) return;
-  const narrow = window.matchMedia("(max-width: 1023px)").matches;
+  const narrow = window.matchMedia(media.stacked).matches;
   const srcset = narrow ? img.dataset.srcsetNarrow : img.dataset.srcset;
   if (srcset) img.srcset = srcset;
   img.src = img.dataset.src;

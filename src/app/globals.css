@@ -534,15 +534,20 @@
     window is fully on screen. Scroll-driven, so there is no script and no
     listener; where the timeline is unsupported the window simply stays put,
     showing the page's top.
+
+    (width < 64rem) is Tailwind's lg, and media.stacked in design-tokens.ts:
+    DeckPointer loads the pages on that constant, so the two must agree —
+    three sites here, one there. In rem, not px, so they move with the lg:
+    utilities for a reader with a larger default font.
   */
-  @media (max-width: 1023px) {
+  @media (width < 64rem) {
     .tile-shot-frame {
       --shot-h: clamp(160px, 56vw, 300px);
       view-timeline: --shot block;
     }
   }
 
-  @media (max-width: 1023px) and (prefers-reduced-motion: no-preference) {
+  @media (width < 64rem) and (prefers-reduced-motion: no-preference) {
     @supports (animation-timeline: view()) {
       .tile-shot-image {
         animation: shot-scroll linear both;
@@ -577,9 +582,10 @@
     (--pan, set per image from its length). A short pause first, so a pointer
     crossing the deck on its way somewhere else does not set every tile off.
     Hover-capable pointers only: on touch there is no hover, and a tap opens
-    the case study, which shows the page properly anyway.
+    the case study, which shows the page properly anyway. From lg only (see
+    media.stacked), so a narrow window with a mouse gets one pan, not two.
   */
-  @media (min-width: 1024px) and (hover: hover) and (prefers-reduced-motion: no-preference) {
+  @media (width >= 64rem) and (hover: hover) and (prefers-reduced-motion: no-preference) {
     a.tile:hover .tile-shot-image,
     a.tile:focus-visible .tile-shot-image {
       transform: translateY(calc(-100% + 100cqh));

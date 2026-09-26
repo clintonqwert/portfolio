@@ -21,7 +21,10 @@
  *  - The chapter bar appears once the hero has gone and names the chapter.
  *  - On a phone the overview carries the rail's profile — portrait, role and
  *    every contact link — and every work tile shows its screenshot, which
- *    loads as it nears the viewport and pans as it scrolls past.
+ *    loads as it nears the viewport and pans as it scrolls past. The same at
+ *    1023px, and at 1100px with a 20px default font, where the rem breakpoint
+ *    still stacks the tiles: layout, pan and loader agree on where it ends.
+ *  - A screenshot the deck hides at its width is never fetched.
  *  - Under prefers-reduced-motion nothing loops or reveals.
  *  - Keyboard focus is visible inside every ink block. The ring is accent and
  *    accent is ink, so inside a chip it once drew ink on ink — identical
@@ -83,9 +86,15 @@ const check = (ok, what) => {
  * Hover and pointer come from the launch flags above; reduced motion is set
  * per page, so a check that needs it says so.
  */
-async function open(path, { width, height, reduced = false }) {
+async function open(path, { width, height, reduced = false, font }) {
   const page = await browser.newPage();
   await page.setViewport({ width, height });
+  // A reader's default font size, as a browser setting: rem media queries
+  // follow it, px ones do not.
+  if (font) {
+    const cdp = await page.createCDPSession();
+    await cdp.send("Page.setFontSizes", { fontSizes: { standard: font } });
+  }
   await page.emulateMediaFeatures([
     { name: "prefers-reduced-motion", value: reduced ? "reduce" : "no-preference" },
   ]);
@@ -301,9 +310,20 @@ try {
     await page.close();
   }
 
-  // ── the overview on a phone: profile, and scroll-driven screenshots ─────
-  for (const reduced of [false, true]) {
-    const page = await open("/", { width: 390, height: 844, reduced });
+  // ── the overview stacked: profile, and scroll-driven screenshots ───────
+  // A phone, and the edge of the stacked layout from both sides of its
+  // breakpoint: 1023px, and 1100px at a 20px default font, where the rem
+  // breakpoint (64rem = 1280px there) still stacks the tiles. The layout
+  // comes from the lg: utilities, the pan from globals.css and the loader
+  // from DeckPointer; all three have to agree on where "stacked" ends.
+  for (const { width, height, font, reduced = false } of [
+    { width: 390, height: 844 },
+    { width: 390, height: 844, reduced: true },
+    { width: 1023, height: 800 },
+    { width: 1100, height: 800, font: 20 },
+  ]) {
+    const page = await open("/", { width, height, reduced, font });
+    const at = `${width}px${font ? ` at a ${font}px default font` : ""}`;
     if (!reduced) {
       const profile = await page.evaluate(() => {
         const card = document.querySelector('section[aria-label="Profile"]');
@@ -316,12 +336,12 @@ try {
       });
       check(
         profile.shown && profile.portrait && profile.links === 4,
-        `phone overview shows the profile: portrait and ${profile.links} contact links`,
+        `stacked overview (${at}) shows the profile: portrait and ${profile.links} contact links`,
       );
       const shots = await page.evaluate(
         () => [...document.querySelectorAll(".tile-shot-frame")].filter((f) => f.offsetParent !== null).length,
       );
-      check(shots === 4, `phone overview shows all 4 work screenshots (${shots})`);
+      check(shots === 4, `stacked overview (${at}) shows all 4 work screenshots (${shots})`);
     }
 
     // Bring the first shot up the screen and see whether its page loads and pans.
@@ -343,11 +363,11 @@ try {
         return img.complete && img.naturalWidth > 0 && new DOMMatrix(getComputedStyle(img).transform).m42 < -20;
       });
       const s = await state();
-      check(panned, `phone: scrolling a tile loads its page and pans it (loaded ${s.loaded}, moved ${s.y}px)`);
+      check(panned, `stacked (${at}): scrolling a tile loads its page and pans it (loaded ${s.loaded}, moved ${s.y}px)`);
     } else {
       await new Promise((r) => setTimeout(r, 800));
       const s = await state();
-      check(!s.loaded && s.y === 0, `phone, reduced motion: no page fetch and no pan (loaded ${s.loaded}, moved ${s.y}px)`);
+      check(!s.loaded && s.y === 0, `stacked (${at}), reduced motion: no page fetch and no pan (loaded ${s.loaded}, moved ${s.y}px)`);
     }
     await page.close();
   }
