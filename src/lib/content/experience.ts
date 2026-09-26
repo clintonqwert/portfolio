@@ -142,7 +142,11 @@ export async function getProjectOsPassages(): Promise<Passage[]> {
         "The standard also lists what is deliberately absent from the stack, because unrecorded omissions get re-litigated every quarter by whoever arrives next. Adding one requires a written operating need. \u201cIt would be convenient\u201d is explicitly not a need.",
       ],
       list: [
-        { term: "No CMS", detail: "Content lives in typed accessors." },
+        {
+          term: "No CMS yet",
+          detail:
+            "On the roadmap. Content lives in typed accessors, with an inactive CMS adapter kept behind them, so the contract exists before the need does.",
+        },
         { term: "No client-state library", detail: "Server components hold the state." },
         { term: "No component library", detail: "The design system is the tokens." },
       ],

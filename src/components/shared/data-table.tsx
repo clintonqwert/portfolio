@@ -1,3 +1,4 @@
+import { GapStatus } from "@/components/shared/gap-status";
 import type { Assertion, Gap } from "@/types/content";
 
 /**
@@ -75,7 +76,7 @@ export function AssertionTable({
 
 export function GapsTable({ rows }: { rows: Gap[] }) {
   return (
-    <TableFrame caption="Open — gap, consequence, planned fix" minWidth="640px">
+    <TableFrame caption="Open — gap and status, consequence, planned fix" minWidth="640px">
       <thead>
         <tr>
           <th scope="col" className={TH}>
@@ -98,7 +99,8 @@ export function GapsTable({ rows }: { rows: Gap[] }) {
               scope="row"
               className={`${TD} text-left font-mono text-sm font-normal text-signal`}
             >
-              {row.gap}
+              <span className="block">{row.gap}</span>
+              <GapStatus status={row.status} className="mt-2 text-faint" />
             </th>
             <td className={TD}>{row.consequence}</td>
             <td className={TD}>{row.fix}</td>
