@@ -6,12 +6,14 @@ import { useEffect, useRef } from "react";
  * The deck's pointer behaviour, in one small island mounted as a child of the
  * deck and watching its parent:
  *
- *  1. Loading each tile's whole-page preview on intent. At rest a tile shows
- *     only the top of the page (TileShot); the first pointer or keyboard
- *     focus on a tile copies the whole page's `data-src` into `src`, a beat
- *     before the pan that needs it. Only where the pan can run — hover-capable
- *     and motion allowed — so touch and reduced-motion readers never fetch
- *     pages they would never see move.
+ *  1. Loading each tile's whole-page preview only when its pan is about to
+ *     run. At rest a tile shows only the top of the page (TileShot). On the
+ *     desktop deck the page pans on hover or focus, so the first pointer or
+ *     keyboard focus on a tile is the signal. On a phone it pans as the tile
+ *     scrolls past, so the signal is the tile coming within 300px of the
+ *     viewport, and the lighter q75 encode is used. Nowhere the pan cannot
+ *     run — reduced motion, or no scroll timelines on a phone — is a whole
+ *     page fetched at all.
  *
  *  2. The tile cursor: a square that shatters into a grid, spreads, flies
  *     apart and settles back into one — after the image-hover cursor on
@@ -32,17 +34,26 @@ export function DeckPointer() {
 
     const canPan = window.matchMedia("(hover: hover) and (prefers-reduced-motion: no-preference)");
     const fine = window.matchMedia("(pointer: fine)");
+    // The phone pan (see .tile-shot-frame): scroll-driven, below lg.
+    const scrollPan = window.matchMedia("(max-width: 1023px) and (prefers-reduced-motion: no-preference)");
+    const timelines = CSS.supports("animation-timeline: view()");
 
-    let detach: (() => void) | undefined;
+    let detachPointer: (() => void) | undefined;
+    let detachScroll: (() => void) | undefined;
     const sync = () => {
-      detach?.();
-      detach = canPan.matches ? attach(deck, cursor, fine) : undefined;
+      detachPointer?.();
+      detachScroll?.();
+      detachPointer = canPan.matches ? attach(deck, cursor, fine) : undefined;
+      detachScroll = scrollPan.matches && timelines ? loadNearViewport(deck) : undefined;
     };
     sync();
     canPan.addEventListener("change", sync);
+    scrollPan.addEventListener("change", sync);
     return () => {
       canPan.removeEventListener("change", sync);
-      detach?.();
+      scrollPan.removeEventListener("change", sync);
+      detachPointer?.();
+      detachScroll?.();
     };
   }, []);
 
@@ -139,11 +150,37 @@ function attach(deck: HTMLElement, cursor: HTMLElement, fine: MediaQueryList): (
 /** Give a tile's whole-page image its source, once. */
 function loadPreview(tile: Element) {
   const img = tile.querySelector<HTMLImageElement>("img.tile-shot-image[data-src]");
-  if (!img) return;
-  if (img.dataset.srcset) img.srcset = img.dataset.srcset;
-  img.src = img.dataset.src ?? "";
+  if (img) load(img);
+}
+
+function load(img: HTMLImageElement) {
+  if (!img.dataset.src) return;
+  const narrow = window.matchMedia("(max-width: 1023px)").matches;
+  const srcset = narrow ? img.dataset.srcsetNarrow : img.dataset.srcset;
+  if (srcset) img.srcset = srcset;
+  img.src = img.dataset.src;
   delete img.dataset.src;
   delete img.dataset.srcset;
+  delete img.dataset.srcsetNarrow;
+}
+
+/** Phones: load each page as its tile comes within 300px of the viewport. */
+function loadNearViewport(deck: HTMLElement): () => void {
+  const observer = new IntersectionObserver(
+    (entries) => {
+      for (const entry of entries) {
+        if (!entry.isIntersecting) continue;
+        load(entry.target as HTMLImageElement);
+        observer.unobserve(entry.target);
+      }
+    },
+    { rootMargin: "300px 0px" },
+  );
+  deck.querySelectorAll<HTMLImageElement>("img.tile-shot-image[data-src]").forEach((img) => {
+    // The image itself is clipped by its window; its box still intersects.
+    observer.observe(img);
+  });
+  return () => observer.disconnect();
 }
 
 /** How far down and right of the pointer the square rides, in px. */

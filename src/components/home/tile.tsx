@@ -120,30 +120,45 @@ export function Figure({ stat, size = "md" }: { stat: Stat; size?: "sm" | "md" }
  * is not lazy-loaded because a lazy image in view loads anyway. The window is
  * a crop of the page's top, so the page lands exactly over it.
  *
- * The pan runs at a steady pace rather than a fixed duration: a long page
- * takes longer to pass than a short one, the way scrolling it would. It is a
- * hover and focus enhancement only — off under reduced motion and on touch,
- * where the whole page is never fetched at all.
+ * On the desktop deck the pan runs on hover or focus at a steady pace: a long
+ * page takes longer to pass than a short one, the way scrolling it would. On
+ * a phone there is no hover, so the page pans as the tile scrolls past — the
+ * reader's own scroll drives it (.tile-shot-frame's view timeline). Off under
+ * reduced motion either way, and then the whole page is never fetched.
  */
 export function TileShot({
   preview,
   className,
+  priority = false,
 }: {
   preview: DeckPreview;
   className?: string;
+  /**
+   * Fetch the window at once, not lazily. For the first work tile: on a phone
+   * its window is in the first screen and the largest paint there, and a lazy
+   * image waits for layout before it even asks — mobile LCP went to 3.4s
+   * until it stopped waiting. The price is ~40 kB fetched for nothing at
+   * 1024–1439, the one band where this tile hides its shot.
+   */
+  priority?: boolean;
 }) {
   const { window: top, page } = preview;
   // ~1.75s per image-width of page: about 230px/s through a 390px window.
   const pan = Math.min(10, Math.max(2.5, (page.height / page.width) * 1.75));
 
-  const { props: whole } = getImageProps({
+  const common = {
     src: page.src,
     alt: "",
     width: page.width,
     height: page.height,
     sizes: SHOT_SIZES,
-    quality: 90,
-  });
+  } as const;
+  const { props: whole } = getImageProps({ ...common, quality: 90 });
+  // Phones pan the page as it scrolls by rather than on a held hover, so it
+  // is passing, not studied: a lighter encode is the right trade there.
+  const {
+    props: { srcSet: narrowSrcSet },
+  } = getImageProps({ ...common, quality: 75 });
 
   return (
     <figure
@@ -158,6 +173,8 @@ export function TileShot({
           height={top.height}
           sizes={SHOT_SIZES}
           quality={90}
+          loading={priority ? "eager" : "lazy"}
+          fetchPriority={priority ? "high" : undefined}
           className="tile-shot-window"
         />
         {/* The whole page, for the pan. No src until intent (see above); the
@@ -167,6 +184,7 @@ export function TileShot({
         <img
           data-src={whole.src}
           data-srcset={whole.srcSet}
+          data-srcset-narrow={narrowSrcSet}
           sizes={whole.sizes}
           width={whole.width}
           height={whole.height}
@@ -192,4 +210,4 @@ export function TileShot({
  * window, which is most of what read as blur.
  */
 const SHOT_SIZES =
-  "(min-width: 2400px) 760px, (min-width: 1920px) 540px, (min-width: 1680px) 470px, 320px";
+  "(max-width: 1023px) calc(100vw - 56px), (min-width: 2400px) 760px, (min-width: 1920px) 540px, (min-width: 1680px) 470px, 320px";

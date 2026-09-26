@@ -67,7 +67,11 @@ and does not scroll: `body` is `overflow-hidden`, the deck is a 12×9 grid of
 From 1440px wide the work tiles carry a screenshot window: every window the
 same height (the room the most crowded tile has left, which grows with
 viewport height), onto a whole-page capture that pans down while the tile is
-hovered or focused — a scroll preview of the site. Over a tile the pointer
+hovered or focused — a scroll preview of the site. On a phone the tiles stack
+full-width, every work tile shows its window, and the page pans as the tile
+scrolls past (a CSS view timeline, no script); the overview there also opens
+with the rail's profile — portrait, role, availability and contact links —
+which the slim mobile bar has no room for. Over a tile the pointer
 becomes a square that shatters and re-forms (after the image-hover cursor on
 architech-template.webflow.io, rebuilt in CSS); fine hover-capable pointers
 only, never under reduced motion. `check:behaviour` holds the equal heights,

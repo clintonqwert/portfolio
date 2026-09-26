@@ -503,7 +503,9 @@
     height: var(--shot-h);
     min-height: 0;
     flex-shrink: 1;
-    overflow: hidden;
+    /* clip, not hidden: hidden would make the frame a scroll container,
+       which a view timeline would bind to instead of the page. */
+    overflow: clip;
     container-type: size;
     background-color: var(--color-sunk);
     outline: var(--surface-border) solid var(--color-line);
@@ -526,6 +528,38 @@
 
   /* The whole page, laid exactly over the window (the window is a crop of
      its top) and empty until DeckPointer gives it a source on intent. */
+  /*
+    Phones and tablets. The tiles stack full-width, so every work tile has
+    room for its window, sized to the tile's width rather than the desktop
+    formula. With no hover to hold, the reader's scroll drives the pan: the
+    frame names a view timeline, and the page runs top to bottom while the
+    window is fully on screen. Scroll-driven, so there is no script and no
+    listener; where the timeline is unsupported the window simply stays put,
+    showing the page's top.
+  */
+  @media (max-width: 1023px) {
+    .tile-shot-frame {
+      --shot-h: clamp(160px, 56vw, 300px);
+      view-timeline: --shot block;
+    }
+  }
+
+  @media (max-width: 1023px) and (prefers-reduced-motion: no-preference) {
+    @supports (animation-timeline: view()) {
+      .tile-shot-image {
+        animation: shot-scroll linear both;
+        animation-timeline: --shot;
+        animation-range: contain 0% contain 100%;
+      }
+    }
+  }
+
+  @keyframes shot-scroll {
+    to {
+      transform: translateY(calc(-100% + 100cqh));
+    }
+  }
+
   .tile-shot-image {
     position: absolute;
     left: 0;
@@ -544,7 +578,7 @@
     Hover-capable pointers only: on touch there is no hover, and a tap opens
     the case study, which shows the page properly anyway.
   */
-  @media (hover: hover) and (prefers-reduced-motion: no-preference) {
+  @media (min-width: 1024px) and (hover: hover) and (prefers-reduced-motion: no-preference) {
     a.tile:hover .tile-shot-image,
     a.tile:focus-visible .tile-shot-image {
       transform: translateY(calc(-100% + 100cqh));

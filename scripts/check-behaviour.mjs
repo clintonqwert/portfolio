@@ -19,6 +19,9 @@
  *    the top, and — as a link — lands the first chapter just under the chapter
  *    bar, with the hash updated.
  *  - The chapter bar appears once the hero has gone and names the chapter.
+ *  - On a phone the overview carries the rail's profile — portrait, role and
+ *    every contact link — and every work tile shows its screenshot, which
+ *    loads as it nears the viewport and pans as it scrolls past.
  *  - Under prefers-reduced-motion nothing loops or reveals.
  *  - Keyboard focus is visible inside every ink block. The ring is accent and
  *    accent is ink, so inside a chip it once drew ink on ink — identical
@@ -280,6 +283,57 @@ try {
       await becomes(page, () => document.querySelector(".chapterbar")?.dataset.visible === "false"),
       "chapter bar leaves again in the hero",
     );
+    await page.close();
+  }
+
+  // ── the overview on a phone: profile, and scroll-driven screenshots ─────
+  for (const reduced of [false, true]) {
+    const page = await open("/", { width: 390, height: 844, reduced });
+    if (!reduced) {
+      const profile = await page.evaluate(() => {
+        const card = document.querySelector('section[aria-label="Profile"]');
+        const img = card?.querySelector("img");
+        return {
+          shown: card !== null && getComputedStyle(card).display !== "none",
+          portrait: img !== null && img.getBoundingClientRect().width > 0,
+          links: card ? card.querySelectorAll("a[href]").length : 0,
+        };
+      });
+      check(
+        profile.shown && profile.portrait && profile.links === 4,
+        `phone overview shows the profile: portrait and ${profile.links} contact links`,
+      );
+      const shots = await page.evaluate(
+        () => [...document.querySelectorAll(".tile-shot-frame")].filter((f) => f.offsetParent !== null).length,
+      );
+      check(shots === 4, `phone overview shows all 4 work screenshots (${shots})`);
+    }
+
+    // Bring the first shot up the screen and see whether its page loads and pans.
+    await page.evaluate(() => {
+      const frame = document.querySelector(".tile-shot-frame");
+      window.scrollTo(0, window.scrollY + frame.getBoundingClientRect().top - 300);
+    });
+    const state = () =>
+      page.evaluate(() => {
+        const img = document.querySelector(".tile-shot-frame img.tile-shot-image");
+        return {
+          loaded: Boolean(img.getAttribute("src")) && img.complete && img.naturalWidth > 0,
+          y: Math.round(new DOMMatrix(getComputedStyle(img).transform).m42),
+        };
+      });
+    if (!reduced) {
+      const panned = await becomes(page, () => {
+        const img = document.querySelector(".tile-shot-frame img.tile-shot-image");
+        return img.complete && img.naturalWidth > 0 && new DOMMatrix(getComputedStyle(img).transform).m42 < -20;
+      });
+      const s = await state();
+      check(panned, `phone: scrolling a tile loads its page and pans it (loaded ${s.loaded}, moved ${s.y}px)`);
+    } else {
+      await new Promise((r) => setTimeout(r, 800));
+      const s = await state();
+      check(!s.loaded && s.y === 0, `phone, reduced motion: no page fetch and no pan (loaded ${s.loaded}, moved ${s.y}px)`);
+    }
     await page.close();
   }
 
