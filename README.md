@@ -216,7 +216,18 @@ on localhost; field data will come from Speed Insights after the first deploy.
 `lighthouserc.json` carries the ProjectOS budget: performance ≥ 0.95,
 accessibility ≥ 0.98, SEO ≥ 0.95, best practices ≥ 0.90, LCP < 1500 ms,
 CLS < 0.05, TBT < 150 ms, script < 260 kB. It runs in CI against a production
-build, median of three runs.
+build, three runs a page, each budget held against the best of the three
+(LHCI's default aggregation).
+
+`lighthouserc.mobile.json` runs `/`, `/work/riflessi` and `/gaps` under
+Lighthouse's default mobile emulation (slow 4G, 4× CPU), since every run was
+desktop until the first mobile one found three accessibility failures. Every
+page: accessibility ≥ 0.98, SEO ≥ 0.95, best practices ≥ 0.90, CLS < 0.05,
+TBT < 200 ms. Performance ≥ 0.85 and LCP < 4500 ms on `/`; ≥ 0.90 and
+< 3500 ms on the rest. Those two are floors a step under what was measured on
+2026-09-26 — `/` at 0.88–0.91 with LCP 3.5–3.9 s, the other two at 0.95–0.96
+and 2.7–2.9 s — to catch a slide without failing on runner noise. Raise them
+as the numbers improve.
 
 Fonts are self-hosted through `next/font`, which removes the only third-party
 request and reserves metrics so swapping in the real face causes no layout shift.

@@ -1,0 +1,42 @@
+{
+  "ci": {
+    "collect": {
+      "startServerCommand": "npm run start",
+      "url": [
+        "http://localhost:3000/",
+        "http://localhost:3000/work/riflessi",
+        "http://localhost:3000/gaps"
+      ],
+      "numberOfRuns": 3
+    },
+    "assert": {
+      "assertMatrix": [
+        {
+          "matchingUrlPattern": ".*",
+          "assertions": {
+            "categories:accessibility": ["error", { "minScore": 0.98 }],
+            "categories:seo": ["error", { "minScore": 0.95 }],
+            "categories:best-practices": ["error", { "minScore": 0.9 }],
+            "cumulative-layout-shift": ["error", { "maxNumericValue": 0.05 }],
+            "total-blocking-time": ["error", { "maxNumericValue": 200 }]
+          }
+        },
+        {
+          "matchingUrlPattern": "^https?://[^/]+/$",
+          "assertions": {
+            "categories:performance": ["error", { "minScore": 0.85 }],
+            "largest-contentful-paint": ["error", { "maxNumericValue": 4500 }]
+          }
+        },
+        {
+          "matchingUrlPattern": "^https?://[^/]+/.+",
+          "assertions": {
+            "categories:performance": ["error", { "minScore": 0.9 }],
+            "largest-contentful-paint": ["error", { "maxNumericValue": 3500 }]
+          }
+        }
+      ]
+    },
+    "upload": { "target": "temporary-public-storage" }
+  }
+}
