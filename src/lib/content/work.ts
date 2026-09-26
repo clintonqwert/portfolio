@@ -1,6 +1,11 @@
 import "server-only";
 
-import { SCORES_IMAGE, TADVANTAGE_FEATURES_IMAGE, TADVANTAGE_SEO_IMAGE } from "@/lib/content/assets";
+import {
+  RIFLESSI_SCROLL_VIDEO,
+  SCORES_IMAGE,
+  TADVANTAGE_FEATURES_IMAGE,
+  TADVANTAGE_SEO_IMAGE,
+} from "@/lib/content/assets";
 import type { CaseStudy } from "@/types/content";
 
 /**
@@ -89,7 +94,7 @@ const CASE_STUDIES: readonly CaseStudy[] = [
     liveUrl: "riflessiautocare.vercel.app",
     repoUrl: "github.com/clintonqwert/riflessiautocare",
     role: "Sole engineer · self-directed",
-    stack: ["Next.js", "React Three Fiber", "glTF-Transform", "meshoptimizer"],
+    stack: ["Next.js 16", "React Three Fiber", "GSAP ScrollTrigger", "Lenis", "glTF-Transform", "meshoptimizer"],
     related: [{ label: "DriftPilot — the foundation this reused", href: "/work/driftpilot" }],
     stats: [
       { value: "5 weeks", label: "Empty repo to live", detail: "79 source files" },
@@ -103,6 +108,22 @@ const CASE_STUDIES: readonly CaseStudy[] = [
           "Any architecture claims reusability. The only honest test is building the second thing. Riflessi Auto Care went from empty repository to live in five weeks by swapping design-token values and rewriting content against fixed type contracts — every component survived untouched. That is the evidence the first project’s abstractions were load-bearing rather than decorative.",
           "The honest version matters too: the parts that did need new code were the motion layer and the 3D stage, which were new capability rather than re-theming. A reuse claim that omits what did not reuse is not worth making.",
         ],
+      },
+      {
+        // Every fact here is in the repository: seven acts and their pose
+        // fields in lib/content/cinema.ts, the scroll driver and its lazy
+        // imports in components/cinema/useScrollStory.ts, the render loop's
+        // frameloop switch in PaintStage.tsx.
+        heading: "Why a 3D model at all",
+        paragraphs: [
+          "A detailer sells a finish, and a finish is judged from more than one angle. So the homepage is a scroll-driven sequence of seven acts. Each pairs its copy with a camera pose and a material state \u2014 where the camera sits and what it aims at, how bright the key light is, how far the paint has gone from freshly corrected to a cured ceramic coat \u2014 and the visitor\u2019s own scroll carries the car between them. No photograph can do that. It is the reason the site carries a 3D model, and most of what makes it feel premium.",
+          "GSAP ScrollTrigger owns the progress and Lenis the feel of the scroll, both dynamically imported into the same lazy chunk as the scene, so a visitor on the static fallback never downloads either. Lenis runs only while the sequence is mounted, leaving every other route on native scrolling, and the render loop stops the moment the sequence leaves the viewport.",
+        ],
+        figure: {
+          video: RIFLESSI_SCROLL_VIDEO,
+          caption:
+            "The live homepage, scrolled from the first act to the last: a new camera angle for each act, with the light and the paint\u2019s finish changing alongside. Recorded 26 Sep 2026 in Chrome, played at twice the speed it was scrolled.",
+        },
       },
       {
         heading: "The 19 MB hero",

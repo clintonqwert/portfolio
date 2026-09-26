@@ -3,6 +3,7 @@
 import { useEffect, useRef } from "react";
 
 import { media } from "@/lib/design-tokens";
+import { savingData } from "@/lib/reader-preferences";
 
 /**
  * The deck's pointer behaviour, in one small island mounted as a child of the
@@ -49,6 +50,8 @@ export function DeckPointer() {
       detachPointer?.();
       detachScroll?.();
       detachPointer = canPan.matches ? attach(deck, cursor, fine) : undefined;
+      // Saving data, the window stays at its page's top. The CSS pan still
+      // runs, over an image with no source, which draws nothing.
       detachScroll = scrollPan.matches && timelines && !savingData() ? loadNearViewport(deck) : undefined;
     };
     sync();
@@ -176,16 +179,6 @@ function load(img: HTMLImageElement) {
   delete img.dataset.src;
   delete img.dataset.srcset;
   delete img.dataset.srcsetNarrow;
-}
-
-/**
- * Whether the reader has asked to save data: Save-Data, or the media feature
- * where a browser ships it. The window then stays at its page's top. The CSS
- * pan still runs, over an image with no source, which draws nothing.
- */
-function savingData(): boolean {
-  const { connection } = navigator as Navigator & { connection?: { saveData?: boolean } };
-  return connection?.saveData === true || window.matchMedia("(prefers-reduced-data: reduce)").matches;
 }
 
 /** Phones: load each page as its tile comes within 300px of the viewport. */

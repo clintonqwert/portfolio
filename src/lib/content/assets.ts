@@ -1,6 +1,6 @@
 import "server-only";
 
-import type { DeckPreview, ImageSlot } from "@/types/content";
+import type { DeckPreview, ImageSlot, VideoSlot } from "@/types/content";
 
 export type { ImageSlot };
 
@@ -128,6 +128,28 @@ export const TADVANTAGE_SEO_IMAGE: ImageSlot = {
 };
 
 /** Hero shot per case study, keyed by slug. */
+/**
+ * Riflessi's scroll-driven sequence, recorded — the reason the site carries a
+ * 3D model at all, which no screenshot can show.
+ *
+ * A screen recording of the live homepage, not a render or a mock-up: Chrome
+ * on this machine (Apple M4, WebGL on the GPU, so the capability gate let the
+ * scene load, as it would for a visitor), 1280x720, scrolled by wheel so the
+ * site's own smooth scrolling paced it, from the first act to the last, on
+ * 2026-09-26. Played at twice the speed it was scrolled — the motion follows
+ * scroll position, not a clock, so that is a faster scroll, not a different
+ * animation. H.264, 15 s, 2.2 MB; the poster is its first frame.
+ */
+export const RIFLESSI_SCROLL_VIDEO: VideoSlot = {
+  src: "/work/riflessi-scroll.mp4",
+  poster: "/work/riflessi-scroll-poster.webp",
+  label:
+    "Screen recording of the Riflessi Auto Care homepage scrolling through its seven acts: the camera moves around the car to a new angle for each, and the light and the paint's finish change with it",
+  width: 1280,
+  height: 720,
+  source: { label: "riflessiautocare.vercel.app", href: "https://riflessiautocare.vercel.app/" },
+};
+
 export const WORK_IMAGES: Record<string, ImageSlot> = {
   driftpilot: {
     src: "/work/driftpilot-hero.webp",

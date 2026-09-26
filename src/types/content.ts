@@ -91,10 +91,28 @@ export interface DeckPreview {
  * A screenshot placed inside a passage, with a line saying what it shows.
  * Not "Figure": that name is already the stat component on the deck tiles.
  */
-export interface PassageFigure {
-  image: ImageSlot;
-  caption: string;
+/**
+ * A short screen recording of a live site, shown as a figure. For what a
+ * still cannot show: motion driven by the reader's own scroll.
+ */
+export interface VideoSlot {
+  /** H.264 MP4 — the one format every browser, iOS included, plays. */
+  src: string;
+  /** The recording's own first frame, so pressing play does not jump. */
+  poster: string;
+  /** What the recording shows, for assistive tech; the caption says why. */
+  label: string;
+  /** Intrinsic pixels, so the frame reserves the recording's shape. */
+  width: number;
+  height: number;
+  /** The live page it was recorded from. */
+  source?: { label: string; href: string };
 }
+
+/** A passage's figure: a screenshot, or a recording where motion is the point. */
+export type PassageFigure =
+  | { image: ImageSlot; video?: never; caption: string }
+  | { video: VideoSlot; image?: never; caption: string };
 
 /** A term and what it means — the rows of a `Passage.list`. */
 export interface PassageTerm {

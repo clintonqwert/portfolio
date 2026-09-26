@@ -1,7 +1,7 @@
 import Image from "next/image";
 
+import { ShotCaption } from "@/components/shared/shot-caption";
 import { media } from "@/lib/design-tokens";
-import { cn } from "@/lib/utils";
 import type { ImageSlot } from "@/types/content";
 
 /**
@@ -72,25 +72,12 @@ export function Shot({
         ) : (
           <div className="shot-frame">{img}</div>
         )}
-        <figcaption
-          className={cn(
-            "mt-2.5 flex gap-x-4 gap-y-1 meta text-faint",
-            caption ? "flex-col sm:flex-row sm:items-baseline" : "items-baseline",
-          )}
-        >
-          <span className="label shrink-0">Fig. {figure}</span>
-          {caption ? (
-            <span className="max-w-[60ch] font-body text-sm leading-snug text-muted">
-              {caption}
-            </span>
-          ) : null}
-          {source ? (
-            <span className={cn("min-w-0", caption ? "sm:ml-auto sm:shrink-0" : "")}>
-              {source.label}
-            </span>
-          ) : null}
-          {image.isPlaceholder ? <span className="shrink-0">Screenshot pending</span> : null}
-        </figcaption>
+        <ShotCaption
+          figure={figure}
+          caption={caption}
+          source={source}
+          pending={image.isPlaceholder}
+        />
       </figure>
     </div>
   );

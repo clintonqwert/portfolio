@@ -27,6 +27,9 @@
  *    Under reduced motion no page is fetched or panned, and with Save-Data on
  *    no page is fetched for being scrolled past.
  *  - A screenshot the deck hides at its width is never fetched.
+ *  - A case study's screen recording fetches nothing until seen, plays in view,
+ *    keeps a reader's pause, and never starts itself under reduced motion or
+ *    Save-Data.
  *  - Under prefers-reduced-motion nothing loops or reveals.
  *  - Keyboard focus is visible inside every ink block. The ring is accent and
  *    accent is ink, so inside a chip it once drew ink on ink — identical
@@ -398,6 +401,52 @@ try {
         s.window && !s.loaded && s.hidden,
         `stacked (${at}), saving data: the window shows, no page is fetched, and the empty page image draws nothing (window ${s.window}, loaded ${s.loaded}, hidden ${s.hidden})`,
       );
+    }
+    await page.close();
+  }
+
+  // ── a case study's screen recording ─────────────────────────────────────
+  // Nothing fetched until it is looked at; it plays once half on screen; a
+  // reader's pause holds when they scroll away and back; and under reduced
+  // motion or Save-Data it never starts by itself, though Play still works.
+  for (const mode of ["normal", "reduced", "saveData"]) {
+    const page = await open("/work/riflessi", {
+      width: 1440,
+      height: 900,
+      reduced: mode === "reduced",
+      saveData: mode === "saveData",
+    });
+    const state = () =>
+      page.evaluate(() => {
+        const v = document.querySelector("figure video");
+        const fetched = performance.getEntriesByType("resource").some((e) => e.name.endsWith(".mp4"));
+        return { playing: !v.paused, t: v.currentTime, fetched };
+      });
+    const rest = await state();
+    check(!rest.fetched && !rest.playing, `recording, ${mode}: nothing fetched or playing at rest`);
+
+    await page.evaluate(() => document.querySelector("figure video").scrollIntoView({ block: "center" }));
+    if (mode === "normal") {
+      const played = await becomes(page, () => {
+        const v = document.querySelector("figure video");
+        return !v.paused && v.currentTime > 0.3;
+      }, undefined, 8000);
+      check(played, "recording: plays once it is on screen");
+
+      await page.click("figure video + button");
+      await page.evaluate(() => window.scrollTo(0, 0));
+      await new Promise((r) => setTimeout(r, 600));
+      await page.evaluate(() => document.querySelector("figure video").scrollIntoView({ block: "center" }));
+      await new Promise((r) => setTimeout(r, 1200));
+      const held = await state();
+      check(!held.playing, "recording: a reader's pause holds after scrolling away and back");
+    } else {
+      await new Promise((r) => setTimeout(r, 1500));
+      const still = await state();
+      check(!still.playing && !still.fetched, `recording, ${mode}: does not start by itself (fetched ${still.fetched})`);
+      await page.click("figure video + button");
+      const played = await becomes(page, () => !document.querySelector("figure video").paused, undefined, 8000);
+      check(played, `recording, ${mode}: the Play button still plays it`);
     }
     await page.close();
   }
