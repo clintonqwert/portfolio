@@ -127,7 +127,6 @@ export const TADVANTAGE_SEO_IMAGE: ImageSlot = {
   source: TADVANTAGE_SITE,
 };
 
-/** Hero shot per case study, keyed by slug. */
 /**
  * Riflessi's scroll-driven sequence, recorded — the reason the site carries a
  * 3D model at all, which no screenshot can show.
@@ -139,6 +138,11 @@ export const TADVANTAGE_SEO_IMAGE: ImageSlot = {
  * 2026-09-26. Played at twice the speed it was scrolled — the motion follows
  * scroll position, not a clock, so that is a faster scroll, not a different
  * animation. H.264, 15 s, 2.2 MB; the poster is its first frame.
+ *
+ * Kept in git while it is the only one: every re-recording stays in the
+ * repository's history for good, which one 2 MB file can afford and a set of
+ * them cannot. The second recording moves recordings to Vercel Blob (or Git
+ * LFS), addressed by `src` as this one is, so no component changes.
  */
 export const RIFLESSI_SCROLL_VIDEO: VideoSlot = {
   src: "/work/riflessi-scroll.mp4",
@@ -150,6 +154,7 @@ export const RIFLESSI_SCROLL_VIDEO: VideoSlot = {
   source: { label: "riflessiautocare.vercel.app", href: "https://riflessiautocare.vercel.app/" },
 };
 
+/** Hero shot per case study, keyed by slug. */
 export const WORK_IMAGES: Record<string, ImageSlot> = {
   driftpilot: {
     src: "/work/driftpilot-hero.webp",

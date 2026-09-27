@@ -503,9 +503,14 @@
     pixel, and a single px value was either tiny on a large screen or too
     tall on a short one:
 
-      1440–1679 wide  only DriftPilot shows   room = 50dvh − 277px
+      1440–1679 wide  only the feature study  room = 50dvh − 277px
+                      shows (Tadvantage)
       >=1680 wide     all four; AutoTrader    room = 50dvh − 432px
                       is the most crowded
+
+    (Re-checked, not re-measured, after the 2026-09-26 grid moved the feature
+    to Tadvantage at five columns: check:overflow and the one-height check
+    pass at every width, which is what the formulas promise.)
 
     Those fit every measurement to the pixel (1440×800…1000, 1680×900…1200,
     1800×1000, 1920×960…1200; 2560-wide screens have ~19px more), re-taken

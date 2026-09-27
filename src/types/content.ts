@@ -88,10 +88,6 @@ export interface DeckPreview {
 }
 
 /**
- * A screenshot placed inside a passage, with a line saying what it shows.
- * Not "Figure": that name is already the stat component on the deck tiles.
- */
-/**
  * A short screen recording of a live site, shown as a figure. For what a
  * still cannot show: motion driven by the reader's own scroll.
  */
@@ -109,7 +105,11 @@ export interface VideoSlot {
   source?: { label: string; href: string };
 }
 
-/** A passage's figure: a screenshot, or a recording where motion is the point. */
+/**
+ * A figure placed inside a passage, with a line saying what it shows: a
+ * screenshot, or a recording where motion is the point. Not "Figure": that
+ * name is already the stat component on the deck tiles.
+ */
 export type PassageFigure =
   | { image: ImageSlot; video?: never; caption: string }
   | { video: VideoSlot; image?: never; caption: string };
@@ -154,8 +154,8 @@ export interface Passage {
 export interface CaseStudy {
   slug: string;
   /**
-   * Gives this study the double-width cell on the dashboard, with a
-   * two-column interior, and puts it first. One study carries it. Equal
+   * Gives this study the widest of the deck's study cells, with a
+   * two-column interior, first among the studies. One study carries it. Equal
    * cells would claim the three are equivalent.
    */
   feature?: boolean;
