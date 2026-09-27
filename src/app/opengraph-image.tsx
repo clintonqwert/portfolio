@@ -1,3 +1,6 @@
+import { readFileSync } from "node:fs";
+import { join } from "node:path";
+
 import { ImageResponse } from "next/og";
 
 import { FACTS, LEDE, LOCATION, NAME, ROLE_TITLE } from "@/lib/content/profile";
@@ -14,20 +17,28 @@ import { FACTS, LEDE, LOCATION, NAME, ROLE_TITLE } from "@/lib/content/profile";
  *
  * Colours are literal hex, which is a defect anywhere else in this codebase.
  * Satori resolves neither CSS custom properties nor `oklch()`, so these are the
- * sRGB values of --color-canvas, --color-ink, --color-muted and --color-accent.
- * If the palette moves, these move with it.
+ * sRGB values of the light theme's --color-canvas, --color-ink, --color-muted,
+ * --color-accent and --color-line. If the palette moves, these move with it —
+ * they did not when it went monochrome, and the card stayed navy and teal
+ * until 2026-09-26, when the brand mark joined it and would have clashed.
+ *
+ * The mark is the negative-space CR from the brand sheet (public/brand), read
+ * at build time and inlined: the card is prerendered, so nothing is fetched.
  */
 export const runtime = "nodejs";
 export const alt = `${NAME} — ${ROLE_TITLE}`;
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
-const CANVAS = "#f5f7fa";
-const INK = "#0b1e3f";
-const MUTED = "#4f5b72";
-const ACCENT = "#0e5c6b";
+const CANVAS = "#ffffff";
+const INK = "#0f0f0f";
+const MUTED = "#5d5d5d";
+const ACCENT = "#0f0f0f";
+const LINE = "#bebebe";
 
 export default async function OpengraphImage() {
+  const mark = `data:image/png;base64,${readFileSync(join(process.cwd(), "public/brand/cr-mark.png")).toString("base64")}`;
+
   return new ImageResponse(
     (
       <div
@@ -41,6 +52,7 @@ export default async function OpengraphImage() {
           padding: 64,
         }}
       >
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
         <div style={{ display: "flex", flexDirection: "column" }}>
           <div
             style={{
@@ -78,9 +90,12 @@ export default async function OpengraphImage() {
             {LEDE}
           </div>
         </div>
+          {/* eslint-disable-next-line @next/next/no-img-element -- Satori renders plain img, not next/image */}
+          <img src={mark} width={120} height={101} alt="" />
+        </div>
 
         <div style={{ display: "flex", flexDirection: "column" }}>
-          <div style={{ height: 1, backgroundColor: "#d8dde6" }} />
+          <div style={{ height: 1, backgroundColor: LINE }} />
           <div
             style={{
               marginTop: 22,

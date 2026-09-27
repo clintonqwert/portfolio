@@ -174,6 +174,31 @@ try {
     await page.close();
   }
 
+  // ── the brand icons ─────────────────────────────────────────────────────
+  // The tab icon is the <CR> badge in WebP, the home-screen icon the CR mark
+  // in PNG (iOS reads no other format). Both must be linked and must serve.
+  {
+    const page = await open("/", { width: 1440, height: 900 });
+    const links = await page.evaluate(() => ({
+      icon: document.querySelector('link[rel="icon"]')?.getAttribute("href"),
+      apple: document.querySelector('link[rel="apple-touch-icon"]')?.getAttribute("href"),
+    }));
+    const served = await page.evaluate(async (hrefs) => {
+      const out = {};
+      for (const [k, href] of Object.entries(hrefs)) {
+        if (!href) continue;
+        const r = await fetch(href);
+        out[k] = `${r.status} ${r.headers.get("content-type")}`;
+      }
+      return out;
+    }, links);
+    check(
+      /^200 image\/webp/.test(served.icon ?? "") && /^200 image\/png/.test(served.apple ?? ""),
+      `brand icons are linked and served (icon ${links.icon}: ${served.icon}; apple ${links.apple}: ${served.apple})`,
+    );
+    await page.close();
+  }
+
   // ── every tile's name reads whole ───────────────────────────────────────
   // A narrow cell once cut "Riflessi Auto Care" to "RIF…" at 1024 and still
   // trimmed it at 1440; DriftPilot, History and AutoTrader.ca were cut at

@@ -40,6 +40,14 @@ export const metadata: Metadata = {
     path: "/",
   }),
   robots: { index: true, follow: true },
+  // The brand sheet's marks (public/brand). The tab icon is the <CR> badge,
+  // WebP as the owner asked — set here because the file convention takes
+  // only .ico/.jpg/.png/.svg. The home-screen icon is the negative-space CR
+  // mark, square and opaque, and PNG because iOS reads no other format.
+  icons: {
+    icon: [{ url: "/brand/cr-badge.webp", type: "image/webp", sizes: "96x96" }],
+    apple: [{ url: "/brand/apple-touch-icon.png", type: "image/png", sizes: "180x180" }],
+  },
 };
 
 export default async function RootLayout({
