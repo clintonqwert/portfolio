@@ -14,8 +14,3 @@ export function savingData(): boolean {
   const { connection } = navigator as Navigator & { connection?: { saveData?: boolean } };
   return connection?.saveData === true || window.matchMedia("(prefers-reduced-data: reduce)").matches;
 }
-
-/** Whether the reader has asked for less motion. */
-export function reducingMotion(): boolean {
-  return window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-}

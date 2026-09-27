@@ -13,6 +13,14 @@ import type { CaseStudy, DeckPreview, Gap } from "@/types/content";
  */
 const FEATURE_ASIDE = "mt-3 border-t border-line pt-3 lg:mt-0 lg:border-l lg:border-t-0 lg:pl-4 lg:pt-0";
 
+/**
+ * The same column when its first visible child brings its own top rule: the
+ * stats grid, while the highlights above it are hidden below xl. Ruling the
+ * column as well drew two hairlines 25px apart, with nothing between them,
+ * across a phone's Tadvantage tile.
+ */
+const FEATURE_ASIDE_OPEN = "mt-3 border-line lg:mt-0 lg:border-l lg:pl-4";
+
 /** "All four", not "All 4": the tile's call to action reads as a phrase. */
 const COUNT_WORDS = ["none", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine"];
 
@@ -327,7 +335,7 @@ export function Deck({
               // the second let its longest engagement lead with a negative.
               // In the wide cell they sit at the foot of the right column,
               // under what was mine there.
-              <div className={study.feature ? `flex min-h-0 flex-col ${FEATURE_ASIDE}` : "mt-auto"}>
+              <div className={study.feature ? `flex min-h-0 flex-col ${FEATURE_ASIDE_OPEN}` : "mt-auto"}>
                 {study.feature && study.highlights ? (
                   <ul className="hidden space-y-1 text-xs leading-snug text-muted xl:block">
                     {study.highlights.map((point, h) => (

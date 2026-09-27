@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 
 import { ShotCaption } from "@/components/shared/shot-caption";
-import { reducingMotion, savingData } from "@/lib/reader-preferences";
+import { savingData } from "@/lib/reader-preferences";
 import type { VideoSlot } from "@/types/content";
 
 /**
@@ -15,11 +15,18 @@ import type { VideoSlot } from "@/types/content";
  * the file is not fetched until it first plays, and the poster is set only
  * as the figure comes within 800px. Under reduced motion or Save-Data it
  * never starts by itself, since scrolling past is not asking for a 2 MB
- * video; the button still plays it.
+ * video; the button still plays it. Reduced motion is followed live, as the
+ * deck's pointer is: switched on mid-visit, the loop stops.
  *
  * The button is the pause WCAG 2.2.2 asks of anything that moves on its own
- * for more than five seconds. Once a reader has used it, their choice holds:
- * scrolling away and back does not restart what they paused.
+ * for more than five seconds, and the reader's last word on it outranks
+ * every automatic decision to *play*: scrolling away and back does not
+ * restart what they paused. Nothing outranks leaving the screen, which
+ * always pauses — a loop the reader started must not decode off screen for
+ * the rest of the visit.
+ *
+ * Without script the frame shows the poster, linked to the file, rather than
+ * an empty box with a button that does nothing.
  */
 export function ShotVideo({
   video,
@@ -32,46 +39,65 @@ export function ShotVideo({
   caption: string;
 }) {
   const ref = useRef<HTMLVideoElement>(null);
-  const chosen = useRef(false);
+  const choice = useRef<"play" | "pause" | null>(null);
   const [playing, setPlaying] = useState(false);
 
   useEffect(() => {
     const el = ref.current;
     if (!el) return;
 
-    // The poster too waits until the figure is near: set in the markup, it
-    // was fetched with the page and competed with the hero image, the
-    // largest paint — mobile LCP on /work/riflessi went from 2.9s to 3.3s.
+    // Observe against whichever box scrolls: <main> on the desktop layout,
+    // where the body is overflow-hidden, the viewport below it. Rooted on the
+    // viewport at a desktop width, <main>'s clip hid the video until it was
+    // on screen, so the poster's 800px head start did nothing there.
+    const main = document.querySelector("main");
+    const root = main && main.scrollHeight > main.clientHeight ? main : null;
+
     const near = new IntersectionObserver(
-      ([entry]) => {
-        if (!entry?.isIntersecting) return;
+      (entries) => {
+        if (!entries.at(-1)?.isIntersecting) return;
         el.poster = video.poster;
         near.disconnect();
       },
-      { rootMargin: "800px 0px" },
+      { root, rootMargin: "800px 0px" },
     );
     near.observe(el);
-    if (reducingMotion() || savingData()) return () => near.disconnect();
 
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (chosen.current || !entry) return;
-        if (entry.isIntersecting) el.play().catch(() => {});
-        else el.pause();
+    const still = window.matchMedia("(prefers-reduced-motion: reduce)");
+    let inView = false;
+    const update = () => {
+      if (!inView) return el.pause();
+      const wanted = choice.current === "play" || (choice.current === null && !still.matches && !savingData());
+      if (wanted) el.play().catch(() => {});
+      else el.pause();
+    };
+
+    // The newest entry: a batch holds every crossing since the last callback,
+    // oldest first, so the first can say "on screen" for a video that has
+    // already left it.
+    const view = new IntersectionObserver(
+      (entries) => {
+        const entry = entries.at(-1);
+        if (!entry) return;
+        inView = entry.isIntersecting;
+        update();
       },
-      { threshold: 0.5 },
+      { root, threshold: 0.5 },
     );
-    observer.observe(el);
+    view.observe(el);
+    still.addEventListener("change", update);
+
     return () => {
       near.disconnect();
-      observer.disconnect();
+      view.disconnect();
+      still.removeEventListener("change", update);
     };
   }, [video.poster]);
 
   function toggle() {
     const el = ref.current;
     if (!el) return;
-    chosen.current = true;
+    choice.current = el.paused ? "play" : "pause";
     if (el.paused) el.play().catch(() => {});
     else el.pause();
   }
@@ -99,7 +125,7 @@ export function ShotVideo({
           onClick={toggle}
           // The name starts with the word on the button (Label in Name).
           aria-label={playing ? "Pause the recording" : "Play the recording"}
-          className="chip absolute bottom-3 right-3 inline-flex min-h-7 cursor-pointer items-center gap-2 px-2.5 py-1.5 font-mono text-3xs uppercase tracking-[0.08em]"
+          className="chip over-media absolute bottom-3 right-3 inline-flex min-h-7 cursor-pointer items-center gap-2 px-2.5 py-1.5 font-mono text-3xs uppercase tracking-[0.08em]"
         >
           <svg aria-hidden="true" viewBox="0 0 10 10" className="size-2.5 shrink-0" fill="currentColor">
             {playing ? (
@@ -110,6 +136,19 @@ export function ShotVideo({
           </svg>
           {playing ? "Pause" : "Play"}
         </button>
+        {/* Last, so it covers the video and the button that need script. */}
+        <noscript>
+          <a href={video.src} aria-label={`${video.label} (MP4)`} className="absolute inset-0 block">
+            {/* eslint-disable-next-line @next/next/no-img-element -- a noscript fallback: next/image needs script to choose a source */}
+            <img
+              src={video.poster}
+              alt=""
+              width={video.width}
+              height={video.height}
+              className="block h-full w-full object-cover"
+            />
+          </a>
+        </noscript>
       </div>
       <ShotCaption figure={figure} caption={caption} source={video.source} linkSource />
     </figure>

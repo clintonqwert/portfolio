@@ -93,9 +93,17 @@ const check = (ok, what) => {
  * Hover and pointer come from the launch flags above; reduced motion is set
  * per page, so a check that needs it says so.
  */
-async function open(path, { width, height, reduced = false, font, saveData = false }) {
+async function open(path, { width, height, reduced = false, font, saveData = false, theme }) {
   const page = await browser.newPage();
   await page.setViewport({ width, height });
+  // A stored theme, as the pre-paint script reads it; unset, the system's.
+  if (theme) {
+    await page.evaluateOnNewDocument((t) => {
+      try {
+        localStorage.setItem("theme", t);
+      } catch {}
+    }, theme);
+  }
   // Two reader settings that live in the browser rather than the page: a
   // default font size (rem media queries follow it, px ones do not), and
   // Save-Data (navigator.connection.saveData).
@@ -162,6 +170,40 @@ try {
         .map((url) => decodeURIComponent(url));
     });
     check(wasted.length === 0, `deck ${width}x${height} fetches no hidden screenshot (${wasted.join(", ") || "none"})`);
+    await page.close();
+  }
+
+  // ── no double rules in a tile ───────────────────────────────────────────
+  // Two hairlines close together with nothing between them read as a
+  // mistake. The Tadvantage tile drew exactly that on a phone: its column's
+  // top rule and its stats grid's, 25px apart, the highlights between them
+  // hidden below xl.
+  for (const [width, height] of [[390, 844], [1024, 768], [1440, 900]]) {
+    const page = await open("/", { width, height });
+    const doubles = await page.evaluate(() =>
+      [...document.querySelectorAll("a.tile")].flatMap((tile) => {
+        const shown = [...tile.querySelectorAll("*")].filter((e) => e.getClientRects().length > 0);
+        const rules = shown
+          .filter((e) => {
+            const cs = getComputedStyle(e);
+            return parseFloat(cs.borderTopWidth) > 0 && cs.borderTopStyle !== "none";
+          })
+          .map((e) => e.getBoundingClientRect().top)
+          .sort((a, b) => a - b);
+        const content = shown
+          .filter((e) => e.matches("img, video") || [...e.childNodes].some((n) => n.nodeType === 3 && n.textContent.trim()))
+          .map((e) => e.getBoundingClientRect().top);
+        const out = [];
+        for (let i = 1; i < rules.length; i++) {
+          const [a, b] = [rules[i - 1], rules[i]];
+          if (b - a > 1 && b - a < 40 && !content.some((t) => t > a && t < b)) {
+            out.push(`${tile.getAttribute("href")} ${Math.round(b - a)}px`);
+          }
+        }
+        return out;
+      }),
+    );
+    check(doubles.length === 0, `deck ${width}x${height}: no tile draws two rules with nothing between (${doubles.join(", ") || "none"})`);
     await page.close();
   }
 
@@ -457,8 +499,27 @@ try {
 
   // ── a case study's screen recording ─────────────────────────────────────
   // Nothing fetched until it is looked at; it plays once half on screen; a
-  // reader's pause holds when they scroll away and back; and under reduced
-  // motion or Save-Data it never starts by itself, though Play still works.
+  // reader's pause holds when they scroll away and back; a reader's Play
+  // still stops when the video leaves the screen; and under reduced motion or
+  // Save-Data it never starts by itself, though Play still works.
+  //
+  // "Away" scrolls whichever box scrolls. At 1440 that is <main>, and a
+  // window.scrollTo once left the video on screen, so the pause check passed
+  // without ever leaving — it now confirms the video is off screen first.
+  const videoState = (page) =>
+    page.evaluate(() => {
+      const v = document.querySelector("figure video");
+      const r = v.getBoundingClientRect();
+      return {
+        playing: !v.paused,
+        fetched: performance.getEntriesByType("resource").some((e) => e.name.endsWith(".mp4")),
+        onScreen: r.bottom > 0 && r.top < innerHeight,
+      };
+    });
+  const showVideo = (page) =>
+    page.evaluate(() => document.querySelector("figure video").scrollIntoView({ block: "center" }));
+  const settle = (ms) => new Promise((r) => setTimeout(r, ms));
+
   for (const mode of ["normal", "reduced", "saveData"]) {
     const page = await open("/work/riflessi", {
       width: 1440,
@@ -466,16 +527,10 @@ try {
       reduced: mode === "reduced",
       saveData: mode === "saveData",
     });
-    const state = () =>
-      page.evaluate(() => {
-        const v = document.querySelector("figure video");
-        const fetched = performance.getEntriesByType("resource").some((e) => e.name.endsWith(".mp4"));
-        return { playing: !v.paused, t: v.currentTime, fetched };
-      });
-    const rest = await state();
+    const rest = await videoState(page);
     check(!rest.fetched && !rest.playing, `recording, ${mode}: nothing fetched or playing at rest`);
 
-    await page.evaluate(() => document.querySelector("figure video").scrollIntoView({ block: "center" }));
+    await showVideo(page);
     if (mode === "normal") {
       const played = await becomes(page, () => {
         const v = document.querySelector("figure video");
@@ -483,21 +538,93 @@ try {
       }, undefined, 8000);
       check(played, "recording: plays once it is on screen");
 
+      // The reader pauses, leaves, and comes back.
       await page.click("figure video + button");
-      await page.evaluate(() => window.scrollTo(0, 0));
-      await new Promise((r) => setTimeout(r, 600));
-      await page.evaluate(() => document.querySelector("figure video").scrollIntoView({ block: "center" }));
-      await new Promise((r) => setTimeout(r, 1200));
-      const held = await state();
-      check(!held.playing, "recording: a reader's pause holds after scrolling away and back");
+      await scrollTo(page, 0);
+      await settle(700);
+      const away = await videoState(page);
+      await showVideo(page);
+      await settle(1200);
+      const back = await videoState(page);
+      check(
+        !away.onScreen && !back.playing,
+        `recording: a reader's pause holds after scrolling away and back (left the screen ${!away.onScreen}, playing on return ${back.playing})`,
+      );
+
+      // The reader plays it, then leaves: it still stops.
+      await page.click("figure video + button");
+      await becomes(page, () => !document.querySelector("figure video").paused, undefined, 4000);
+      await scrollTo(page, 0);
+      const stopped = await becomes(page, () => document.querySelector("figure video").paused, undefined, 4000);
+      check(stopped, "recording: a reader's Play still pauses when it leaves the screen");
     } else {
-      await new Promise((r) => setTimeout(r, 1500));
-      const still = await state();
+      await settle(1500);
+      const still = await videoState(page);
       check(!still.playing && !still.fetched, `recording, ${mode}: does not start by itself (fetched ${still.fetched})`);
       await page.click("figure video + button");
       const played = await becomes(page, () => !document.querySelector("figure video").paused, undefined, 8000);
       check(played, `recording, ${mode}: the Play button still plays it`);
     }
+    await page.close();
+  }
+
+  // Reduced motion is followed live, as the deck's pointer follows it.
+  {
+    const page = await open("/work/riflessi", { width: 1440, height: 900 });
+    await showVideo(page);
+    await becomes(page, () => !document.querySelector("figure video").paused, undefined, 8000);
+    await page.emulateMediaFeatures([{ name: "prefers-reduced-motion", value: "reduce" }]);
+    const stopped = await becomes(page, () => document.querySelector("figure video").paused, undefined, 3000);
+    check(stopped, "recording: switching reduced motion on mid-visit stops the loop");
+    await page.close();
+  }
+
+  // The poster's head start, at a desktop width, where <main> is the scroller.
+  {
+    const page = await open("/work/riflessi", { width: 1440, height: 900, reduced: true });
+    await page.evaluate(() => {
+      const v = document.querySelector("figure video");
+      const main = document.querySelector("main");
+      const box = main && main.scrollHeight > main.clientHeight ? main : document.scrollingElement;
+      box.scrollBy(0, v.getBoundingClientRect().top - innerHeight - 400);
+    });
+    const set = await becomes(page, () => Boolean(document.querySelector("figure video").getAttribute("poster")), undefined, 3000);
+    const { onScreen } = await videoState(page);
+    check(set && !onScreen, `recording: the poster is set before the video reaches the screen (set ${set}, on screen ${onScreen})`);
+    await page.close();
+  }
+
+  // ── focus on a control over media ───────────────────────────────────────
+  // The recording's Play/Pause chip sits on the video, so its ring falls on
+  // whatever the frame shows. The accent ring on an ink chip once measured
+  // ink on ink over Riflessi's dark frame in the light theme: focus vanished.
+  // In both themes the ring must differ from the chip and carry a halo.
+  for (const theme of ["light", "dark"]) {
+    const page = await open("/work/riflessi", { width: 1440, height: 900, reduced: true, theme });
+    await page.evaluate(() => document.querySelector("figure video").scrollIntoView({ block: "center" }));
+    // Arrive by keyboard, so the ring is :focus-visible and not pointer focus.
+    await page.focus("figure video + button");
+    await page.keyboard.press("Tab");
+    await page.keyboard.down("Shift");
+    await page.keyboard.press("Tab");
+    await page.keyboard.up("Shift");
+    // Let the ring's transition land: under reduced motion it is 0.01ms, not
+    // none, and a read in the same frame sees its starting value.
+    await new Promise((r) => setTimeout(r, 300));
+    const ring = await page.evaluate(() => {
+      const b = document.activeElement;
+      const cs = getComputedStyle(b);
+      return {
+        control: b.matches("figure video + button") && b.matches(":focus-visible"),
+        outline: cs.outlineColor,
+        chip: cs.backgroundColor,
+        halo: cs.boxShadow,
+      };
+    });
+    check(
+      ring.control && ring.outline !== ring.chip && ring.halo !== "none",
+      `recording control, ${theme} theme: focus ring differs from its chip and carries a halo (${ring.outline} on ${ring.chip})`,
+    );
     await page.close();
   }
 
