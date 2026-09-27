@@ -169,7 +169,7 @@ export async function getSkillMarquee(): Promise<string[]> {
     "TypeScript", "React", "Next.js", "Node.js", "Tailwind CSS", "Zod",
     "Vue.js", "PHP", "Python", "MySQL", "PostgreSQL", "MongoDB", "Redis",
     "WordPress", "AWS", "Vercel", "Docker", "Cloudflare", "GitHub Actions",
-    "Jest", "Lighthouse", "Claude", "OpenAI",
+    "Jest", "Lighthouse", "Claude",
   ];
 }
 
@@ -211,7 +211,7 @@ export async function getStackGroups(): Promise<StackGroup[]> {
     {
       name: "AI & automation",
       items:
-        "Claude and OpenAI APIs, structured outputs with schema validation, multi-agent review pipelines with role-scoped write access, AI-assisted development workflows, prompt engineering, n8n",
+        "AI-assisted development with Claude, a multi-agent review workflow where only one role writes code, prompt engineering, n8n",
     },
     {
       name: "Practice",

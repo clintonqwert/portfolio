@@ -82,6 +82,10 @@ const RETIRED = [
     "Riflessi adapted 11 of the 15 component files it shares with DriftPilot; the content layer, tokens and lead pipeline are what carried over",
   ],
   [
+    /Claude and OpenAI APIs|structured outputs with schema validation|role-scoped write access/i,
+    "no project in this workspace calls the Claude or OpenAI APIs, and the AI roles are report-only by contract, not by tool permissions; name a real implementation before this returns",
+  ],
+  [
     /Project Achilles/i,
     "a former employer's internal codename: it tells a reader nothing and is not this site's to publish",
   ],
