@@ -91,7 +91,7 @@ const CASE_STUDIES: readonly CaseStudy[] = [
     headline: "Proving the foundation was reusable",
     summary:
       "It’s easy to call an architecture reusable. I built a second site on mine to find out, and I’ll show you what had to change.",
-    period: "Jul – Aug 2026",
+    period: "Jul – Sep 2026",
     liveUrl: "riflessiautocare.vercel.app",
     repoUrl: "github.com/clintonqwert/riflessiautocare",
     role: "Sole engineer · self-directed",
