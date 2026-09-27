@@ -1,7 +1,7 @@
 import "server-only";
 
 import { AUTOSYNC_INVENTORY_IMAGE } from "@/lib/content/assets";
-import type { Passage } from "@/types/content";
+import type { Passage, Stat } from "@/types/content";
 
 /**
  * AutoTrader.ca — five years, and the largest single block of experience on
@@ -37,9 +37,21 @@ export const PROJECT_OS_LEDE =
  * — is in the "How the work was run" passage below, which is where it reads
  * properly anyway.
  */
+/**
+ * The AutoTrader tile's two figures, here rather than in the component so the
+ * tile and the Outcome row below cannot drift apart. The second is the exact
+ * claim the repository supports — none after rollout — not the before-count,
+ * which came from a keyword search of the history and was never checked line
+ * by line (review of #12, P1-2).
+ */
+export const AUTOTRADER_FIGURES: Stat[] = [
+  { value: "5 yrs", label: "Jan 2020 \u2013 Jun 2025" },
+  { value: "0", label: "Cache reverts & removals, 3 yrs on" },
+];
+
 export const AUTOTRADER_POINTS = [
   "Custom in-house OOP PHP, not Laravel or Symfony",
-  "Redis Object Cache Pro against AWS-hosted Redis",
+  "Object Cache Pro: ended 3 years of cache churn",
   "Technical SEO where inventory discoverability is the product",
   "Mentored through code review and pair programming",
 ];
@@ -64,26 +76,36 @@ export async function getAutoTraderPassages(): Promise<Passage[]> {
       /*
         Problem, ownership, decision, trade-off, rollout, outcome: the shape a
         hiring manager reads a senior engineer's work in (an outside review,
-        2026-09-26). Every row restates what this page and Tadvantage's
-        Performance passage already publish; none adds a claim. "My part"
-        names what was mine inside team work, and the outcome says it was
-        observed, because the next passage explains why there is no figure.
+        2026-09-26). Sourced from the platform repository's own history
+        (docs/evidence-redis-convertus-2026-09-26.md, private), with nothing
+        internal published: no ticket IDs, commit hashes, branch names or the
+        plugin author's name.
+
+        Two kinds of claim, kept apart. What the repository shows — the churn
+        before, the configuration, the 33 of 36 commits, nothing reverted or
+        removed after — is stated as fact, and like the commit counts it is
+        private, so the Outcome row says so. Why the churn happened is the
+        owner's own account and says so ("As I saw it"). The before-counts are
+        no longer published: they came from a keyword search the evidence
+        itself said to check before quoting, and were never checked line by
+        line (review of #12, P1-2). "~0 downtime" is no longer claimed: nothing backs a
+        downtime figure, so none is.
       */
       list: [
         {
           term: "Problem",
           detail:
-            "Network-level downtime on the platform thousands of Canadian dealerships run their inventory on \u2014 dealer sites offline, not slow.",
+            "For three years the object cache on the platform thousands of Canadian dealerships run their inventory on was added, removed, swapped for other plugins and reverted, with hotfixes to switch it back on after deploys. As I saw it, the churn was a response to downtime.",
         },
         {
           term: "My part",
           detail:
-            "On a team, in a codebase I did not design: I created the object-caching repository, implemented and tuned Redis Object Cache Pro against AWS-hosted Redis, and later rolled page caching out across the fleet.",
+            "On a team, in a codebase I did not design: I backed out the approach that kept being reverted, put the platform on Redis Object Cache Pro, created its repository, and wrote 33 of the 36 commits to the platform\u2019s Redis configuration. Later I rolled page caching out across the fleet.",
         },
         {
           term: "Decision",
           detail:
-            "Object caching against shared Redis clusters, configured for many sites on one cluster: key prefixes, global groups, prefetching and connection timeouts.",
+            "A dedicated Redis host in production, deliberately not a cluster, with shared clusters in dev and staging. Per-site key prefixes, global groups and non-persistent groups for a fleet of sites on one cache; the flush and prefetch settings worked through with the plugin\u2019s author.",
         },
         {
           term: "Trade-off",
@@ -93,12 +115,12 @@ export async function getAutoTraderPassages(): Promise<Passage[]> {
         {
           term: "Rollout",
           detail:
-            "Load-tested on a dedicated environment before it went near production. Page caching went to the whole fleet with WP-CLI, wired into the deploy scripts so every new dealer site got it automatically.",
+            "Proved out on a separate test network first, load-test configuration included. It went down once during cluster testing, which is why it was separate. Shipped through the release scripts, so every dealer site came up the same way, and live in March 2022. Page caching later went to the whole fleet with WP-CLI, wired into the deploy scripts.",
         },
         {
           term: "Outcome",
           detail:
-            "Observed network-level downtime dropped to near zero after rollout. Observed, not measured \u2014 the next section says why there is no figure.",
+            "Nobody reverted or removed it in the three years after, until I left. It held, so the team built on it \u2014 a colleague later cached the CARFAX auth token in it. From the private repository\u2019s history, like the commit counts; not an uptime figure.",
         },
       ],
     },

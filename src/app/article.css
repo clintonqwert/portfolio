@@ -433,14 +433,16 @@
 
   /* Starts almost fully shown: the shot is often the largest paint on the
      page, and an image clipped to nothing would hold that measurement back. */
+  /* The clip only. It used to fade up from 60% too, and a figure below the
+     fold sits at its first keyframe until it scrolls in, so its caption was
+     below contrast whenever it was not yet on screen: Lighthouse flagged the
+     caption on /work/riflessi at 2.5:1. The same fix .rise had (globals.css). */
   @keyframes unveil {
     from {
       clip-path: inset(0 0 6% 0);
-      opacity: 0.6;
     }
     to {
       clip-path: inset(0);
-      opacity: 1;
     }
   }
 

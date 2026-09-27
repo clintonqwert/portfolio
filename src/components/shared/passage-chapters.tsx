@@ -1,5 +1,6 @@
 import { Chapter, type ChapterRef } from "@/components/shared/chapter";
 import { Shot } from "@/components/shared/shot";
+import { ShotVideo } from "@/components/shared/shot-video";
 import { media } from "@/lib/design-tokens";
 import { slugify } from "@/lib/utils";
 import type { Passage } from "@/types/content";
@@ -57,13 +58,21 @@ export function PassageChapters({
             </div>
             {passage.figure ? (
               <div className="mt-10">
-                <Shot
-                  image={passage.figure.image}
-                  figure={chapterNumber(figureNumbers[i]!)}
-                  caption={passage.figure.caption}
-                  // The prose column: ~700px at 1440, the full width below lg.
-                  sizes={`${media.lg} min(58vw, 740px), 100vw`}
-                />
+                {passage.figure.video ? (
+                  <ShotVideo
+                    video={passage.figure.video}
+                    figure={chapterNumber(figureNumbers[i]!)}
+                    caption={passage.figure.caption}
+                  />
+                ) : (
+                  <Shot
+                    image={passage.figure.image}
+                    figure={chapterNumber(figureNumbers[i]!)}
+                    caption={passage.figure.caption}
+                    // The prose column: ~700px at 1440, the full width below lg.
+                    sizes={`${media.lg} min(58vw, 740px), 100vw`}
+                  />
+                )}
               </div>
             ) : null}
           </Chapter>

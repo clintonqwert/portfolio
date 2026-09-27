@@ -100,15 +100,27 @@ export async function getTrackRecord(): Promise<Role[]> {
       summary: "A deliberate pause between roles. Returned to full-time engineering in January 2026.",
     },
     {
-      period: "Jan 2020 – Jun 2025",
-      title: "Senior Software Engineer, Full-Stack",
+      // Titles as the owner held them (2026-09-26): Full Stack Development
+      // Specialist (Intermediate) at Convertus, carried over to AutoTrader.ca
+      // as Software Engineer (Full Stack-Product), promoted to Senior
+      // Software Engineer in 2021. The promotion month is not recorded, so
+      // the dates carry year precision rather than a guessed month.
+      period: "2021 – Jun 2025",
+      title: "Senior Software Engineer",
       org: "AutoTrader.ca — AutoSync",
       summary:
-        "Production features on a national automotive SaaS platform. Implemented and tuned Redis Object Cache Pro against AWS-hosted Redis; observed network-level downtime dropped to near zero after rollout.",
+        "Production features on a national automotive SaaS platform. Replaced three years of object-cache churn with Redis Object Cache Pro on a dedicated host; nobody reverted it in the three years after.",
+    },
+    {
+      period: "Jan 2020 – 2021",
+      title: "Software Engineer (Full Stack-Product)",
+      org: "AutoTrader.ca — AutoSync",
+      summary:
+        "Carried over from Convertus with the platform through the acquisition: full-stack product engineering on the dealer platform, until promotion to Senior Software Engineer in 2021.",
     },
     {
       period: "Nov 2018 – Jan 2020",
-      title: "Full-Stack Senior Development Specialist",
+      title: "Full Stack Development Specialist (Intermediate)",
       org: "Convertus (acq. AutoTrader.ca)",
       summary:
         "WordPress multisite serving enterprise automotive clients, extended with custom object-oriented PHP. Authored the Tadvantage platform’s SEO subsystem — Vehicle and AutoDealer structured data, custom inventory sitemaps, canonical and meta handling — and co-built myGarage with its price-alert service. The platform carried through the acquisition to serve AutoSync dealer sites.",
@@ -174,7 +186,7 @@ export async function getStackGroups(): Promise<StackGroup[]> {
     {
       name: "Backend",
       items:
-        "Node.js, Express, REST APIs, React Server Actions, WordPress Multisite and WP-CLI, MySQL, PostgreSQL, MongoDB, Redis Cluster, Zod validation",
+        "Node.js, Express, REST APIs, React Server Actions, WordPress Multisite and WP-CLI, MySQL, PostgreSQL, MongoDB, Redis, Zod validation",
     },
     {
       name: "Performance",

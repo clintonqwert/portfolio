@@ -317,6 +317,18 @@
   }
 
   /*
+    A control laid over a photograph or a recording. Its backdrop is whatever
+    the frame is showing, so no single ring colour is safe: the accent ring on
+    an ink chip over Riflessi's dark recording measured ink on ink in the light
+    theme, and focus was invisible. Two tones that always contrast with each
+    other — paper ring, ink halo — keep it visible on any frame, in both themes.
+  */
+  .over-media:focus-visible {
+    outline-color: var(--color-canvas);
+    box-shadow: 0 0 0 7px var(--color-ink);
+  }
+
+  /*
     A thin, square-edged scrollbar rather than the OS default — the same
     hairline-and-no-radius vocabulary as everything else, so the one element
     on the page a browser normally owns still reads as part of the drawing.
@@ -491,9 +503,14 @@
     pixel, and a single px value was either tiny on a large screen or too
     tall on a short one:
 
-      1440–1679 wide  only DriftPilot shows   room = 50dvh − 277px
+      1440–1679 wide  only the feature study  room = 50dvh − 277px
+                      shows (Tadvantage)
       >=1680 wide     all four; AutoTrader    room = 50dvh − 432px
                       is the most crowded
+
+    (Re-checked, not re-measured, after the 2026-09-26 grid moved the feature
+    to Tadvantage at five columns: check:overflow and the one-height check
+    pass at every width, which is what the formulas promise.)
 
     Those fit every measurement to the pixel (1440×800…1000, 1680×900…1200,
     1800×1000, 1920×960…1200; 2560-wide screens have ~19px more), re-taken

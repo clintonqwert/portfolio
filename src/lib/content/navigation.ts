@@ -16,6 +16,9 @@ export interface NavLink {
 /**
  * A section label above a cluster of related links — AutoTrader.ca above
  * Tadvantage/myGarage/Luxury tax, DriftPilot Studio above DriftPilot/Riflessi.
+ * (Numbers are the rail's, and every surface that numbers a page — a deck
+ * tile, a page's hero, its chapter bar, the close that offers it next —
+ * takes them from here.)
  * Not itself a numbered view: it carries no index unless it is also a real
  * page (`href` set), in which case it is both the label and the umbrella
  * page's own link.
@@ -34,9 +37,9 @@ export type NavEntry = NavLink | NavHeading;
  * that opens in its own route rather than a section further down a scroll.
  *
  * Two of the entries are groups rather than flat peers, because that is the
- * actual shape of the work: DriftPilot and Riflessi are both built by
- * DriftPilot the studio, and Tadvantage/myGarage/Luxury tax are all work done
- * at AutoTrader.ca — myGarage and Luxury tax are chapters of Tadvantage
+ * actual shape of the work: Tadvantage/myGarage/Luxury tax are all work done
+ * at AutoTrader.ca, and DriftPilot and Riflessi are both built by DriftPilot
+ * the studio — myGarage and Luxury tax are chapters of Tadvantage
  * specifically, not of the company, but one level of nesting says that
  * clearly enough without a second indent tier.
  */
@@ -44,24 +47,30 @@ export async function getNavLinks(): Promise<NavEntry[]> {
   return [
     { kind: "link", href: "/", label: "Overview", index: "00" },
 
-    // No href: DriftPilot the studio has no landing page of its own on this
-    // site distinct from the DriftPilot case study, so the heading is a label
-    // rather than a duplicate link.
-    { kind: "heading", label: "DriftPilot Studio" },
-    { kind: "link", href: "/work/driftpilot", label: "DriftPilot", index: "01", indent: true },
-    { kind: "link", href: "/work/riflessi", label: "Riflessi", index: "02", indent: true },
+    // AutoTrader.ca first, then the studio: six and a half years on the
+    // dealer platform is the work the site leads with — the headline, the
+    // deck's wide cell — so the rail and every page's number and "next"
+    // follow the same order (owner's decision, 2026-09-26). It was studio
+    // first, in the order the case studies were written.
 
     // href set: /autotrader is a real page (the AutoSync caching work), so
     // the heading doubles as that page's own link.
-    { kind: "heading", label: "AutoTrader.ca", href: "/autotrader", index: "03" },
-    { kind: "link", href: "/work/tadvantage", label: "Tadvantage", index: "04", indent: true },
+    { kind: "heading", label: "AutoTrader.ca", href: "/autotrader", index: "01" },
+    { kind: "link", href: "/work/tadvantage", label: "Tadvantage", index: "02", indent: true },
     // Capitalised here only: RailNav renders a label's first character large
     // and forces the rest to uppercase for a drop-cap effect, so a label
     // starting lowercase rendered as "mYGARAGE". The case study itself keeps
     // "myGarage" everywhere else, matching how the feature is actually named
     // in its own prose and in the track record.
-    { kind: "link", href: "/work/mygarage", label: "MyGarage", index: "05", indent: true },
-    { kind: "link", href: "/work/luxury-tax", label: "Luxury tax", index: "06", indent: true },
+    { kind: "link", href: "/work/mygarage", label: "MyGarage", index: "03", indent: true },
+    { kind: "link", href: "/work/luxury-tax", label: "Luxury tax", index: "04", indent: true },
+
+    // No href: DriftPilot the studio has no landing page of its own on this
+    // site distinct from the DriftPilot case study, so the heading is a label
+    // rather than a duplicate link.
+    { kind: "heading", label: "DriftPilot Studio" },
+    { kind: "link", href: "/work/driftpilot", label: "DriftPilot", index: "05", indent: true },
+    { kind: "link", href: "/work/riflessi", label: "Riflessi", index: "06", indent: true },
 
     // History moved up: it's who the work belongs to, so it reads right after
     // the work itself rather than after the process/meta pages. Open gaps
