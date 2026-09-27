@@ -60,8 +60,8 @@ export async function getGaps(): Promise<Gap[]> {
     {
       gap: "No error monitoring",
       consequence:
-        "If the webhook fails completely, a lead survives only as a log line while the visitor still sees a thank-you page. The lead is lost and nobody knows.",
-      fix: "A fallback email queue for total failures, plus alerting. It’s been an open TODO in the webhook client since day one.",
+        "On DriftPilot, if the webhook fails twice the visitor still sees a thank-you page, and only the failure is logged, not the lead. Riflessi tells the visitor and logs the full lead, but neither site stores it anywhere durable.",
+      fix: "Port Riflessi’s failure handling to DriftPilot, then give both a fallback email and alerting, so a failed lead is kept and someone hears about it.",
       status: "in-development",
     },
     {

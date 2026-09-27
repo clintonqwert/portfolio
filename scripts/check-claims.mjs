@@ -74,6 +74,14 @@ const RETIRED = [
     "a keyword-search count the evidence said to check before quoting, and never checked line by line",
   ],
   [
+    /blocks? (the |a )?merges?|merge blocked/i,
+    "nothing requires DriftPilot's Lighthouse check before merging: GitHub applies no rules or protection to main (2026-09-27); a failure turns the pull request red",
+  ],
+  [
+    /(carried over|survived) untouched/i,
+    "Riflessi adapted 11 of the 15 component files it shares with DriftPilot; the content layer, tokens and lead pipeline are what carried over",
+  ],
+  [
     /Project Achilles/i,
     "a former employer's internal codename: it tells a reader nothing and is not this site's to publish",
   ],
