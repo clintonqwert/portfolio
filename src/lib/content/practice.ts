@@ -60,8 +60,8 @@ export async function getGaps(): Promise<Gap[]> {
     {
       gap: "No error monitoring",
       consequence:
-        "If the webhook fails completely, a lead survives only as a log line while the visitor still sees a thank-you page. The lead is lost and nobody knows.",
-      fix: "A fallback email queue for total failures, plus alerting. It’s been an open TODO in the webhook client since day one.",
+        "On DriftPilot, if the webhook fails twice the visitor still sees a thank-you page, and only the failure is logged, not the lead. Riflessi tells the visitor and logs the full lead, but neither site stores it anywhere durable.",
+      fix: "Port Riflessi’s failure handling to DriftPilot, then give both a fallback email and alerting, so a failed lead is kept and someone hears about it.",
       status: "in-development",
     },
     {
@@ -169,7 +169,7 @@ export async function getSkillMarquee(): Promise<string[]> {
     "TypeScript", "React", "Next.js", "Node.js", "Tailwind CSS", "Zod",
     "Vue.js", "PHP", "Python", "MySQL", "PostgreSQL", "MongoDB", "Redis",
     "WordPress", "AWS", "Vercel", "Docker", "Cloudflare", "GitHub Actions",
-    "Jest", "Lighthouse", "Claude", "OpenAI",
+    "Jest", "Lighthouse", "Claude",
   ];
 }
 
@@ -211,7 +211,7 @@ export async function getStackGroups(): Promise<StackGroup[]> {
     {
       name: "AI & automation",
       items:
-        "Claude and OpenAI APIs, structured outputs with schema validation, multi-agent review pipelines with role-scoped write access, AI-assisted development workflows, prompt engineering, n8n",
+        "AI-assisted development with Claude, a multi-agent review workflow where only one role writes code, prompt engineering, n8n",
     },
     {
       name: "Practice",

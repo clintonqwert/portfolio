@@ -16,7 +16,7 @@ const CASE_STUDIES: readonly CaseStudy[] = [
   {
     slug: "driftpilot",
     name: "DriftPilot",
-    headline: "A performance budget that blocks the merge",
+    headline: "A performance budget on every pull request",
     summary:
       "I moved the quality bar out of code review and into the pipeline, where nobody can forget it or argue it down on a deadline.",
     period: "Jun – Jul 2026",
@@ -28,7 +28,7 @@ const CASE_STUDIES: readonly CaseStudy[] = [
       { value: "37", label: "Prerendered routes", detail: "no runtime database" },
       { value: "3", label: "Defects caught", detail: "by the gate, pre-release" },
       { value: "237 kB", label: "Script weight", detail: "against a 260 kB ceiling" },
-      { value: "21", label: "Reviewed pull requests", detail: "88 commits" },
+      { value: "27", label: "Merged pull requests", detail: "73 commits" },
     ],
     assertions: {
       caption: "lighthouserc.json: budgets asserted on every pull request",
@@ -46,7 +46,7 @@ const CASE_STUDIES: readonly CaseStudy[] = [
         { name: "Largest contentful paint", threshold: "< 1500 ms", state: "passing" },
         { name: "Cumulative layout shift", threshold: "< 0.05", state: "passing" },
         { name: "Total blocking time", threshold: "< 150 ms", state: "passing" },
-        { name: "Script weight", threshold: "< 260 kB", state: "237 kB on PR #17", measured: true },
+        { name: "Script weight", threshold: "< 260 kB", state: "237 kB on PR #18", measured: true },
       ],
     },
     related: [
@@ -57,9 +57,9 @@ const CASE_STUDIES: readonly CaseStudy[] = [
       {
         paragraphs: [
           "Everyone agrees a site should be fast, and it still gets slower, one handy dependency at a time. Reminding people in review doesn’t fix that, so I made the pipeline check it.",
-          "Every pull request on driftpilot.ca runs Lighthouse CI three times against a production build and checks the median against the budget. If it fails, the merge gets a red check instead of a review comment someone can wave through.",
+          "Every pull request on driftpilot.ca runs Lighthouse CI three times against a production build and checks the median run against the budget. A failure turns the pull request red. GitHub doesn’t stop a merge on red, but every pull request merged since the check went in has passed it.",
         ],
-        diagram: ["Pull request", "Production build", "Lighthouse × 3, median asserted", "Merge blocked on failure"],
+        diagram: ["Pull request", "Production build", "Lighthouse × 3, median run asserted", "Red check on failure"],
       },
       {
         heading: "What the gate caught",
@@ -79,7 +79,7 @@ const CASE_STUDIES: readonly CaseStudy[] = [
         heading: "The rest of the build",
         paragraphs: [
           "The site is 37 statically prerendered routes with no runtime database. Content sits behind typed async accessors, so a headless CMS could take over as the source without touching a page or component.",
-          "Leads go through Zod-validated Server Actions, then honeypot and time-to-submit spam checks, then a webhook client that retries on 5xx and 429 and treats a 4xx as a permanent failure. I verified the whole path end to end on the live site. All of it came in over 88 commits across 21 reviewed pull requests.",
+          "Leads go through Zod-validated Server Actions, then honeypot and time-to-submit spam checks, then a CRM webhook with one retry. If both attempts fail, the visitor still sees the thank-you page and the lead isn’t kept, which Open gaps lists as the next fix. All of it came in over 73 commits across 27 merged pull requests.",
         ],
       },
     ],
@@ -98,15 +98,15 @@ const CASE_STUDIES: readonly CaseStudy[] = [
     stack: ["Next.js 16", "React Three Fiber", "GSAP ScrollTrigger", "Lenis", "glTF-Transform", "meshoptimizer"],
     related: [{ label: "DriftPilot: the foundation this reused", href: "/work/driftpilot" }],
     stats: [
-      { value: "5 weeks", label: "Empty repo to live", detail: "79 source files" },
+      { value: "5 weeks", label: "First commit to first full build", detail: "7 Jul – 11 Aug 2026" },
       { value: "89%", label: "Hero asset reduction", detail: "19.07 MB → 2.05 MB" },
       { value: "205k → 96k", label: "Tyre mesh vertices", detail: "after decimation" },
-      { value: "11", label: "Reviewed pull requests", detail: "" },
+      { value: "11", label: "Pull requests in that build", detail: "" },
     ],
     passages: [
       {
         paragraphs: [
-          "Riflessi Auto Care went from an empty repository to live in five weeks. I swapped the design-token values and rewrote the content against the same fixed type contracts, and every component carried over untouched. That’s how I know DriftPilot’s abstractions were doing real work.",
+          "Riflessi Auto Care took five weeks from its first commit to a full first build. I swapped the design-token values, rewrote the content against the same fixed type contracts, and adapted the components to the new brand, while the content layer, tokens and lead pipeline carried over. That’s how I know DriftPilot’s abstractions were doing real work.",
           "Two parts did need new code, the motion layer and the 3D stage, because they were things DriftPilot never had.",
         ],
       },
@@ -136,13 +136,13 @@ const CASE_STUDIES: readonly CaseStudy[] = [
       {
         heading: "Gating at the import",
         paragraphs: [
-          "I gate the 3D scene at the dynamic import, so a device that can’t run it never downloads the chunk. Viewport size, CPU core count, device memory and a WebGL2 probe decide, and prefers-reduced-motion overrides all of them. Gating the render would have been easier, but it would still have shipped the payload.",
+          "I gate the 3D scene at the dynamic import, so a device that can’t run it never downloads the chunk. Viewport size, CPU core count, device memory and a WebGL probe decide, and prefers-reduced-motion overrides all of them. Gating the render would have been easier, but it would still have shipped the payload.",
         ],
       },
       {
         heading: "Keeping the shop’s address private",
         paragraphs: [
-          "The image pipeline also blurs licence plates and strips all EXIF data before anything is published. The shop runs from home and the site keeps the address private on purpose, so the GPS data in the first uploaded photo would have given it away. I put that protection in the build step so nobody has to remember it.",
+          "A preparation script strips every photo’s metadata, GPS included, and blurs any licence plate I’ve marked before the photo goes on the site. The shop runs from home and the site keeps the address private on purpose, so the GPS data in the first uploaded photo would have given it away. The script also lists every photo nobody has checked for plates yet, so a missed one shows up before it ships.",
         ],
       },
     ],
