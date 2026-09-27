@@ -62,7 +62,7 @@ const STUDY = "/work/riflessi";
 
 const browser = await puppeteer.launch({
   executablePath: CHROME,
-  headless: "new",
+  headless: true,
   args: [
     "--hide-scrollbars",
     "--disable-gpu",

@@ -29,7 +29,7 @@ const VIEWPORTS = [
   [1920, 960], [1920, 1080], [1920, 1200], [2560, 1440],
 ];
 
-const browser = await puppeteer.launch({ executablePath: CHROME, headless: "new" });
+const browser = await puppeteer.launch({ executablePath: CHROME, headless: true });
 try {
   const page = await browser.newPage();
   console.log("viewport    room per tile (px)                           min   N = h/2 − min");
