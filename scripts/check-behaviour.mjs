@@ -329,6 +329,27 @@ try {
         );
       });
       check(cursor, "hovering a deck tile brings up the tile cursor beside the arrow, running");
+
+      // What shatters is the CR mark: every shard carries its piece of the
+      // letters, the mask image is actually served, and the surviving
+      // shard's letters widen back to the whole mark in step with the loop.
+      const mark = await page.evaluate(async () => {
+        const shards = [...document.querySelectorAll(".tile-cursor-shard")];
+        const masked = shards.filter((s) => getComputedStyle(s, "::after").maskImage.includes("cr-mark-letters")).length;
+        const res = await fetch("/brand/cr-mark-letters.png");
+        return {
+          shards: shards.length,
+          masked,
+          served: `${res.status} ${res.headers.get("content-type")}`,
+          letters: document
+            .getAnimations()
+            .some((a) => a.animationName === "shard-main-letters" && a.playState === "running"),
+        };
+      });
+      check(
+        mark.shards === 16 && mark.masked === 16 && mark.served === "200 image/png" && mark.letters,
+        `the tile cursor shatters the CR mark (${mark.masked}/${mark.shards} shards masked, letters ${mark.served}, main shard reforming ${mark.letters})`,
+      );
     }
     await page.close();
   }

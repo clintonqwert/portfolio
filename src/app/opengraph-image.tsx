@@ -90,7 +90,6 @@ export default async function OpengraphImage() {
             {LEDE}
           </div>
         </div>
-          {/* eslint-disable-next-line @next/next/no-img-element -- Satori renders plain img, not next/image */}
           <img src={mark} width={120} height={101} alt="" />
         </div>
 
