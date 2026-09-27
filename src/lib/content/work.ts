@@ -165,7 +165,7 @@ const CASE_STUDIES: readonly CaseStudy[] = [
       "Vue.js",
       "Node.js",
       "MySQL",
-      "Redis Cluster",
+      "Redis",
       "WP-CLI",
       "PHPUnit",
     ],
@@ -179,7 +179,7 @@ const CASE_STUDIES: readonly CaseStudy[] = [
     highlights: [
       "Owned production releases, v3 through v12.7",
       "Canada\u2019s luxury tax through every price surface, flagged dealer by dealer",
-      "Object Cache Pro on shared Redis clusters; page caching fleet-wide",
+      "Ended three years of object-cache churn; page caching fleet-wide",
       "The SEO foundation: bilingual inventory sitemaps, VIN-keyed schema",
       "IQ Badging built once, as one Vue component on every vehicle card",
     ],
@@ -229,7 +229,7 @@ const CASE_STUDIES: readonly CaseStudy[] = [
       {
         heading: "Performance",
         paragraphs: [
-          "I created the object-caching repository and put the platform on Object Cache Pro against shared Redis clusters \u2014 key prefixes, global groups, prefetching, connection timeouts \u2014 load-tested on a dedicated environment before it went near production. Later I rolled page caching out to the whole fleet with WP-CLI, excluding the inventory and showroom routes that can never be served stale, wired into the deploy scripts so every new site got it automatically.",
+          "I created the object-caching repository and put the platform on Object Cache Pro \u2014 a dedicated Redis host in production, shared clusters in dev and staging; per-site key prefixes, global groups, prefetching, connection timeouts \u2014 load-tested on a dedicated environment before it went near production. It ended three years of the cache being added and reverted: nobody reverted it in the three years after. Later I rolled page caching out to the whole fleet with WP-CLI, excluding the inventory and showroom routes that can never be served stale, wired into the deploy scripts so every new site got it automatically.",
         ],
       },
       {

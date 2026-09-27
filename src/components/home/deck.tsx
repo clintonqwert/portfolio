@@ -192,10 +192,11 @@ export function Deck({
 
           <div className="mt-auto flex gap-4 border-t border-line pt-3">
             <Figure stat={{ value: "5 yrs", label: "Jan 2020 – Jun 2025" }} size="sm" />
-            {/* "Observed": no dashboard figure exists for it, and /autotrader
-                says so. A stat that looks measured must not be one that was
-                only seen. */}
-            <Figure stat={{ value: "~0", label: "Observed downtime after rollout" }} size="sm" />
+            {/* What the repository shows, not an uptime figure: nothing backs
+                one, so "~0 downtime" is no longer claimed here. Reverts and
+                removals of the object cache, three years either side of the
+                March 2022 rollout — the Outcome row on /autotrader. */}
+            <Figure stat={{ value: "22 \u2192 0", label: "Cache reverts, 3 yrs before \u2192 after" }} size="sm" />
           </div>
         </Tile>
 

@@ -60,6 +60,14 @@ const RETIRED = [
     "Riflessi was self-directed and unpaid",
   ],
   [
+    /shared Redis clusters? (in|across) (prod|all)|Redis Cluster\b|clusters? in production/i,
+    "production ran on a dedicated Redis host, deliberately not a cluster; clusters were dev and staging",
+  ],
+  [
+    /downtime (dropped|fell) to near zero|~0 downtime|observed downtime/i,
+    "no source backs a downtime figure; the repository's churn record carries the caching story",
+  ],
+  [
     /Project Achilles/i,
     "a former employer's internal codename: it tells a reader nothing and is not this site's to publish",
   ],
