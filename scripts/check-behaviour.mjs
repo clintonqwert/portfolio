@@ -27,6 +27,7 @@
  *    Under reduced motion no page is fetched or panned, and with Save-Data on
  *    no page is fetched for being scrolled past.
  *  - A screenshot the deck hides at its width is never fetched.
+ *  - Every deck tile's name reads whole, at every width it is shown at.
  *  - The reading path: the rail's order, every page's hero number, every deck
  *    tile's number and every page's "next" agree, AutoTrader.ca first.
  *  - A case study's screen recording fetches nothing until seen, plays in view,
@@ -170,6 +171,25 @@ try {
         .map((url) => decodeURIComponent(url));
     });
     check(wasted.length === 0, `deck ${width}x${height} fetches no hidden screenshot (${wasted.join(", ") || "none"})`);
+    await page.close();
+  }
+
+  // ── every tile's name reads whole ───────────────────────────────────────
+  // A narrow cell once cut "Riflessi Auto Care" to "RIF…" at 1024 and still
+  // trimmed it at 1440; DriftPilot, History and AutoTrader.ca were cut at
+  // 1024. Short names at the narrowest widths and an arrow-only call to
+  // action keep every name whole.
+  for (const [width, height] of [[1024, 768], [1280, 800], [1440, 900], [1680, 1050], [1920, 1080], [390, 844]]) {
+    const page = await open("/", { width, height });
+    const cut = await page.evaluate(() =>
+      [...document.querySelectorAll("a.tile")]
+        .map((t) => {
+          const name = t.querySelector(".display-hero");
+          return name && name.scrollWidth > name.clientWidth + 1 ? name.innerText : null;
+        })
+        .filter(Boolean),
+    );
+    check(cut.length === 0, `deck ${width}x${height}: every tile's name reads whole (${cut.join(", ") || "none cut"})`);
     await page.close();
   }
 

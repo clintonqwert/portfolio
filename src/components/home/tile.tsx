@@ -13,20 +13,40 @@ import type { DeckPreview, Stat } from "@/types/content";
  * summarised and linked rather than scrolled — a tile that scrolls hides
  * content behind an interaction nobody expects on a dashboard.
  */
+/** Literal classes, so Tailwind sees them: hidden from lg until the key. */
+const COMPACT_CTA = {
+  xl: "lg:max-xl:sr-only",
+  wider: "lg:max-wider:sr-only",
+} as const;
+
 export function Tile({
   label,
+  shortLabel,
   index,
   href,
   children,
   className,
   cta,
+  compactCta,
 }: {
   label: string;
+  /**
+   * What the cell shows from 1024 to 1279, where the deck's cells are
+   * narrowest and a long name was cut to "RIF…". The full label stays for
+   * screen readers; the short one is the rail's own name for the page.
+   */
+  shortLabel?: string;
   index?: string;
   href?: string;
   children: React.ReactNode;
   className?: string;
   cta?: string;
+  /**
+   * Drop the call to action's words, keeping its arrow, from 1024 up to this
+   * breakpoint, so a narrow cell's name has the room instead. The words stay
+   * for screen readers, and the whole tile is the link either way.
+   */
+  compactCta?: "xl" | "wider";
 }) {
   const head = (
     // Head and body share one inset at every width, so a tile's text lines
@@ -42,11 +62,22 @@ export function Tile({
             {index}
           </span>
         ) : null}
-        <span className="display-hero truncate tracking-[0.08em]">{label}</span>
+        <span className="display-hero truncate tracking-[0.08em]">
+          {shortLabel ? (
+            <>
+              <span className="lg:max-xl:sr-only">{label}</span>
+              <span aria-hidden="true" className="hidden lg:max-xl:inline">
+                {shortLabel}
+              </span>
+            </>
+          ) : (
+            label
+          )}
+        </span>
       </span>
       {cta ? (
         <span className="meta flex shrink-0 items-center gap-1 text-faint transition-colors duration-[var(--duration-fast)] ease-[var(--ease-out-quart)] group-hover:text-accent">
-          {cta}
+          <span className={compactCta ? COMPACT_CTA[compactCta] : undefined}>{cta}</span>
           {/* Decorative: the link's own accessible name already says where
               it goes. The nudge is the same directional cue the rail's
               drop-cap letters use on hover — reaching toward the content

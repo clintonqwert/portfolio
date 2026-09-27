@@ -87,6 +87,7 @@ const CASE_STUDIES: readonly CaseStudy[] = [
   {
     slug: "riflessi",
     name: "Riflessi Auto Care",
+    shortName: "Riflessi",
     headline: "Proving the foundation was actually reusable",
     summary:
       "Any architecture claims reusability. The only honest test is building the second thing — and then reporting what actually had to change.",
