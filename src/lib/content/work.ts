@@ -18,7 +18,7 @@ const CASE_STUDIES: readonly CaseStudy[] = [
     name: "DriftPilot",
     headline: "A performance budget that blocks the merge",
     summary:
-      "A quality bar moved out of the review conversation and into the pipeline, where it cannot be forgotten or argued with under deadline.",
+      "I moved the quality bar out of code review and into the pipeline, where nobody can forget it or argue it down on a deadline.",
     period: "Jun – Jul 2026",
     liveUrl: "driftpilot.ca",
     repoUrl: "github.com/clintonqwert/driftpilot-site",
@@ -31,11 +31,11 @@ const CASE_STUDIES: readonly CaseStudy[] = [
       { value: "21", label: "Reviewed pull requests", detail: "88 commits" },
     ],
     assertions: {
-      caption: "lighthouserc.json — budgets asserted on every pull request",
+      caption: "lighthouserc.json: budgets asserted on every pull request",
       // The public run behind the Result column: every assertion passed on
       // main's last CI run, the same commit the figure below re-runs.
       evidence: {
-        label: "Last CI run on main, 30 Jul 2026 (14f649f): every budget passing — open the run",
+        label: "Last CI run on main, 30 Jul 2026 (14f649f): every budget passing. Open the run",
         href: "https://github.com/clintonqwert/driftpilot-site/actions/runs/30591364898",
       },
       rows: [
@@ -50,36 +50,36 @@ const CASE_STUDIES: readonly CaseStudy[] = [
       ],
     },
     related: [
-      { label: "How AI is allowed to touch this work", href: "/standard" },
-      { label: "Riflessi — proving the foundation travels", href: "/work/riflessi" },
+      { label: "How I use AI on this work", href: "/standard" },
+      { label: "Riflessi: proving the foundation travels", href: "/work/riflessi" },
     ],
     passages: [
       {
         paragraphs: [
-          "Most teams treat performance as a discipline problem: everyone agrees the site should be fast, and it degrades anyway, one convenient dependency at a time. I moved the standard out of the review conversation and into the pipeline, where it cannot be forgotten or argued with under deadline.",
-          "Every pull request against driftpilot.ca runs Lighthouse CI three times against a production build and asserts the median. A failure is a red check, not a comment.",
+          "Everyone agrees a site should be fast, and it still gets slower, one handy dependency at a time. Reminding people in review doesn’t fix that, so I made the pipeline check it.",
+          "Every pull request on driftpilot.ca runs Lighthouse CI three times against a production build and checks the median against the budget. If it fails, the merge gets a red check instead of a review comment someone can wave through.",
         ],
         diagram: ["Pull request", "Production build", "Lighthouse × 3, median asserted", "Merge blocked on failure"],
       },
       {
         heading: "What the gate caught",
         paragraphs: [
-          "The gate earns its keep by catching what review misses. It stopped a WebGL shader path that hit 39 seconds of total blocking time on software renderers, a footer contrast pair below WCAG minimum, and a third-party scheduling embed that quietly blew the script budget.",
-          "One budget was re-baselined during the project: the original 110 kB script ceiling was fiction against a framework-plus-shader reality measured at 237 kB, so I moved the number deliberately and wrote down why. Measurement can justify moving a threshold. Silently deleting a failing assertion to get a green check cannot — that distinction is the whole value of having the gate.",
+          "The gate caught three things review missed: a WebGL shader path that hit 39 seconds of total blocking time on software renderers, a footer colour pair below the WCAG contrast minimum, and a third-party scheduling embed that pushed the script weight over budget without anyone noticing.",
+          "I did move one budget. The original 110 kB script ceiling was never realistic once the framework and the shader measured 237 kB together, so I raised it to 260 kB on purpose and wrote down why. That’s the line I hold: a measurement can justify moving a threshold, but deleting a failing check to get a green build can’t.",
         ],
         figure: {
           image: SCORES_IMAGE,
           // Measured, and said how: a local re-run of the repository's own
           // gate, not a CI report and not a mock-up (see SCORES_IMAGE).
           caption:
-            "The gate re-run on 26 Sep 2026: the repository\u2019s own lighthouserc.json against a production build of main, desktop preset, on my machine rather than a CI runner. The homepage\u2019s median of three runs \u2014 LCP 663 ms, TBT 0 ms, CLS 0 \u2014 and every run on all three gated routes passed every budget.",
+            "I re-ran the gate on 26 Sep 2026 on my own machine, not a CI runner: the repository’s own lighthouserc.json against a production build of main, desktop preset. Shown is the homepage’s median of three runs (LCP 663 ms, TBT 0 ms, CLS 0). Every run on all three gated routes passed every budget.",
         },
       },
       {
         heading: "The rest of the build",
         paragraphs: [
-          "37 statically prerendered routes with no runtime database. Content sits behind typed async accessors, so a headless CMS can replace the source without editing a page or a component.",
-          "The lead pipeline runs Zod-validated Server Actions through honeypot and time-to-submit spam gates into a retrying webhook client that replays 5xx and 429 and treats 4xx as permanently failed — verified end to end on the live site. 88 commits across 21 reviewed pull requests.",
+          "The site is 37 statically prerendered routes with no runtime database. Content sits behind typed async accessors, so a headless CMS could take over as the source without touching a page or component.",
+          "Leads go through Zod-validated Server Actions, then honeypot and time-to-submit spam checks, then a webhook client that retries on 5xx and 429 and treats a 4xx as a permanent failure. I verified the whole path end to end on the live site. All of it came in over 88 commits across 21 reviewed pull requests.",
         ],
       },
     ],
@@ -88,15 +88,15 @@ const CASE_STUDIES: readonly CaseStudy[] = [
     slug: "riflessi",
     name: "Riflessi Auto Care",
     shortName: "Riflessi",
-    headline: "Proving the foundation was actually reusable",
+    headline: "Proving the foundation was reusable",
     summary:
-      "Any architecture claims reusability. The only honest test is building the second thing — and then reporting what actually had to change.",
+      "It’s easy to call an architecture reusable. I built a second site on mine to find out, and I’ll show you what had to change.",
     period: "Jul – Aug 2026",
     liveUrl: "riflessiautocare.vercel.app",
     repoUrl: "github.com/clintonqwert/riflessiautocare",
     role: "Sole engineer · self-directed",
     stack: ["Next.js 16", "React Three Fiber", "GSAP ScrollTrigger", "Lenis", "glTF-Transform", "meshoptimizer"],
-    related: [{ label: "DriftPilot — the foundation this reused", href: "/work/driftpilot" }],
+    related: [{ label: "DriftPilot: the foundation this reused", href: "/work/driftpilot" }],
     stats: [
       { value: "5 weeks", label: "Empty repo to live", detail: "79 source files" },
       { value: "89%", label: "Hero asset reduction", detail: "19.07 MB → 2.05 MB" },
@@ -106,8 +106,8 @@ const CASE_STUDIES: readonly CaseStudy[] = [
     passages: [
       {
         paragraphs: [
-          "Any architecture claims reusability. The only honest test is building the second thing. Riflessi Auto Care went from empty repository to live in five weeks by swapping design-token values and rewriting content against fixed type contracts — every component survived untouched. That is the evidence the first project’s abstractions were load-bearing rather than decorative.",
-          "The honest version matters too: the parts that did need new code were the motion layer and the 3D stage, which were new capability rather than re-theming. A reuse claim that omits what did not reuse is not worth making.",
+          "Riflessi Auto Care went from an empty repository to live in five weeks. I swapped the design-token values and rewrote the content against the same fixed type contracts, and every component carried over untouched. That’s how I know DriftPilot’s abstractions were doing real work.",
+          "Two parts did need new code, the motion layer and the 3D stage, because they were things DriftPilot never had.",
         ],
       },
       {
@@ -117,27 +117,32 @@ const CASE_STUDIES: readonly CaseStudy[] = [
         // frameloop switch in PaintStage.tsx.
         heading: "Why a 3D model at all",
         paragraphs: [
-          "A detailer sells a finish, and a finish is judged from more than one angle. So the homepage is a scroll-driven sequence of seven acts. Each pairs its copy with a camera pose and a material state \u2014 where the camera sits and what it aims at, how bright the key light is, how far the paint has gone from freshly corrected to a cured ceramic coat \u2014 and the visitor\u2019s own scroll carries the car between them. No photograph can do that. It is the reason the site carries a 3D model, and most of what makes it feel premium.",
-          "GSAP ScrollTrigger owns the progress and Lenis the feel of the scroll, both dynamically imported into the same lazy chunk as the scene, so a visitor on the static fallback never downloads either. Lenis runs only while the sequence is mounted, leaving every other route on native scrolling, and the render loop stops the moment the sequence leaves the viewport.",
+          "A detailer sells a finish, and you judge a finish from more than one angle. So the homepage is a scroll-driven sequence in seven acts. Each act pairs its copy with a camera pose and a material state: where the camera sits and what it points at, how bright the key light is, and how far the paint has come from freshly corrected to a cured ceramic coat. As you scroll, the car moves between them. A photo can’t do that, and it’s the reason the site has a 3D model at all. It’s also most of what makes the site feel premium.",
+          "GSAP ScrollTrigger tracks the progress and Lenis smooths the scroll. Both load in the same lazy chunk as the scene, so a visitor on the static fallback never downloads either one. Lenis only runs while the sequence is on the page, so every other route keeps native scrolling, and the render loop stops as soon as the sequence scrolls out of view.",
         ],
         figure: {
           video: RIFLESSI_SCROLL_VIDEO,
           caption:
-            "The live homepage, scrolled from the first act to the last: a new camera angle for each act, with the light and the paint\u2019s finish changing alongside. Recorded 26 Sep 2026 in Chrome, played at twice the speed it was scrolled.",
+            "The live homepage, scrolled from the first act to the last. Each act brings a new camera angle, and the light and paint finish change with it. Recorded 26 Sep 2026 in Chrome and played back at twice the scroll speed.",
         },
       },
       {
         heading: "The 19 MB hero",
         paragraphs: [
-          "The hard problem was the hero: a licensed 3D vehicle model that weighed 19.07 MB, on a site holding a sub-1.5-second budget.",
-          "The detail worth telling is why the obvious approach failed. The asset named every single node identically, so node-name matching found nothing — all the semantic meaning lived in the material names. So I deleted hidden geometry by material instead, then profiled and found the tyres alone were 63% of the model, decimated them from 205k to 96k vertices, stripped all seven textures because paint is applied at runtime, then welded, deduplicated, quantized and meshopt-compressed. The result was 2.05 MB, an 89% reduction, with a content-hashed filename so a one-year immutable cache header is actually safe.",
+          "The hardest part was the hero: a licensed 3D vehicle model that weighed 19.07 MB, on a site aiming to load in under 1.5 seconds.",
+          "The obvious fix didn’t work. Every node in the asset had the same name, so matching on node names found nothing; the meaning lived in the material names. So I deleted hidden geometry by material instead. Profiling showed the tyres alone were 63% of the model, so I decimated them from 205k to 96k vertices. I stripped all seven textures, because the paint is applied at runtime, then welded, deduplicated, quantized and meshopt-compressed what was left. It came out at 2.05 MB, an 89% reduction, with a content-hashed filename so a one-year immutable cache header is safe.",
         ],
       },
       {
-        heading: "Gating the import, not the render",
+        heading: "Gating at the import",
         paragraphs: [
-          "The 3D scene is gated at the dynamic import rather than the render, so a device that cannot run it never downloads the chunk at all — viewport, CPU core count, device memory and a WebGL2 probe decide, and prefers-reduced-motion overrides every other signal. Gating the render would have been easier and would have shipped the payload anyway.",
-          "The image pipeline blurs licence plates and strips all EXIF before publish. That is not a nice-to-have: the shop is run from home and the site deliberately withholds the address, which camera GPS metadata would have published on the first photo upload. Privacy belonged in the build step, not in a checklist someone remembers.",
+          "I gate the 3D scene at the dynamic import, so a device that can’t run it never downloads the chunk. Viewport size, CPU core count, device memory and a WebGL2 probe decide, and prefers-reduced-motion overrides all of them. Gating the render would have been easier, but it would still have shipped the payload.",
+        ],
+      },
+      {
+        heading: "Keeping the shop’s address private",
+        paragraphs: [
+          "The image pipeline also blurs licence plates and strips all EXIF data before anything is published. The shop runs from home and the site keeps the address private on purpose, so the GPS data in the first uploaded photo would have given it away. I put that protection in the build step so nobody has to remember it.",
         ],
       },
     ],
@@ -152,7 +157,7 @@ const CASE_STUDIES: readonly CaseStudy[] = [
     name: "Tadvantage",
     headline: "Six and a half years on a dealer platform, and the parts I put my name on",
     summary:
-      "The platform behind dealer websites \u2014 built at Convertus, carried through the acquisition into AutoSync. Top all-time contributor across six and a half years.",
+      "The platform behind dealer websites, from Convertus through the acquisition into AutoSync. I was its top all-time contributor over six and a half years.",
     period: "6.5 years \u00b7 Convertus \u2192 AutoTrader",
     // The platform's own product site. autosyncmotors.com, the public demo
     // dealer site, is shown on /autotrader and /work/mygarage instead.
@@ -171,45 +176,44 @@ const CASE_STUDIES: readonly CaseStudy[] = [
       "PHPUnit",
     ],
     related: [
-      { label: "myGarage \u2014 the feature that tested the data model", href: "/work/mygarage" },
-      { label: "Luxury tax \u2014 a chapter of this platform", href: "/work/luxury-tax" },
+      { label: "myGarage: the feature that tested the data model", href: "/work/mygarage" },
+      { label: "Luxury tax: a chapter of this platform", href: "/work/luxury-tax" },
     ],
-    // Each restates a passage below: releases ("Where I sat in it"), luxury
+    // Each restates a passage below: releases ("My part in it"), luxury
     // tax ("Pricing"), caching ("Performance"), SEO ("The unglamorous half"),
     // IQ Badging. Ordered by weight; the deck shows as many as fit.
     highlights: [
       "Owned production releases, v3 through v12.7",
-      "Canada\u2019s luxury tax through every price surface, flagged dealer by dealer",
+      "Canada’s luxury tax on every price, rolled out dealer by dealer",
       "Ended three years of object-cache churn; page caching fleet-wide",
       "The SEO foundation: bilingual inventory sitemaps, VIN-keyed schema",
-      "IQ Badging built once, as one Vue component on every vehicle card",
+      "IQ Badging: one Vue component, on every vehicle card",
     ],
     stats: [
-      { value: "1,682", label: "Commits \u2014 #1 of 100+ engineers" },
+      { value: "1,682", label: "Commits, #1 of 100+ engineers" },
       { value: "358", label: "Merged pull requests" },
     ],
     // The only unverifiable figures on this site, and the note that says so.
     // A private repository cannot be clicked through; pretending otherwise
     // would undo the credibility the rest of the page is built on.
-    note: "Counted from the repository\u2019s own history \u2014 private, so this is the one thing here you cannot click through and check.",
+    note: "Counted from the private repository’s history, so you can’t click through and check. I’m happy to walk you through it.",
     passages: [
       {
         heading: "What it is",
         paragraphs: [
-          "Tadvantage is the WordPress multisite platform behind Convertus dealer websites. It carries ten OEM and dealer-group themes and thirty-five-plus custom plugins covering inventory, showroom, pricing, SEO, integrations and analytics, with Vue on the interactive surfaces and PHP underneath. Convertus is part of Trader Corporation, the company behind AutoTrader.ca.",
+          "Tadvantage is the WordPress multisite platform behind Convertus dealer websites. It has ten OEM and dealer-group themes and more than thirty-five custom plugins for inventory, showroom, pricing, SEO, integrations and analytics, with Vue on the interactive parts and PHP underneath. Convertus is part of Trader Corporation, the company behind AutoTrader.ca.",
         ],
       },
       {
-        heading: "Where I sat in it",
+        heading: "My part in it",
         paragraphs: [
-          "I was the top all-time contributor: 1,682 commits and 358 merged pull requests on a codebase with more than a hundred engineers in its history. 253 tickets, 177 release commits, 39 hotfixes. That count starts in January 2019 rather than at my start date, because my first couple of months went in under a colleague\u2019s pull requests. I owned production releases from v3 through v12.7 and merged the French translations for most of them.",
-          "Those figures come from the repository\u2019s own history. It is private, so unlike everything else on this site you cannot click through and check it \u2014 I can walk you through it on a call.",
+          "Of the more than a hundred engineers in the codebase’s history, I was the top contributor of all time: 1,682 commits and 358 merged pull requests. Along the way: 253 tickets, 177 release commits and 39 hotfixes. The count starts in January 2019, not my start date, because my first couple of months went in under a colleague’s pull requests. I owned production releases from v3 through v12.7 and merged the French translations for most of them.",
         ],
       },
       {
-        heading: "Pricing, which is where the risk is",
+        heading: "Pricing, where the risk is",
         paragraphs: [
-          "A price appears in more places than anyone expects: four search-result card versions, the vehicle detail page, the quick view, the inventory carousel, and a calculator with cash, finance and lease tabs. If any one of them disagrees with another, the customer stops trusting the number and the dealer carries the compliance risk. I built Canada\u2019s federal luxury tax through all of them, behind a feature flag so it could go out dealer by dealer.",
+          "A price shows up in more places than you’d expect: four versions of the search-result card, the vehicle detail page, the quick view, the inventory carousel, and a calculator with cash, finance and lease tabs. If any two disagree, the shopper stops trusting the number and the dealer carries the compliance risk. I built Canada’s federal luxury tax into all of them, behind a feature flag so we could roll it out dealer by dealer.",
         ],
       },
       {
@@ -217,32 +221,38 @@ const CASE_STUDIES: readonly CaseStudy[] = [
         // from the product site's public feature list, shown in the figure.
         heading: "IQ Badging, one component on every card",
         paragraphs: [
-          "AutoTrader.ca IQ Badging marks a vehicle as a Good Price or a Great Price against the market, on the search results and on the vehicle detail page. I integrated the newly available AutoTrader data behind it, then built the badge once, as a Vue component, so the same badge from the same data renders on every vehicle card the platform draws \u2014 in different places across the site, and inside different components. I added WordPress options to configure it.",
+          "AutoTrader.ca IQ Badging marks a vehicle as a Good Price or Great Price against the market, in search results and on the vehicle detail page. I integrated the newly available AutoTrader data behind it, then built the badge once as a Vue component. The same badge, from the same data, shows on every vehicle card the platform draws, wherever it appears on the site and whatever component it sits in. I also added WordPress options to configure it.",
         ],
         figure: {
           image: TADVANTAGE_FEATURES_IMAGE,
           // The figures in the grid are the product site's marketing, not
           // this site's claims — the caption says whose they are.
           caption:
-            "AutoTrader.ca IQ Badging and My Garage among the features the website packages are sold on, in the product site\u2019s own words and numbers. My Garage is the myGarage case study.",
+            "IQ Badging and My Garage, among the features the product site sells its website packages on, in its own words and numbers. My Garage is the feature in the myGarage case study.",
         },
       },
       {
         heading: "Performance",
         paragraphs: [
-          "I created the object-caching repository and put the platform on Object Cache Pro \u2014 a dedicated Redis host in production, shared clusters in dev and staging \u2014 proved out on a separate test network before it shipped. It ended three years of the cache being added and reverted: nobody reverted it in the three years after, and the AutoTrader.ca page tells that story in full. Later I rolled page caching out to the whole fleet with WP-CLI, excluding the inventory and showroom routes that can never be served stale, wired into the deploy scripts so every new site got it automatically.",
+          "I created the object-caching repository and moved the platform to Object Cache Pro, with a dedicated Redis host in production and shared clusters in dev and staging. I proved it out on a separate test network before it shipped. It ended three years of the cache being added and reverted, and nobody reverted it in the three years after; the AutoTrader.ca page tells that story in full. Later I rolled page caching out to the whole fleet with WP-CLI. It skips the inventory and showroom routes, which can never be served stale, and it’s wired into the deploy scripts so every new site gets it without anyone setting it up.",
         ],
       },
       {
         heading: "Integrations",
-        paragraphs: [
-          "CARFAX v3 with Auth0 token generation. Ford Model E inventory and OEM window stickers. Motocommerce build-and-price with deep links carrying colour and trim. Honda, Lincoln and Jeep showroom mapping. Hyundai Roadster. Dealer data feeds to Shift Digital and CarGurus over SFTP.",
+        paragraphs: ["The partner integrations I worked on:"],
+        list: [
+          { term: "CARFAX v3", detail: "Auth0 token generation" },
+          { term: "Ford", detail: "Model E inventory and OEM window stickers" },
+          { term: "Motocommerce", detail: "Build-and-price, with deep links that carry colour and trim" },
+          { term: "Honda, Lincoln, Jeep", detail: "Showroom mapping" },
+          { term: "Hyundai", detail: "Roadster" },
+          { term: "Shift Digital, CarGurus", detail: "Dealer data feeds over SFTP" },
         ],
       },
       {
         heading: "The unglamorous half",
         paragraphs: [
-          "I built the SEO foundation \u2014 inventory sitemaps in English and French, Product and Breadcrumb schema with VIN as the identifier, canonical handling across the detail page, the search page and the print view \u2014 and maintained a fork of Yoast carrying inventory sitemap support through three major versions. I also built the Bill S-211 compliance pages that publish themselves to every dealer site in both languages, because a legal requirement nobody configures by hand is a legal requirement that actually gets met.",
+          "I built the SEO foundation: inventory sitemaps in English and French, Product and Breadcrumb schema with the VIN as the identifier, and canonical handling across the detail page, the search page and the print view. I also maintained a fork of Yoast that carried inventory sitemap support through three major versions. And I built the Bill S-211 compliance pages, which publish themselves to every dealer site in both languages, so no one has to remember to set them up.",
         ],
         figure: {
           image: TADVANTAGE_SEO_IMAGE,
@@ -250,10 +260,10 @@ const CASE_STUDIES: readonly CaseStudy[] = [
         },
       },
       {
-        heading: "What I would do differently",
+        heading: "What I’d do differently",
         paragraphs: [
-          "Inventory changes were polled; webhooks would have been more accurate and less wasteful. Some jQuery stayed for legacy integration rather than being migrated \u2014 it shipped faster and left debt, and both are true.",
-          "Above all I would instrument it from day one. Save, remove and compare events were never measured, which is why this case study carries no adoption figures: the data to make that argument was not collected. That is the real cost of shipping a feature before deciding how you will know whether it worked.",
+          "The platform polled for inventory changes; webhooks would have been more accurate and less wasteful. Some jQuery stayed in for legacy integrations instead of being migrated. That shipped faster, and it left debt behind.",
+          "Most of all, I’d instrument it from day one. Nobody measured save, remove and compare events, so this case study has no adoption figures; the data was never collected. Next time I’d decide how we’ll know a feature worked before we ship it.",
         ],
       },
     ],
@@ -263,8 +273,8 @@ const CASE_STUDIES: readonly CaseStudy[] = [
     name: "myGarage",
     headline: "A saved-vehicle list that has to survive the vehicle changing under it",
     summary:
-      "Saved vehicles, viewed history and price-drop alerts, stored so a shopper\u2019s list stays valid across dealer sites even after the vehicle sells.",
-    period: "2019 \u00b7 Convertus \u2014 Tadvantage platform",
+      "Saved vehicles, viewing history and price-drop alerts, stored so a shopper’s list still makes sense across dealer sites, even after a vehicle sells.",
+    period: "2019 · Convertus, on the Tadvantage platform",
     liveUrl: null,
     repoUrl: null,
     role: "Full-stack engineer",
@@ -278,38 +288,38 @@ const CASE_STUDIES: readonly CaseStudy[] = [
     */
     onDeck: false,
     stats: [],
-    related: [{ label: "Tadvantage \u2014 the platform this shipped on", href: "/work/tadvantage" }],
+    related: [{ label: "Tadvantage: the platform this shipped on", href: "/work/tadvantage" }],
     passages: [
       {
         heading: "The constraint",
         paragraphs: [
-          "A shopper saves a handful of vehicles, comes back a week later, and expects the list to still make sense \u2014 even though the inventory underneath it has not stood still. Vehicles sell. Prices change. A saved list that stores a snapshot of the vehicle is wrong within days.",
+          "A shopper saves a handful of vehicles, comes back a week later, and expects the list to still make sense. Meanwhile the inventory has moved on: vehicles sell and prices change. A saved list that stores a snapshot of each vehicle is out of date within days.",
         ],
       },
       {
         heading: "A reference, not a copy",
         paragraphs: [
-          "myGarage stores an advertisement ID against a user, not the vehicle\u2019s own details. A price alert holds the price at the moment the alert was set alongside the current one, so the comparison stays live rather than being baked in at save time. Sold or withdrawn stock is handled the same way a normal browse session would handle it, because nothing about the record depended on the vehicle still existing.",
+          "myGarage stores an advertisement ID against the user instead of the vehicle’s details. A price alert keeps the price from when the alert was set next to the current one, so the comparison stays live. When a vehicle sells or is withdrawn, the garage handles it the way a normal browsing session would, because nothing in the record depends on the vehicle still existing.",
         ],
       },
       {
         heading: "Why it lives outside any one dealer site",
         paragraphs: [
-          "Tadvantage runs one WordPress multisite per dealer, but a shopper\u2019s garage has to survive them moving between dealer sites on the same platform. So the garage tables \u2014 saved vehicles, viewed history, price alerts, and a user record keyed to the platform\u2019s VMS identity \u2014 live in their own AWS RDS database, reached through a singleton connection, rather than in any one dealer site\u2019s own WordPress tables. That is the one decision that makes the rest of the feature possible: without it, a garage would be trapped on whichever site the shopper first landed on.",
+          "On Tadvantage each dealer has its own WordPress site, but a shopper’s garage has to follow them from one dealer site to another on the same platform. So the garage tables (saved vehicles, viewing history, price alerts, and a user record keyed to the platform’s VMS identity) live in their own AWS RDS database, reached through a singleton connection, instead of in any one dealer site’s WordPress tables. That one decision is what makes the rest of the feature possible. Without it, a garage would be stuck on whichever site the shopper landed on first.",
         ],
-        diagram: ["Dealer site A", "Shared AWS RDS \u2014 garage database", "Dealer site B"],
+        diagram: ["Dealer site A", "Shared AWS RDS: garage database", "Dealer site B"],
       },
       {
         heading: "Closing the loop: price alerts",
         paragraphs: [
-          "A Node.js service reads the alerts table, compares the stored price against current pricing from the platform\u2019s vehicle-management service, and sends a bilingual HTML email when a watched vehicle drops \u2014 with unsubscribe handling and monitoring on failure. Front end in Vue inside Tadvantage, back end in Node, one database between them, because the alternative was two sources of truth for the same price. Co-built with a colleague.",
+          "A Node.js service reads the alerts table, compares each stored price with the current price from the platform’s vehicle-management service, and sends a bilingual HTML email when a watched vehicle drops, with unsubscribe handling and monitoring for failures. The front end is Vue inside Tadvantage and the back end is Node, sharing one database so there’s only ever one source of truth for a price. I built this with a colleague.",
         ],
         diagram: ["garage.alerts_vehicle", "Node price-check service", "Bilingual email + unsubscribe"],
       },
       {
-        heading: "What I would do differently",
+        heading: "What I’d do differently",
         paragraphs: [
-          "Save, remove and viewed events were never instrumented, so this case study cannot tell you how many shoppers used it \u2014 the same gap Tadvantage\u2019s main case study names. The mechanism is sound; the adoption evidence was never collected, and I would collect it now before shipping a feature like this again.",
+          "Nobody instrumented save, remove and viewed events, so I can’t tell you how many shoppers used it. It’s the same gap I name in the Tadvantage case study. The design holds up, but the adoption data was never collected, and next time I’d set that up before shipping.",
         ],
       },
     ],
@@ -319,13 +329,13 @@ const CASE_STUDIES: readonly CaseStudy[] = [
     name: "Luxury tax",
     headline: "A tax that had to be right in eleven places at once",
     summary:
-      "Canada\u2019s luxury tax, built through every surface a price appears on, behind a flag so it could go dealer by dealer.",
+      "Canada’s luxury tax, built into every place a price appears, behind a flag so we could roll it out dealer by dealer.",
     period: "Dec 2024 \u2013 Jan 2025",
     liveUrl: null,
     repoUrl: null,
     role: "Full-stack engineer",
     stack: ["PHP", "WordPress", "Vue.js", "Optimizely", "WP-CLI", "PHPUnit", "Jest"],
-    related: [{ label: "Tadvantage \u2014 the platform this shipped on", href: "/work/tadvantage" }],
+    related: [{ label: "Tadvantage: the platform this shipped on", href: "/work/tadvantage" }],
     /*
       Kept off the dashboard. The deck is exactly one viewport tall and its
       three case-study cells are already assigned; a fourth would either
@@ -339,25 +349,25 @@ const CASE_STUDIES: readonly CaseStudy[] = [
       {
         heading: "The problem",
         paragraphs: [
-          "Canada\u2019s Select Luxury Items Tax applies above a price threshold, and a dealer site has to show it consistently everywhere a price or a payment appears. That is four search-result card versions, the vehicle detail page, the quick view, the inventory carousel, the calculator\u2019s cash, finance and lease tabs, and GM Digital Retailing. Any one of them disagreeing with another is a customer who stops believing the number and a dealer carrying compliance risk. An older \u201cdisable luxury tax\u201d toggle made the existing behaviour harder to reason about than the tax itself.",
+          "Canada’s Select Luxury Items Tax applies above a price threshold, and a dealer site has to show it the same way everywhere a price or payment appears. On Tadvantage that meant four versions of the search-result card, the vehicle detail page, the quick view, the inventory carousel, the calculator’s cash, finance and lease tabs, and GM Digital Retailing. If any two disagree, the shopper stops believing the number and the dealer carries the compliance risk. On top of that, an older “disable luxury tax” toggle made the existing behaviour harder to reason about than the tax itself.",
         ],
       },
       {
         heading: "What I built",
         paragraphs: [
-          "Central configuration for the tax rules with a WP-CLI manager, so settings could be changed across the network rather than site by site. Tax-aware pricing through every card version, the detail pages, the carousel and the calculator. French throughout. Unit tests over the configuration, the utilities and the card rendering.",
+          "I built central configuration for the tax rules with a WP-CLI manager, so settings could change across the whole network in one go instead of site by site. Pricing became tax-aware on every card version, the detail pages, the carousel and the calculator, with French throughout. Unit tests cover the configuration, the utilities and the card rendering.",
         ],
       },
       {
         heading: "Rolling it out",
         paragraphs: [
-          "I replaced the old toggle with an Optimizely-targeted flag so it could go live for specific dealers rather than the whole fleet at once. It shipped in the 11.8 release, and four edge cases surfaced in the week after: price breakdowns that did not sum to the final price, a lease display on one card version, a finance payment that disagreed between card and calculator, and the tax missing from the calculator\u2019s total cash price. All four went out as patch releases that same week.",
+          "I replaced the old toggle with an Optimizely-targeted flag, so it could go live for specific dealers instead of the whole fleet at once. It shipped in release 11.8, and four edge cases turned up the week after: price breakdowns that didn’t add up to the final price, a lease display on one card version, a finance payment that differed between the card and the calculator, and the tax missing from the calculator’s total cash price. All four fixes went out as patch releases that same week.",
         ],
       },
       {
         heading: "What that week taught me",
         paragraphs: [
-          "Shipping behind a flag is not the same as shipping carefully. The flag limited who saw the bugs; it did not stop me writing them. What found them was production traffic hitting combinations the tests did not have \u2014 which is an argument for shipping to a small group early, not for testing less.",
+          "A flag limits who sees the bugs. It didn’t stop me writing them. Production traffic found them, hitting combinations my tests didn’t cover, and that’s why I still like shipping to a small group early. It isn’t a reason to test less.",
         ],
       },
     ],

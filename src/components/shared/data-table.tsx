@@ -102,7 +102,7 @@ export function AssertionTable({
 
 export function GapsTable({ rows }: { rows: Gap[] }) {
   return (
-    <TableFrame caption="Open — gap and status, consequence, planned fix" minWidth="640px">
+    <TableFrame caption="Open gaps: status, consequence and planned fix" minWidth="640px">
       <thead>
         <tr>
           <th scope="col" className={TH}>
