@@ -100,11 +100,21 @@ export async function getTrackRecord(): Promise<Role[]> {
       summary: "A deliberate pause between roles. Returned to full-time engineering in January 2026.",
     },
     {
-      period: "Jan 2020 – Jun 2025",
+      // Senior from 2021, month not recorded: year precision rather than a
+      // guessed month. Before it, the title the Nov 2020 performance review
+      // gives, "Full Stack Dev Specialist", written out (owner, 2026-09-26).
+      period: "2021 – Jun 2025",
       title: "Senior Software Engineer, Full-Stack",
       org: "AutoTrader.ca — AutoSync",
       summary:
         "Production features on a national automotive SaaS platform. Replaced three years of object-cache churn with Redis Object Cache Pro on a dedicated host; nobody reverted it in the three years after.",
+    },
+    {
+      period: "Jan 2020 – 2021",
+      title: "Full-Stack Development Specialist",
+      org: "AutoTrader.ca — AutoSync",
+      summary:
+        "The same platform, carried over from Convertus through the acquisition: full-stack work on the dealer platform, until promotion to senior in 2021.",
     },
     {
       period: "Nov 2018 – Jan 2020",
