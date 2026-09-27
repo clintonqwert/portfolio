@@ -14,7 +14,7 @@ import { buildBreadcrumbJsonLd, buildMetadata } from "@/lib/seo";
 import { readingMinutes } from "@/lib/utils";
 
 export const metadata: Metadata = buildMetadata({
-  title: "AutoTrader.ca — caching as a stability problem",
+  title: "AutoTrader.ca — the cache that finally stuck",
   description: AUTOTRADER_LEDE,
   path: "/autotrader",
 });
@@ -37,7 +37,7 @@ export default async function AutoTraderPage() {
         trail={TRAIL}
         index={page?.index}
         kicker={AUTOTRADER_RAIL.org}
-        title="Caching as a stability problem, not a speed problem"
+        title="The cache that finally stuck"
         lede={AUTOTRADER_LEDE}
         specs={[
           { label: "Role", value: "Software Engineer (Full Stack-Product); Senior Software Engineer from 2021" },
@@ -57,7 +57,7 @@ export default async function AutoTraderPage() {
           />
         }
         next={chapters[0]!.id}
-        cueLabel={`Scroll to the page — ${chapters.length} chapters`}
+        cueLabel={`Scroll to the page, ${chapters.length} chapters`}
       />
 
       <PassageChapters passages={passages} firstFigure={2} />

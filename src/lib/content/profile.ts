@@ -89,7 +89,7 @@ export const FACTS = [
   "Senior & staff roles",
   "Vancouver, BC",
   "Hybrid preferred, remote or on-site welcome",
-  "Canadian citizen — no sponsorship required",
+  "Canadian citizen, no sponsorship needed",
 ] as const;
 
 /**
@@ -99,18 +99,18 @@ export const FACTS = [
  * after an outside review — lead with the role and the automotive platform.
  */
 export const HEADLINE =
-  "Senior full-stack engineer — six and a half years on a national automotive SaaS platform.";
+  "Senior full-stack engineer. Six and a half years on a national automotive SaaS platform.";
 
 /** The position, under the headline. Shorter and harder than the résumé summary. */
 export const LEDE =
-  "I make the quality bar something the pipeline enforces, not something the team remembers.";
+  "I put the quality bar in the pipeline, so the team never has to remember it.";
 
 /**
  * For search results and link previews: the headline's facts with the whole
  * career around them, since a snippet has room for one sentence and no page.
  */
 export const DESCRIPTION =
-  "Senior full-stack engineer — nine years of production web systems, six and a half of them on a national automotive SaaS platform.";
+  "Senior full-stack engineer with nine years of production web systems, six and a half of them on a national automotive SaaS platform.";
 
 /*
   A four-stat masthead summary and a standalone position statement used to

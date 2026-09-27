@@ -22,10 +22,10 @@ export const AUTOTRADER_RAIL = {
 
 /** One-line summaries for the dashboard tiles. */
 export const AUTOTRADER_LEDE =
-  "Five years on the platform thousands of Canadian dealerships run their inventory on. The work I would point at first is the caching — and the outcome that mattered was stability, not speed.";
+  "Five years on the platform thousands of Canadian dealerships run their inventory on. The work I’d point you to first is the caching, and the win was stability more than speed.";
 
 export const PROJECT_OS_LEDE =
-  "Five specialist AI roles are allowed to touch this work under a written standard \u2014 one may write files, four are report-only, and a human decides everything above that line.";
+  "Five AI roles help me deliver my work under a written standard. One writes files, the other four only report, and I make the decisions.";
 
 /**
  * Short restatements of facts already published in the passages below, for the
@@ -50,10 +50,10 @@ export const AUTOTRADER_FIGURES: Stat[] = [
 ];
 
 export const AUTOTRADER_POINTS = [
-  "Custom in-house OOP PHP, not Laravel or Symfony",
+  "Custom in-house OOP PHP, no Laravel or Symfony",
   "Object Cache Pro: ended 3 years of cache churn",
-  "Technical SEO where inventory discoverability is the product",
-  "Mentored through code review and pair programming",
+  "Technical SEO, where getting inventory found is the product",
+  "Mentored engineers in code review and pairing",
 ];
 
 export async function getAutoTraderPassages(): Promise<Passage[]> {
@@ -61,17 +61,17 @@ export async function getAutoTraderPassages(): Promise<Passage[]> {
     {
       heading: "The platform",
       paragraphs: [
-        "Five years of this was AutoSync \u2014 the platform thousands of Canadian dealerships run their inventory on. A large codebase I did not design, shared with other engineers, with Vue on the front end and Node.js, PHP, MySQL and REST APIs behind it. The PHP layer was a custom object-oriented architecture built in-house rather than on Laravel or Symfony, which meant the load-bearing questions were about our own architecture rather than about a framework\u2019s conventions.",
+        "AutoSync is the platform thousands of Canadian dealerships run their inventory on. It was a large codebase I didn’t design, shared with other engineers: Vue on the front end, and Node.js, PHP, MySQL and REST APIs behind it. The PHP was our own object-oriented architecture, built in-house with no Laravel or Symfony, so the hard questions were about our own design, with no framework conventions to lean on.",
       ],
       figure: {
         image: AUTOSYNC_INVENTORY_IMAGE,
-        caption: "The inventory listing on the platform\u2019s public demo \u2014 the page shoppers search.",
+        caption: "The inventory listing on the platform’s public demo, the page shoppers search.",
       },
     },
     {
       heading: "The caching work",
       paragraphs: [
-        "The work I would point at first is the caching. Caching is usually sold as a speed improvement, and it was one \u2014 but the result that actually mattered was stability. The platform stopped falling over, which is a different and better outcome than pages loading faster.",
+        "If you look at one thing from these five years, make it the caching. It did make pages faster, but the bigger win was stability: the platform stopped falling over.",
       ],
       /*
         Problem, ownership, decision, trade-off, rollout, outcome: the shape a
@@ -95,57 +95,52 @@ export async function getAutoTraderPassages(): Promise<Passage[]> {
         {
           term: "Problem",
           detail:
-            "For three years the object cache on the platform thousands of Canadian dealerships run their inventory on was added, removed, swapped for other plugins and reverted, with hotfixes to switch it back on after deploys. As I saw it, the churn was a response to downtime.",
+            "For three years, the object cache kept getting added, removed, swapped for other plugins and reverted, with hotfixes after deploys to switch it back on. As I saw it, the churn was a reaction to downtime.",
         },
         {
           term: "My part",
           detail:
-            "On a team, in a codebase I did not design: I backed out the approach that kept being reverted, put the platform on Redis Object Cache Pro, created its repository, and wrote 33 of the 36 commits to the platform\u2019s Redis configuration. Later I rolled page caching out across the fleet.",
+            "I backed out the approach that kept getting reverted, moved the platform to Redis Object Cache Pro and created its repository. I wrote 33 of the 36 commits to the platform’s Redis configuration, and later rolled page caching out across the fleet.",
         },
         {
           term: "Decision",
           detail:
-            "A dedicated Redis host in production, deliberately not a cluster, with shared clusters in dev and staging. Per-site key prefixes, global groups and non-persistent groups for a fleet of sites on one cache; the flush and prefetch settings worked through with the plugin\u2019s author.",
+            "A dedicated Redis host in production (I chose not to use a cluster there) and shared clusters in dev and staging. Per-site key prefixes, global groups and non-persistent groups let a fleet of sites share one cache, and I worked through the flush and prefetch settings with the plugin’s author.",
         },
         {
           term: "Trade-off",
           detail:
-            "Page caching stops where a stale page would be wrong: the inventory and showroom routes are excluded, because they can never be served stale.",
+            "Page caching leaves out the inventory and showroom routes, because those pages can never be served stale.",
         },
         {
           term: "Rollout",
           detail:
-            "Proved out on a separate test network first, load-test configuration included. It went down once during cluster testing, which is why it was separate. Shipped through the release scripts, so every dealer site came up the same way, and live in March 2022. Page caching later went to the whole fleet with WP-CLI, wired into the deploy scripts.",
+            "I proved it out on a separate test network first, load-test configuration included. It went down once during cluster testing, which is why the testing ran separately. It shipped through the release scripts so every dealer site came up the same way, and went live in March 2022. Page caching followed later, rolled out to the whole fleet with WP-CLI and wired into the deploy scripts.",
         },
         {
           term: "Outcome",
           detail:
-            "Nobody reverted or removed it in the three years after, until I left. It held, so the team built on it \u2014 a colleague later cached the CARFAX auth token in it. From the private repository\u2019s history, like the commit counts; not an uptime figure.",
+            "Nobody reverted or removed it in the three years after, right up until I left. Because it held, the team started building on it; a colleague later cached the CARFAX auth token in it. This comes from the private repository’s history, like the commit counts. It isn’t an uptime figure.",
         },
       ],
     },
     {
-      heading: "What I cannot tell you",
+      heading: "What I can’t tell you",
       paragraphs: [
-        "I want to be precise about what I can and cannot tell you there. I can count what I wrote, because the repository counts it for me. I cannot tell you what it did to page speed or to conversion: I did not own those dashboards and I did not take the figures with me. So there is no percentage here and I am not going to invent one. What I can describe exactly is the failure mode before and its absence afterwards. On a page that ends with a table of my own unfixed gaps, a number I cannot source is worth less than a mechanism I can explain.",
+        "I can count what I wrote, because the repository counts it for me. What I can’t tell you is what the caching did to page speed or conversion. I didn’t own those dashboards, and I didn’t take the numbers with me when I left. So you won’t find a percentage here, and I won’t make one up. What I can describe is the failure mode before, and that it didn’t come back. I’d rather explain how something worked than quote a number I can’t back up.",
       ],
     },
     {
       heading: "The rest of the five years",
       paragraphs: [
-        "The rest of the five years: technical SEO on a marketplace where dealer inventory discoverability is the product rather than a marketing concern, and mentoring engineers through code review and pair programming. That last part is worth naming given the year I have spent as the only engineer on my own projects \u2014 the review habits on this page came from somewhere.",
+        "Outside the caching, I worked on technical SEO for a marketplace where getting dealer inventory found is the product, not a marketing extra.",
+        "All of it was team work. We ran Agile, reviewed every change, and paired when something mattered enough to be worth two people’s time. I reviewed other engineers’ work and had mine reviewed, in a codebase I couldn’t change on my own say-so. That’s the more common way to work, and a different discipline from my studio year. I also mentored engineers through code review and pairing, which is where the review habits on this site come from.",
       ],
     },
     {
-      heading: "How the work was run",
+      heading: "What I’d do differently",
       paragraphs: [
-        "Five years of this was team work, not solo work. Agile delivery, code review on every change, and pair programming when something was load-bearing enough to be worth two people\u2019s time. I reviewed other engineers\u2019 work and had mine reviewed, on a codebase I did not design and could not unilaterally change. That is a different discipline from the studio year, and the more common one.",
-      ],
-    },
-    {
-      heading: "What I would do differently",
-      paragraphs: [
-        "I would have kept my own record. Every project on this site since has a measurement written into it before the feature ships \u2014 a habit that started with the one question this page cannot answer.",
+        "I’d have kept my own record. Since then, every project on this site gets a measurement written in before a feature ships. That habit started with the one question this page can’t answer.",
       ],
     },
   ];
@@ -168,15 +163,17 @@ export const PROJECT_OS_RAIL = {
 export async function getProjectOsPassages(): Promise<Passage[]> {
   return [
     {
-      heading: "Why it is written down",
+      heading: "Why I wrote it down",
       paragraphs: [
-        "Two projects sharing conventions by memory is a coincidence waiting to drift. I wrote the conventions down as a cross-project engineering standard \u2014 stack defaults, the performance budget, testing priorities, and a ranked source-of-truth hierarchy that ends: when a document and the code disagree, the code is right and the document is a bug.",
+        "Two projects that share conventions by memory will drift apart. So I wrote the conventions down as one engineering standard for all my projects: stack defaults, the performance budget, testing priorities, and a ranked list of what counts as the source of truth. The last rule on that list: when a document and the code disagree, the code is right and the document is a bug.",
       ],
     },
     {
-      heading: "How AI is allowed to touch the work",
+      heading: "How AI helps with the work",
       paragraphs: [
-        "The same standard defines how I use AI on delivery work: five specialist roles under a separation of powers written into the role contracts, reporting findings on a P0/P1/P2 severity taxonomy for a human to decide on. This is process, not product \u2014 it is how I build software, including this site, not a customer-facing AI feature.",
+        "The same standard sets out how I use AI to deliver work. There are five specialist roles, and each role’s contract spells out what it may do. They report findings as P0, P1 or P2 by severity, and I decide what happens next. This is about how I build software, this site included. It isn’t an AI feature that customers use.",
+        "Those limits live in each role’s instructions, not in tool permissions. No role declares `allowed-tools`, so nothing in the tooling enforces them.",
+        "The tester works from one rule: the pull request description is a claim, the diff is the truth, and any gap between the two is a finding.",
       ],
       list: [
         { term: "Builder", detail: "May write files." },
@@ -187,21 +184,9 @@ export async function getProjectOsPassages(): Promise<Passage[]> {
       ],
     },
     {
-      heading: "Where the restriction actually lives",
+      heading: "What’s left out on purpose",
       paragraphs: [
-        "The restriction lives in each role\u2019s instructions, not in tool permissions. No role declares `allowed-tools`, so nothing in the tooling enforces it \u2014 worth saying precisely, because the difference is exactly the kind of thing this page is about.",
-      ],
-    },
-    {
-      heading: "The tester\u2019s protocol",
-      paragraphs: [
-        "The tester\u2019s protocol puts it plainly: the pull request description is a claim, the diff is ground truth, and disagreement between them is itself a finding.",
-      ],
-    },
-    {
-      heading: "What is deliberately absent",
-      paragraphs: [
-        "The standard also lists what is deliberately absent from the stack, because unrecorded omissions get re-litigated every quarter by whoever arrives next. Adding one requires a written operating need. \u201cIt would be convenient\u201d is explicitly not a need.",
+        "The standard also lists what the stack leaves out on purpose. If you don’t write those choices down, whoever joins next argues them all over again. Adding one back takes a written operating need, and “it would be convenient” doesn’t count.",
       ],
       list: [
         // The term is the standard's own ("No CMS", ProjectOS stack.md). The
@@ -211,7 +196,7 @@ export async function getProjectOsPassages(): Promise<Passage[]> {
         {
           term: "No CMS",
           detail:
-            "Content lives in typed accessors. Absent by decision for now \u2014 a CMS is on my roadmap (see Open gaps).",
+            "Content lives in typed accessors. Left out for now; a CMS is on my roadmap (see Open gaps).",
         },
         { term: "No client-state library", detail: "Server components hold the state." },
         { term: "No component library", detail: "The design system is the tokens." },

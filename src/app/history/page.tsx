@@ -62,7 +62,7 @@ export default async function HistoryPage() {
           { label: "Practice", value: `${principles.length} principles` },
         ]}
         next={record.id}
-        cueLabel="Scroll to the track record — 3 chapters"
+        cueLabel="Scroll to the track record, 3 chapters"
       />
 
       <Chapter {...record}>

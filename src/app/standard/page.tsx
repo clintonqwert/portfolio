@@ -12,7 +12,7 @@ import { buildBreadcrumbJsonLd, buildMetadata } from "@/lib/seo";
 import { readingMinutes } from "@/lib/utils";
 
 export const metadata: Metadata = buildMetadata({
-  title: "How I use AI — Project OS, standards that outlive one repository",
+  title: "How I use AI — Project OS, the rules my projects share",
   description: PROJECT_OS_LEDE,
   path: "/standard",
 });
@@ -35,19 +35,19 @@ export default async function StandardPage() {
         trail={TRAIL}
         index={page?.index}
         kicker="How I use AI"
-        title="Project OS: standards that outlive one repository"
+        title="Project OS: the rules my projects share"
         lede={PROJECT_OS_LEDE}
         specs={[
           { label: "Size", value: `${PROJECT_OS_RAIL.documents}, ${PROJECT_OS_RAIL.lines}` },
           { label: "Roles", value: PROJECT_OS_RAIL.roles },
-          { label: "Status", value: "Self-authored · not employer-adopted" },
+          { label: "Status", value: "Written by me, not adopted by an employer" },
           {
             label: "Reading",
             value: `${readingMinutes(passages.flatMap((p) => p.paragraphs))} min`,
           },
         ]}
         next={chapters[0]!.id}
-        cueLabel={`Scroll to the page — ${chapters.length} chapters`}
+        cueLabel={`Scroll to the page, ${chapters.length} chapters`}
       />
 
       <PassageChapters passages={passages} />

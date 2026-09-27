@@ -13,10 +13,10 @@ import { buildBreadcrumbJsonLd, buildMetadata } from "@/lib/seo";
 // in the repositories, but "No CMS yet" joined on 2026-09-25 from the owner's
 // roadmap, and the lede has to stay true of every row it introduces.
 const LEDE =
-  "Written down with their consequences attached before any interviewer asked, because a gap you have named is a plan and a gap you have hidden is a liability.";
+  "My known gaps, written down with what each one costs before anyone asked. I’d rather show you a gap with a plan than have you find one I hid.";
 
 export const metadata: Metadata = buildMetadata({
-  title: "Open gaps — what I would fix first",
+  title: "Open gaps — what I’d fix first",
   description: LEDE,
   path: "/gaps",
 });
@@ -39,7 +39,7 @@ export default async function GapsPage() {
         trail={TRAIL}
         index={page?.index}
         kicker="Open gaps"
-        title="What I would fix first"
+        title="What I’d fix first"
         lede={LEDE}
         specs={[
           { label: "Open", value: String(gaps.length) },

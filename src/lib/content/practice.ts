@@ -4,34 +4,34 @@ import type { Gap, Principle, Role, StackGroup } from "@/types/content";
 
 /** Shared between /history and its dashboard tile, so the two never drift. */
 export const HISTORY_LEDE =
-  "Roles before the studio year, the tools they were built with, and the principles the current work is held to.";
+  "Where I’ve worked since 2016, the tools I’ve used, and the principles I hold my work to.";
 
 /** How I work — the six principles in the practice grid. */
 export async function getPrinciples(): Promise<Principle[]> {
   return [
     {
       title: "Budgets, not intentions",
-      body: "A quality bar that lives in a document decays. One that fails the build holds.",
+      body: "A quality bar written in a doc slips over time. One that fails the build stays put.",
     },
     {
       title: "Contracts over implementations",
-      body: "Typed accessors and domain contracts, so the thing behind them can be replaced without a rewrite.",
+      body: "Typed accessors and domain contracts, so I can replace what’s behind them without a rewrite.",
     },
     {
       title: "Guardrails before refactors",
-      body: "Every module classified: never rewrite, extract for reuse, stable with sign-off, safe to improve.",
+      body: "I sort every module first: never rewrite, extract for reuse, stable with sign-off, or safe to improve.",
     },
     {
       title: "Decisions with consequences",
-      body: "Decision records that state the cost of the choice, not only the reasoning for it.",
+      body: "Decision records that say what a choice costs, as well as why I made it.",
     },
     {
       title: "Privacy in the pipeline",
-      body: "If a mistake would leak something, the build should prevent it rather than a reviewer catching it.",
+      body: "If a mistake could leak something, the build should stop it before a reviewer has to catch it.",
     },
     {
       title: "Gaps in writing",
-      body: "Known weaknesses documented with their consequences, before anyone asks about them.",
+      body: "I write down known weaknesses and what they cost, before anyone asks.",
     },
   ];
 }
@@ -53,29 +53,29 @@ export async function getGaps(): Promise<Gap[]> {
     {
       gap: "No test runner",
       consequence:
-        "Zero automated coverage in either project. The lead-capture path — the only revenue path — has no regression tests.",
-      fix: "Test the revenue path first: Zod schema, spam gates, and the webhook client’s retry, backoff and timeout behaviour.",
+        "Neither project has automated test coverage. The lead-capture path, the only one that brings in revenue, has no regression tests.",
+      fix: "Test the revenue path first: the Zod schema, the spam gates, and the webhook client’s retry, backoff and timeout behaviour.",
       status: "roadmap",
     },
     {
       gap: "No error monitoring",
       consequence:
-        "On total webhook failure a lead survives only as a log line, while the visitor still sees a thank-you page. Silent loss.",
-      fix: "Fallback email queue on total failure, plus alerting. Open TODO in the webhook client since day one.",
+        "If the webhook fails completely, a lead survives only as a log line while the visitor still sees a thank-you page. The lead is lost and nobody knows.",
+      fix: "A fallback email queue for total failures, plus alerting. It’s been an open TODO in the webhook client since day one.",
       status: "in-development",
     },
     {
       gap: "No perf gate on the second site",
       consequence:
-        "Riflessi ships without the Lighthouse budget that protects DriftPilot, so regressions reach the live site undetected.",
-      fix: "Port the existing config into its CI. Deferred for launch and recorded with its consequence; now being ported.",
+        "Riflessi ships without the Lighthouse budget that guards DriftPilot, so regressions can reach the live site unnoticed.",
+      fix: "Port DriftPilot’s config into its CI. I deferred it for launch and wrote down the cost; the port is under way now.",
       status: "in-development",
     },
     {
       gap: "No CMS yet",
       consequence:
         "Content lives in typed accessors in the repository, so a copy change ships as a pull request and a deploy.",
-      fix: "Switch on the CMS adapter DriftPilot already keeps behind those accessors: the contract exists, so only the content source changes.",
+      fix: "Switch on the CMS adapter DriftPilot already keeps behind those accessors. The contract is already there, so only the content source changes.",
       status: "roadmap",
     },
   ];
@@ -89,7 +89,7 @@ export async function getTrackRecord(): Promise<Role[]> {
       title: "Founder & Senior Software Engineer",
       org: "DriftPilot",
       summary:
-        "Product engineering studio. AI stack research through the first half of 2026, then two live Next.js sites designed and shipped end to end under a performance budget enforced in CI.",
+        "My product engineering studio. I spent the first half of 2026 researching AI stacks, then designed and shipped two live Next.js sites end to end, with a performance budget enforced in CI.",
     },
     {
       // Named rather than left as a silent gap: on a page that publishes its
@@ -97,7 +97,7 @@ export async function getTrackRecord(): Promise<Role[]> {
       period: "Jun 2025 – Jan 2026",
       title: "Family leave",
       org: "Planned break",
-      summary: "A deliberate pause between roles. Returned to full-time engineering in January 2026.",
+      summary: "Time between roles. I came back to full-time engineering in January 2026.",
     },
     {
       // Titles as the owner held them (2026-09-26): Full Stack Development
@@ -109,35 +109,35 @@ export async function getTrackRecord(): Promise<Role[]> {
       title: "Senior Software Engineer",
       org: "AutoTrader.ca — AutoSync",
       summary:
-        "Production features on a national automotive SaaS platform. Replaced three years of object-cache churn with Redis Object Cache Pro on a dedicated host; nobody reverted it in the three years after.",
+        "Built production features on a national automotive SaaS platform. I replaced three years of object-cache churn with Redis Object Cache Pro on a dedicated host, and nobody reverted it in the three years after.",
     },
     {
       period: "Jan 2020 – 2021",
       title: "Software Engineer (Full Stack-Product)",
       org: "AutoTrader.ca — AutoSync",
       summary:
-        "Carried over from Convertus with the platform through the acquisition: full-stack product engineering on the dealer platform, until promotion to Senior Software Engineer in 2021.",
+        "I came over from Convertus with the platform in the acquisition and kept doing full-stack product work on it, until my promotion to Senior Software Engineer in 2021.",
     },
     {
       period: "Nov 2018 – Jan 2020",
       title: "Full Stack Development Specialist (Intermediate)",
       org: "Convertus (acq. AutoTrader.ca)",
       summary:
-        "WordPress multisite serving enterprise automotive clients, extended with custom object-oriented PHP. Authored the Tadvantage platform’s SEO subsystem — Vehicle and AutoDealer structured data, custom inventory sitemaps, canonical and meta handling — and co-built myGarage with its price-alert service. The platform carried through the acquisition to serve AutoSync dealer sites.",
+        "A WordPress multisite serving enterprise automotive clients, extended with custom object-oriented PHP. I wrote the Tadvantage platform’s SEO subsystem (Vehicle and AutoDealer structured data, custom inventory sitemaps, canonical and meta handling) and co-built myGarage with its price-alert service. The platform went on through the acquisition to serve AutoSync dealer sites.",
     },
     {
       period: "Jan 2018 – Nov 2018",
       title: "Programming Teaching Assistant",
       org: "VFS School of Creative Technologies",
       summary:
-        "Coached students through debugging, code review and engineering practice. Rebuilt the internal grading platform in Vue.js and MySQL, replacing the instructor workflow.",
+        "I coached students through debugging, code review and engineering practice, and rebuilt the internal grading platform in Vue.js and MySQL to replace the instructors’ workflow.",
     },
     {
       period: "Oct 2016 – Aug 2018",
       title: "Junior Full-Stack Developer",
       org: "VFS School of Creative Technologies",
       summary:
-        "Responsive web applications and internal database-driven platforms in AngularJS, React, Python, PHP and MySQL.",
+        "Built responsive web apps and internal database-driven platforms in AngularJS, React, Python, PHP and MySQL.",
     },
     {
       period: "2016 – 2017",
