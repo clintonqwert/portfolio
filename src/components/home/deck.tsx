@@ -155,6 +155,7 @@ export function Deck({
         */}
         <Tile
           label="AutoTrader.ca — AutoSync"
+          shortLabel="AutoTrader.ca"
           index={indexes["/autotrader"]}
           href="/autotrader"
           cta="Read"
@@ -213,9 +214,13 @@ export function Deck({
         <Tile
           key={study.slug}
           label={study.name}
+          shortLabel={study.shortName}
           index={indexes[`/work/${study.slug}`]}
           href={`/work/${study.slug}`}
           cta="Case study"
+          // The two narrow cells cut their names until 1680 (Riflessi by 6px
+          // at 1440); the arrow alone gives the name the room.
+          compactCta={study.feature ? undefined : "wider"}
           className={
             // Variant cells: the feature study takes the widest cell, five
             // columns with a two-column interior, beside AutoTrader.ca; the
@@ -393,6 +398,7 @@ export function Deck({
           index={indexes["/history"]}
           href="/history"
           cta="Track record"
+          compactCta="xl"
           className="lg:col-start-4 lg:col-end-7 lg:row-start-5 lg:row-end-7"
         >
           <p className="line-clamp-2 shrink-0 text-xs leading-none text-muted wide:line-clamp-3 wide:leading-snug">

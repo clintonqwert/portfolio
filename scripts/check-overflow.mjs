@@ -65,7 +65,7 @@ const VIEWPORTS = [
 
 const browser = await puppeteer.launch({
   executablePath: CHROME,
-  headless: "new",
+  headless: true,
   // --no-sandbox only in CI: Ubuntu 24.04 runners restrict the user
   // namespaces Chrome's sandbox needs, and the pages are our own build.
   args: ["--hide-scrollbars", "--disable-gpu", ...(process.env.CI ? ["--no-sandbox"] : [])],

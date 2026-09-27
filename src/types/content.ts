@@ -167,6 +167,11 @@ export interface CaseStudy {
   highlights?: string[];
   /** Short name used in navigation and cards. */
   name: string;
+  /**
+   * A shorter one still, for a deck cell at its narrowest (1024–1279) — the
+   * rail's name for the page. Only where the name would otherwise be cut.
+   */
+  shortName?: string;
   /** Sentence-case headline — the argument the case study makes. */
   headline: string;
   /** One-line summary used on the home page and in metadata. */

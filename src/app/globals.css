@@ -633,12 +633,15 @@
   }
 
   /*
-    The cursor over a deck tile (DeckPointer): a square that shatters into a
-    4×4 grid, spreads, flies apart and settles back into one, on a 1.64s
-    loop — the timing of the image-hover cursor on architech-template.
-    Ink squares with a paper hairline, drawn as a drop-shadow on the group
-    so the packed square has no seams: readable on a tile's paper and on a
-    dark screenshot alike, in both themes, without a raw colour.
+    The cursor over a deck tile (DeckPointer): the CR mark, which shatters
+    into a 4×4 grid, spreads, flies apart and settles back into one, on a
+    1.64s loop — the timing of the image-hover cursor on architech-template.
+    Each shard is ink carrying its own piece of the letters in paper (the
+    brand sheet's negative-space CR, owner's idea, 2026-09-26), so the packed
+    square reads as the mark and the mark is what breaks apart. A paper
+    hairline, drawn as a drop-shadow on the group so the packed square has no
+    seams, keeps it readable on a tile's paper and on a dark screenshot alike,
+    in both themes — ink and paper swap there, and the mark inverts with them.
 
     It grows in with an exponential ease over a second and shrinks away
     faster, as the reference does, riding beside the arrow rather than
@@ -691,7 +694,25 @@
     animation-play-state: paused;
   }
 
-  .tile-cursor[data-active="true"] .tile-cursor-shard {
+  /*
+    The shard's piece of the mark: the letters (public/brand/cr-mark-letters,
+    alpha is the letterforms) in paper over the shard's ink. The mask is laid
+    on the 8px pitch, not the 8.5px cell, so each half-pixel overlap shows the
+    same letters as its neighbour and the packed mark has no seam.
+  */
+  .tile-cursor-shard::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-color: var(--color-canvas);
+    mask-image: url("/brand/cr-mark-letters.png");
+    mask-repeat: no-repeat;
+    mask-size: 32px 32px;
+    mask-position: calc((var(--x) + 1.5) * -8px) calc((var(--y) + 1.5) * -8px);
+  }
+
+  .tile-cursor[data-active="true"] .tile-cursor-shard,
+  .tile-cursor[data-active="true"] .tile-cursor-main::after {
     animation-play-state: running;
   }
 
@@ -699,10 +720,31 @@
     animation-name: shard-main;
   }
 
+  /* The surviving shard's letters widen from its piece to the whole mark as
+     it returns to the centre, in step with shard-main (same duration and
+     curve), so the loop ends on the full mark the next one starts from. */
+  .tile-cursor-main::after {
+    animation: shard-main-letters 1.64s cubic-bezier(0.45, 0, 0.55, 1) infinite;
+    animation-play-state: paused;
+  }
+
+  @keyframes shard-main-letters {
+    0%,
+    48% {
+      mask-size: 32px 32px;
+      mask-position: calc((var(--x) + 1.5) * -8px) calc((var(--y) + 1.5) * -8px);
+    }
+    72%,
+    100% {
+      mask-size: 8.5px 8.5px;
+      mask-position: 0 0;
+    }
+  }
+
   /* Packed small → packed large → gaps open → spread with jitter → flung
-     out to nothing. At 0% the sixteen half-size cells make one 16px square;
-     the surviving shard ends the cycle as exactly that square, so the loop
-     has no seam. */
+     out to nothing. At 0% the sixteen half-size cells make one 16px mark;
+     the surviving shard ends the cycle as the whole mark at that size, so
+     the loop has no seam. */
   @keyframes shard {
     0% {
       transform: translate(calc(var(--x) * 4px), calc(var(--y) * 4px)) scale(0.5);
@@ -740,11 +782,14 @@
     48% {
       transform: translate(calc(var(--x) * 14px), calc(var(--y) * 14px)) scale(0.75);
     }
+    /* No quarter turn now that the square is a mark: a plain square turned
+       90° looks the same, but "CR" would end the loop sideways and snap
+       upright at the seam. */
     72% {
-      transform: translate(0, 0) scale(1.4) rotate(45deg);
+      transform: translate(0, 0) scale(1.4);
     }
     100% {
-      transform: translate(0, 0) scale(2) rotate(90deg);
+      transform: translate(0, 0) scale(2);
     }
   }
 

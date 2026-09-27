@@ -27,6 +27,7 @@
  *    Under reduced motion no page is fetched or panned, and with Save-Data on
  *    no page is fetched for being scrolled past.
  *  - A screenshot the deck hides at its width is never fetched.
+ *  - Every deck tile's name reads whole, at every width it is shown at.
  *  - The reading path: the rail's order, every page's hero number, every deck
  *    tile's number and every page's "next" agree, AutoTrader.ca first.
  *  - A case study's screen recording fetches nothing until seen, plays in view,
@@ -61,7 +62,7 @@ const STUDY = "/work/riflessi";
 
 const browser = await puppeteer.launch({
   executablePath: CHROME,
-  headless: "new",
+  headless: true,
   args: [
     "--hide-scrollbars",
     "--disable-gpu",
@@ -170,6 +171,50 @@ try {
         .map((url) => decodeURIComponent(url));
     });
     check(wasted.length === 0, `deck ${width}x${height} fetches no hidden screenshot (${wasted.join(", ") || "none"})`);
+    await page.close();
+  }
+
+  // ── the brand icons ─────────────────────────────────────────────────────
+  // The tab icon is the <CR> badge in WebP, the home-screen icon the CR mark
+  // in PNG (iOS reads no other format). Both must be linked and must serve.
+  {
+    const page = await open("/", { width: 1440, height: 900 });
+    const links = await page.evaluate(() => ({
+      icon: document.querySelector('link[rel="icon"]')?.getAttribute("href"),
+      apple: document.querySelector('link[rel="apple-touch-icon"]')?.getAttribute("href"),
+    }));
+    const served = await page.evaluate(async (hrefs) => {
+      const out = {};
+      for (const [k, href] of Object.entries(hrefs)) {
+        if (!href) continue;
+        const r = await fetch(href);
+        out[k] = `${r.status} ${r.headers.get("content-type")}`;
+      }
+      return out;
+    }, links);
+    check(
+      /^200 image\/webp/.test(served.icon ?? "") && /^200 image\/png/.test(served.apple ?? ""),
+      `brand icons are linked and served (icon ${links.icon}: ${served.icon}; apple ${links.apple}: ${served.apple})`,
+    );
+    await page.close();
+  }
+
+  // ── every tile's name reads whole ───────────────────────────────────────
+  // A narrow cell once cut "Riflessi Auto Care" to "RIF…" at 1024 and still
+  // trimmed it at 1440; DriftPilot, History and AutoTrader.ca were cut at
+  // 1024. Short names at the narrowest widths and an arrow-only call to
+  // action keep every name whole.
+  for (const [width, height] of [[1024, 768], [1280, 800], [1440, 900], [1680, 1050], [1920, 1080], [390, 844]]) {
+    const page = await open("/", { width, height });
+    const cut = await page.evaluate(() =>
+      [...document.querySelectorAll("a.tile")]
+        .map((t) => {
+          const name = t.querySelector(".display-hero");
+          return name && name.scrollWidth > name.clientWidth + 1 ? name.innerText : null;
+        })
+        .filter(Boolean),
+    );
+    check(cut.length === 0, `deck ${width}x${height}: every tile's name reads whole (${cut.join(", ") || "none cut"})`);
     await page.close();
   }
 
@@ -284,6 +329,27 @@ try {
         );
       });
       check(cursor, "hovering a deck tile brings up the tile cursor beside the arrow, running");
+
+      // What shatters is the CR mark: every shard carries its piece of the
+      // letters, the mask image is actually served, and the surviving
+      // shard's letters widen back to the whole mark in step with the loop.
+      const mark = await page.evaluate(async () => {
+        const shards = [...document.querySelectorAll(".tile-cursor-shard")];
+        const masked = shards.filter((s) => getComputedStyle(s, "::after").maskImage.includes("cr-mark-letters")).length;
+        const res = await fetch("/brand/cr-mark-letters.png");
+        return {
+          shards: shards.length,
+          masked,
+          served: `${res.status} ${res.headers.get("content-type")}`,
+          letters: document
+            .getAnimations()
+            .some((a) => a.animationName === "shard-main-letters" && a.playState === "running"),
+        };
+      });
+      check(
+        mark.shards === 16 && mark.masked === 16 && mark.served === "200 image/png" && mark.letters,
+        `the tile cursor shatters the CR mark (${mark.masked}/${mark.shards} shards masked, letters ${mark.served}, main shard reforming ${mark.letters})`,
+      );
     }
     await page.close();
   }
