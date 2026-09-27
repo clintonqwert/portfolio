@@ -2,9 +2,8 @@ import { SkillMarquee } from "@/components/home/skill-marquee";
 import { Figure, Tile, TileShot } from "@/components/home/tile";
 import { DeckPointer } from "@/components/home/deck-pointer";
 import { GapStatus } from "@/components/shared/gap-status";
-import { AUTOTRADER_POINTS } from "@/lib/content/experience";
 import { FACTS, HEADLINE, LEDE } from "@/lib/content/profile";
-import type { CaseStudy, DeckPreview, Gap } from "@/types/content";
+import type { CaseStudy, DeckPreview, Gap, Stat } from "@/types/content";
 
 /**
  * The wide cell's right column, whatever fills it: ruled off above while the
@@ -39,6 +38,8 @@ export function Deck({
   gaps,
   skills,
   autoTraderLede,
+  autoTraderPoints,
+  autoTraderFigures,
   previews,
   historyLede,
   historyRolesCount,
@@ -49,6 +50,9 @@ export function Deck({
   gaps: Gap[];
   skills: string[];
   autoTraderLede: string;
+  autoTraderPoints: string[];
+  /** The tile's two figures, from the content layer (see AUTOTRADER_FIGURES). */
+  autoTraderFigures: Stat[];
   /**
    * Whole-page screenshots the tiles window onto and pan down on hover, keyed
    * by slug — AutoTrader, which has none, as "autotrader".
@@ -65,9 +69,9 @@ export function Deck({
    */
   indexes: Record<string, string>;
 }) {
-  // The feature study first: the wide cell is the first cell, so it leads the
-  // grid on a desktop and the stack on a phone. The sort is stable, so the
-  // rest keep their order.
+  // The feature study first among the studies: it takes the widest study
+  // cell, beside AutoTrader.ca's tile, and follows it in a phone's stack.
+  // The sort is stable, so the rest keep their order.
   const deckStudies = studies
     .filter((s) => s.onDeck !== false)
     .sort((a, b) => Number(b.feature === true) - Number(a.feature === true));
@@ -172,7 +176,7 @@ export function Deck({
                 deck may not scroll. The last two points drop out there rather
                 than being clipped mid-sentence; all four are on /autotrader,
                 which the tile links to. */}
-            {AUTOTRADER_POINTS.map((point, i) => (
+            {autoTraderPoints.map((point, i) => (
               <li
                 key={point}
                 // Measured per width: two points fit at 1024, all four at 1440.
@@ -199,12 +203,9 @@ export function Deck({
           ) : null}
 
           <div className="mt-auto flex gap-4 border-t border-line pt-3">
-            <Figure stat={{ value: "5 yrs", label: "Jan 2020 – Jun 2025" }} size="sm" />
-            {/* What the repository shows, not an uptime figure: nothing backs
-                one, so "~0 downtime" is no longer claimed here. Reverts and
-                removals of the object cache, three years either side of the
-                March 2022 rollout — the Outcome row on /autotrader. */}
-            <Figure stat={{ value: "22 \u2192 0", label: "Cache reverts, 3 yrs before \u2192 after" }} size="sm" />
+            {autoTraderFigures.map((stat) => (
+              <Figure key={stat.label} stat={stat} size="sm" />
+            ))}
           </div>
         </Tile>
 
@@ -270,7 +271,7 @@ export function Deck({
                 {study.summary}
               </p>
               {/*
-                Hidden below `wide` on the narrow cells (Riflessi, Tadvantage):
+                Hidden below `wide` on the narrow cells (DriftPilot, Riflessi):
                 even a 2-line clamp on the summary left the check-overflow
                 gate reporting 22-65px of this list silently clipped at
                 1024-1280px, because overflow-hidden on the parent was

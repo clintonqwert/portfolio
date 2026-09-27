@@ -1,7 +1,7 @@
 import "server-only";
 
 import { AUTOSYNC_INVENTORY_IMAGE } from "@/lib/content/assets";
-import type { Passage } from "@/types/content";
+import type { Passage, Stat } from "@/types/content";
 
 /**
  * AutoTrader.ca — five years, and the largest single block of experience on
@@ -37,6 +37,18 @@ export const PROJECT_OS_LEDE =
  * — is in the "How the work was run" passage below, which is where it reads
  * properly anyway.
  */
+/**
+ * The AutoTrader tile's two figures, here rather than in the component so the
+ * tile and the Outcome row below cannot drift apart. The second is the exact
+ * claim the repository supports — none after rollout — not the before-count,
+ * which came from a keyword search of the history and was never checked line
+ * by line (review of #12, P1-2).
+ */
+export const AUTOTRADER_FIGURES: Stat[] = [
+  { value: "5 yrs", label: "Jan 2020 \u2013 Jun 2025" },
+  { value: "0", label: "Cache reverts & removals, 3 yrs on" },
+];
+
 export const AUTOTRADER_POINTS = [
   "Custom in-house OOP PHP, not Laravel or Symfony",
   "Object Cache Pro: ended 3 years of cache churn",
@@ -70,18 +82,20 @@ export async function getAutoTraderPassages(): Promise<Passage[]> {
         plugin author's name.
 
         Two kinds of claim, kept apart. What the repository shows — the churn
-        before, the configuration, the commit counts, nothing reverted after
-        — is stated as fact, and like the commit counts it is private, so the
-        Outcome row says so. Why the churn happened (downtime) and why the
-        team built on the result (it held) is the owner's own account, and
-        reads as his. "~0 downtime" is no longer claimed: nothing backs a
+        before, the configuration, the 33 of 36 commits, nothing reverted or
+        removed after — is stated as fact, and like the commit counts it is
+        private, so the Outcome row says so. Why the churn happened is the
+        owner's own account and says so ("As I saw it"). The before-counts are
+        no longer published: they came from a keyword search the evidence
+        itself said to check before quoting, and were never checked line by
+        line (review of #12, P1-2). "~0 downtime" is no longer claimed: nothing backs a
         downtime figure, so none is.
       */
       list: [
         {
           term: "Problem",
           detail:
-            "For three years the object cache on the platform thousands of Canadian dealerships run their inventory on was added, removed, swapped for other plugins and reverted, with hotfixes to switch it back on after deploys: 73 commits touched it in 2021 alone. The churn was a response to downtime.",
+            "For three years the object cache on the platform thousands of Canadian dealerships run their inventory on was added, removed, swapped for other plugins and reverted, with hotfixes to switch it back on after deploys. As I saw it, the churn was a response to downtime.",
         },
         {
           term: "My part",
@@ -106,7 +120,7 @@ export async function getAutoTraderPassages(): Promise<Passage[]> {
         {
           term: "Outcome",
           detail:
-            "Nobody reverted it in the three years after, until I left: 22 reverts and removals in the three years before, none after, and commits touching it fell to none in 2023 and 2024. It held, so the team built on it \u2014 a colleague later cached the CARFAX auth token in it. From the private repository\u2019s history, like the commit counts; not an uptime figure.",
+            "Nobody reverted or removed it in the three years after, until I left. It held, so the team built on it \u2014 a colleague later cached the CARFAX auth token in it. From the private repository\u2019s history, like the commit counts; not an uptime figure.",
         },
       ],
     },

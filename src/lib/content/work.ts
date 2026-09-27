@@ -143,9 +143,9 @@ const CASE_STUDIES: readonly CaseStudy[] = [
   },
   {
     slug: "tadvantage",
-    // Carries the wide cell, first on the deck: six and a half years on the
-    // platform is the longest and largest body of work here, and the
-    // automotive experience is what the roles this site is for hire on.
+    // Carries the widest study cell, beside AutoTrader.ca's: six and a half
+    // years on the platform is the longest and largest body of work here, and
+    // the automotive experience is what the roles this site is for hire on.
     // Owner's decision, 2026-09-26. It was DriftPilot's, for its budget table.
     feature: true,
     name: "Tadvantage",
@@ -229,7 +229,7 @@ const CASE_STUDIES: readonly CaseStudy[] = [
       {
         heading: "Performance",
         paragraphs: [
-          "I created the object-caching repository and put the platform on Object Cache Pro \u2014 a dedicated Redis host in production, shared clusters in dev and staging; per-site key prefixes, global groups, prefetching, connection timeouts \u2014 load-tested on a dedicated environment before it went near production. It ended three years of the cache being added and reverted: nobody reverted it in the three years after. Later I rolled page caching out to the whole fleet with WP-CLI, excluding the inventory and showroom routes that can never be served stale, wired into the deploy scripts so every new site got it automatically.",
+          "I created the object-caching repository and put the platform on Object Cache Pro \u2014 a dedicated Redis host in production, shared clusters in dev and staging \u2014 proved out on a separate test network before it shipped. It ended three years of the cache being added and reverted: nobody reverted it in the three years after, and the AutoTrader.ca page tells that story in full. Later I rolled page caching out to the whole fleet with WP-CLI, excluding the inventory and showroom routes that can never be served stale, wired into the deploy scripts so every new site got it automatically.",
         ],
       },
       {
