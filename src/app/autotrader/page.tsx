@@ -40,7 +40,7 @@ export default async function AutoTraderPage() {
         title="Caching as a stability problem, not a speed problem"
         lede={AUTOTRADER_LEDE}
         specs={[
-          { label: "Role", value: "Full-Stack Development Specialist; Senior Software Engineer, Full-Stack from 2021" },
+          { label: "Role", value: "Software Engineer (Full Stack-Product); Senior Software Engineer from 2021" },
           { label: "Period", value: AUTOTRADER_RAIL.period },
           { label: "Stack", value: AUTOTRADER_RAIL.stack.join(" · ") },
           {
