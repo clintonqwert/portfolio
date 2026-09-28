@@ -53,25 +53,32 @@ export async function getPrinciples(): Promise<Principle[]> {
  * reported to the visitor and posted in full to Slack #driftpilot-alerts,
  * whose SLACK_ALERT_WEBHOOK_URL is set in production. Riflessi gained Vitest
  * in CI the same day, with one suite for its fallback email link
- * (riflessiautocare PR #14). "No test runner" became "Thin tests on the second
- * site", and both rows moved to the roadmap because neither remaining fix is
- * under way. Riflessi's booking tests are item 1 on its own roadmap; its Slack
- * alert is this row's original plan and isn't in its repository yet.
+ * (riflessiautocare PR #14). The old first row is retired, since both sites
+ * now run tests, and "Thin tests on the second site" replaced it. Both rows sit
+ * on the roadmap because neither remaining fix is under way, and each fix is
+ * recorded where the work will happen. Riflessi's roadmap has the booking
+ * tests as Engineering protection item 1 and the failed-booking alert as item
+ * 4 (riflessiautocare PR #16). DriftPilot has general error monitoring as P0-3
+ * in docs/maintenance/ROADMAP.md.
+ *
+ * A consequence leads with the cost, because the deck tile clamps it to two
+ * lines at `wide`. A row that opened with a mitigation showed the win and cut
+ * off the gap.
  */
 export async function getGaps(): Promise<Gap[]> {
   return [
     {
       gap: "Thin tests on the second site",
       consequence:
-        "Riflessi runs Vitest in CI, but its one suite covers only the fallback email link. Its booking path, the only one that brings in revenue, has no regression tests.",
+        "Riflessi’s booking validation, spam gates and webhook retries have no tests, so a change could stop bookings arriving and CI wouldn’t notice. Its one suite covers the fallback email link.",
       fix: "Port DriftPilot’s tests for the same path: the Zod schema, the spam gates, and the webhook client’s retry, backoff and timeout behaviour.",
       status: "roadmap",
     },
     {
       gap: "No error monitoring",
       consequence:
-        "DriftPilot now posts a failed lead in full to Slack, and that’s the only alert either site sends. When a booking fails on Riflessi, it tells the visitor and logs the lead, but nobody else hears about it, and the lead is lost once the log expires.",
-      fix: "Port DriftPilot’s Slack alert to Riflessi, so a failed booking reaches someone who can recover it.",
+        "Neither site alerts anyone when something fails at runtime, with one exception: DriftPilot posts a failed lead in full to Slack. A failed Riflessi booking survives only in a short-lived runtime log, unless the visitor sends the pre-filled email the form offers.",
+      fix: "Port DriftPilot’s Slack alert to Riflessi first, then add error monitoring with alerting to both sites.",
       status: "roadmap",
     },
     {

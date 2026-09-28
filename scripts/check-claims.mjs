@@ -89,6 +89,16 @@ const RETIRED = [
     /Project Achilles/i,
     "a former employer's internal codename: it tells a reader nothing and is not this site's to publish",
   ],
+  [
+    /no test runner|neither (project|site) has (any |automated )?tests?/i,
+    "both sites run tests in CI since 2026-09-28 (driftpilot-site #54, riflessiautocare #14); what's missing is tests for Riflessi's booking path",
+  ],
+  [
+    // Present tense only: "still saw the thank-you page" tells the history
+    // and must pass.
+    /still sees (a|the) thank-you page|webhook with one retry/i,
+    "since driftpilot-site #54 (2026-09-28) DriftPilot tries a lead up to three times, tells the visitor if it fails, and posts it to Slack",
+  ],
 ];
 
 /** @returns {string[]} every .ts/.tsx path under dir, depth-first. */

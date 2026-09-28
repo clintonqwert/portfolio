@@ -79,9 +79,13 @@ const CASE_STUDIES: readonly CaseStudy[] = [
         heading: "The rest of the build",
         paragraphs: [
           "The site is 37 statically prerendered routes with no runtime database. Content sits behind typed async accessors, so a headless CMS could take over as the source without touching a page or component.",
-          // The stats count the Jun – Jul build: 27 merged PRs, the last #53 on
-          // 30 Jul. The fix is PR #54, merged 2026-09-28; its Slack alert is
-          // live because SLACK_ALERT_WEBHOOK_URL is set in production.
+          // The stats and `period` cover the Jun – Jul build: 27 merged PRs,
+          // the last #53 on 30 Jul. The September fix is PR #54, merged
+          // 2026-09-28, and the prose names its month so the period can stay
+          // on the build. "Three attempts within ten seconds" is MAX_ATTEMPTS
+          // and DELIVERY_DEADLINE_MS in the site's src/lib/crm.ts; re-read
+          // both before repeating the numbers. The Slack alert is live because
+          // SLACK_ALERT_WEBHOOK_URL is set in production.
           "Leads go through Zod-validated Server Actions, then honeypot and time-to-submit spam checks, then a CRM webhook. The original build came in over 73 commits across 27 merged pull requests, and in it the webhook got one retry: if both attempts failed, the visitor still saw the thank-you page and the lead was lost. I fixed that in September. The webhook now gets up to three attempts within ten seconds. A lead that still fails goes in full to a Slack channel, and the visitor sees the failure with an email link that has their answers filled in. The site’s first tests cover that path and run in CI.",
         ],
       },
