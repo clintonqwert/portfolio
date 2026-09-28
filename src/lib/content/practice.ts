@@ -47,6 +47,13 @@ export async function getPrinciples(): Promise<Principle[]> {
  * backs it is ProjectOS recording the CMS as absent by decision and DriftPilot
  * keeping an inactive adapter behind its typed accessors so the contract
  * exists before the need does — not a gap entry in a repository yet.
+ *
+ * On 2026-09-28 DriftPilot's first tests and its port of Riflessi's failure
+ * handling went into review together (driftpilot-site PR #54), and "No test
+ * runner" moved to in development. The names and consequences still describe
+ * the live sites, since that is what a visitor can check; only the fixes say
+ * what is in review. When #54 merges, DriftPilot's half of both consequences
+ * stops being true: rewrite them then, with the lead paragraph in work.ts.
  */
 export async function getGaps(): Promise<Gap[]> {
   return [
@@ -54,14 +61,14 @@ export async function getGaps(): Promise<Gap[]> {
       gap: "No test runner",
       consequence:
         "Neither project has automated test coverage. The lead-capture path, the only one that brings in revenue, has no regression tests.",
-      fix: "Test the revenue path first: the Zod schema, the spam gates, and the webhook client’s retry, backoff and timeout behaviour.",
-      status: "roadmap",
+      fix: "Test the revenue path first: the Zod schema, the spam gates, and the webhook client’s retry, backoff and timeout behaviour. I’ve written DriftPilot’s tests for all of it and they’re in review. Riflessi gets the same after.",
+      status: "in-development",
     },
     {
       gap: "No error monitoring",
       consequence:
         "On DriftPilot, if the webhook fails twice the visitor still sees a thank-you page, and only the failure is logged, not the lead. Riflessi tells the visitor and logs the full lead, but neither site stores it anywhere durable.",
-      fix: "Port Riflessi’s failure handling to DriftPilot, then give both a fallback email and alerting, so a failed lead is kept and someone hears about it.",
+      fix: "I’ve ported Riflessi’s failure handling to DriftPilot and it’s in review: three attempts with backoff, then the visitor sees the failure and an email link with their answers filled in. Next I’ll give both sites a fallback email and alerting, so a failed lead is kept and someone hears about it.",
       status: "in-development",
     },
     {
