@@ -48,28 +48,31 @@ export async function getPrinciples(): Promise<Principle[]> {
  * keeping an inactive adapter behind its typed accessors so the contract
  * exists before the need does — not a gap entry in a repository yet.
  *
- * On 2026-09-28 DriftPilot's first tests and its port of Riflessi's failure
- * handling went into review together (driftpilot-site PR #54), and "No test
- * runner" moved to in development. The names and consequences still describe
- * the live sites, since that is what a visitor can check; only the fixes say
- * what is in review. When #54 merges, DriftPilot's half of both consequences
- * stops being true: rewrite them then, with the lead paragraph in work.ts.
+ * On 2026-09-28 DriftPilot closed its half of the first two rows
+ * (driftpilot-site PR #54): tests for the lead path in CI, and a failed lead
+ * reported to the visitor and posted in full to Slack #driftpilot-alerts,
+ * whose SLACK_ALERT_WEBHOOK_URL is set in production. Riflessi gained Vitest
+ * in CI the same day, with one suite for its fallback email link
+ * (riflessiautocare PR #14). "No test runner" became "Thin tests on the second
+ * site", and both rows moved to the roadmap because neither remaining fix is
+ * under way. Riflessi's booking tests are item 1 on its own roadmap; its Slack
+ * alert is this row's original plan and isn't in its repository yet.
  */
 export async function getGaps(): Promise<Gap[]> {
   return [
     {
-      gap: "No test runner",
+      gap: "Thin tests on the second site",
       consequence:
-        "Neither project has automated test coverage. The lead-capture path, the only one that brings in revenue, has no regression tests.",
-      fix: "Test the revenue path first: the Zod schema, the spam gates, and the webhook client’s retry, backoff and timeout behaviour. I’ve written DriftPilot’s tests for all of it and they’re in review. Riflessi gets the same after.",
-      status: "in-development",
+        "Riflessi runs Vitest in CI, but its one suite covers only the fallback email link. Its booking path, the only one that brings in revenue, has no regression tests.",
+      fix: "Port DriftPilot’s tests for the same path: the Zod schema, the spam gates, and the webhook client’s retry, backoff and timeout behaviour.",
+      status: "roadmap",
     },
     {
       gap: "No error monitoring",
       consequence:
-        "On DriftPilot, if the webhook fails twice the visitor still sees a thank-you page, and only the failure is logged, not the lead. Riflessi tells the visitor and logs the full lead, but neither site stores it anywhere durable.",
-      fix: "I’ve ported Riflessi’s failure handling to DriftPilot and it’s in review: three attempts with backoff, then the visitor sees the failure and an email link with their answers filled in. Next I’ll give both sites a fallback email and alerting, so a failed lead is kept and someone hears about it.",
-      status: "in-development",
+        "DriftPilot now posts a failed lead in full to Slack, and that’s the only alert either site sends. When a booking fails on Riflessi, it tells the visitor and logs the lead, but nobody else hears about it, and the lead is lost once the log expires.",
+      fix: "Port DriftPilot’s Slack alert to Riflessi, so a failed booking reaches someone who can recover it.",
+      status: "roadmap",
     },
     {
       gap: "No perf gate on the second site",
