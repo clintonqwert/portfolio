@@ -102,7 +102,9 @@ const ITEMS: RoadmapItem[] = [
     title: "Riflessi on its own domain",
     project: "Riflessi",
     horizon: "shipped",
-    shippedOn: "2026-09-29",
+    // The go-live date, as Riflessi's launch gate records it; #18 (merged
+    // 29 Sep) is where that record landed.
+    shippedOn: "2026-09-28",
     detail: "riflessiautocare.ca serves the site, and its canonical links point there.",
     sources: [
       { label: "riflessiautocare.ca", href: "https://riflessiautocare.ca" },
