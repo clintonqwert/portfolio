@@ -47,22 +47,39 @@ export async function getPrinciples(): Promise<Principle[]> {
  * backs it is ProjectOS recording the CMS as absent by decision and DriftPilot
  * keeping an inactive adapter behind its typed accessors so the contract
  * exists before the need does — not a gap entry in a repository yet.
+ *
+ * On 2026-09-28 DriftPilot closed its half of the first two rows
+ * (driftpilot-site PR #54): tests for the lead path in CI, and a failed lead
+ * reported to the visitor and posted in full to Slack #driftpilot-alerts,
+ * whose SLACK_ALERT_WEBHOOK_URL is set in production. Riflessi gained Vitest
+ * in CI the same day, with one suite for its fallback email link
+ * (riflessiautocare PR #14). The old first row is retired, since both sites
+ * now run tests, and "Thin tests on the second site" replaced it. Both rows sit
+ * on the roadmap because neither remaining fix is under way, and each fix is
+ * recorded where the work will happen. Riflessi's roadmap has the booking
+ * tests as Engineering protection item 1 and the failed-booking alert as item
+ * 4 (riflessiautocare PR #16). DriftPilot has general error monitoring as P0-3
+ * in docs/maintenance/ROADMAP.md.
+ *
+ * A consequence leads with the cost, because the deck tile clamps it to two
+ * lines at `wide`. A row that opened with a mitigation showed the win and cut
+ * off the gap.
  */
 export async function getGaps(): Promise<Gap[]> {
   return [
     {
-      gap: "No test runner",
+      gap: "Thin tests on the second site",
       consequence:
-        "Neither project has automated test coverage. The lead-capture path, the only one that brings in revenue, has no regression tests.",
-      fix: "Test the revenue path first: the Zod schema, the spam gates, and the webhook client’s retry, backoff and timeout behaviour.",
+        "Riflessi’s booking validation, spam gates and webhook retries have no tests, so a change could stop bookings arriving and CI wouldn’t notice. Its one suite covers the fallback email link.",
+      fix: "Port DriftPilot’s tests for the same path: the Zod schema, the spam gates, and the webhook client’s retry, backoff and timeout behaviour.",
       status: "roadmap",
     },
     {
       gap: "No error monitoring",
       consequence:
-        "On DriftPilot, if the webhook fails twice the visitor still sees a thank-you page, and only the failure is logged, not the lead. Riflessi tells the visitor and logs the full lead, but neither site stores it anywhere durable.",
-      fix: "Port Riflessi’s failure handling to DriftPilot, then give both a fallback email and alerting, so a failed lead is kept and someone hears about it.",
-      status: "in-development",
+        "Neither site alerts anyone when something fails at runtime, with one exception: DriftPilot posts a failed lead in full to Slack. A failed Riflessi booking survives only in a short-lived runtime log, unless the visitor sends the pre-filled email the form offers.",
+      fix: "Port DriftPilot’s Slack alert to Riflessi first, then add error monitoring with alerting to both sites.",
+      status: "roadmap",
     },
     {
       gap: "No perf gate on the second site",
