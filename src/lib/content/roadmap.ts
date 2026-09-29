@@ -7,6 +7,7 @@ import type {
   RoadmapGroup,
   RoadmapItem,
   Source,
+  UpNext,
 } from "@/types/content";
 
 /**
@@ -16,8 +17,8 @@ import type {
  * Every item carries its sources: a pull request, a file in a public
  * repository, or a live page. Each was checked against main and the live
  * sites on 2026-09-28. Horizons follow one rule each:
- *  - shipped: merged to main. Keep at most three, newest first, and prune
- *    anything past ~60 days.
+ *  - shipped: merged to main or live on the site. At most three, newest
+ *    first (getRoadmap enforces both); prune anything past ~60 days.
  *  - now: an open pull request. When it merges, move it to shipped and drop
  *    the gap it closes.
  *  - next: on a repository's roadmap with a priority, and not started.
@@ -237,8 +238,13 @@ export async function getDirection(): Promise<DirectionStage[]> {
 }
 
 /**
- * A shipped date is only as good as its evidence: the merge. An item that
- * shows one must cite the pull request that merged, or the build stops.
+ * The horizon rules, held here so the page, its list and the home tile all
+ * read one answer:
+ *  - a shipped date needs the pull request that merged it;
+ *  - shipped keeps at most three items, newest first;
+ *  - a horizon with no items is left out, so nothing counts or heads an
+ *    empty section.
+ * The build stops on the first two.
  */
 export async function getRoadmap(): Promise<RoadmapGroup[]> {
   for (const item of ITEMS) {
@@ -246,7 +252,34 @@ export async function getRoadmap(): Promise<RoadmapGroup[]> {
       throw new Error(`Roadmap item "${item.id}" shows a shipped date but cites no pull request`);
     }
   }
-  return HORIZONS.map((h) => ({ ...h, items: ITEMS.filter((item) => item.horizon === h.horizon) }));
+  const shipped = ITEMS.filter((item) => item.horizon === "shipped");
+  if (shipped.length > 3) {
+    throw new Error(`Shipped keeps at most three items; it has ${shipped.length}. Prune the oldest.`);
+  }
+  const dated = shipped.filter((item) => item.shippedOn !== undefined);
+  for (let i = 1; i < dated.length; i++) {
+    const [above, below] = [dated[i - 1]!, dated[i]!];
+    if (above.shippedOn! < below.shippedOn!) {
+      throw new Error(
+        `Shipped runs newest first: "${above.id}" (${above.shippedOn}) sits above "${below.id}" (${below.shippedOn})`,
+      );
+    }
+  }
+  return HORIZONS.map((h) => ({ ...h, items: ITEMS.filter((item) => item.horizon === h.horizon) })).filter(
+    (group) => group.items.length > 0,
+  );
+}
+
+/**
+ * The home tile's fourth cell: work with an open pull request when there is
+ * some, since that is what is moving; otherwise the first of what's next.
+ */
+export async function getUpNext(): Promise<UpNext> {
+  const groups = await getRoadmap();
+  const now = groups.find((g) => g.horizon === "now");
+  if (now) return { heading: now.title, status: "Open pull request", filled: true, items: now.items };
+  const next = groups.find((g) => g.horizon === "next");
+  return { heading: next?.title ?? "Next", status: "Not started", filled: false, items: next?.items ?? [] };
 }
 
 /**

@@ -34,9 +34,6 @@ export default async function RoadmapPage() {
     getPagePosition("/roadmap"),
   ]);
 
-  // The list leaves an empty horizon out, so the hero counts only the ones
-  // it shows: "In progress 0" would name a section that isn't there.
-  const shown = groups.filter((g) => g.items.length > 0);
   const titles = Object.fromEntries(
     groups.flatMap((g) => g.items.map((item) => [item.id, item.title] as const)),
   );
@@ -59,7 +56,7 @@ export default async function RoadmapPage() {
         kicker="Roadmap"
         title="Shipped and next"
         lede={ROADMAP_LEDE}
-        specs={shown.map((g) => ({ label: g.title, value: String(g.items.length) }))}
+        specs={groups.map((g) => ({ label: g.title, value: String(g.items.length) }))}
         next={direction.id}
         cueLabel="Scroll to the direction, 3 chapters"
       />
