@@ -53,7 +53,7 @@ const CHROME =
   "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome";
 
 const ROUTES = [
-  "/", "/standard", "/gaps", "/history", "/autotrader",
+  "/", "/standard", "/gaps", "/roadmap", "/history", "/autotrader",
   "/work/driftpilot", "/work/riflessi", "/work/tadvantage", "/work/mygarage", "/work/luxury-tax",
 ];
 
@@ -744,6 +744,23 @@ try {
         .map(([sel]) => sel),
     );
     check(moving.length === 0, `reduced motion stops every loop and reveal${moving.length ? ` (still animating: ${moving.join(", ")})` : ""}`);
+    await page.close();
+  }
+  // /roadmap: every "Closed by" link in the gaps chapter lands on a roadmap
+  // item that exists on the page, so a gap can never point at nothing.
+  {
+    const page = await open("/roadmap", { width: 1440, height: 900 });
+    const links = await page.evaluate(() =>
+      [...document.querySelectorAll("a[data-closed-by]")].map((a) => {
+        const id = decodeURIComponent((a.getAttribute("href") ?? "").slice(1));
+        return { id, ok: Boolean(document.getElementById(id)) };
+      }),
+    );
+    const broken = links.filter((l) => !l.ok).map((l) => l.id);
+    check(
+      links.length > 0 && broken.length === 0,
+      `every gap's "Closed by" link lands on a roadmap item (${links.length} links${broken.length ? `, broken: ${broken.join(", ")}` : ""})`,
+    );
     await page.close();
   }
 } finally {
