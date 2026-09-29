@@ -231,3 +231,57 @@ export interface PageLink {
   /** A line saying what the page argues — the headline, for a case study. */
   summary?: string;
 }
+
+/** Where a roadmap or direction claim can be checked: a PR, a repository file or a live page. */
+export interface Source {
+  label: string;
+  href: string;
+}
+
+/**
+ * Shipped: merged to main. Now: an open pull request. Next: on a repository's
+ * roadmap with a priority, not started. Later: waiting on a named condition.
+ */
+export type Horizon = "shipped" | "now" | "next" | "later";
+
+/** One engineering item on /roadmap. */
+export interface RoadmapItem {
+  /** Anchor on /roadmap, and what an OpenGap's closedBy names. */
+  id: string;
+  title: string;
+  project: "DriftPilot" | "Riflessi" | "Both" | "Drive";
+  horizon: Horizon;
+  /** ISO date (YYYY-MM-DD). Shipped items only. */
+  shippedOn?: string;
+  detail: string;
+  /** At least one: an item nobody can check does not go on the page. */
+  sources: readonly [Source, ...Source[]];
+}
+
+/** A horizon's heading, what it means, and its items in authored order. */
+export interface RoadmapGroup {
+  horizon: Horizon;
+  title: string;
+  meaning: string;
+  items: RoadmapItem[];
+}
+
+/** One stage of where the studio is heading. */
+export interface DirectionStage {
+  name: string;
+  project: string;
+  summary: string;
+  /** Solid marker when built, open when planned. */
+  done: boolean;
+  statusLabel: string;
+  source: Source;
+}
+
+/**
+ * A known weakness and what it costs. Either a roadmap item closes it, or
+ * there is a mitigation until one does. Never both, never neither.
+ */
+export type OpenGap = { gap: string; consequence: string } & (
+  | { closedBy: string; mitigation?: never }
+  | { mitigation: string; closedBy?: never }
+);
