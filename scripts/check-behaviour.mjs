@@ -229,9 +229,12 @@ try {
       [...document.querySelectorAll("a.tile")].flatMap((tile) => {
         const shown = [...tile.querySelectorAll("*")].filter((e) => e.getClientRects().length > 0);
         const rules = shown
+          // A rule spans its column. The 7px status squares (StatusMark) have
+          // borders too, but two of them 7px apart, one beside a wrapped
+          // label, are not a double hairline.
           .filter((e) => {
             const cs = getComputedStyle(e);
-            return parseFloat(cs.borderTopWidth) > 0 && cs.borderTopStyle !== "none";
+            return parseFloat(cs.borderTopWidth) > 0 && cs.borderTopStyle !== "none" && e.getBoundingClientRect().width >= 24;
           })
           .map((e) => e.getBoundingClientRect().top)
           .sort((a, b) => a - b);
@@ -790,6 +793,24 @@ try {
       moved.length === 0,
       `every Lighthouse URL answers 200 without a redirect (${paths.length} URLs${moved.length ? `; ${moved.join(", ")}` : ""})`,
     );
+  }
+  // /roadmap's hero counts only horizons the page shows. The list leaves an
+  // empty horizon out, so a count of 0 would name a section that isn't there.
+  {
+    const page = await open("/roadmap", { width: 1440, height: 900 });
+    const orphans = await page.evaluate(() => {
+      const sections = new Set(
+        [...document.querySelectorAll("#the-roadmap h3")].map((h) => h.textContent.trim()),
+      );
+      return [...document.querySelectorAll("article dl dt")]
+        .map((dt) => dt.textContent.trim())
+        .filter((label) => !sections.has(label));
+    });
+    check(
+      orphans.length === 0,
+      `every horizon /roadmap's hero counts has a section on the page${orphans.length ? ` (missing: ${orphans.join(", ")})` : ""}`,
+    );
+    await page.close();
   }
 } finally {
   await browser.close();

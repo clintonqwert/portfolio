@@ -85,6 +85,31 @@ const HORIZONS: readonly { horizon: Horizon; title: string; meaning: string }[] 
 
 const ITEMS: RoadmapItem[] = [
   {
+    id: "riflessi-lead-delivery",
+    title: "Formspree delivers Riflessi’s bookings and questions",
+    project: "Riflessi",
+    horizon: "shipped",
+    shippedOn: "2026-09-29",
+    detail:
+      "A contact form sits below the booking form. A booking sent with JavaScript off arrives flagged as unverified, where the site used to discard it as spam. Tests in CI cover delivery, the flag and the timing gate.",
+    sources: [
+      { label: "riflessiautocare #15", href: `${RIFLESSI}/pull/15` },
+      { label: "#19", href: `${RIFLESSI}/pull/19` },
+    ],
+  },
+  {
+    id: "riflessi-domain",
+    title: "Riflessi on its own domain",
+    project: "Riflessi",
+    horizon: "shipped",
+    shippedOn: "2026-09-29",
+    detail: "riflessiautocare.ca serves the site, and its canonical links point there.",
+    sources: [
+      { label: "riflessiautocare.ca", href: "https://riflessiautocare.ca" },
+      { label: "#18", href: `${RIFLESSI}/pull/18` },
+    ],
+  },
+  {
     id: "driftpilot-lead-delivery",
     title: "Failed leads reach the visitor and Slack",
     project: "DriftPilot",
@@ -95,44 +120,12 @@ const ITEMS: RoadmapItem[] = [
     sources: [{ label: "driftpilot-site #54", href: `${DRIFTPILOT}/pull/54` }],
   },
   {
-    id: "riflessi-formspree",
-    title: "Formspree delivers bookings and questions",
-    project: "Riflessi",
-    horizon: "shipped",
-    shippedOn: "2026-09-28",
-    detail:
-      "A contact form sits below the booking form, and tests in CI cover delivery and the spam timing gate.",
-    sources: [
-      { label: "riflessiautocare #15", href: `${RIFLESSI}/pull/15` },
-      { label: "#14", href: `${RIFLESSI}/pull/14` },
-    ],
-  },
-  {
-    id: "riflessi-domain",
-    title: "Riflessi on its own domain",
-    project: "Riflessi",
-    horizon: "shipped",
-    // No date: no merged pull request records the switch yet
-    // (riflessiautocare #18 is open), and a date needs its merge.
-    detail: "riflessiautocare.ca serves the site, and its canonical links point there.",
-    sources: [{ label: "riflessiautocare.ca", href: "https://riflessiautocare.ca" }],
-  },
-  {
-    id: "riflessi-nojs-leads",
-    title: "Keep leads sent without JavaScript",
-    project: "Riflessi",
-    horizon: "now",
-    detail:
-      "A booking sent with JavaScript off carries no timing stamp, so the site discards it as spam. The fix delivers it flagged as unverified, and adds tests for the free-text limits.",
-    sources: [{ label: "riflessiautocare #19", href: `${RIFLESSI}/pull/19` }],
-  },
-  {
     id: "riflessi-lead-tests",
     title: "Tests for Riflessi’s retries, timeout, honeypot and validation",
     project: "Riflessi",
     horizon: "next",
     detail:
-      "Its suites cover how a lead is shaped for Formspree, the timing gate, and giving up at once on a rejected lead. Nothing yet tests the retries on a server error, the timeout, the honeypot or field validation.",
+      "Its suites cover how a lead is shaped for Formspree, the unverified flag, the timing gate, the free-text limits, and giving up at once on a rejected lead. Nothing yet tests the retries on a server error, the timeout, the honeypot or the other field rules.",
     sources: [RIFLESSI_ROADMAP(1)],
   },
   {
@@ -203,15 +196,9 @@ const ITEMS: RoadmapItem[] = [
 
 const GAPS: OpenGap[] = [
   {
-    gap: "Leads sent without JavaScript are dropped",
-    consequence:
-      "On Riflessi, a booking sent with JavaScript off counts as spam: the visitor sees a thank-you and the lead reaches only the log.",
-    closedBy: "riflessi-nojs-leads",
-  },
-  {
     gap: "Thin tests on the second site",
     consequence:
-      "Riflessi’s retries on server errors, timeout, honeypot and field validation have no tests, so a change could stop bookings arriving and CI wouldn’t notice.",
+      "Riflessi’s retries on a server error, its timeout and its honeypot have no tests, and its validation tests stop at the free-text limits. A change there could stop bookings arriving and CI wouldn’t notice.",
     closedBy: "riflessi-lead-tests",
   },
   {
