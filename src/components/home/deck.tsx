@@ -110,7 +110,7 @@ export function Deck({
           <h1 className="display-hero max-w-[38ch] text-[clamp(1.35rem,2.5vw,2rem)] leading-[1.1] text-ink">
             {HEADLINE}
           </h1>
-          <p className="mt-1 max-w-[70ch] text-md leading-snug text-muted">{LEDE}</p>
+          <p className="deck-lede mt-1 max-w-[70ch] text-md leading-snug text-muted">{LEDE}</p>
 
           {/*
             The headline earns the attention; this line converts it. A reader
@@ -174,7 +174,7 @@ export function Deck({
               <li key={tech}>{tech}</li>
             ))}
           </ul>
-          <ul className="mt-2 space-y-1 border-t border-line pt-2 text-xs leading-snug text-muted">
+          <ul className="tile-points mt-2 space-y-1 border-t border-line pt-2 text-xs leading-snug text-muted">
             {/* At 1024 the cell is three lines shorter than the copy, and the
                 deck may not scroll. The last two points drop out there rather
                 than being clipped mid-sentence; all four are on /autotrader,

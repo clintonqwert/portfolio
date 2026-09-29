@@ -18,7 +18,7 @@ const CASE_STUDIES: readonly CaseStudy[] = [
     name: "DriftPilot",
     headline: "A performance budget on every pull request",
     summary:
-      "I built the studio’s site alone, from its services and pricing pages to two lead funnels, and moved its quality bar into the pipeline, where no deadline can argue it down.",
+      "I built the studio’s site alone, from its services and pricing pages to two lead funnels, and put a performance budget on every pull request. Every one merged since has passed it.",
     period: "Jun – Jul 2026",
     liveUrl: "driftpilot.ca",
     repoUrl: "github.com/clintonqwert/driftpilot-site",
@@ -198,6 +198,8 @@ const CASE_STUDIES: readonly CaseStudy[] = [
       "The SEO foundation: bilingual inventory sitemaps, VIN-keyed schema",
       "IQ Badging: one Vue component, on every vehicle card",
     ],
+    // The deck gives a feature cell's label three lines (deck.tsx). This one
+    // needs all three at 1440; at 1280 they stop at "the most of 100+…".
     stats: [
       { value: "1,682", label: "Commits, the most of 100+ contributors" },
       { value: "358", label: "Merged pull requests" },

@@ -24,10 +24,18 @@ export const LOCATION = "Vancouver, British Columbia";
 export const ROLE_TITLE = "Senior Full-Stack Software Engineer";
 
 /**
+ * The roles sought, said once. The rail's availability line and the first
+ * screening fact below both read it, so a change is one edit, not two.
+ * Lowercase here: the fact capitalises its first letter, which is safe for
+ * "AI" and "FDE" where lowercasing would not be.
+ */
+const ROLES_SOUGHT = "senior full-stack, AI-enabled & FDE roles";
+
+/**
  * Availability. Shown in the rail on every route — a reviewer should not have
  * to hunt for whether you are open to work.
  */
-export const AVAILABILITY = "Open to senior full-stack, AI-enabled & FDE roles";
+export const AVAILABILITY = `Open to ${ROLES_SOUGHT}`;
 
 export const CONTACT = {
   email: "clintonramonida25@gmail.com",
@@ -86,7 +94,7 @@ export const PORTRAIT = {
  * be a question anyone has to ask.
  */
 export const FACTS = [
-  "Senior full-stack, AI-enabled & FDE roles",
+  `${ROLES_SOUGHT.charAt(0).toUpperCase()}${ROLES_SOUGHT.slice(1)}`,
   "Vancouver, BC",
   "Hybrid preferred, remote or on-site welcome",
   "Canadian citizen, no sponsorship needed",
@@ -106,10 +114,12 @@ export const HEADLINE =
  *
  * One line at the lede's 70ch, and it has to stay one: at 1280x800 the deck has
  * no height to spare, and a second line pushed AutoTrader 10px past its cell
- * (2026-09-29). The pipeline line it replaced is on DriftPilot's tile.
+ * (2026-09-29). check:behaviour fails on a second line. The pipeline point it
+ * replaced is DriftPilot's now: the tile's budget rows on the deck, and the
+ * summary's "performance budget on every pull request" on its case study.
  */
 export const LEDE =
-  "Since 2026 I’ve shipped two live sites on my own, with an AI review workflow I designed.";
+  "Since 2026 I’ve shipped two live sites on my own, with a five-role AI workflow I designed.";
 
 /**
  * For search results and link previews: the headline's facts with the whole
@@ -121,12 +131,7 @@ export const DESCRIPTION =
 /*
   A four-stat masthead summary and a standalone position statement used to
   live here (getHeadlineStats, getPositionPassages). Both were retired
-  2026-09: every figure they carried is more specific somewhere else on the
-  page already — "9 years shipping" is the lede's "nine years", "2 live
-  sites" is the two case-study tiles that are already on the dashboard with
-  their own live URLs, "32 reviewed PRs" is the sum of DriftPilot's 21 and
-  Riflessi's 11 shown individually on their own tiles, and ">=95 Lighthouse"
-  is already an assertion row on DriftPilot's tile. Code that ships a
-  restatement of facts shown better elsewhere is exactly the kind of thing
-  this site's own gaps table calls out in other people's projects.
+  2026-09 because they restated figures the tiles show more specifically,
+  and a second copy of a figure is one more place for it to drift. Don't
+  bring a summary back; put the figure on the tile that owns it.
 */

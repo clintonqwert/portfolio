@@ -142,7 +142,7 @@ export async function getStackGroups(): Promise<StackGroup[]> {
     {
       name: "Backend",
       items:
-        "Node.js, Express, REST APIs, React Server Actions, WordPress Multisite and WP-CLI, MySQL, PostgreSQL, MongoDB, Redis, Zod validation",
+        "Node.js, Express, REST APIs, Next.js Server Actions, WordPress Multisite and WP-CLI, MySQL, MongoDB, Redis, Zod validation",
     },
     {
       name: "Performance",
@@ -167,7 +167,7 @@ export async function getStackGroups(): Promise<StackGroup[]> {
     {
       name: "AI & automation",
       items:
-        "AI-assisted development with Claude, a multi-agent review workflow where only one role writes code, prompt engineering, n8n",
+        "AI-assisted development with Claude, a five-role AI workflow where only one role writes code, prompt engineering",
     },
     {
       name: "Practice",

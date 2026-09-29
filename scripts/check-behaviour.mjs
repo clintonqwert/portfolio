@@ -255,6 +255,35 @@ try {
     await page.close();
   }
 
+  // ── deck copy with no height to spare ──────────────────────────────────
+  // Two strings are sized to the deck, not to their own box, and a longer one
+  // used to fail a check about some other element: a second lede line pushed
+  // AutoTrader past its cell at 1280x800, and a wrapped AutoTrader point
+  // shortened its screenshot window from 1680 (the one-height check below).
+  // These name the string itself.
+  for (const [width, height] of [[1024, 768], [1280, 800], [1440, 900], [1680, 1050], [1920, 1080]]) {
+    const page = await open("/", { width, height });
+    const fit = await page.evaluate(() => {
+      const lines = (el) => Math.round(el.getBoundingClientRect().height / parseFloat(getComputedStyle(el).lineHeight));
+      const lede = document.querySelector(".deck-lede");
+      return {
+        lede: lede ? lines(lede) : 0,
+        points: [...document.querySelectorAll('a.tile[href="/autotrader"] .tile-points > li')]
+          .filter((li) => li.offsetParent !== null)
+          .map((li) => ({ text: li.textContent.trim().slice(0, 32), lines: lines(li) })),
+      };
+    });
+    check(fit.lede === 1, `deck ${width}x${height}: the lede is one line (${fit.lede})`);
+    if (width >= 1680) {
+      const wrapped = fit.points.filter((p) => p.lines !== 1);
+      check(
+        fit.points.length === 4 && wrapped.length === 0,
+        `deck ${width}x${height}: every AutoTrader point is one line (${wrapped.map((p) => `"${p.text}…" ${p.lines}`).join(", ") || `${fit.points.length} shown`})`,
+      );
+    }
+    await page.close();
+  }
+
   // ── deck screenshots: one height, and a pan on hover ───────────────────
   for (const [width, height] of [[1680, 1050], [1920, 1080]]) {
     const page = await open("/", { width, height });
