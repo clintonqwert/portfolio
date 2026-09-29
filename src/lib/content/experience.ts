@@ -25,7 +25,7 @@ export const AUTOTRADER_LEDE =
   "Five years on the platform that runs inventory for Canadian dealerships nationwide. The work I’d point you to first is the caching, and the win was stability more than speed.";
 
 export const PROJECT_OS_LEDE =
-  "Five AI roles help me deliver my work under a written standard. One writes files, the other four only report, and I make the decisions.";
+  "I designed a five-role AI workflow and deliver my work through it. One writes files, the other four only report, and I make the decisions.";
 
 /**
  * Short restatements of facts already published in the passages below, for the
@@ -53,7 +53,7 @@ export const AUTOTRADER_POINTS = [
   "Custom in-house OOP PHP, no Laravel or Symfony",
   "Object Cache Pro: ended 3 years of cache churn",
   "Technical SEO, where getting inventory found is the product",
-  "Mentored engineers in code review and pairing",
+  "Turned requirements into features: Ford Model E, CARFAX v3, luxury tax",
 ];
 
 export async function getAutoTraderPassages(): Promise<Passage[]> {
@@ -133,7 +133,7 @@ export async function getAutoTraderPassages(): Promise<Passage[]> {
     {
       heading: "The rest of the five years",
       paragraphs: [
-        "Outside the caching, I worked on technical SEO for a marketplace where getting dealer inventory found is the product, not a marketing extra.",
+        "Outside the caching, I worked on technical SEO for a marketplace where getting dealer inventory found is the product, not a marketing extra. I also turned OEM, partner and regulatory requirements into features: Ford’s Model E inventory and window stickers, CARFAX’s v3 authentication, and Canada’s luxury tax on every price a shopper sees. The Tadvantage case study has the detail.",
         "All of it was team work. We ran Agile, reviewed every change, and paired when something mattered enough to be worth two people’s time. I reviewed other engineers’ work and had mine reviewed, in a codebase I couldn’t change on my own say-so. That’s the more common way to work, and a different discipline from my studio year. I also mentored engineers through code review and pairing, which is where the review habits on this site come from.",
       ],
     },
@@ -171,7 +171,7 @@ export async function getProjectOsPassages(): Promise<Passage[]> {
     {
       heading: "How AI helps with the work",
       paragraphs: [
-        "The same standard sets out how I use AI to deliver work. There are five specialist roles, and each role’s contract spells out what it may do. They report findings as P0, P1 or P2 by severity, and I decide what happens next. This is about how I build software, this site included. It isn’t an AI feature that customers use.",
+        "I designed the agent workflow I deliver with, as part of the same standard. Five specialist roles each work to a contract that spells out what it may do. One writes code; the other four report findings as P0, P1 or P2, and I decide what ships. It’s how I build software, this site included. It isn’t an AI feature that customers use.",
         "Those limits live in each role’s instructions, not in tool permissions. No role declares `allowed-tools`, so nothing in the tooling enforces them.",
         "The tester works from one rule: the pull request description is a claim, the diff is the truth, and any gap between the two is a finding.",
       ],

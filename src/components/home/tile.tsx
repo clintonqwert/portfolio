@@ -121,7 +121,7 @@ export function Figure({
   size?: "sm" | "md";
   /**
    * How many lines the label may take before its ellipsis. Two holds most
-   * cells; a label that carries the claim itself — "#1 of 100+ engineers" —
+   * cells; a label that carries the claim itself — "the most of 100+ contributors" —
    * gets three where its cell is narrow, rather than losing its point.
    */
   lines?: 2 | 3;

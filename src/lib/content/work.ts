@@ -18,7 +18,7 @@ const CASE_STUDIES: readonly CaseStudy[] = [
     name: "DriftPilot",
     headline: "A performance budget on every pull request",
     summary:
-      "I moved the quality bar out of code review and into the pipeline, where nobody can forget it or argue it down on a deadline.",
+      "I built the studio’s site alone, from its services and pricing pages to two lead funnels, and moved its quality bar into the pipeline, where no deadline can argue it down.",
     period: "Jun – Jul 2026",
     liveUrl: "driftpilot.ca",
     repoUrl: "github.com/clintonqwert/driftpilot-site",
@@ -99,7 +99,7 @@ const CASE_STUDIES: readonly CaseStudy[] = [
     shortName: "Riflessi",
     headline: "Proving the foundation was reusable",
     summary:
-      "It’s easy to call an architecture reusable. I built a second site on mine to find out, and I’ll show you what had to change.",
+      "A second business on DriftPilot’s foundation, built in five weeks: I cut its 19 MB 3D hero to 2 MB and kept the home shop’s address out of every photo.",
     period: "Jul – Sep 2026",
     liveUrl: "riflessiautocare.ca",
     repoUrl: "github.com/clintonqwert/riflessiautocare",
@@ -166,7 +166,7 @@ const CASE_STUDIES: readonly CaseStudy[] = [
     name: "Tadvantage",
     headline: "Six and a half years on a dealer platform, and the parts I put my name on",
     summary:
-      "The platform behind dealer websites, from Convertus through the acquisition into AutoSync. I was its top all-time contributor over six and a half years.",
+      "The platform behind dealer websites, from Convertus through the acquisition into AutoSync. Over six and a half years I owned its releases from v3 to v12.7, built its SEO subsystem and co-built myGarage.",
     period: "6.5 years \u00b7 Convertus \u2192 AutoTrader",
     // The platform's own product site. autosyncmotors.com, the public demo
     // dealer site, is shown on /autotrader and /work/mygarage instead.
@@ -199,7 +199,7 @@ const CASE_STUDIES: readonly CaseStudy[] = [
       "IQ Badging: one Vue component, on every vehicle card",
     ],
     stats: [
-      { value: "1,682", label: "Commits, #1 of 100+ engineers" },
+      { value: "1,682", label: "Commits, the most of 100+ contributors" },
       { value: "358", label: "Merged pull requests" },
     ],
     // The only unverifiable figures on this site, and the note that says so.

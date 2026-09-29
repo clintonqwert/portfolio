@@ -27,7 +27,6 @@ export const MAP = {
   PHP: "php",
   Python: "python",
   MySQL: "mysql",
-  PostgreSQL: "postgresql",
   MongoDB: "mongodb",
   Redis: "redis",
   WordPress: "wordpress",

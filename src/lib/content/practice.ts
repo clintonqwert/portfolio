@@ -123,7 +123,7 @@ export async function getSkillMarquee(): Promise<string[]> {
   */
   return [
     "TypeScript", "React", "Next.js", "Node.js", "Tailwind CSS", "Zod",
-    "Vue.js", "PHP", "Python", "MySQL", "PostgreSQL", "MongoDB", "Redis",
+    "Vue.js", "PHP", "Python", "MySQL", "MongoDB", "Redis",
     "WordPress", "AWS", "Vercel", "Docker", "Cloudflare", "GitHub Actions",
     "Jest", "Lighthouse", "Claude",
   ];

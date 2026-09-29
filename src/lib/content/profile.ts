@@ -27,7 +27,7 @@ export const ROLE_TITLE = "Senior Full-Stack Software Engineer";
  * Availability. Shown in the rail on every route — a reviewer should not have
  * to hunt for whether you are open to work.
  */
-export const AVAILABILITY = "Open to senior & staff roles";
+export const AVAILABILITY = "Open to senior full-stack, AI-enabled & FDE roles";
 
 export const CONTACT = {
   email: "clintonramonida25@gmail.com",
@@ -86,7 +86,7 @@ export const PORTRAIT = {
  * be a question anyone has to ask.
  */
 export const FACTS = [
-  "Senior & staff roles",
+  "Senior full-stack, AI-enabled & FDE roles",
   "Vancouver, BC",
   "Hybrid preferred, remote or on-site welcome",
   "Canadian citizen, no sponsorship needed",
@@ -101,9 +101,15 @@ export const FACTS = [
 export const HEADLINE =
   "Senior full-stack engineer. Six and a half years on a national automotive SaaS platform.";
 
-/** The position, under the headline. Shorter and harder than the résumé summary. */
+/**
+ * The position, under the headline. Shorter and harder than the résumé summary.
+ *
+ * One line at the lede's 70ch, and it has to stay one: at 1280x800 the deck has
+ * no height to spare, and a second line pushed AutoTrader 10px past its cell
+ * (2026-09-29). The pipeline line it replaced is on DriftPilot's tile.
+ */
 export const LEDE =
-  "I put the quality bar in the pipeline, so the team never has to remember it.";
+  "Since 2026 I’ve shipped two live sites on my own, with an AI review workflow I designed.";
 
 /**
  * For search results and link previews: the headline's facts with the whole

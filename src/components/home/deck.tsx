@@ -370,9 +370,10 @@ export function Deck({
                   {study.stats.length > 0 ? (
                     <div className="grid grid-cols-2 gap-3 border-t border-line pt-3">
                       {study.stats.slice(0, 4).map((stat) => (
-                        // Three lines in the feature cell: at five columns
-                        // "Commits — #1 of 100+ engineers" needs them from 1024
-                        // to 1440, and two cut the claim to "#1 of 100+…".
+                        // Three lines in the feature cell: "Commits, the most
+                        // of 100+ contributors" needs all three at 1440, and at
+                        // 1280 they still stop at "the most of 100+…", which
+                        // keeps the ranking. Two would cut it to "the most…".
                         <Figure key={stat.label} stat={stat} size="sm" lines={study.feature ? 3 : 2} />
                       ))}
                     </div>
