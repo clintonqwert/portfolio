@@ -749,8 +749,9 @@ try {
     check(moving.length === 0, `reduced motion stops every loop and reveal${moving.length ? ` (still animating: ${moving.join(", ")})` : ""}`);
     await page.close();
   }
-  // /roadmap: every "Closed by" link in the gaps chapter lands on a roadmap
-  // item that exists on the page, so a gap can never point at nothing.
+  // /roadmap: every fix link in the gaps chapter ("Fix:" on an open gap,
+  // "Closed … by" on a closed one) lands on a roadmap item on the page, so a
+  // gap can never point at nothing.
   {
     const page = await open("/roadmap", { width: 1440, height: 900 });
     const links = await page.evaluate(() =>
@@ -762,7 +763,7 @@ try {
     const broken = links.filter((l) => !l.ok).map((l) => l.id);
     check(
       links.length > 0 && broken.length === 0,
-      `every gap's "Closed by" link lands on a roadmap item (${links.length} links${broken.length ? `, broken: ${broken.join(", ")}` : ""})`,
+      `every gap's fix link lands on a roadmap item (${links.length} links${broken.length ? `, broken: ${broken.join(", ")}` : ""})`,
     );
     await page.close();
   }
@@ -809,6 +810,29 @@ try {
     check(
       orphans.length === 0,
       `every horizon /roadmap's hero counts has a section on the page${orphans.length ? ` (missing: ${orphans.join(", ")})` : ""}`,
+    );
+    await page.close();
+  }
+  // /roadmap: a gap is struck through exactly when every item that closes it
+  // sits under Shipped, so a reader can tell fixed from outstanding at a glance.
+  {
+    const page = await open("/roadmap", { width: 1440, height: 900 });
+    const { wrong, struck } = await page.evaluate(() => {
+      const shipped = new Set(
+        [...document.querySelectorAll('section[aria-labelledby="horizon-shipped"] li[id]')].map((li) => li.id),
+      );
+      const rows = [...document.querySelectorAll("#gaps li")];
+      const wrong = rows.flatMap((li) => {
+        const ids = [...li.querySelectorAll("a[data-closed-by]")].map((a) => (a.getAttribute("href") ?? "").slice(1));
+        const fixed = ids.length > 0 && ids.every((id) => shipped.has(id));
+        const isStruck = li.querySelector("s") !== null;
+        return fixed === isStruck ? [] : [`${li.querySelector("p")?.textContent?.trim()} (${isStruck ? "struck" : "not struck"})`];
+      });
+      return { wrong, struck: rows.filter((li) => li.querySelector("s")).length };
+    });
+    check(
+      wrong.length === 0,
+      `a gap is struck through exactly when all its fixes have shipped (${struck} struck${wrong.length ? `; wrong: ${wrong.join("; ")}` : ""})`,
     );
     await page.close();
   }

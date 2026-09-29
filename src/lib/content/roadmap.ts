@@ -2,8 +2,9 @@ import "server-only";
 
 import type {
   DirectionStage,
+  Gap,
+  GapView,
   Horizon,
-  OpenGap,
   RoadmapGroup,
   RoadmapItem,
   Source,
@@ -96,6 +97,7 @@ const ITEMS: RoadmapItem[] = [
     sources: [
       { label: "riflessiautocare #15", href: `${RIFLESSI}/pull/15` },
       { label: "#19", href: `${RIFLESSI}/pull/19` },
+      { label: "#14", href: `${RIFLESSI}/pull/14` },
     ],
   },
   {
@@ -197,29 +199,29 @@ const ITEMS: RoadmapItem[] = [
   },
 ];
 
-const GAPS: OpenGap[] = [
+const GAPS: Gap[] = [
   {
     gap: "Thin tests on the second site",
     consequence:
       "Riflessi’s retries on a server error, its timeout and its honeypot have no tests, and its validation tests stop at the free-text limits. A change there could stop bookings arriving and CI wouldn’t notice.",
-    closedBy: "riflessi-lead-tests",
+    closedBy: ["riflessi-lead-tests"],
   },
   {
     gap: "No error monitoring",
     consequence:
       "Neither site alerts anyone when something fails at runtime, except DriftPilot’s failed leads, which post to Slack. A failed Riflessi booking survives only in a short-lived log, unless the visitor sends the pre-filled email.",
-    closedBy: "lead-alerts-and-monitoring",
+    closedBy: ["lead-alerts-and-monitoring"],
   },
   {
     gap: "No perf gate on the second site",
     consequence:
       "Riflessi ships without the Lighthouse budget that guards DriftPilot, so regressions can reach the live site unnoticed.",
-    closedBy: "riflessi-lighthouse",
+    closedBy: ["riflessi-lighthouse"],
   },
   {
     gap: "No CMS yet",
     consequence: "Content lives in typed accessors, so a copy change ships as a pull request and a deploy.",
-    closedBy: "cms-adapter",
+    closedBy: ["cms-adapter"],
   },
   {
     // Both sites post leads to Formspree (driftpilot-site 08-decisions.md
@@ -230,6 +232,25 @@ const GAPS: OpenGap[] = [
     consequence:
       "Both sites deliver leads through Formspree. When its filter marks a real lead as spam, the visitor still sees success, no email goes out, and the site can’t tell.",
     mitigation: "For Riflessi, I check Formspree’s spam tab weekly until there’s a track record.",
+  },
+  // Closed gaps stay on the page, struck through, so a reader sees what got
+  // fixed as well as what's left. A gap closes itself once every item in its
+  // closedBy has shipped.
+  {
+    // Struck through as published. Closed 28 Sep: driftpilot-site #54 and
+    // riflessiautocare #14 put tests in both sites' CI, so this no longer holds.
+    gap: "No test runner",
+    // The published wording, struck through; it no longer holds.
+    consequence: "Neither project has automated test coverage. The lead-capture path, the only one that brings in revenue, has no regression tests.",
+    closedBy: ["driftpilot-lead-delivery", "riflessi-lead-delivery"],
+    // Riflessi's item shipped more on 29 Sep (#19); its tests arrived with #14 on 28 Sep.
+    closedOn: "2026-09-28",
+  },
+  {
+    gap: "Leads sent without JavaScript are dropped",
+    consequence:
+      "On Riflessi, a booking sent with JavaScript off counts as spam: the visitor sees a thank-you and the lead reaches only the log.",
+    closedBy: ["riflessi-lead-delivery"],
   },
 ];
 
@@ -283,19 +304,48 @@ export async function getUpNext(): Promise<UpNext> {
 }
 
 /**
- * The gaps, checked against the roadmap. A gap closed by an item that isn't
- * on the page would render a link to nothing, so the build stops instead.
+ * The gaps, resolved against the roadmap: each fix becomes an id and a title,
+ * and a gap is closed once all its fixes have shipped. Open gaps come first
+ * in written order, then closed ones, oldest closure first. A fix that names
+ * no item would render a link to nothing, so the build stops instead.
  */
-export async function getOpenGaps(): Promise<OpenGap[]> {
-  const ids = ITEMS.map((item) => item.id);
-  const repeated = ids.filter((id, i) => ids.indexOf(id) !== i);
-  if (repeated.length > 0) {
+export async function getGaps(): Promise<GapView[]> {
+  const byId = new Map(ITEMS.map((item) => [item.id, item]));
+  if (byId.size !== ITEMS.length) {
+    const ids = ITEMS.map((item) => item.id);
+    const repeated = ids.filter((id, i) => ids.indexOf(id) !== i);
     throw new Error(`Roadmap item ids must be unique; repeated: ${repeated.join(", ")}`);
   }
-  for (const gap of GAPS) {
-    if (gap.closedBy !== undefined && !ids.includes(gap.closedBy)) {
-      throw new Error(`Gap "${gap.gap}" is closed by "${gap.closedBy}", which is not a roadmap item`);
+  const views = GAPS.map((gap): GapView => {
+    if (gap.closedBy === undefined) {
+      return { gap: gap.gap, consequence: gap.consequence, fixes: [], mitigation: gap.mitigation, closed: false };
     }
-  }
-  return GAPS;
+    const items = gap.closedBy.map((id) => {
+      const item = byId.get(id);
+      if (!item) throw new Error(`Gap "${gap.gap}" is closed by "${id}", which is not a roadmap item`);
+      return item;
+    });
+    const closed = items.every((item) => item.horizon === "shipped");
+    if (gap.closedOn !== undefined && !closed) {
+      throw new Error(`Gap "${gap.gap}" has a closedOn date, but not all of its fixes have shipped`);
+    }
+    const latest = items
+      .map((item) => item.shippedOn)
+      .filter((date): date is string => date !== undefined)
+      .sort()
+      .pop();
+    const closedOn = closed ? (gap.closedOn ?? latest) : undefined;
+    return {
+      gap: gap.gap,
+      consequence: gap.consequence,
+      fixes: items.map(({ id, title }) => ({ id, title })),
+      closed,
+      ...(closedOn !== undefined && { closedOn }),
+    };
+  });
+  const open = views.filter((view) => !view.closed);
+  const closed = views
+    .filter((view) => view.closed)
+    .sort((a, b) => (a.closedOn ?? "").localeCompare(b.closedOn ?? ""));
+  return [...open, ...closed];
 }

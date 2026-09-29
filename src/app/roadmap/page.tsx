@@ -10,7 +10,7 @@ import { GapsList } from "@/components/roadmap/gaps-list";
 import { RoadmapList } from "@/components/roadmap/roadmap-list";
 import { getPagePosition } from "@/lib/content/navigation";
 import { CONTACT, CONTACT_HREF, RESUME } from "@/lib/content/profile";
-import { ROADMAP_LEDE, getDirection, getOpenGaps, getRoadmap } from "@/lib/content/roadmap";
+import { ROADMAP_LEDE, getDirection, getGaps, getRoadmap } from "@/lib/content/roadmap";
 import { buildBreadcrumbJsonLd, buildMetadata } from "@/lib/seo";
 
 export const metadata: Metadata = buildMetadata({
@@ -30,13 +30,9 @@ export default async function RoadmapPage() {
   const [stages, groups, gaps, { page, prev }] = await Promise.all([
     getDirection(),
     getRoadmap(),
-    getOpenGaps(),
+    getGaps(),
     getPagePosition("/roadmap"),
   ]);
-
-  const titles = Object.fromEntries(
-    groups.flatMap((g) => g.items.map((item) => [item.id, item.title] as const)),
-  );
 
   const chapters: ChapterRef[] = [
     { id: "direction", number: "01", title: "Direction" },
@@ -70,7 +66,7 @@ export default async function RoadmapPage() {
       </Chapter>
 
       <Chapter {...gapsChapter}>
-        <GapsList gaps={gaps} titles={titles} />
+        <GapsList gaps={gaps} />
         <p className="mt-8 max-w-[62ch] text-lg italic leading-relaxed text-muted">
           Both sites are my own studio&rsquo;s work. I am looking for a senior role on a team
           where the standards are shared rather than self-imposed.

@@ -234,7 +234,7 @@ export type Horizon = "shipped" | "now" | "next" | "later";
 
 /** One engineering item on /roadmap. */
 export interface RoadmapItem {
-  /** Anchor on /roadmap, and what an OpenGap's closedBy names. */
+  /** Anchor on /roadmap, and what a Gap's closedBy names. */
   id: string;
   title: string;
   project: "DriftPilot" | "Riflessi" | "Both" | "Drive";
@@ -266,13 +266,34 @@ export interface DirectionStage {
 }
 
 /**
- * A known weakness and what it costs. Either a roadmap item closes it, or
- * there is a mitigation until one does. Never both, never neither.
+ * A known weakness and what it costs. Roadmap items close it, or a
+ * mitigation stands in until one does. Never both, never neither.
  */
-export type OpenGap = { gap: string; consequence: string } & (
-  | { closedBy: string; mitigation?: never }
-  | { mitigation: string; closedBy?: never }
+export type Gap = { gap: string; consequence: string } & (
+  | {
+      closedBy: readonly [string, ...string[]];
+      /**
+       * Only for a closed gap whose closing date differs from the latest
+       * shipped date among its items (an item can ship later work too).
+       */
+      closedOn?: string;
+      mitigation?: never;
+    }
+  | { mitigation: string; closedBy?: never; closedOn?: never }
 );
+
+/**
+ * A gap as the page shows it: its fixes resolved to titles, and closed once
+ * every one of them has shipped.
+ */
+export interface GapView {
+  gap: string;
+  consequence: string;
+  fixes: { id: string; title: string }[];
+  mitigation?: string;
+  closed: boolean;
+  closedOn?: string;
+}
 
 /** The home tile's summary of what is moving: in progress, else next. */
 export interface UpNext {

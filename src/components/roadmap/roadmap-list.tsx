@@ -1,16 +1,10 @@
 import { Fragment } from "react";
 
+import { formatDay } from "@/lib/dates";
 import type { RoadmapGroup } from "@/types/content";
 
 const LINK =
   "py-2 underline decoration-1 underline-offset-[3px] hover:text-ink hover:decoration-2";
-const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-
-/** "2026-09-28" → "28 Sep 2026", without Intl: locales disagree on "Sep"/"Sept". */
-function shipped(iso: string): string {
-  const [y, m, d] = iso.split("-");
-  return `${Number(d)} ${MONTHS[Number(m) - 1] ?? ""} ${y}`;
-}
 
 /**
  * One section per horizon. Lists rather than a table: the old gaps table
@@ -38,7 +32,7 @@ export function RoadmapList({ groups }: { groups: RoadmapGroup[] }) {
                 <div className="min-w-0">
                   <p className="font-mono text-2xs text-faint">
                     {item.project}
-                    {item.shippedOn ? ` · ${shipped(item.shippedOn)}` : ""}
+                    {item.shippedOn ? ` · ${formatDay(item.shippedOn)}` : ""}
                   </p>
                   <h4 className="mt-1 text-lg leading-snug text-ink">{item.title}</h4>
                 </div>
