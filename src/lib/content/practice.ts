@@ -58,20 +58,21 @@ export async function getTrackRecord(): Promise<Role[]> {
       // Titles as the owner held them (2026-09-26): Full Stack Development
       // Specialist (Intermediate) at Convertus, carried over to AutoTrader.ca
       // as Software Engineer (Full Stack-Product), promoted to Senior
-      // Software Engineer in 2021. The promotion month is not recorded, so
-      // the dates carry year precision rather than a guessed month.
-      period: "2021 – Jun 2025",
+      // Software Engineer in April 2021. The month is the owner's recollection
+      // (confirmed 2026-09-27), not an HR record; the résumé and LinkedIn use
+      // it too (2026-09-29). If a document turns up, it wins.
+      period: "Apr 2021 – Jun 2025",
       title: "Senior Software Engineer",
       org: "AutoTrader.ca — AutoSync",
       summary:
         "Built production features on a national automotive SaaS platform. I replaced three years of object-cache churn with Redis Object Cache Pro on a dedicated host, and nobody reverted it in the three years after.",
     },
     {
-      period: "Jan 2020 – 2021",
+      period: "Jan 2020 – Mar 2021",
       title: "Software Engineer (Full Stack-Product)",
       org: "AutoTrader.ca — AutoSync",
       summary:
-        "I came over from Convertus with the platform in the acquisition and kept doing full-stack product work on it, until my promotion to Senior Software Engineer in 2021.",
+        "I came over from Convertus with the platform in the acquisition and kept doing full-stack product work on it, until my promotion to Senior Software Engineer in April 2021.",
     },
     {
       period: "Nov 2018 – Jan 2020",

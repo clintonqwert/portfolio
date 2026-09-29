@@ -22,7 +22,7 @@ export const AUTOTRADER_RAIL = {
 
 /** One-line summaries for the dashboard tiles. */
 export const AUTOTRADER_LEDE =
-  "Five years on the platform thousands of Canadian dealerships run their inventory on. The work I’d point you to first is the caching, and the win was stability more than speed.";
+  "Five years on the platform that runs inventory for Canadian dealerships nationwide. The work I’d point you to first is the caching, and the win was stability more than speed.";
 
 export const PROJECT_OS_LEDE =
   "Five AI roles help me deliver my work under a written standard. One writes files, the other four only report, and I make the decisions.";
@@ -61,7 +61,7 @@ export async function getAutoTraderPassages(): Promise<Passage[]> {
     {
       heading: "The platform",
       paragraphs: [
-        "AutoSync is the platform thousands of Canadian dealerships run their inventory on. It was a large codebase I didn’t design, shared with other engineers: Vue on the front end, and Node.js, PHP, MySQL and REST APIs behind it. The PHP was our own object-oriented architecture, built in-house with no Laravel or Symfony, so the hard questions were about our own design, with no framework conventions to lean on.",
+        "AutoSync is the platform that runs inventory for Canadian dealerships nationwide. It was a large codebase I didn’t design, shared with other engineers: Vue on the front end, and Node.js, PHP, MySQL and REST APIs behind it. The PHP was our own object-oriented architecture, built in-house with no Laravel or Symfony, so the hard questions were about our own design, with no framework conventions to lean on.",
       ],
       figure: {
         image: AUTOSYNC_INVENTORY_IMAGE,
