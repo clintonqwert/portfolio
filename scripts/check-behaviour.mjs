@@ -773,6 +773,24 @@ try {
       `/gaps redirects permanently to /roadmap (${res.status} → ${to || "no location"})`,
     );
   }
+  // Lighthouse CI must measure the pages themselves. A URL that redirects
+  // times the hop, not the page, and a renamed route leaves the gate timing
+  // a redirect without anyone noticing (it happened to /gaps).
+  {
+    const { readFileSync } = await import("node:fs");
+    const paths = ["lighthouserc.json", "lighthouserc.mobile.json"].flatMap((file) =>
+      JSON.parse(readFileSync(file, "utf8")).ci.collect.url.map((u) => new URL(u).pathname),
+    );
+    const moved = [];
+    for (const path of paths) {
+      const res = await fetch(`${ORIGIN}${path}`, { redirect: "manual" });
+      if (res.status !== 200) moved.push(`${path} ${res.status}`);
+    }
+    check(
+      moved.length === 0,
+      `every Lighthouse URL answers 200 without a redirect (${paths.length} URLs${moved.length ? `; ${moved.join(", ")}` : ""})`,
+    );
+  }
 } finally {
   await browser.close();
 }

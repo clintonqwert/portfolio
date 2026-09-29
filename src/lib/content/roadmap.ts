@@ -73,7 +73,7 @@ const DIRECTION: DirectionStage[] = [
 ];
 
 const HORIZONS: readonly { horizon: Horizon; title: string; meaning: string }[] = [
-  { horizon: "shipped", title: "Shipped", meaning: "Merged to main, newest first." },
+  { horizon: "shipped", title: "Shipped", meaning: "Merged to main or live on the site, newest first." },
   { horizon: "now", title: "In progress", meaning: "In an open pull request you can read." },
   {
     horizon: "next",
@@ -112,7 +112,8 @@ const ITEMS: RoadmapItem[] = [
     title: "Riflessi on its own domain",
     project: "Riflessi",
     horizon: "shipped",
-    shippedOn: "2026-09-28",
+    // No date: no merged pull request records the switch yet
+    // (riflessiautocare #18 is open), and a date needs its merge.
     detail: "riflessiautocare.ca serves the site, and its canonical links point there.",
     sources: [{ label: "riflessiautocare.ca", href: "https://riflessiautocare.ca" }],
   },
@@ -231,11 +232,14 @@ const GAPS: OpenGap[] = [
     closedBy: "cms-adapter",
   },
   {
-    // Riflessi ai-context/08-decisions.md, 2026-09-28: the owner checks the
-    // spam tab weekly rather than paying for the plan with "Relaxed" filtering.
+    // Both sites post leads to Formspree (driftpilot-site 08-decisions.md
+    // calls it "the live webhook"; riflessiautocare 08-decisions.md,
+    // 2026-09-28). Only Riflessi's log records a mitigation: the owner checks
+    // the spam tab weekly rather than paying for "Relaxed" filtering.
     gap: "Formspree can drop a real lead as spam",
-    consequence: "On Riflessi the visitor sees success, no email goes out, and Formspree’s API can’t tell the site.",
-    mitigation: "I check Formspree’s spam tab weekly until there’s a track record.",
+    consequence:
+      "Both sites deliver leads through Formspree. When its filter marks a real lead as spam, the visitor still sees success, no email goes out, and the site can’t tell.",
+    mitigation: "For Riflessi, I check Formspree’s spam tab weekly until there’s a track record.",
   },
 ];
 
@@ -243,7 +247,16 @@ export async function getDirection(): Promise<DirectionStage[]> {
   return DIRECTION;
 }
 
+/**
+ * A shipped date is only as good as its evidence: the merge. An item that
+ * shows one must cite the pull request that merged, or the build stops.
+ */
 export async function getRoadmap(): Promise<RoadmapGroup[]> {
+  for (const item of ITEMS) {
+    if (item.shippedOn !== undefined && !item.sources.some((s) => /\/pull\/\d+$/.test(s.href))) {
+      throw new Error(`Roadmap item "${item.id}" shows a shipped date but cites no pull request`);
+    }
+  }
   return HORIZONS.map((h) => ({ ...h, items: ITEMS.filter((item) => item.horizon === h.horizon) }));
 }
 
