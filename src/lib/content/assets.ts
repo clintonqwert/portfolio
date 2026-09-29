@@ -12,8 +12,9 @@ export type { ImageSlot };
  * the thing and linking it.
  *
  * Every slot below is now a real capture of a public page, saved as WebP:
- *  - driftpilot.ca and riflessiautocare.vercel.app, taken 2026-09-25 in
- *    headless Chrome.
+ *  - driftpilot.ca, taken 2026-09-25, and riflessiautocare.ca, re-taken
+ *    2026-09-28 after the site moved to its own domain and gained its
+ *    header mark, in headless Chrome.
  *  - tadvantage.ca and autosyncmotors.com, supplied by the owner on
  *    2026-09-25. Both sites sit behind bot checks that refuse headless
  *    capture. The originals are full-page 2x PNGs (27 MB between them) and
@@ -151,7 +152,7 @@ export const RIFLESSI_SCROLL_VIDEO: VideoSlot = {
     "Screen recording of the Riflessi Auto Care homepage scrolling through its seven acts: the camera moves around the car to a new angle for each, and the light and the paint's finish change with it",
   width: 1280,
   height: 720,
-  source: { label: "riflessiautocare.vercel.app", href: "https://riflessiautocare.vercel.app/" },
+  source: { label: "riflessiautocare.ca", href: "https://riflessiautocare.ca/" },
 };
 
 /** Hero shot per case study, keyed by slug. */
@@ -173,8 +174,8 @@ export const WORK_IMAGES: Record<string, ImageSlot> = {
     height: 1000,
     isPlaceholder: false,
     source: {
-      label: "riflessiautocare.vercel.app",
-      href: "https://riflessiautocare.vercel.app",
+      label: "riflessiautocare.ca",
+      href: "https://riflessiautocare.ca",
     },
   },
   tadvantage: {
@@ -231,8 +232,8 @@ export const DECK_PREVIEWS: Record<string, DeckPreview> = {
   riflessi: preview("riflessi", 6800, {
     alt: "The Riflessi Auto Care home page, from the 3D hero down through its services and the bay",
     source: {
-      label: "riflessiautocare.vercel.app",
-      href: "https://riflessiautocare.vercel.app",
+      label: "riflessiautocare.ca",
+      href: "https://riflessiautocare.ca",
     },
   }),
   tadvantage: preview("tadvantage", 2052, {

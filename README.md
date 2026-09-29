@@ -189,8 +189,8 @@ primitive. Adding any of them needs a written operating need.
 ## The claims guard
 
 `npm run check:claims` fails the build if the content layer reintroduces a claim
-that was retired in September 2026 — "multi-tenant", "conversational AI", the dead
-`riflessiautocare.ca` domain, "production" applied to the two live sites, Riflessi
+that was retired in September 2026 — "multi-tenant", "conversational AI", "no test
+runner" and the pre-#54 lead wording, "production" applied to the two live sites, Riflessi
 described as client or contract work, or the pipeline described as enforced at the
 tool level.
 

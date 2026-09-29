@@ -106,7 +106,7 @@ export async function getTrackRecord(): Promise<Role[]> {
       title: "Founder & Senior Software Engineer",
       org: "DriftPilot",
       summary:
-        "My product engineering studio. I spent the first half of 2026 researching AI stacks, then designed and shipped two live Next.js sites end to end, with a performance budget enforced in CI.",
+        "My product engineering studio. I spent the first half of 2026 researching AI stacks, then designed and shipped two live Next.js sites end to end, and put a performance budget in DriftPilot’s CI.",
     },
     {
       // Named rather than left as a silent gap: on a page that publishes its

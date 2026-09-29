@@ -44,10 +44,6 @@ const RETIRED = [
     '"a leading Canadian automotive marketplace" is the defensible phrasing',
   ],
   [
-    /riflessiautocare\.ca(?!\w)/i,
-    "the .ca domain does not resolve; riflessiautocare.vercel.app is live",
-  ],
-  [
     /tool[- ]level/i,
     "the five delivery roles are report-only by role contract; no role declares allowed-tools",
   ],
