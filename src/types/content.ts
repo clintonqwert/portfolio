@@ -226,8 +226,9 @@ export interface Source {
 }
 
 /**
- * Shipped: merged to main. Now: an open pull request. Next: on a repository's
- * roadmap with a priority, not started. Later: waiting on a named condition.
+ * Shipped: merged to main or live on the site. Now: an open pull request.
+ * Next: on a repository's roadmap with a priority, not started. Later:
+ * waiting on a named condition.
  */
 export type Horizon = "shipped" | "now" | "next" | "later";
 

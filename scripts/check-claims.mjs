@@ -86,6 +86,10 @@ const RETIRED = [
     "a former employer's internal codename: it tells a reader nothing and is not this site's to publish",
   ],
   [
+    /riflessiautocare\.vercel\.app/i,
+    "Riflessi's canonical address is riflessiautocare.ca (live 2026-09-28); the Vercel preview host still answers, but it is not where the site lives",
+  ],
+  [
     /no test runner|neither (project|site) has (any |automated )?tests?/i,
     "both sites run tests in CI since 2026-09-28 (driftpilot-site #54, riflessiautocare #14); what's missing is tests for Riflessi's booking path",
   ],

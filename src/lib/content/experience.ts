@@ -190,7 +190,7 @@ export async function getProjectOsPassages(): Promise<Passage[]> {
       ],
       list: [
         // The term is the standard's own ("No CMS", ProjectOS stack.md). The
-        // roadmap is the owner's, stated as such, and lives on /gaps — this
+        // roadmap is the owner's, stated as such, and lives on /roadmap — this
         // list is introduced as what the standard says, so it must not say
         // more than the standard does.
         {
