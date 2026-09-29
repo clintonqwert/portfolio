@@ -12,9 +12,12 @@ export type { ImageSlot };
  * the thing and linking it.
  *
  * Every slot below is now a real capture of a public page, saved as WebP:
- *  - driftpilot.ca, taken 2026-09-25, and riflessiautocare.ca, re-taken
- *    2026-09-28 after the site moved to its own domain and gained its
- *    header mark, in headless Chrome.
+ *  - driftpilot.ca, taken 2026-09-25 in headless Chrome.
+ *  - riflessiautocare.ca: the hero and the deck window re-taken 2026-09-28,
+ *    after the site moved to its own domain and gained its header mark.
+ *    The deck's full-page preview is still the 2026-09-25 capture: a
+ *    full-page capture of today's scroll sequence renders its acts blank,
+ *    because their reveals only fire as a visitor scrolls.
  *  - tadvantage.ca and autosyncmotors.com, supplied by the owner on
  *    2026-09-25. Both sites sit behind bot checks that refuse headless
  *    capture. The originals are full-page 2x PNGs (27 MB between them) and
