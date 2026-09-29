@@ -1,6 +1,6 @@
 import "server-only";
 
-import type { Gap, Principle, Role, StackGroup } from "@/types/content";
+import type { Principle, Role, StackGroup } from "@/types/content";
 
 /** Shared between /history and its dashboard tile, so the two never drift. */
 export const HISTORY_LEDE =
@@ -36,68 +36,6 @@ export async function getPrinciples(): Promise<Principle[]> {
   ];
 }
 
-/**
- * Unfixed weaknesses, published deliberately: a gap you have named is a plan,
- * and a gap you have hidden is a liability. Each carries its status, set by
- * the owner (2026-09-25): in development now, or on the roadmap.
- *
- * Provenance differs, and /gaps' lede is worded to stay true of every row. The
- * first three are recorded in the repositories with their consequences
- * attached. "No CMS yet" joined on 2026-09-25 from the owner's roadmap: what
- * backs it is ProjectOS recording the CMS as absent by decision and DriftPilot
- * keeping an inactive adapter behind its typed accessors so the contract
- * exists before the need does — not a gap entry in a repository yet.
- *
- * On 2026-09-28 DriftPilot closed its half of the first two rows
- * (driftpilot-site PR #54): tests for the lead path in CI, and a failed lead
- * reported to the visitor and posted in full to Slack #driftpilot-alerts,
- * whose SLACK_ALERT_WEBHOOK_URL is set in production. Riflessi gained Vitest
- * in CI the same day, with one suite for its fallback email link
- * (riflessiautocare PR #14). The old first row is retired, since both sites
- * now run tests, and "Thin tests on the second site" replaced it. Both rows sit
- * on the roadmap because neither remaining fix is under way, and each fix is
- * recorded where the work will happen. Riflessi's roadmap has the booking
- * tests as Engineering protection item 1 and the failed-booking alert as item
- * 4 (riflessiautocare PR #16). DriftPilot has general error monitoring as P0-3
- * in docs/maintenance/ROADMAP.md.
- *
- * A consequence leads with the cost, because the deck tile clamps it to two
- * lines at `wide`. A row that opened with a mitigation showed the win and cut
- * off the gap.
- */
-export async function getGaps(): Promise<Gap[]> {
-  return [
-    {
-      gap: "Thin tests on the second site",
-      consequence:
-        "Riflessi’s booking validation, spam gates and webhook retries have no tests, so a change could stop bookings arriving and CI wouldn’t notice. Its one suite covers the fallback email link.",
-      fix: "Port DriftPilot’s tests for the same path: the Zod schema, the spam gates, and the webhook client’s retry, backoff and timeout behaviour.",
-      status: "roadmap",
-    },
-    {
-      gap: "No error monitoring",
-      consequence:
-        "Neither site alerts anyone when something fails at runtime, with one exception: DriftPilot posts a failed lead in full to Slack. A failed Riflessi booking survives only in a short-lived runtime log, unless the visitor sends the pre-filled email the form offers.",
-      fix: "Port DriftPilot’s Slack alert to Riflessi first, then add error monitoring with alerting to both sites.",
-      status: "roadmap",
-    },
-    {
-      gap: "No perf gate on the second site",
-      consequence:
-        "Riflessi ships without the Lighthouse budget that guards DriftPilot, so regressions can reach the live site unnoticed.",
-      fix: "Port DriftPilot’s config into its CI. I deferred it for launch and wrote down the cost; the port is under way now.",
-      status: "in-development",
-    },
-    {
-      gap: "No CMS yet",
-      consequence:
-        "Content lives in typed accessors in the repository, so a copy change ships as a pull request and a deploy.",
-      fix: "Switch on the CMS adapter DriftPilot already keeps behind those accessors. The contract is already there, so only the content source changes.",
-      status: "roadmap",
-    },
-  ];
-}
-
 /** Roles before the studio year. AutoTrader has its own section. */
 export async function getTrackRecord(): Promise<Role[]> {
   return [
@@ -106,7 +44,7 @@ export async function getTrackRecord(): Promise<Role[]> {
       title: "Founder & Senior Software Engineer",
       org: "DriftPilot",
       summary:
-        "My product engineering studio. I spent the first half of 2026 researching AI stacks, then designed and shipped two live Next.js sites end to end, with a performance budget enforced in CI.",
+        "My product engineering studio. I spent the first half of 2026 researching AI stacks, then designed and shipped two live Next.js sites end to end, and put a performance budget in DriftPilot’s CI.",
     },
     {
       // Named rather than left as a silent gap: on a page that publishes its

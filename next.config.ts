@@ -21,6 +21,12 @@ const nextConfig: NextConfig = {
   async headers() {
     return [{ source: "/(.*)", headers: httpHeaders }];
   },
+  // Open gaps became the roadmap on 2026-09-28, with the gaps as its last
+  // chapter. Permanent, so search engines move the URL. The destination has
+  // no #gaps: the installed Next docs don't cover fragments in redirects.
+  async redirects() {
+    return [{ source: "/gaps", destination: "/roadmap", permanent: true }];
+  },
 };
 
 export default nextConfig;

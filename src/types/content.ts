@@ -26,19 +26,6 @@ export interface Assertion {
   measured?: boolean;
 }
 
-/** A named, unfixed weakness with its consequence and the intended fix. */
-export interface Gap {
-  gap: string;
-  consequence: string;
-  fix: string;
-  /**
-   * Where the fix stands. A gap is not a confession that stops there: each
-   * one is either being worked on now or scheduled, and saying which is the
-   * difference between a list of weaknesses and a plan.
-   */
-  status: "in-development" | "roadmap";
-}
-
 /** One position in the track record. */
 export interface Role {
   period: string;
@@ -230,4 +217,88 @@ export interface PageLink {
   group?: { label: string; href?: string };
   /** A line saying what the page argues — the headline, for a case study. */
   summary?: string;
+}
+
+/** Where a roadmap or direction claim can be checked: a PR, a repository file or a live page. */
+export interface Source {
+  label: string;
+  href: string;
+}
+
+/**
+ * Shipped: merged to main or live on the site. Now: an open pull request.
+ * Next: on a repository's roadmap with a priority, not started. Later:
+ * waiting on a named condition.
+ */
+export type Horizon = "shipped" | "now" | "next" | "later";
+
+/** One engineering item on /roadmap. */
+export interface RoadmapItem {
+  /** Anchor on /roadmap, and what an OpenGap's fixedBy names. */
+  id: string;
+  title: string;
+  project: "DriftPilot" | "Riflessi" | "Both" | "Drive";
+  horizon: Horizon;
+  /** ISO date (YYYY-MM-DD). Shipped items only. */
+  shippedOn?: string;
+  detail: string;
+  /** At least one: an item nobody can check does not go on the page. */
+  sources: readonly [Source, ...Source[]];
+}
+
+/** A horizon's heading, what it means, and its items in authored order. */
+export interface RoadmapGroup {
+  horizon: Horizon;
+  title: string;
+  meaning: string;
+  items: RoadmapItem[];
+}
+
+/** One stage of where the studio is heading. */
+export interface DirectionStage {
+  name: string;
+  project: string;
+  summary: string;
+  /** Solid marker when built, open when planned. */
+  done: boolean;
+  statusLabel: string;
+  source: Source;
+}
+
+/**
+ * An open weakness and what it costs: either the roadmap items that fix it,
+ * or a mitigation until they exist. Never both, never neither.
+ */
+export type OpenGap = { gap: string; consequence: string } & (
+  | { fixedBy: readonly [string, ...string[]]; mitigation?: never }
+  | { mitigation: string; fixedBy?: never }
+);
+
+/**
+ * A fixed weakness, kept on the page struck through. It carries its own
+ * evidence, the closing pull requests and date, rather than pointing at
+ * roadmap items: Shipped is pruned, and a closed gap must outlive that.
+ */
+export interface ClosedGap {
+  gap: string;
+  /** The cost as it was published, shown struck through under the date. */
+  consequence: string;
+  /** ISO date (YYYY-MM-DD). */
+  closedOn: string;
+  /** The pull requests that closed it. */
+  closedBy: readonly [Source, ...Source[]];
+}
+
+/** A gap as the page shows it: each state carries only its own parts. */
+export type GapView =
+  | { state: "open"; gap: string; consequence: string; fixes: { id: string; title: string }[] }
+  | { state: "mitigated"; gap: string; consequence: string; mitigation: string }
+  | ({ state: "closed" } & ClosedGap);
+
+/** The home tile's summary of what is moving: in progress, else next. */
+export interface UpNext {
+  heading: string;
+  status: string;
+  filled: boolean;
+  items: RoadmapItem[];
 }

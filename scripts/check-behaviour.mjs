@@ -53,7 +53,7 @@ const CHROME =
   "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome";
 
 const ROUTES = [
-  "/", "/standard", "/gaps", "/history", "/autotrader",
+  "/", "/standard", "/roadmap", "/history", "/autotrader",
   "/work/driftpilot", "/work/riflessi", "/work/tadvantage", "/work/mygarage", "/work/luxury-tax",
 ];
 
@@ -229,9 +229,12 @@ try {
       [...document.querySelectorAll("a.tile")].flatMap((tile) => {
         const shown = [...tile.querySelectorAll("*")].filter((e) => e.getClientRects().length > 0);
         const rules = shown
+          // A rule spans its column. The 7px status squares (StatusMark) have
+          // borders too, but two of them 7px apart, one beside a wrapped
+          // label, are not a double hairline.
           .filter((e) => {
             const cs = getComputedStyle(e);
-            return parseFloat(cs.borderTopWidth) > 0 && cs.borderTopStyle !== "none";
+            return parseFloat(cs.borderTopWidth) > 0 && cs.borderTopStyle !== "none" && e.getBoundingClientRect().width >= 24;
           })
           .map((e) => e.getBoundingClientRect().top)
           .sort((a, b) => a - b);
@@ -524,7 +527,7 @@ try {
   {
     const PATH = [
       "/autotrader", "/work/tadvantage", "/work/mygarage", "/work/luxury-tax",
-      "/work/driftpilot", "/work/riflessi", "/history", "/standard", "/gaps",
+      "/work/driftpilot", "/work/riflessi", "/history", "/standard", "/roadmap",
     ];
     const number = (href) => String(PATH.indexOf(href) + 1).padStart(2, "0");
 
@@ -744,6 +747,105 @@ try {
         .map(([sel]) => sel),
     );
     check(moving.length === 0, `reduced motion stops every loop and reveal${moving.length ? ` (still animating: ${moving.join(", ")})` : ""}`);
+    await page.close();
+  }
+  // /roadmap: every fix link in the gaps chapter ("Fix:" on an open gap,
+  // "Closed … by" on a closed one) lands on a roadmap item on the page, so a
+  // gap can never point at nothing.
+  {
+    const page = await open("/roadmap", { width: 1440, height: 900 });
+    const links = await page.evaluate(() =>
+      [...document.querySelectorAll("a[data-fix]")].map((a) => {
+        const id = decodeURIComponent((a.getAttribute("href") ?? "").slice(1));
+        return { id, ok: Boolean(document.getElementById(id)) };
+      }),
+    );
+    const broken = links.filter((l) => !l.ok).map((l) => l.id);
+    check(
+      links.length > 0 && broken.length === 0,
+      `every open gap's fix link lands on a roadmap item (${links.length} links${broken.length ? `, broken: ${broken.join(", ")}` : ""})`,
+    );
+    await page.close();
+  }
+  // /gaps became /roadmap on 2026-09-28. Old links must keep working, and
+  // permanently, so search engines carry the URL over.
+  {
+    const res = await fetch(`${ORIGIN}/gaps`, { redirect: "manual" });
+    const to = res.headers.get("location") ?? "";
+    check(
+      res.status === 308 && new URL(to, ORIGIN).pathname === "/roadmap",
+      `/gaps redirects permanently to /roadmap (${res.status} → ${to || "no location"})`,
+    );
+  }
+  // Lighthouse CI must measure the pages themselves. A URL that redirects
+  // times the hop, not the page, and a renamed route leaves the gate timing
+  // a redirect without anyone noticing (it happened to /gaps).
+  {
+    const { readFileSync } = await import("node:fs");
+    const paths = ["lighthouserc.json", "lighthouserc.mobile.json"].flatMap((file) =>
+      JSON.parse(readFileSync(file, "utf8")).ci.collect.url.map((u) => new URL(u).pathname),
+    );
+    const moved = [];
+    for (const path of paths) {
+      const res = await fetch(`${ORIGIN}${path}`, { redirect: "manual" });
+      if (res.status !== 200) moved.push(`${path} ${res.status}`);
+    }
+    check(
+      moved.length === 0,
+      `every Lighthouse URL answers 200 without a redirect (${paths.length} URLs${moved.length ? `; ${moved.join(", ")}` : ""})`,
+    );
+  }
+  // /roadmap's hero counts only horizons the page shows. The list leaves an
+  // empty horizon out, so a count of 0 would name a section that isn't there.
+  {
+    const page = await open("/roadmap", { width: 1440, height: 900 });
+    const orphans = await page.evaluate(() => {
+      const sections = new Set(
+        [...document.querySelectorAll("#the-roadmap h3")].map((h) => h.textContent.trim()),
+      );
+      return [...document.querySelectorAll("article dl dt")]
+        .map((dt) => dt.textContent.trim())
+        .filter((label) => !sections.has(label));
+    });
+    check(
+      orphans.length === 0,
+      `every horizon /roadmap's hero counts has a section on the page${orphans.length ? ` (missing: ${orphans.join(", ")})` : ""}`,
+    );
+    await page.close();
+  }
+  // /roadmap: a closed gap reads as closed before anything else. Its closed
+  // date comes first in reading order (a screen reader, reader mode and a
+  // copy-paste all drop the strike-through), its text is struck, and its
+  // evidence is the pull requests that closed it. No open gap is struck.
+  {
+    const page = await open("/roadmap", { width: 1440, height: 900 });
+    const { closed, wrong } = await page.evaluate(() => {
+      const wrong = [];
+      let closed = 0;
+      for (const li of document.querySelectorAll("#gaps li")) {
+        const struck = li.querySelector("s");
+        const name = li.querySelector("p")?.textContent?.trim() ?? "?";
+        const status = [...li.querySelectorAll("span")].find((el) => /^Closed\b/.test(el.textContent.trim()));
+        if (!struck) {
+          if (status) wrong.push(`${name}: says Closed but isn't struck`);
+          continue;
+        }
+        closed += 1;
+        if (!status) wrong.push(`${name}: struck with no closed date`);
+        else if (!(status.compareDocumentPosition(struck) & Node.DOCUMENT_POSITION_FOLLOWING)) {
+          wrong.push(`${name}: closed date comes after the struck text`);
+        }
+        const links = [...li.querySelectorAll("a")].map((a) => a.href);
+        if (links.length === 0 || !links.every((href) => /\/pull\/\d+$/.test(href))) {
+          wrong.push(`${name}: evidence isn't pull requests (${links.join(" ")})`);
+        }
+      }
+      return { closed, wrong };
+    });
+    check(
+      closed > 0 && wrong.length === 0,
+      `every closed gap leads with its date, is struck, and cites pull requests (${closed} closed${wrong.length ? `; ${wrong.join("; ")}` : ""})`,
+    );
     await page.close();
   }
 } finally {

@@ -19,6 +19,22 @@ import { join } from "node:path";
 
 const SRC = "src";
 
+/**
+ * The one place a retired claim may appear as rendered copy: a closed gap,
+ * shown struck through under its closed date. Only rules marked
+ * `quotableWhenClosed` are exempt there, so an unrelated retired claim still
+ * fails in this file, and the same words in an open gap fail everywhere else.
+ */
+const CLOSED_GAPS_FILE = join("src", "lib", "content", "closed-gaps.ts");
+
+/** A line comment, or the first line of a block comment. */
+const COMMENT_LINE = /^\s*(\/\/|\/\*|\*|\{\/\*)/;
+
+/** Where the block comments sit in a file, as [start, end) offsets. */
+function blockComments(content) {
+  return [...content.matchAll(/\/\*[\s\S]*?\*\//g)].map((m) => [m.index, m.index + m[0].length]);
+}
+
 const WARNING_CUES =
   /never|do not|don't|deprecat|retired|removed|must not|no longer|instead of|is false|does not/i;
 
@@ -42,10 +58,6 @@ const RETIRED = [
   [
     /Canada's largest/i,
     '"a leading Canadian automotive marketplace" is the defensible phrasing',
-  ],
-  [
-    /riflessiautocare\.ca(?!\w)/i,
-    "the .ca domain does not resolve; riflessiautocare.vercel.app is live",
   ],
   [
     /tool[- ]level/i,
@@ -90,8 +102,13 @@ const RETIRED = [
     "a former employer's internal codename: it tells a reader nothing and is not this site's to publish",
   ],
   [
+    /riflessiautocare\.vercel\.app/i,
+    "Riflessi's canonical address is riflessiautocare.ca (live 2026-09-28); the Vercel preview host still answers, but it is not where the site lives",
+  ],
+  [
     /no test runner|neither (project|site) has (any |automated )?tests?/i,
     "both sites run tests in CI since 2026-09-28 (driftpilot-site #54, riflessiautocare #14); what's missing is tests for Riflessi's booking path",
+    { quotableWhenClosed: true },
   ],
   [
     // Present tense only: "still saw the thank-you page" tells the history
@@ -121,18 +138,24 @@ let hits = 0;
 for (const file of files) {
   const content = readFileSync(file, "utf8");
   const lines = content.split("\n");
+  const blocks = blockComments(content);
+  const inComment = (index, line) =>
+    COMMENT_LINE.test(line) || blocks.some(([start, end]) => index >= start && index < end);
 
-  for (const [pattern, reason] of RETIRED) {
+  for (const [pattern, reason, options = {}] of RETIRED) {
+    if (file === CLOSED_GAPS_FILE && options.quotableWhenClosed) continue;
     // Matched against whole content, not line by line: some retired phrasings
     // span lines (a subject on one line, the disallowed word on the next), and
     // a per-line scan silently misses those.
     const rx = new RegExp(pattern.source, pattern.flags.includes("g") ? pattern.flags : pattern.flags + "g");
     for (const match of content.matchAll(rx)) {
       const lineNo = content.slice(0, match.index).split("\n").length;
-      // A warning cue on the matched line or the one above it means the mention
-      // is documentation of the retired claim rather than a use of it.
-      const context = [lines[lineNo - 2] ?? "", lines[lineNo - 1] ?? ""].join(" ");
-      if (WARNING_CUES.test(context)) continue;
+      // A comment that warns against the claim documents it rather than using
+      // it: a cue on the matched comment line, or the line above it, excuses
+      // it. Rendered copy is never excused this way, whatever sits above it.
+      const matched = lines[lineNo - 1] ?? "";
+      const context = [lines[lineNo - 2] ?? "", matched].join(" ");
+      if (inComment(match.index, matched) && WARNING_CUES.test(context)) continue;
 
       hits += 1;
       console.error(`FAIL | ${file}:${lineNo}  ${pattern}`);

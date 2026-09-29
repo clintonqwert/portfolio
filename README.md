@@ -94,7 +94,7 @@ breakpoints script needs (an image's `sizes`, a `matchMedia`) are mirrored in
 ### Secondary pages
 
 Everything the deck links to — `/work/[slug]`, `/autotrader`, `/standard`,
-`/history`, `/gaps` — is a document that scrolls, deliberately unlike the deck.
+`/history`, `/roadmap` — is a document that scrolls, deliberately unlike the deck.
 The deck is scanned; these are read. The rail stays fixed beside both, and
 `<main>` takes the scroll at ≥1024px, so the frame never moves.
 
@@ -189,8 +189,8 @@ primitive. Adding any of them needs a written operating need.
 ## The claims guard
 
 `npm run check:claims` fails the build if the content layer reintroduces a claim
-that was retired in September 2026 — "multi-tenant", "conversational AI", the dead
-`riflessiautocare.ca` domain, "production" applied to the two live sites, Riflessi
+that was retired in September 2026 — "multi-tenant", "conversational AI", "no test
+runner" and the pre-#54 lead wording, "production" applied to the two live sites, Riflessi
 described as client or contract work, or the pipeline described as enforced at the
 tool level.
 
@@ -229,7 +229,7 @@ CLS < 0.05, TBT < 150 ms, script < 260 kB. It runs in CI against a production
 build, three runs a page, each budget held against the best of the three
 (LHCI's default aggregation).
 
-`lighthouserc.mobile.json` runs `/`, `/work/riflessi` and `/gaps` under
+`lighthouserc.mobile.json` runs `/`, `/work/riflessi` and `/roadmap` under
 Lighthouse's default mobile emulation (slow 4G, 4× CPU), since every run was
 desktop until the first mobile one found three accessibility failures. Every
 page: accessibility ≥ 0.98, SEO ≥ 0.95, best practices ≥ 0.90, CLS < 0.05,

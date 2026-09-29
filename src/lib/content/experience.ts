@@ -190,13 +190,13 @@ export async function getProjectOsPassages(): Promise<Passage[]> {
       ],
       list: [
         // The term is the standard's own ("No CMS", ProjectOS stack.md). The
-        // roadmap is the owner's, stated as such, and lives on /gaps — this
+        // roadmap is the owner's, stated as such, and lives on /roadmap — this
         // list is introduced as what the standard says, so it must not say
         // more than the standard does.
         {
           term: "No CMS",
           detail:
-            "Content lives in typed accessors. Left out for now; a CMS is on my roadmap (see Open gaps).",
+            "Content lives in typed accessors. Left out for now; a CMS is on my roadmap (see Roadmap).",
         },
         { term: "No client-state library", detail: "Server components hold the state." },
         { term: "No component library", detail: "The design system is the tokens." },

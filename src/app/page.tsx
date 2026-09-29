@@ -5,19 +5,20 @@ import { DECK_PREVIEWS } from "@/lib/content/assets";
 import { AUTOTRADER_FIGURES, AUTOTRADER_LEDE, AUTOTRADER_POINTS } from "@/lib/content/experience";
 import {
   HISTORY_LEDE,
-  getGaps,
   getPrinciples,
   getSkillMarquee,
   getTrackRecord,
 } from "@/lib/content/practice";
 import { getReadingOrder } from "@/lib/content/navigation";
+import { getDirection, getUpNext } from "@/lib/content/roadmap";
 import { getCaseStudies } from "@/lib/content/work";
 import { buildPersonJsonLd } from "@/lib/seo";
 
 export default async function HomePage() {
-  const [studies, gaps, skills, roles, principles, pages] = await Promise.all([
+  const [studies, direction, upNext, skills, roles, principles, pages] = await Promise.all([
     getCaseStudies(),
-    getGaps(),
+    getDirection(),
+    getUpNext(),
     getSkillMarquee(),
     getTrackRecord(),
     getPrinciples(),
@@ -32,7 +33,8 @@ export default async function HomePage() {
       <MobileProfile />
       <Deck
         studies={studies}
-        gaps={gaps}
+        direction={direction}
+        upNext={upNext}
         skills={skills}
         autoTraderLede={AUTOTRADER_LEDE}
         autoTraderPoints={AUTOTRADER_POINTS}

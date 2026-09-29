@@ -33,10 +33,12 @@ const CASE_STUDIES: readonly CaseStudy[] = [
     assertions: {
       caption: "lighthouserc.json: budgets asserted on every pull request",
       // The public run behind the Result column: every assertion passed on
-      // main's last CI run, the same commit the figure below re-runs.
+      // main's CI run for cc3b829 (PR #54, 2026-09-28). The figure below is an
+      // earlier local re-run of 14f649f; #54 changed only the forms. Dated,
+      // not "last", so the label stays true when main moves on.
       evidence: {
-        label: "Last CI run on main, 30 Jul 2026 (14f649f): every budget passing. Open the run",
-        href: "https://github.com/clintonqwert/driftpilot-site/actions/runs/30591364898",
+        label: "CI run on main, 28 Sep 2026 (cc3b829): every budget passing. Open the run",
+        href: "https://github.com/clintonqwert/driftpilot-site/actions/runs/36467786880",
       },
       rows: [
         { name: "Performance", threshold: "≥ 95", state: "passing" },
@@ -99,7 +101,7 @@ const CASE_STUDIES: readonly CaseStudy[] = [
     summary:
       "It’s easy to call an architecture reusable. I built a second site on mine to find out, and I’ll show you what had to change.",
     period: "Jul – Sep 2026",
-    liveUrl: "riflessiautocare.vercel.app",
+    liveUrl: "riflessiautocare.ca",
     repoUrl: "github.com/clintonqwert/riflessiautocare",
     role: "Sole engineer · self-directed",
     stack: ["Next.js 16", "React Three Fiber", "GSAP ScrollTrigger", "Lenis", "glTF-Transform", "meshoptimizer"],
