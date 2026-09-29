@@ -53,7 +53,7 @@ const CHROME =
   "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome";
 
 const ROUTES = [
-  "/", "/standard", "/gaps", "/roadmap", "/history", "/autotrader",
+  "/", "/standard", "/roadmap", "/history", "/autotrader",
   "/work/driftpilot", "/work/riflessi", "/work/tadvantage", "/work/mygarage", "/work/luxury-tax",
 ];
 
@@ -762,6 +762,16 @@ try {
       `every gap's "Closed by" link lands on a roadmap item (${links.length} links${broken.length ? `, broken: ${broken.join(", ")}` : ""})`,
     );
     await page.close();
+  }
+  // /gaps became /roadmap on 2026-09-28. Old links must keep working, and
+  // permanently, so search engines carry the URL over.
+  {
+    const res = await fetch(`${ORIGIN}/gaps`, { redirect: "manual" });
+    const to = res.headers.get("location") ?? "";
+    check(
+      res.status === 308 && new URL(to, ORIGIN).pathname === "/roadmap",
+      `/gaps redirects permanently to /roadmap (${res.status} → ${to || "no location"})`,
+    );
   }
 } finally {
   await browser.close();

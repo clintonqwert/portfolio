@@ -4,7 +4,7 @@ import { getCaseStudySlugs } from "@/lib/content/work";
 import { SITE_URL } from "@/lib/seo";
 
 /** Every view is its own route, so every view is indexable and linkable. */
-const VIEWS = ["/autotrader", "/gaps", "/standard", "/history"] as const;
+const VIEWS = ["/autotrader", "/roadmap", "/standard", "/history"] as const;
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const slugs = await getCaseStudySlugs();

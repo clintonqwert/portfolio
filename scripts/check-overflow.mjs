@@ -32,7 +32,7 @@ const CHROME =
   "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome";
 
 const ROUTES = [
-  "/", "/standard", "/gaps", "/roadmap", "/history", "/autotrader",
+  "/", "/standard", "/roadmap", "/history", "/autotrader",
   "/work/driftpilot", "/work/riflessi", "/work/tadvantage", "/work/mygarage", "/work/luxury-tax",
 ];
 

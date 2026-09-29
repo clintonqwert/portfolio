@@ -26,19 +26,6 @@ export interface Assertion {
   measured?: boolean;
 }
 
-/** A named, unfixed weakness with its consequence and the intended fix. */
-export interface Gap {
-  gap: string;
-  consequence: string;
-  fix: string;
-  /**
-   * Where the fix stands. A gap is not a confession that stops there: each
-   * one is either being worked on now or scheduled, and saying which is the
-   * difference between a list of weaknesses and a plan.
-   */
-  status: "in-development" | "roadmap";
-}
-
 /** One position in the track record. */
 export interface Role {
   period: string;

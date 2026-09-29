@@ -196,7 +196,7 @@ export async function getProjectOsPassages(): Promise<Passage[]> {
         {
           term: "No CMS",
           detail:
-            "Content lives in typed accessors. Left out for now; a CMS is on my roadmap (see Open gaps).",
+            "Content lives in typed accessors. Left out for now; a CMS is on my roadmap (see Roadmap).",
         },
         { term: "No client-state library", detail: "Server components hold the state." },
         { term: "No component library", detail: "The design system is the tokens." },

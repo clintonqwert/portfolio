@@ -39,8 +39,8 @@ them. The voice states a mechanism and its consequence, then stops. It does not
 sell, hedge, or reach for adjectives where a number would do.
 
 The distinguishing move is candour as a strength signal: the site publishes its
-own unfixed weaknesses — an untested booking path, no error monitoring — in
-the same visual instrument as the wins. That is not modesty. It is the claim that
+roadmap, and at its end its unfixed weaknesses — an untested booking path, no
+error monitoring — in the same visual instrument as the wins. That is not modesty. It is the claim that
 this person's self-assessment can be trusted, which is the thing the reader
 actually cannot verify from code.
 

@@ -1,5 +1,4 @@
-import { GapStatus } from "@/components/shared/gap-status";
-import type { Assertion, Gap } from "@/types/content";
+import type { Assertion } from "@/types/content";
 
 /**
  * Tables carry a min-width so their columns stay legible, and scroll inside
@@ -93,43 +92,6 @@ export function AssertionTable({
             >
               {row.state}
             </td>
-          </tr>
-        ))}
-      </tbody>
-    </TableFrame>
-  );
-}
-
-export function GapsTable({ rows }: { rows: Gap[] }) {
-  return (
-    <TableFrame caption="Open gaps: status, consequence and planned fix" minWidth="640px">
-      <thead>
-        <tr>
-          <th scope="col" className={TH}>
-            Gap
-          </th>
-          <th scope="col" className={TH}>
-            Consequence
-          </th>
-          <th scope="col" className={TH}>
-            Fix
-          </th>
-        </tr>
-      </thead>
-      <tbody>
-        {rows.map((row) => (
-          <tr key={row.gap}>
-            {/* text-left: a <th> centres by default, which set each gap's
-                name off-axis from every other column's left edge. */}
-            <th
-              scope="row"
-              className={`${TD} text-left font-mono text-sm font-normal text-signal`}
-            >
-              <span className="block">{row.gap}</span>
-              <GapStatus status={row.status} className="mt-2 text-faint" />
-            </th>
-            <td className={TD}>{row.consequence}</td>
-            <td className={TD}>{row.fix}</td>
           </tr>
         ))}
       </tbody>
