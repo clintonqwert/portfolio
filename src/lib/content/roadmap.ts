@@ -1,10 +1,11 @@
 import "server-only";
 
+import { CLOSED_GAPS } from "@/lib/content/closed-gaps";
 import type {
   DirectionStage,
-  Gap,
   GapView,
   Horizon,
+  OpenGap,
   RoadmapGroup,
   RoadmapItem,
   Source,
@@ -20,8 +21,9 @@ import type {
  * sites on 2026-09-28. Horizons follow one rule each:
  *  - shipped: merged to main or live on the site. At most three, newest
  *    first (getRoadmap enforces both); prune anything past ~60 days.
- *  - now: an open pull request. When it merges, move it to shipped and drop
- *    the gap it closes.
+ *  - now: an open pull request. When it merges, move it to shipped. If that
+ *    ships every fix for a gap, the build stops until the gap moves to
+ *    closed-gaps.ts with its closed date and pull requests.
  *  - next: on a repository's roadmap with a priority, and not started.
  *  - later: waiting on a named condition.
  * Nothing sits in "now" without a pull request to point at.
@@ -199,29 +201,29 @@ const ITEMS: RoadmapItem[] = [
   },
 ];
 
-const GAPS: Gap[] = [
+const GAPS: OpenGap[] = [
   {
     gap: "Thin tests on the second site",
     consequence:
       "Riflessi’s retries on a server error, its timeout and its honeypot have no tests, and its validation tests stop at the free-text limits. A change there could stop bookings arriving and CI wouldn’t notice.",
-    closedBy: ["riflessi-lead-tests"],
+    fixedBy: ["riflessi-lead-tests"],
   },
   {
     gap: "No error monitoring",
     consequence:
       "Neither site alerts anyone when something fails at runtime, except DriftPilot’s failed leads, which post to Slack. A failed Riflessi booking survives only in a short-lived log, unless the visitor sends the pre-filled email.",
-    closedBy: ["lead-alerts-and-monitoring"],
+    fixedBy: ["lead-alerts-and-monitoring"],
   },
   {
     gap: "No perf gate on the second site",
     consequence:
       "Riflessi ships without the Lighthouse budget that guards DriftPilot, so regressions can reach the live site unnoticed.",
-    closedBy: ["riflessi-lighthouse"],
+    fixedBy: ["riflessi-lighthouse"],
   },
   {
     gap: "No CMS yet",
     consequence: "Content lives in typed accessors, so a copy change ships as a pull request and a deploy.",
-    closedBy: ["cms-adapter"],
+    fixedBy: ["cms-adapter"],
   },
   {
     // Both sites post leads to Formspree (driftpilot-site 08-decisions.md
@@ -232,25 +234,6 @@ const GAPS: Gap[] = [
     consequence:
       "Both sites deliver leads through Formspree. When its filter marks a real lead as spam, the visitor still sees success, no email goes out, and the site can’t tell.",
     mitigation: "For Riflessi, I check Formspree’s spam tab weekly until there’s a track record.",
-  },
-  // Closed gaps stay on the page, struck through, so a reader sees what got
-  // fixed as well as what's left. A gap closes itself once every item in its
-  // closedBy has shipped.
-  {
-    // Struck through as published. Closed 28 Sep: driftpilot-site #54 and
-    // riflessiautocare #14 put tests in both sites' CI, so this no longer holds.
-    gap: "No test runner",
-    // The published wording, struck through; it no longer holds.
-    consequence: "Neither project has automated test coverage. The lead-capture path, the only one that brings in revenue, has no regression tests.",
-    closedBy: ["driftpilot-lead-delivery", "riflessi-lead-delivery"],
-    // Riflessi's item shipped more on 29 Sep (#19); its tests arrived with #14 on 28 Sep.
-    closedOn: "2026-09-28",
-  },
-  {
-    gap: "Leads sent without JavaScript are dropped",
-    consequence:
-      "On Riflessi, a booking sent with JavaScript off counts as spam: the visitor sees a thank-you and the lead reaches only the log.",
-    closedBy: ["riflessi-lead-delivery"],
   },
 ];
 
@@ -304,10 +287,15 @@ export async function getUpNext(): Promise<UpNext> {
 }
 
 /**
- * The gaps, resolved against the roadmap: each fix becomes an id and a title,
- * and a gap is closed once all its fixes have shipped. Open gaps come first
- * in written order, then closed ones, oldest closure first. A fix that names
- * no item would render a link to nothing, so the build stops instead.
+ * The gaps as the page shows them: open ones first, in written order, each
+ * fix resolved to its roadmap item; then the closed ones from closed-gaps.ts.
+ * The build stops on anything that would put a wrong or dead line on the page:
+ *  - a fix that names no roadmap item;
+ *  - an open gap whose fixes have all shipped, which belongs in
+ *    closed-gaps.ts with its closed date and pull requests;
+ *  - more than three closed gaps, or closed gaps out of newest-first order;
+ *  - a closed gap whose date isn't YYYY-MM-DD, or whose evidence isn't a
+ *    pull request.
  */
 export async function getGaps(): Promise<GapView[]> {
   const byId = new Map(ITEMS.map((item) => [item.id, item]));
@@ -316,36 +304,45 @@ export async function getGaps(): Promise<GapView[]> {
     const repeated = ids.filter((id, i) => ids.indexOf(id) !== i);
     throw new Error(`Roadmap item ids must be unique; repeated: ${repeated.join(", ")}`);
   }
-  const views = GAPS.map((gap): GapView => {
-    if (gap.closedBy === undefined) {
-      return { gap: gap.gap, consequence: gap.consequence, fixes: [], mitigation: gap.mitigation, closed: false };
+
+  const open = GAPS.map((gap): GapView => {
+    if (gap.fixedBy === undefined) {
+      return { state: "mitigated", gap: gap.gap, consequence: gap.consequence, mitigation: gap.mitigation };
     }
-    const items = gap.closedBy.map((id) => {
+    const items = gap.fixedBy.map((id) => {
       const item = byId.get(id);
-      if (!item) throw new Error(`Gap "${gap.gap}" is closed by "${id}", which is not a roadmap item`);
+      if (!item) throw new Error(`Gap "${gap.gap}" is fixed by "${id}", which is not a roadmap item`);
       return item;
     });
-    const closed = items.every((item) => item.horizon === "shipped");
-    if (gap.closedOn !== undefined && !closed) {
-      throw new Error(`Gap "${gap.gap}" has a closedOn date, but not all of its fixes have shipped`);
+    if (items.every((item) => item.horizon === "shipped")) {
+      throw new Error(
+        `Every fix for "${gap.gap}" has shipped: move it to closed-gaps.ts with its closed date and pull requests`,
+      );
     }
-    const latest = items
-      .map((item) => item.shippedOn)
-      .filter((date): date is string => date !== undefined)
-      .sort()
-      .pop();
-    const closedOn = closed ? (gap.closedOn ?? latest) : undefined;
     return {
+      state: "open",
       gap: gap.gap,
       consequence: gap.consequence,
       fixes: items.map(({ id, title }) => ({ id, title })),
-      closed,
-      ...(closedOn !== undefined && { closedOn }),
     };
   });
-  const open = views.filter((view) => !view.closed);
-  const closed = views
-    .filter((view) => view.closed)
-    .sort((a, b) => (a.closedOn ?? "").localeCompare(b.closedOn ?? ""));
-  return [...open, ...closed];
+
+  if (CLOSED_GAPS.length > 3) {
+    throw new Error(`Closed gaps keep at most three; there are ${CLOSED_GAPS.length}. Remove the oldest.`);
+  }
+  CLOSED_GAPS.forEach((gap, i) => {
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(gap.closedOn)) {
+      throw new Error(`Closed gap "${gap.gap}" has closedOn "${gap.closedOn}"; use YYYY-MM-DD`);
+    }
+    const bad = gap.closedBy.filter((source) => !/\/pull\/\d+$/.test(source.href));
+    if (bad.length > 0) {
+      throw new Error(`Closed gap "${gap.gap}" cites ${bad.map((b) => b.href).join(", ")}; its evidence must be pull requests`);
+    }
+    const above = CLOSED_GAPS[i - 1];
+    if (above && above.closedOn < gap.closedOn) {
+      throw new Error(`Closed gaps run newest first: "${above.gap}" (${above.closedOn}) sits above "${gap.gap}" (${gap.closedOn})`);
+    }
+  });
+
+  return [...open, ...CLOSED_GAPS.map((gap): GapView => ({ state: "closed", ...gap }))];
 }

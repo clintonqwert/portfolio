@@ -234,7 +234,7 @@ export type Horizon = "shipped" | "now" | "next" | "later";
 
 /** One engineering item on /roadmap. */
 export interface RoadmapItem {
-  /** Anchor on /roadmap, and what a Gap's closedBy names. */
+  /** Anchor on /roadmap, and what an OpenGap's fixedBy names. */
   id: string;
   title: string;
   project: "DriftPilot" | "Riflessi" | "Both" | "Drive";
@@ -266,34 +266,34 @@ export interface DirectionStage {
 }
 
 /**
- * A known weakness and what it costs. Roadmap items close it, or a
- * mitigation stands in until one does. Never both, never neither.
+ * An open weakness and what it costs: either the roadmap items that fix it,
+ * or a mitigation until they exist. Never both, never neither.
  */
-export type Gap = { gap: string; consequence: string } & (
-  | {
-      closedBy: readonly [string, ...string[]];
-      /**
-       * Only for a closed gap whose closing date differs from the latest
-       * shipped date among its items (an item can ship later work too).
-       */
-      closedOn?: string;
-      mitigation?: never;
-    }
-  | { mitigation: string; closedBy?: never; closedOn?: never }
+export type OpenGap = { gap: string; consequence: string } & (
+  | { fixedBy: readonly [string, ...string[]]; mitigation?: never }
+  | { mitigation: string; fixedBy?: never }
 );
 
 /**
- * A gap as the page shows it: its fixes resolved to titles, and closed once
- * every one of them has shipped.
+ * A fixed weakness, kept on the page struck through. It carries its own
+ * evidence, the closing pull requests and date, rather than pointing at
+ * roadmap items: Shipped is pruned, and a closed gap must outlive that.
  */
-export interface GapView {
+export interface ClosedGap {
   gap: string;
+  /** The cost as it was published, shown struck through under the date. */
   consequence: string;
-  fixes: { id: string; title: string }[];
-  mitigation?: string;
-  closed: boolean;
-  closedOn?: string;
+  /** ISO date (YYYY-MM-DD). */
+  closedOn: string;
+  /** The pull requests that closed it. */
+  closedBy: readonly [Source, ...Source[]];
 }
+
+/** A gap as the page shows it: each state carries only its own parts. */
+export type GapView =
+  | { state: "open"; gap: string; consequence: string; fixes: { id: string; title: string }[] }
+  | { state: "mitigated"; gap: string; consequence: string; mitigation: string }
+  | ({ state: "closed" } & ClosedGap);
 
 /** The home tile's summary of what is moving: in progress, else next. */
 export interface UpNext {
