@@ -524,7 +524,7 @@ try {
   {
     const PATH = [
       "/autotrader", "/work/tadvantage", "/work/mygarage", "/work/luxury-tax",
-      "/work/driftpilot", "/work/riflessi", "/history", "/standard", "/gaps",
+      "/work/driftpilot", "/work/riflessi", "/history", "/standard", "/roadmap",
     ];
     const number = (href) => String(PATH.indexOf(href) + 1).padStart(2, "0");
 

@@ -285,3 +285,11 @@ export type OpenGap = { gap: string; consequence: string } & (
   | { closedBy: string; mitigation?: never }
   | { mitigation: string; closedBy?: never }
 );
+
+/** The home tile's summary of what is moving: in progress, else next. */
+export interface UpNext {
+  heading: string;
+  status: string;
+  filled: boolean;
+  items: RoadmapItem[];
+}

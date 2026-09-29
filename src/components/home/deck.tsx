@@ -1,9 +1,9 @@
 import { SkillMarquee } from "@/components/home/skill-marquee";
 import { Figure, Tile, TileShot } from "@/components/home/tile";
 import { DeckPointer } from "@/components/home/deck-pointer";
-import { GapStatus } from "@/components/shared/gap-status";
+import { StatusMark } from "@/components/shared/status-mark";
 import { FACTS, HEADLINE, LEDE } from "@/lib/content/profile";
-import type { CaseStudy, DeckPreview, Gap, Stat } from "@/types/content";
+import type { CaseStudy, DeckPreview, DirectionStage, Stat, UpNext } from "@/types/content";
 
 /**
  * The wide cell's right column, whatever fills it: ruled off above while the
@@ -35,7 +35,8 @@ const COUNT_WORDS = ["none", "one", "two", "three", "four", "five", "six", "seve
  */
 export function Deck({
   studies,
-  gaps,
+  direction,
+  upNext,
   skills,
   autoTraderLede,
   autoTraderPoints,
@@ -47,7 +48,8 @@ export function Deck({
   indexes,
 }: {
   studies: CaseStudy[];
-  gaps: Gap[];
+  direction: DirectionStage[];
+  upNext: UpNext;
   skills: string[];
   autoTraderLede: string;
   autoTraderPoints: string[];
@@ -453,36 +455,47 @@ export function Deck({
         {/* The page's argument, so it gets the sunk surface and the full width
             of the row beneath History and How I use AI. */}
         <Tile
-          label="Open gaps"
-          index={indexes["/gaps"]}
-          href="/gaps"
-          cta={`All ${COUNT_WORDS[gaps.length] ?? gaps.length}`}
+          label="Roadmap"
+          index={indexes["/roadmap"]}
+          href="/roadmap"
+          cta="Full roadmap"
           className="bg-sunk lg:col-start-4 lg:col-end-13 lg:row-start-7 lg:row-end-9"
         >
           {/*
-            Gap, status, consequence — the same parts the table on /gaps
-            carries, so the tile is a summary of that page rather than a
-            different claim. Four across at every desktop width: the tile is
-            two short grid rows, and a 2×2 of name-plus-status needed nearly
-            twice the height it has below 1680 (measured: +26 to +42px).
+            The three direction stages, then what is moving: the same parts
+            the page opens with, so the tile is a summary of it rather than a
+            different claim. Four across at every desktop width, because the
+            tile is two short grid rows and this is the shape its height was
+            measured for (it held four gaps the same way).
 
-            Consequences join only where they fit with a visible ellipsis:
-            two lines from `wide`, three from `wider`. Below `wide` the names
-            and their status are what fit honestly — the full rows are one
-            click away.
+            Summaries join only where they fit with a visible ellipsis: two
+            lines from `wide`, three from `wider`. Below `wide` the names and
+            their status are what fit honestly, and the page is one click away.
           */}
           <ul className="grid flex-1 grid-cols-2 content-start gap-x-5 gap-y-2.5 overflow-hidden lg:grid-cols-4">
-            {gaps.map((gap) => (
-              <li key={gap.gap} className="min-w-0">
+            {direction.map((stage) => (
+              <li key={stage.name} className="min-w-0">
                 <span className="block font-mono text-2xs leading-snug text-signal">
-                  {gap.gap}
+                  {stage.name} · {stage.project}
                 </span>
-                <GapStatus status={gap.status} className="mt-1 text-faint" />
+                <StatusMark filled={stage.done} label={stage.statusLabel} className="mt-1 text-faint" />
                 <span className="mt-1 hidden text-xs leading-snug text-muted wide:line-clamp-2 wider:line-clamp-3">
-                  {gap.consequence}
+                  {stage.summary}
                 </span>
               </li>
             ))}
+            {upNext.items[0] ? (
+              <li className="min-w-0">
+                <span className="block font-mono text-2xs leading-snug text-signal">{upNext.heading}</span>
+                <StatusMark filled={upNext.filled} label={upNext.status} className="mt-1 text-faint" />
+                <span className="mt-1 hidden text-xs leading-snug text-muted wide:line-clamp-2 wider:line-clamp-3">
+                  {upNext.items[0].title}
+                  {upNext.items.length > 1
+                    ? `, and ${COUNT_WORDS[upNext.items.length - 1] ?? upNext.items.length - 1} more`
+                    : ""}
+                </span>
+              </li>
+            ) : null}
           </ul>
         </Tile>
 
