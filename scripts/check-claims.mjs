@@ -128,6 +128,18 @@ const RETIRED = [
     /React Server Actions/i,
     'Server Actions are a Next.js feature, and the résumé says "Next.js Server Actions"',
   ],
+  [
+    /\b(pre-release|before release)\b/i,
+    "DriftPilot's gate caught the shader the day after it merged (fact-check, 2026-09-27): say review missed them, not that they never shipped",
+  ],
+  [
+    /Slack gets the (whole|full) lead|goes in full to a Slack/i,
+    "the Slack alert is one best-effort post with a 5-second timeout and no retry (driftpilot-site src/lib/alert.ts): say the site posts it, not that Slack receives it",
+  ],
+  [
+    /\b(did|does) make pages faster|\bmade pages faster/i,
+    "no page-speed figure exists for the AutoTrader caching, as /autotrader's own chapter says: give it as the owner's view, or not at all",
+  ],
 ];
 
 /** @returns {string[]} every .ts/.tsx path under dir, depth-first. */

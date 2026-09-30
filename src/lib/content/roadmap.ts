@@ -118,12 +118,12 @@ const ITEMS: RoadmapItem[] = [
   },
   {
     id: "driftpilot-lead-delivery",
-    title: "Failed leads reach the visitor and Slack",
+    title: "A failed lead is shown to the visitor and posted to Slack",
     project: "DriftPilot",
     horizon: "shipped",
     shippedOn: "2026-09-28",
     detail:
-      "The form tries the CRM up to three times in ten seconds. If delivery still fails, the visitor gets a pre-filled email link and Slack gets the whole lead. Tests for that path run in CI.",
+      "The form tries the CRM up to three times in ten seconds. If delivery still fails, the visitor gets a pre-filled email link, and the site makes one attempt to post the whole lead to Slack. Tests for that path run in CI.",
     sources: [{ label: "driftpilot-site #54", href: `${DRIFTPILOT}/pull/54` }],
   },
   {

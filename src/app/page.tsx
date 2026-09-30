@@ -2,7 +2,12 @@ import { Deck } from "@/components/home/deck";
 import { MobileProfile } from "@/components/layout/mobile-profile";
 import { JsonLd } from "@/components/shared/json-ld";
 import { DECK_PREVIEWS } from "@/lib/content/assets";
-import { AUTOTRADER_FIGURES, AUTOTRADER_LEDE, AUTOTRADER_POINTS } from "@/lib/content/experience";
+import {
+  AUTOTRADER_FIGURES,
+  AUTOTRADER_LEDE,
+  AUTOTRADER_POINTS,
+  PROJECT_OS_TILE_LEDE,
+} from "@/lib/content/experience";
 import {
   HISTORY_LEDE,
   getPrinciples,
@@ -43,6 +48,7 @@ export default async function HomePage() {
         historyLede={HISTORY_LEDE}
         historyRolesCount={roles.length}
         historyPrinciplesCount={principles.length}
+        aiLede={PROJECT_OS_TILE_LEDE}
         indexes={Object.fromEntries(pages.map((p) => [p.href, p.index]))}
       />
     </>

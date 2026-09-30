@@ -45,6 +45,7 @@ export function Deck({
   historyLede,
   historyRolesCount,
   historyPrinciplesCount,
+  aiLede,
   indexes,
 }: {
   studies: CaseStudy[];
@@ -63,6 +64,8 @@ export function Deck({
   historyLede: string;
   historyRolesCount: number;
   historyPrinciplesCount: number;
+  /** One line on what the AI workflow is, above its four figures. */
+  aiLede: string;
   /**
    * Each page's number, by href, from the rail. A tile shows the number its
    * page carries everywhere else — rail, hero, chapter bar, the close that
@@ -433,6 +436,11 @@ export function Deck({
             2x2 stack needed more height than the row has since it was halved
             to make room for History alongside it.
           */}
+          {/* The same line treatment as History beside it: four figures on
+              their own read as a product's stats, not as how the work gets done. */}
+          <p className="line-clamp-2 shrink-0 text-xs leading-none text-muted wide:line-clamp-3 wide:leading-snug">
+            {aiLede}
+          </p>
           <div className="grid flex-1 grid-cols-4 content-center gap-x-3 gap-y-3">
             <Figure
               stat={{ value: "5", label: "Specialist AI roles" }}
