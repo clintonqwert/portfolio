@@ -110,7 +110,7 @@ export function Deck({
           <h1 className="display-hero max-w-[38ch] text-[clamp(1.35rem,2.5vw,2rem)] leading-[1.1] text-ink">
             {HEADLINE}
           </h1>
-          <p className="mt-1 max-w-[70ch] text-md leading-snug text-muted">{LEDE}</p>
+          <p className="deck-lede mt-1 max-w-[70ch] text-md leading-snug text-muted">{LEDE}</p>
 
           {/*
             The headline earns the attention; this line converts it. A reader
@@ -174,7 +174,7 @@ export function Deck({
               <li key={tech}>{tech}</li>
             ))}
           </ul>
-          <ul className="mt-2 space-y-1 border-t border-line pt-2 text-xs leading-snug text-muted">
+          <ul className="tile-points mt-2 space-y-1 border-t border-line pt-2 text-xs leading-snug text-muted">
             {/* At 1024 the cell is three lines shorter than the copy, and the
                 deck may not scroll. The last two points drop out there rather
                 than being clipped mid-sentence; all four are on /autotrader,
@@ -370,9 +370,10 @@ export function Deck({
                   {study.stats.length > 0 ? (
                     <div className="grid grid-cols-2 gap-3 border-t border-line pt-3">
                       {study.stats.slice(0, 4).map((stat) => (
-                        // Three lines in the feature cell: at five columns
-                        // "Commits — #1 of 100+ engineers" needs them from 1024
-                        // to 1440, and two cut the claim to "#1 of 100+…".
+                        // Three lines in the feature cell: "Commits, the most
+                        // of 100+ contributors" needs all three at 1440, and at
+                        // 1280 they still stop at "the most of 100+…", which
+                        // keeps the ranking. Two would cut it to "the most…".
                         <Figure key={stat.label} stat={stat} size="sm" lines={study.feature ? 3 : 2} />
                       ))}
                     </div>

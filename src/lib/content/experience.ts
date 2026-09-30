@@ -25,18 +25,8 @@ export const AUTOTRADER_LEDE =
   "Five years on the platform that runs inventory for Canadian dealerships nationwide. The work I’d point you to first is the caching, and the win was stability more than speed.";
 
 export const PROJECT_OS_LEDE =
-  "Five AI roles help me deliver my work under a written standard. One writes files, the other four only report, and I make the decisions.";
+  "I designed a five-role AI workflow and deliver my work through it. One writes code, the other four only report, and I make the decisions.";
 
-/**
- * Short restatements of facts already published in the passages below, for the
- * dashboard tile. Same claims, fewer words — not new material.
- *
- * Four, and the tile renders four. A fifth was added and then sliced off when
- * the skills strip took the height it needed, which left an entry in this file
- * that shipped nowhere. The claim it made — Agile delivery on a shared codebase
- * — is in the "How the work was run" passage below, which is where it reads
- * properly anyway.
- */
 /**
  * The AutoTrader tile's two figures, here rather than in the component so the
  * tile and the Outcome row below cannot drift apart. The second is the exact
@@ -49,11 +39,25 @@ export const AUTOTRADER_FIGURES: Stat[] = [
   { value: "0", label: "Cache reverts & removals, 3 yrs on" },
 ];
 
+/**
+ * Short restatements of facts already published in the passages below, for the
+ * dashboard tile. Same claims, fewer words — not new material.
+ *
+ * Four, and the tile renders four. A fifth was added and then sliced off when
+ * the skills strip took the height it needed, which left an entry in this file
+ * that shipped nowhere. The claim it made — Agile delivery on a shared codebase
+ * — is in the "The rest of the five years" passage below, which is where it reads
+ * properly anyway.
+ *
+ * Each must fit one line at 1680 and 1920, about 70 characters. From 1680 the
+ * tile's screenshot window takes the height the points leave, and the deck's
+ * four windows must match; check:behaviour names any point that wraps.
+ */
 export const AUTOTRADER_POINTS = [
   "Custom in-house OOP PHP, no Laravel or Symfony",
   "Object Cache Pro: ended 3 years of cache churn",
   "Technical SEO, where getting inventory found is the product",
-  "Mentored engineers in code review and pairing",
+  "Built the luxury tax; worked on Ford Model E and CARFAX v3",
 ];
 
 export async function getAutoTraderPassages(): Promise<Passage[]> {
@@ -133,7 +137,7 @@ export async function getAutoTraderPassages(): Promise<Passage[]> {
     {
       heading: "The rest of the five years",
       paragraphs: [
-        "Outside the caching, I worked on technical SEO for a marketplace where getting dealer inventory found is the product, not a marketing extra.",
+        "Outside the caching, I worked on technical SEO for a marketplace where getting dealer inventory found is the product, not a marketing extra. I also built Canada’s luxury tax into every price a shopper sees, and worked on the Ford Model E and CARFAX v3 integrations. The Tadvantage case study has the detail.",
         "All of it was team work. We ran Agile, reviewed every change, and paired when something mattered enough to be worth two people’s time. I reviewed other engineers’ work and had mine reviewed, in a codebase I couldn’t change on my own say-so. That’s the more common way to work, and a different discipline from my studio year. I also mentored engineers through code review and pairing, which is where the review habits on this site come from.",
       ],
     },
@@ -171,7 +175,7 @@ export async function getProjectOsPassages(): Promise<Passage[]> {
     {
       heading: "How AI helps with the work",
       paragraphs: [
-        "The same standard sets out how I use AI to deliver work. There are five specialist roles, and each role’s contract spells out what it may do. They report findings as P0, P1 or P2 by severity, and I decide what happens next. This is about how I build software, this site included. It isn’t an AI feature that customers use.",
+        "I designed the five-role AI workflow I deliver with, as part of the same standard. Each role works to a contract that spells out what it may do. One writes code; the other four report findings as P0, P1 or P2, and I decide what ships. It’s how I build software, this site included. It isn’t an AI feature that customers use.",
         "Those limits live in each role’s instructions, not in tool permissions. No role declares `allowed-tools`, so nothing in the tooling enforces them.",
         "The tester works from one rule: the pull request description is a claim, the diff is the truth, and any gap between the two is a finding.",
       ],

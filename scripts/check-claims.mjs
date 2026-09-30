@@ -120,6 +120,14 @@ const RETIRED = [
     /still sees (a|the) thank-you page|webhook with one retry/i,
     "since driftpilot-site #54 (2026-09-28) DriftPilot tries a lead up to three times, tells the visitor if it fails, and posts it to Slack",
   ],
+  [
+    /PostgreSQL|\bn8n\b/i,
+    "no project in this workspace uses either; the résumé dropped both on 2026-09-29 and the site's skills follow it",
+  ],
+  [
+    /React Server Actions/i,
+    'Server Actions are a Next.js feature, and the résumé says "Next.js Server Actions"',
+  ],
 ];
 
 /** @returns {string[]} every .ts/.tsx path under dir, depth-first. */
