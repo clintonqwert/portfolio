@@ -129,8 +129,15 @@ const RETIRED = [
     'Server Actions are a Next.js feature, and the résumé says "Next.js Server Actions"',
   ],
   [
-    /\b(pre-release|before release)\b/i,
+    // The claim, not the word: a staging check that runs before release is
+    // true and must pass. What's retired is the gate's defects being caught
+    // before release, in either order.
+    /\b(caught|defects?|gate)\b[^.]{0,40}\b(pre-release|before release)\b|\b(pre-release|before release)\b[^.]{0,40}\b(caught|defects?|gate)\b/i,
     "DriftPilot's gate caught the shader the day after it merged (fact-check, 2026-09-27): say review missed them, not that they never shipped",
+  ],
+  [
+    /\b(showed|proved|demonstrated|confirmed) that a 200\b/i,
+    "driftpilot-site #54's reviewer rated the Formspree 200 risk \"plausible, not reproduced\", and it was closed defensively: say flagged, not showed",
   ],
   [
     /Slack gets the (whole|full) lead|goes in full to a Slack/i,

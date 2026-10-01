@@ -118,7 +118,7 @@ const ITEMS: RoadmapItem[] = [
   },
   {
     id: "driftpilot-lead-delivery",
-    title: "A failed lead is shown to the visitor and posted to Slack",
+    title: "When a lead fails, the visitor is told and the site alerts Slack",
     project: "DriftPilot",
     horizon: "shipped",
     shippedOn: "2026-09-28",

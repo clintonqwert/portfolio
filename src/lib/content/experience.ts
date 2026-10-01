@@ -187,7 +187,7 @@ export async function getProjectOsPassages(): Promise<Passage[]> {
         "I designed the five-role AI workflow I deliver with, as part of the same standard. Each role works to a contract that spells out what it may do. One writes code; the other four report findings as P0, P1 or P2, and I decide what ships. It’s how I build software, this site included. It isn’t an AI feature that customers use.",
         "Those limits live in each role’s instructions, not in tool permissions. No role declares `allowed-tools`, so nothing in the tooling enforces them.",
         "The tester works from one rule: the pull request description is a claim, the diff is the truth, and any gap between the two is a finding.",
-        "You can read one cycle in full on DriftPilot’s pull request #54: the reviewer showed that a 200 from Formspree didn’t prove a lead arrived, the tester found a bug on the retry path, and I chose how a failed lead gets recovered.",
+        "You can read one cycle in full on DriftPilot’s pull request #54: the reviewer flagged that a 200 from Formspree might not prove a lead arrived, the tester found a bug on the retry path, and I chose how a failed lead gets recovered.",
       ],
       list: [
         { term: "Builder", detail: "May write files." },
