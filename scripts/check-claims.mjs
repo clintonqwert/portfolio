@@ -128,6 +128,25 @@ const RETIRED = [
     /React Server Actions/i,
     'Server Actions are a Next.js feature, and the résumé says "Next.js Server Actions"',
   ],
+  [
+    // The claim, not the word: a staging check that runs before release is
+    // true and must pass. What's retired is the gate's defects being caught
+    // before release, in either order.
+    /\b(caught|defects?|gate)\b[^.]{0,40}\b(pre-release|before release)\b|\b(pre-release|before release)\b[^.]{0,40}\b(caught|defects?|gate)\b/i,
+    "DriftPilot's gate caught the shader the day after it merged (fact-check, 2026-09-27): say review missed them, not that they never shipped",
+  ],
+  [
+    /\b(showed|proved|demonstrated|confirmed) that a 200\b/i,
+    "driftpilot-site #54's reviewer rated the Formspree 200 risk \"plausible, not reproduced\", and it was closed defensively: say flagged, not showed",
+  ],
+  [
+    /Slack gets the (whole|full) lead|goes in full to a Slack/i,
+    "the Slack alert is one best-effort post with a 5-second timeout and no retry (driftpilot-site src/lib/alert.ts): say the site posts it, not that Slack receives it",
+  ],
+  [
+    /\b(did|does) make pages faster|\bmade pages faster/i,
+    "no page-speed figure exists for the AutoTrader caching, as /autotrader's own chapter says: give it as the owner's view, or not at all",
+  ],
 ];
 
 /** @returns {string[]} every .ts/.tsx path under dir, depth-first. */

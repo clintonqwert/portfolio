@@ -26,7 +26,7 @@ const CASE_STUDIES: readonly CaseStudy[] = [
     stack: ["Next.js 16", "React 19", "TypeScript", "Tailwind v4", "Zod 4"],
     stats: [
       { value: "37", label: "Prerendered routes", detail: "no runtime database" },
-      { value: "3", label: "Defects caught", detail: "by the gate, pre-release" },
+      { value: "3", label: "Defects caught", detail: "by the gate, missed in review" },
       { value: "237 kB", label: "Script weight", detail: "against a 260 kB ceiling" },
       { value: "27", label: "Merged pull requests", detail: "73 commits" },
     ],
@@ -88,7 +88,7 @@ const CASE_STUDIES: readonly CaseStudy[] = [
           // and DELIVERY_DEADLINE_MS in the site's src/lib/crm.ts; re-read
           // both before repeating the numbers. The Slack alert is live because
           // SLACK_ALERT_WEBHOOK_URL is set in production.
-          "Leads go through Zod-validated Server Actions, then honeypot and time-to-submit spam checks, then a CRM webhook. The original build came in over 73 commits across 27 merged pull requests, and in it the webhook got one retry: if both attempts failed, the visitor still saw the thank-you page and the lead was lost. I fixed that in September. The webhook now gets up to three attempts within ten seconds. A lead that still fails goes in full to a Slack channel, and the visitor sees the failure with an email link that has their answers filled in. The site’s first tests cover that path and run in CI.",
+          "Leads go through Zod-validated Server Actions, then honeypot and time-to-submit spam checks, then a CRM webhook. The original build came in over 73 commits across 27 merged pull requests, and in it the webhook got one retry: if both attempts failed, the visitor still saw the thank-you page and the lead was lost. I fixed that in September. The webhook now gets up to three attempts within ten seconds. If a lead still fails, the visitor sees the failure with an email link that has their answers filled in, and the site makes one best-effort post of the lead to my Slack alerts channel. The site’s first tests cover that path and run in CI.",
         ],
       },
     ],

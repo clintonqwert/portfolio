@@ -22,7 +22,7 @@ export const AUTOTRADER_RAIL = {
 
 /** One-line summaries for the dashboard tiles. */
 export const AUTOTRADER_LEDE =
-  "Five years on the platform that runs inventory for Canadian dealerships nationwide. The work I’d point you to first is the caching, and the win was stability more than speed.";
+  "Five years at AutoTrader.ca, after I came over from Convertus with the platform in 2020. The work I’d point you to first is the caching, and the win was stability more than speed.";
 
 export const PROJECT_OS_LEDE =
   "I designed a five-role AI workflow and deliver my work through it. One writes code, the other four only report, and I make the decisions.";
@@ -75,7 +75,7 @@ export async function getAutoTraderPassages(): Promise<Passage[]> {
     {
       heading: "The caching work",
       paragraphs: [
-        "If you look at one thing from these five years, make it the caching. It did make pages faster, but the bigger win was stability: the platform stopped falling over.",
+        "If you look at one thing from these five years, make it the caching. As I saw it, the platform stopped falling over, and that mattered more than any speed-up.",
       ],
       /*
         Problem, ownership, decision, trade-off, rollout, outcome: the shape a
@@ -162,7 +162,16 @@ export const PROJECT_OS_RAIL = {
   documents: "44 documents",
   lines: "1,920 lines",
   roles: "5 agent roles",
+  // One full cycle a reader can open: the reviewer's P1s, the owner's call on
+  // recovery, the tester's retry-path bug, and the commits that fixed them.
+  example: { label: "driftpilot-site #54", href: "https://github.com/clintonqwert/driftpilot-site/pull/54" },
 } as const;
+
+/**
+ * The home tile's one line. Without it the tile was four numbers, and a reader
+ * couldn't tell a workflow from a product; /standard says the rest.
+ */
+export const PROJECT_OS_TILE_LEDE = "One AI role writes code, four review it, and I decide what ships.";
 
 export async function getProjectOsPassages(): Promise<Passage[]> {
   return [
@@ -178,6 +187,7 @@ export async function getProjectOsPassages(): Promise<Passage[]> {
         "I designed the five-role AI workflow I deliver with, as part of the same standard. Each role works to a contract that spells out what it may do. One writes code; the other four report findings as P0, P1 or P2, and I decide what ships. It’s how I build software, this site included. It isn’t an AI feature that customers use.",
         "Those limits live in each role’s instructions, not in tool permissions. No role declares `allowed-tools`, so nothing in the tooling enforces them.",
         "The tester works from one rule: the pull request description is a claim, the diff is the truth, and any gap between the two is a finding.",
+        "You can read one cycle in full on DriftPilot’s pull request #54: the reviewer flagged that a 200 from Formspree might not prove a lead arrived, the tester found a bug on the retry path, and I chose how a failed lead gets recovered.",
       ],
       list: [
         { term: "Builder", detail: "May write files." },

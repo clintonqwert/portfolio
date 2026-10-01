@@ -41,6 +41,7 @@ export default async function StandardPage() {
           { label: "Size", value: `${PROJECT_OS_RAIL.documents}, ${PROJECT_OS_RAIL.lines}` },
           { label: "Roles", value: PROJECT_OS_RAIL.roles },
           { label: "Status", value: "Written by me, not adopted by an employer" },
+          { label: "Review cycle", value: PROJECT_OS_RAIL.example.label, href: PROJECT_OS_RAIL.example.href },
           {
             label: "Reading",
             value: `${readingMinutes(passages.flatMap((p) => p.paragraphs))} min`,
