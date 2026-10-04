@@ -1,6 +1,7 @@
 import "server-only";
 
 import { AUTOSYNC_INVENTORY_IMAGE } from "@/lib/content/assets";
+import { REPO_HREF } from "@/lib/content/profile";
 import type { Passage, Stat } from "@/types/content";
 
 /**
@@ -157,15 +158,30 @@ export async function getAutoTraderPassages(): Promise<Passage[]> {
  * role contracts say so, not because tool permissions block them: no role
  * declares `allowed-tools`. Stating that precisely is the point of the section.
  */
+/**
+ * The standard's counts, once. /standard's hero says them in words and the
+ * home tile shows them as figures; both read them from here, so a new
+ * document or role is one edit.
+ */
+const PROJECT_OS_COUNTS = { roles: "5", writers: "1", documents: "44", lines: "1,920" } as const;
+
 export const PROJECT_OS_RAIL = {
   name: "Project OS",
-  documents: "44 documents",
-  lines: "1,920 lines",
-  roles: "5 agent roles",
+  documents: `${PROJECT_OS_COUNTS.documents} documents`,
+  lines: `${PROJECT_OS_COUNTS.lines} lines`,
+  roles: `${PROJECT_OS_COUNTS.roles} agent roles`,
   // One full cycle a reader can open: the reviewer's P1s, the owner's call on
   // recovery, the tester's retry-path bug, and the commits that fixed them.
-  example: { label: "driftpilot-site #54", href: "https://github.com/clintonqwert/driftpilot-site/pull/54" },
+  example: { label: "driftpilot-site #54", href: `${REPO_HREF.driftpilot}/pull/54` },
 } as const;
+
+/** The home tile's four figures, from the same counts as /standard's hero. */
+export const PROJECT_OS_FIGURES: Stat[] = [
+  { value: PROJECT_OS_COUNTS.roles, label: "Specialist AI roles" },
+  { value: PROJECT_OS_COUNTS.writers, label: "May write files" },
+  { value: PROJECT_OS_COUNTS.documents, label: "Documents in the standard" },
+  { value: PROJECT_OS_COUNTS.lines, label: "Lines, cross-project" },
+];
 
 /**
  * The home tile's one line. Without it the tile was four numbers, and a reader

@@ -6,6 +6,7 @@ import {
   TADVANTAGE_FEATURES_IMAGE,
   TADVANTAGE_SEO_IMAGE,
 } from "@/lib/content/assets";
+import { REPO, REPO_HREF } from "@/lib/content/profile";
 import type { CaseStudy } from "@/types/content";
 
 /**
@@ -21,7 +22,7 @@ const CASE_STUDIES: readonly CaseStudy[] = [
       "I built the studio’s site alone, from its services and pricing pages to two lead funnels, and put a performance budget on every pull request. Every one merged since has passed it.",
     period: "Jun – Jul 2026",
     liveUrl: "driftpilot.ca",
-    repoUrl: "github.com/clintonqwert/driftpilot-site",
+    repoUrl: REPO.driftpilot,
     role: "Sole engineer",
     stack: ["Next.js 16", "React 19", "TypeScript", "Tailwind v4", "Zod 4"],
     stats: [
@@ -38,7 +39,7 @@ const CASE_STUDIES: readonly CaseStudy[] = [
       // not "last", so the label stays true when main moves on.
       evidence: {
         label: "CI run on main, 28 Sep 2026 (cc3b829): every budget passing. Open the run",
-        href: "https://github.com/clintonqwert/driftpilot-site/actions/runs/36467786880",
+        href: `${REPO_HREF.driftpilot}/actions/runs/36467786880`,
       },
       rows: [
         { name: "Performance", threshold: "≥ 95", state: "passing" },
@@ -102,7 +103,7 @@ const CASE_STUDIES: readonly CaseStudy[] = [
       "A second business on DriftPilot’s foundation, built in five weeks: I cut its 19 MB 3D hero to 2 MB and kept the home shop’s address out of every photo.",
     period: "Jul – Sep 2026",
     liveUrl: "riflessiautocare.ca",
-    repoUrl: "github.com/clintonqwert/riflessiautocare",
+    repoUrl: REPO.riflessi,
     role: "Sole engineer · self-directed",
     stack: ["Next.js 16", "React Three Fiber", "GSAP ScrollTrigger", "Lenis", "glTF-Transform", "meshoptimizer"],
     related: [{ label: "DriftPilot: the foundation this reused", href: "/work/driftpilot" }],

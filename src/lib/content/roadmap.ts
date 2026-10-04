@@ -1,6 +1,7 @@
 import "server-only";
 
 import { CLOSED_GAPS } from "@/lib/content/closed-gaps";
+import { REPO_HREF } from "@/lib/content/profile";
 import type {
   DirectionStage,
   GapView,
@@ -29,8 +30,8 @@ import type {
  * Nothing sits in "now" without a pull request to point at.
  */
 
-const DRIFTPILOT = "https://github.com/clintonqwert/driftpilot-site";
-const RIFLESSI = "https://github.com/clintonqwert/riflessiautocare";
+const DRIFTPILOT = REPO_HREF.driftpilot;
+const RIFLESSI = REPO_HREF.riflessi;
 
 const RIFLESSI_ROADMAP = (item: number): Source => ({
   label: `Riflessi roadmap, item ${item}`,

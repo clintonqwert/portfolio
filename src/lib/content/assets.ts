@@ -1,5 +1,6 @@
 import "server-only";
 
+import { REPO_HREF } from "@/lib/content/profile";
 import type { DeckPreview, ImageSlot, VideoSlot } from "@/types/content";
 
 export type { ImageSlot };
@@ -71,7 +72,7 @@ export const SCORES_IMAGE: ImageSlot = {
   isPlaceholder: false,
   source: {
     label: "lighthouserc.json",
-    href: "https://github.com/clintonqwert/driftpilot-site/blob/main/lighthouserc.json",
+    href: `${REPO_HREF.driftpilot}/blob/main/lighthouserc.json`,
   },
 };
 

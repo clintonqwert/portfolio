@@ -1,5 +1,6 @@
 import "server-only";
 
+import { REPO_HREF } from "@/lib/content/profile";
 import type { ClosedGap } from "@/types/content";
 
 /**
@@ -23,7 +24,7 @@ export const CLOSED_GAPS: ClosedGap[] = [
       "On Riflessi, a booking sent with JavaScript off counts as spam: the visitor sees a thank-you and the lead reaches only the log.",
     closedOn: "2026-09-29",
     closedBy: [
-      { label: "riflessiautocare #19", href: "https://github.com/clintonqwert/riflessiautocare/pull/19" },
+      { label: "riflessiautocare #19", href: `${REPO_HREF.riflessi}/pull/19` },
     ],
   },
   {
@@ -32,8 +33,8 @@ export const CLOSED_GAPS: ClosedGap[] = [
       "Neither project has automated test coverage. The lead-capture path, the only one that brings in revenue, has no regression tests.",
     closedOn: "2026-09-28",
     closedBy: [
-      { label: "driftpilot-site #54", href: "https://github.com/clintonqwert/driftpilot-site/pull/54" },
-      { label: "riflessiautocare #14", href: "https://github.com/clintonqwert/riflessiautocare/pull/14" },
+      { label: "driftpilot-site #54", href: `${REPO_HREF.driftpilot}/pull/54` },
+      { label: "riflessiautocare #14", href: `${REPO_HREF.riflessi}/pull/14` },
     ],
   },
 ];

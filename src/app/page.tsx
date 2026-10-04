@@ -6,6 +6,7 @@ import {
   AUTOTRADER_FIGURES,
   AUTOTRADER_LEDE,
   AUTOTRADER_POINTS,
+  PROJECT_OS_FIGURES,
   PROJECT_OS_TILE_LEDE,
 } from "@/lib/content/experience";
 import {
@@ -49,6 +50,7 @@ export default async function HomePage() {
         historyRolesCount={roles.length}
         historyPrinciplesCount={principles.length}
         aiLede={PROJECT_OS_TILE_LEDE}
+        aiFigures={PROJECT_OS_FIGURES}
         indexes={Object.fromEntries(pages.map((p) => [p.href, p.index]))}
       />
     </>
