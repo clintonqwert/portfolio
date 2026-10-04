@@ -154,14 +154,21 @@ export async function getAutoTraderPassages(): Promise<Passage[]> {
 /**
  * Project OS — the cross-project standard both sites are built against.
  *
- * Note the enforcement wording. The five roles are report-only because their
- * role contracts say so, not because tool permissions block them: no role
- * declares `allowed-tools`. Stating that precisely is the point of the section.
- */
-/**
- * The standard's counts, once. /standard's hero says them in words and the
- * home tile shows them as figures; both read them from here, so a new
- * document or role is one edit.
+ * Note the enforcement wording. The four report-only roles are report-only
+ * because their role contracts say so, not because tool permissions block
+ * them: no role declares `allowed-tools`. Stating that precisely is the point
+ * of the section.
+ *
+ * These counts feed /standard's hero (PROJECT_OS_RAIL) and the home tile
+ * (PROJECT_OS_FIGURES), so a change to documents or lines is one edit here.
+ * Roles and writers are not: "five roles, one writes code" is also said in
+ * words, and changing either count here contradicts each of these until they
+ * change with it:
+ *  - PROJECT_OS_LEDE, which is also /standard's meta description;
+ *  - PROJECT_OS_TILE_LEDE, directly above the figures on the home tile;
+ *  - the "How AI helps with the work" passage, and its five-item role list;
+ *  - LEDE in profile.ts, and the "AI & automation" skills line in practice.ts.
+ * check:claims does not count, so the build will not catch a mismatch.
  */
 const PROJECT_OS_COUNTS = { roles: "5", writers: "1", documents: "44", lines: "1,920" } as const;
 
