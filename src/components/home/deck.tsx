@@ -46,6 +46,7 @@ export function Deck({
   historyRolesCount,
   historyPrinciplesCount,
   aiLede,
+  aiFigures,
   indexes,
 }: {
   studies: CaseStudy[];
@@ -66,6 +67,8 @@ export function Deck({
   historyPrinciplesCount: number;
   /** One line on what the AI workflow is, above its four figures. */
   aiLede: string;
+  /** The tile's four figures, from the content layer (see PROJECT_OS_FIGURES). */
+  aiFigures: Stat[];
   /**
    * Each page's number, by href, from the rail. A tile shows the number its
    * page carries everywhere else — rail, hero, chapter bar, the close that
@@ -442,22 +445,9 @@ export function Deck({
             {aiLede}
           </p>
           <div className="grid flex-1 grid-cols-4 content-center gap-x-3 gap-y-3">
-            <Figure
-              stat={{ value: "5", label: "Specialist AI roles" }}
-              size="sm"
-            />
-            <Figure
-              stat={{ value: "1", label: "May write files" }}
-              size="sm"
-            />
-            <Figure
-              stat={{ value: "44", label: "Documents in the standard" }}
-              size="sm"
-            />
-            <Figure
-              stat={{ value: "1,920", label: "Lines, cross-project" }}
-              size="sm"
-            />
+            {aiFigures.map((stat) => (
+              <Figure key={stat.label} stat={stat} size="sm" />
+            ))}
           </div>
         </Tile>
 

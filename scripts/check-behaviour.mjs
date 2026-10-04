@@ -593,6 +593,30 @@ try {
       );
       await p.close();
     }
+
+    // ── a page's end on a phone ─────────────────────────────────────────
+    // The close's last row (All work, email, Résumé) is the end of the
+    // page: no more air beneath it than the rule leaves above it. The
+    // desktop bottom padding once applied here too, 64px of blank page a
+    // phone could scroll into past the Résumé button.
+    for (const href of PATH) {
+      const p = await open(href, { width: 390, height: 844 });
+      const r = await p.evaluate(() => {
+        const row = document.querySelector("main footer .sheet")?.lastElementChild;
+        if (!row) return null;
+        const doc = document.scrollingElement;
+        doc.scrollTo(0, doc.scrollHeight);
+        return {
+          below: Math.round(doc.scrollHeight - (row.getBoundingClientRect().bottom + window.scrollY)),
+          above: Math.round(parseFloat(getComputedStyle(row).paddingTop)),
+        };
+      });
+      check(
+        r !== null && r.below <= r.above,
+        `${href} at 390px ends under its last row (${r?.below}px below it, ${r?.above}px above)`,
+      );
+      await p.close();
+    }
   }
 
   // ── a case study's screen recording ─────────────────────────────────────

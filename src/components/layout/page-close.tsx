@@ -27,7 +27,10 @@ export function PageClose({
 }) {
   return (
     <footer className="border-t border-rule">
-      <div className="sheet py-16 lg:py-24">
+      {/* Below lg the last row is the end of the page, so it gets the same
+          air beneath it as the rule leaves above it (pt-6): 64px there was
+          blank page a phone could scroll into past the Résumé button. */}
+      <div className="sheet pt-16 pb-6 lg:py-24">
         <nav aria-label="Keep reading">
           {next ? (
             <Link

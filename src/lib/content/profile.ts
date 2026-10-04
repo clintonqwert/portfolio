@@ -53,6 +53,20 @@ export const CONTACT_HREF = {
 } as const;
 
 /**
+ * The two public repositories, under CONTACT.github. Every link into either
+ * one is built from these, so a rename is one edit, not one per file.
+ */
+export const REPO = {
+  driftpilot: `${CONTACT.github}/driftpilot-site`,
+  riflessi: `${CONTACT.github}/riflessiautocare`,
+} as const;
+
+export const REPO_HREF = {
+  driftpilot: `https://${REPO.driftpilot}`,
+  riflessi: `https://${REPO.riflessi}`,
+} as const;
+
+/**
  * Downloadable résumé. This is the *public* copy: built from profile/resume.html
  * with `?phone=off`, so it carries email and LinkedIn but not the mobile number.
  * Rebuild it with:
