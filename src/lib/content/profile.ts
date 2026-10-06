@@ -48,19 +48,24 @@ export const CONTACT = {
 export const CONTACT_HREF = {
   email: `mailto:${CONTACT.email}`,
   linkedin: "https://www.linkedin.com/in/clintonramonida/",
-  github: "https://github.com/clintonqwert",
+  github: `https://${CONTACT.github}`,
   studio: "https://driftpilot.ca",
 } as const;
 
 /**
  * The two public repositories, under CONTACT.github. Every link into either
- * one is built from these, so a rename is one edit, not one per file.
+ * one is built from these, and the handle itself is written once (CONTACT),
+ * so renaming a repository or the account is one edit, not one per file.
  */
 export const REPO = {
   driftpilot: `${CONTACT.github}/driftpilot-site`,
   riflessi: `${CONTACT.github}/riflessiautocare`,
 } as const;
 
+/**
+ * Absolute URLs for the repositories above, prefixed the way CONTACT_HREF.github
+ * is, so each repository's name is written once too.
+ */
 export const REPO_HREF = {
   driftpilot: `https://${REPO.driftpilot}`,
   riflessi: `https://${REPO.riflessi}`,
