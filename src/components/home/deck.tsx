@@ -67,8 +67,12 @@ export function Deck({
   historyPrinciplesCount: number;
   /** One line on what the AI workflow is, above its four figures. */
   aiLede: string;
-  /** The tile's four figures, from the content layer (see PROJECT_OS_FIGURES). */
-  aiFigures: Stat[];
+  /**
+   * The tile's four figures, from the content layer (see PROJECT_OS_FIGURES).
+   * A tuple because the tile is grid-cols-4 in a row with no height to spare:
+   * a fifth would wrap to a second line and push the tile past its cell.
+   */
+  aiFigures: [Stat, Stat, Stat, Stat];
   /**
    * Each page's number, by href, from the rail. A tile shows the number its
    * page carries everywhere else — rail, hero, chapter bar, the close that
