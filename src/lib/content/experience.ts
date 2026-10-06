@@ -154,23 +154,43 @@ export async function getAutoTraderPassages(): Promise<Passage[]> {
 /**
  * Project OS — the cross-project standard both sites are built against.
  *
- * Note the enforcement wording. The four report-only roles are report-only
- * because their role contracts say so, not because tool permissions block
- * them: no role declares `allowed-tools`. Stating that precisely is the point
- * of the section.
+ * Its five delivery roles, each with whether its contract lets it write
+ * files. Note the enforcement wording: the four report-only roles are
+ * report-only because their role contracts say so, not because tool
+ * permissions block them; no role declares `allowed-tools`. Stating that
+ * precisely is the point of the section.
  *
+ * The "How AI helps with the work" passage lists these, and the role and
+ * writer counts are counted from them, so the figures can't disagree with
+ * the list.
+ */
+const PROJECT_OS_ROLES = [
+  { term: "Builder", writes: true },
+  { term: "Reviewer", writes: false },
+  { term: "Tester", writes: false },
+  { term: "Auditor", writes: false },
+  { term: "Content strategist", writes: false },
+] as const;
+
+/**
  * These counts feed /standard's hero (PROJECT_OS_RAIL) and the home tile
- * (PROJECT_OS_FIGURES), so a change to documents or lines is one edit here.
- * Roles and writers are not: "five roles, one writes code" is also said in
- * words, and changing either count here contradicts each of these until they
- * change with it:
+ * (PROJECT_OS_FIGURES). Documents and lines are entered here; roles and
+ * writers are counted from PROJECT_OS_ROLES.
+ *
+ * The prose still says "five roles, one writes code" in words, so a change to
+ * the role list contradicts each of these until they change with it:
  *  - PROJECT_OS_LEDE, which is also /standard's meta description;
  *  - PROJECT_OS_TILE_LEDE, directly above the figures on the home tile;
- *  - the "How AI helps with the work" passage, and its five-item role list;
+ *  - the "How AI helps with the work" passage's first paragraph;
  *  - LEDE in profile.ts, and the "AI & automation" skills line in practice.ts.
  * check:claims does not count, so the build will not catch a mismatch.
  */
-const PROJECT_OS_COUNTS = { roles: "5", writers: "1", documents: "44", lines: "1,920" } as const;
+const PROJECT_OS_COUNTS = {
+  roles: String(PROJECT_OS_ROLES.length),
+  writers: String(PROJECT_OS_ROLES.filter((role) => role.writes).length),
+  documents: "44",
+  lines: "1,920",
+} as const;
 
 export const PROJECT_OS_RAIL = {
   name: "Project OS",
@@ -182,8 +202,11 @@ export const PROJECT_OS_RAIL = {
   example: { label: "driftpilot-site #54", href: `${REPO_HREF.driftpilot}/pull/54` },
 } as const;
 
-/** The home tile's four figures, from the same counts as /standard's hero. */
-export const PROJECT_OS_FIGURES: Stat[] = [
+/**
+ * The home tile's four figures, from the same counts as /standard's hero.
+ * Exactly four: the tile lays them out four across in a fixed-height row.
+ */
+export const PROJECT_OS_FIGURES: [Stat, Stat, Stat, Stat] = [
   { value: PROJECT_OS_COUNTS.roles, label: "Specialist AI roles" },
   { value: PROJECT_OS_COUNTS.writers, label: "May write files" },
   { value: PROJECT_OS_COUNTS.documents, label: "Documents in the standard" },
@@ -212,13 +235,10 @@ export async function getProjectOsPassages(): Promise<Passage[]> {
         "The tester works from one rule: the pull request description is a claim, the diff is the truth, and any gap between the two is a finding.",
         "You can read one cycle in full on DriftPilot’s pull request #54: the reviewer flagged that a 200 from Formspree might not prove a lead arrived, the tester found a bug on the retry path, and I chose how a failed lead gets recovered.",
       ],
-      list: [
-        { term: "Builder", detail: "May write files." },
-        { term: "Reviewer", detail: "Report-only." },
-        { term: "Tester", detail: "Report-only." },
-        { term: "Auditor", detail: "Report-only." },
-        { term: "Content strategist", detail: "Report-only." },
-      ],
+      list: PROJECT_OS_ROLES.map((role) => ({
+        term: role.term,
+        detail: role.writes ? "May write files." : "Report-only.",
+      })),
     },
     {
       heading: "What’s left out on purpose",
