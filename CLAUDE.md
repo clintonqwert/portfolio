@@ -34,6 +34,14 @@ material work. The repository is the technical source of truth.
 - Ask before changing the gaps table, the AutoTrader measurement caveat, or any
   public claim about the work.
 
+## Releases
+
+Record each merged milestone in `RELEASE-NOTES.md` under **Unreleased**. A
+release is a normal pull request: it bumps `package.json` and the lockfile,
+moves those notes under the new version, and updates the README's release line.
+Tag `vX.Y.Z` on its merge commit and publish the GitHub release only after the
+owner merges it. The numbering rules are at the top of `RELEASE-NOTES.md`.
+
 ## This repository is public
 
 `profile/` and `docs/` are gitignored and must stay that way. They hold resume

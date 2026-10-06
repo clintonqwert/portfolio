@@ -4,6 +4,8 @@ Engineering portfolio for Clinton Jay Ramonida. Built to the ProjectOS standard 
 the same stack, layering and budgets as `driftpilot-site` and
 `riflessi-autocare-site`.
 
+**Release:** v1.0.0. See the [release notes](RELEASE-NOTES.md).
+
 ## Run it
 
 ```sh
