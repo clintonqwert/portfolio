@@ -1,8 +1,11 @@
 # clintonramonida — portfolio
 
-Engineering portfolio for Clinton Jay Ramonida. Built to the ProjectOS standard —
-the same stack, layering and budgets as `driftpilot-site` and
-`riflessi-autocare-site`.
+Engineering portfolio for Clinton Jay Ramonida, live at
+[clintonramonida.ca](https://clintonramonida.ca). Built to the ProjectOS
+standard: the same stack and layering as
+[`driftpilot-site`](https://github.com/clintonqwert/driftpilot-site) and
+[`riflessiautocare`](https://github.com/clintonqwert/riflessiautocare), held to
+Driftpilot's performance budget.
 
 ## Run it
 
@@ -16,7 +19,7 @@ npm run dev
 | Script | Does |
 | --- | --- |
 | `npm run dev` | Development server |
-| `npm run build` | Claims and contrast checks, then production build |
+| `npm run build` | Claims, token, logo and contrast checks, then production build |
 | `npm run typecheck` | `next typegen` then `tsc --noEmit` |
 | `npm run lint` | ESLint, `next/core-web-vitals` + TypeScript |
 | `npm run check:claims` | Scans the content layer for retired claims |
@@ -219,7 +222,7 @@ build on localhost:
 
 The first run **failed**: accessibility came in at 0.92 / 0.91 against the
 asserted 0.98. Three defects, all now fixed — see the commit. This is lab data
-on localhost; field data will come from Speed Insights after the first deploy.
+on localhost; Speed Insights collects field data from the live site.
 
 ## Performance budget
 
