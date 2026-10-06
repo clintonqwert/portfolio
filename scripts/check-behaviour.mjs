@@ -599,21 +599,30 @@ try {
     // page: no more air beneath it than the rule leaves above it. The
     // desktop bottom padding once applied here too, 64px of blank page a
     // phone could scroll into past the Résumé button.
+    //
+    // Measured in whichever element scrolls, chosen the way scrollTo() does.
+    // Reading the document alone, a <main> that took the scroll on a phone
+    // made `below` thousands of pixels negative, and the check passed with
+    // any amount of blank space inside <main>; so negative fails too.
     for (const href of PATH) {
       const p = await open(href, { width: 390, height: 844 });
       const r = await p.evaluate(() => {
         const row = document.querySelector("main footer .sheet")?.lastElementChild;
         if (!row) return null;
-        const doc = document.scrollingElement;
-        doc.scrollTo(0, doc.scrollHeight);
+        const main = document.querySelector("main");
+        const el = main && main.scrollHeight > main.clientHeight ? main : document.scrollingElement;
+        el.scrollTo(0, el.scrollHeight);
+        // The row's bottom in the scroller's own content coordinates.
+        const origin = el === document.scrollingElement ? 0 : el.getBoundingClientRect().top;
         return {
-          below: Math.round(doc.scrollHeight - (row.getBoundingClientRect().bottom + window.scrollY)),
+          scroller: el.tagName.toLowerCase(),
+          below: Math.round(el.scrollHeight - (row.getBoundingClientRect().bottom - origin + el.scrollTop)),
           above: Math.round(parseFloat(getComputedStyle(row).paddingTop)),
         };
       });
       check(
-        r !== null && r.below <= r.above,
-        `${href} at 390px ends under its last row (${r?.below}px below it, ${r?.above}px above)`,
+        r !== null && r.below >= 0 && r.below <= r.above,
+        `${href} at 390px ends under its last row (${r?.below}px below it, ${r?.above}px above, in <${r?.scroller}>)`,
       );
       await p.close();
     }
