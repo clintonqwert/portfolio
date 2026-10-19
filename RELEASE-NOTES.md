@@ -14,7 +14,12 @@ shipped them, newest first.
 
 ## Unreleased
 
-Nothing yet.
+- **The downloadable résumé has a new layout.** Its words are unchanged. It
+  now comes from a markdown source through the same build as every tailored
+  résumé: Skills in a sidebar on page 1, and Selected Projects, Education and
+  Tools in one on page 2. The build checks that the PDF's text matches the
+  source and that the phone number stays out. The file is 81 kB, down from
+  94 kB.
 
 ## v1.0.0 — 2026-10-06
 
