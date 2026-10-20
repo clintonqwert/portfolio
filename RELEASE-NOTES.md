@@ -20,6 +20,10 @@ shipped them, newest first.
   Tools in one on page 2. The build checks that the PDF's text matches the
   source and that the phone number stays out. The file is 81 kB, down from
   94 kB.
+- **The release role is stated accurately.** The Tadvantage case study, its
+  deck highlight and the résumé now say Clinton was release master on
+  several releases between v3 and v12.7, not that he owned every one.
+  `check:claims` now fails on the old wording.
 
 ## v1.0.0 — 2026-10-06
 

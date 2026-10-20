@@ -106,6 +106,10 @@ const RETIRED = [
     "no source gives a dealer count (AutoTrader's sites block checks, and the one internal figure is 1,012 Tadvantage accounts, Feb 2023): say \"Canadian dealerships nationwide\" (owner, 2026-09-29)",
   ],
   [
+    /owned (its |production )?releases,? (from )?v3/i,
+    "Clinton was release master on several releases between v3 and v12.7, not every one: say \"release master on several releases between v3 and v12.7\" (owner, 2026-10-19)",
+  ],
+  [
     /riflessiautocare\.vercel\.app/i,
     "Riflessi's canonical address is riflessiautocare.ca (live 2026-09-28); the Vercel preview host still answers, but it is not where the site lives",
   ],

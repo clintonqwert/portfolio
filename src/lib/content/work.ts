@@ -167,7 +167,7 @@ const CASE_STUDIES: readonly CaseStudy[] = [
     name: "Tadvantage",
     headline: "Six and a half years on a dealer platform, and the parts I put my name on",
     summary:
-      "The platform behind dealer websites, from Convertus through the acquisition into AutoSync. Over six and a half years I owned its releases from v3 to v12.7, built its SEO subsystem and co-built myGarage.",
+      "The platform behind dealer websites, from Convertus through the acquisition into AutoSync. Over six and a half years I was release master on several of its releases between v3 and v12.7, built its SEO subsystem and co-built myGarage.",
     period: "6.5 years \u00b7 Convertus \u2192 AutoTrader",
     // The platform's own product site. autosyncmotors.com, the public demo
     // dealer site, is shown on /autotrader and /work/mygarage instead.
@@ -193,7 +193,7 @@ const CASE_STUDIES: readonly CaseStudy[] = [
     // tax ("Pricing"), caching ("Performance"), SEO ("The unglamorous half"),
     // IQ Badging. Ordered by weight; the deck shows as many as fit.
     highlights: [
-      "Owned production releases, v3 through v12.7",
+      "Release master on releases between v3 and v12.7",
       "Canada’s luxury tax on every price, rolled out dealer by dealer",
       "Ended three years of object-cache churn; page caching fleet-wide",
       "The SEO foundation: bilingual inventory sitemaps, VIN-keyed schema",
@@ -219,7 +219,7 @@ const CASE_STUDIES: readonly CaseStudy[] = [
       {
         heading: "My part in it",
         paragraphs: [
-          "Of the more than a hundred engineers in the codebase’s history, I was the top contributor of all time: 1,682 commits and 358 merged pull requests. Along the way: 253 tickets, 177 release commits and 39 hotfixes. The count starts in January 2019, not my start date, because my first couple of months went in under a colleague’s pull requests. I owned production releases from v3 through v12.7 and merged the French translations for most of them.",
+          "Of the more than a hundred engineers in the codebase’s history, I was the top contributor of all time: 1,682 commits and 358 merged pull requests. Along the way: 253 tickets, 177 release commits and 39 hotfixes. The count starts in January 2019, not my start date, because my first couple of months went in under a colleague’s pull requests. I was release master on several production releases between v3 and v12.7, and merged the French translations for most releases in that range. Between them I owned features and supported teammates’ tickets and pull requests.",
         ],
       },
       {
