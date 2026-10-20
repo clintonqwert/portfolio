@@ -72,16 +72,16 @@ export const REPO_HREF = {
 } as const;
 
 /**
- * Downloadable résumé. This is the *public* copy: built from profile/resume.html
- * with `?phone=off`, so it carries email and LinkedIn but not the mobile number.
- * Rebuild it with:
- *   cd profile && ./build-resume.sh          # master copies, phone included
- *   then print ?v=fullstack&phone=off to public/clinton-jay-ramonida-resume.pdf
+ * Downloadable résumé. This is the *public* copy: built from
+ * profile/resume-fullstack.md with `?phone=off`, so it carries email and
+ * LinkedIn but not the mobile number. Rebuild it with:
+ *   cd profile && PUBLIC=1 ./build-resumes.sh fullstack
+ * which also checks the phone is absent and that `size` below matches the file.
  */
 export const RESUME = {
   href: "/clinton-jay-ramonida-resume.pdf",
   pages: 2,
-  size: "94 kB",
+  size: "81 kB",
 } as const;
 
 /**
