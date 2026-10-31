@@ -134,10 +134,13 @@ export function Deck({
                 // The arrangement line is the longest and the least decisive of
                 // the four. On the one-viewport deck from lg to xl the strip
                 // wraps to three lines with it, and the deck pays for every one
-                // of them, so it goes there. Stacked, the page scrolls and has
-                // the room: a recruiter on a phone should not lose it.
+                // of them, so it goes there. At 1280 it still wraps the strip to
+                // two lines, which a window under 800px tall cannot spare
+                // (History clipped by 5px at 1280x760), so it waits for
+                // xl-tall. Stacked, the page scrolls and has the room: a
+                // recruiter on a phone should not lose it.
                 className={`items-center gap-3 ${
-                  i === 2 ? "flex lg:hidden xl:flex" : "flex"
+                  i === 2 ? "flex lg:hidden xl-tall:flex" : "flex"
                 }`}
               >
                 {fact}
@@ -175,11 +178,13 @@ export function Deck({
         >
           {/* Clamped below 1440, where this cell is ~250px wide and the lede
               runs to eleven lines. The ellipsis and the Read link together say
-              there is more, which silent clipping did not. */}
-          <p className="line-clamp-3 shrink-0 text-md leading-snug text-muted xl:line-clamp-4 wider:line-clamp-5">
+              there is more, which silent clipping did not. Every reveal on the
+              deck needs height as well as width; the -tall gates in
+              globals.css say how much. */}
+          <p className="line-clamp-3 shrink-0 text-md leading-snug text-muted xl-tall:line-clamp-4 wider-tall:line-clamp-5">
             {autoTraderLede}
           </p>
-          <ul className="mt-3 hidden flex-wrap gap-x-3 gap-y-0.5 meta text-faint xl:flex">
+          <ul className="mt-3 hidden flex-wrap gap-x-3 gap-y-0.5 meta text-faint xl-tall:flex">
             {["Vue", "Node.js", "PHP", "MySQL", "Redis", "AWS"].map((tech) => (
               <li key={tech}>{tech}</li>
             ))}
@@ -192,10 +197,11 @@ export function Deck({
             {autoTraderPoints.map((point, i) => (
               <li
                 key={point}
-                // Measured per width: two points fit at 1024, all four at 1440.
-                // No slice — the array is exactly what ships, so adding a fifth
-                // point here shows up rather than silently disappearing.
-                className={`gap-2 ${i < 2 ? "flex" : "hidden wide:flex"}`}
+                // Measured: two points fit at 1024, all four from wide-tall
+                // (1440 and 864 tall, or 1680 and 800). No slice — the array is exactly what ships, so
+                // adding a fifth point here shows up rather than silently
+                // disappearing.
+                className={`gap-2 ${i < 2 ? "flex" : "hidden wide-tall:flex"}`}
               >
                 <span aria-hidden="true" // 7px is optical, not rhythm: it centres a 3px dot on the first
                   // line of 0.78rem text. Snapping it to the scale visibly
@@ -211,7 +217,7 @@ export function Deck({
           {previews.autotrader ? (
             <TileShot
               preview={previews.autotrader}
-              className="mt-3 flex lg:hidden wider:flex"
+              className="mt-3 flex lg:hidden wider-tall:flex"
             />
           ) : null}
 
@@ -295,10 +301,12 @@ export function Deck({
                 swallowing it rather than the ellipsis showing it was
                 shortened. The stack is still one click away on the case
                 study itself; the feature cell has room to keep it always.
+                It waits for wide-tall's height too: at 1440x760 the same
+                silent clip took 22px of Riflessi's.
               */}
               <ul
                 className={`mt-2 shrink-0 flex-wrap gap-x-3 gap-y-0.5 meta text-faint ${
-                  study.feature ? "flex" : "hidden wide:flex"
+                  study.feature ? "flex" : "hidden wide-tall:flex"
                 }`}
               >
                 {study.stack.map((tech) => (
@@ -320,8 +328,8 @@ export function Deck({
                   preview={previews[study.slug]!}
                   className={
                     study.feature
-                      ? "mt-3 flex lg:hidden wide:flex"
-                      : "mt-2 flex lg:hidden wider:flex"
+                      ? "mt-3 flex lg:hidden wide-tall:flex"
+                      : "mt-2 flex lg:hidden wider-tall:flex"
                   }
                 />
               ) : null}
@@ -355,18 +363,19 @@ export function Deck({
               // under what was mine there.
               <div className={study.feature ? `flex min-h-0 flex-col ${FEATURE_ASIDE_OPEN}` : "mt-auto"}>
                 {study.feature && study.highlights ? (
-                  <ul className="hidden space-y-1 text-xs leading-snug text-muted xl:block">
+                  <ul className="hidden space-y-1 text-xs leading-snug text-muted xl-tall:block">
                     {study.highlights.map((point, h) => (
                       <li
                         key={point}
-                        // Measured per width against what the stats and the
-                        // note leave in a five-column cell: none at 1024, one
-                        // from 1280, two from 1440, all five from 1680. They
-                        // drop out whole rather than being clipped
-                        // mid-sentence, and every one is on the case study
-                        // the tile opens.
+                        // Measured against what the stats and the note leave
+                        // in a five-column cell: none at 1024, one from 1280,
+                        // two from 1440, all five from 1680, each only as
+                        // tall as its gate (a 1728x860 window cut the stats
+                        // and lost the note). They drop out whole rather than
+                        // being clipped mid-sentence, and every one is on the
+                        // case study the tile opens.
                         className={`gap-2 ${
-                          h === 0 ? "hidden xl:flex" : h === 1 ? "hidden wide:flex" : "hidden wider:flex"
+                          h === 0 ? "hidden xl-tall:flex" : h === 1 ? "hidden wide-tall:flex" : "hidden wider-tall:flex"
                         }`}
                       >
                         <span aria-hidden="true" // 7px centres a 3px dot on the first line of 0.78rem text.
@@ -414,7 +423,7 @@ export function Deck({
           compactCta="xl"
           className="lg:col-start-4 lg:col-end-7 lg:row-start-5 lg:row-end-7"
         >
-          <p className="line-clamp-2 shrink-0 text-xs leading-none text-muted wide:line-clamp-3 wide:leading-snug">
+          <p className="line-clamp-2 shrink-0 text-xs leading-none text-muted wide-tall:line-clamp-3 wide-tall:leading-snug">
             {historyLede}
           </p>
           {/* pt-1, not the pt-3 the other figure rows use: from 1024 to 1439
@@ -448,7 +457,7 @@ export function Deck({
           */}
           {/* The same line treatment as History beside it: four figures on
               their own read as a product's stats, not as how the work gets done. */}
-          <p className="line-clamp-2 shrink-0 text-xs leading-none text-muted wide:line-clamp-3 wide:leading-snug">
+          <p className="line-clamp-2 shrink-0 text-xs leading-none text-muted wide-tall:line-clamp-3 wide-tall:leading-snug">
             {aiLede}
           </p>
           <div className="grid flex-1 grid-cols-4 content-center gap-x-3 gap-y-3">
@@ -475,8 +484,9 @@ export function Deck({
             measured for (it held four gaps the same way).
 
             Summaries join only where they fit with a visible ellipsis: two
-            lines from `wide`, three from `wider`. Below `wide` the names and
-            their status are what fit honestly, and the page is one click away.
+            lines from `wide-tall`, three from `wider-tall`. Below those the
+            names and their status are what fit honestly, and the page is one
+            click away.
           */}
           <ul className="grid flex-1 grid-cols-2 content-start gap-x-5 gap-y-2.5 overflow-hidden lg:grid-cols-4">
             {direction.map((stage) => (
@@ -485,7 +495,7 @@ export function Deck({
                   {stage.name} · {stage.project}
                 </span>
                 <StatusMark filled={stage.done} label={stage.statusLabel} className="mt-1 text-faint" />
-                <span className="mt-1 hidden text-xs leading-snug text-muted wide:line-clamp-2 wider:line-clamp-3">
+                <span className="mt-1 hidden text-xs leading-snug text-muted wide-tall:line-clamp-2 wider-tall:line-clamp-3">
                   {stage.summary}
                 </span>
               </li>
@@ -494,7 +504,7 @@ export function Deck({
               <li className="min-w-0">
                 <span className="block font-mono text-2xs leading-snug text-signal">{upNext.heading}</span>
                 <StatusMark filled={upNext.filled} label={upNext.status} className="mt-1 text-faint" />
-                <span className="mt-1 hidden text-xs leading-snug text-muted wide:line-clamp-2 wider:line-clamp-3">
+                <span className="mt-1 hidden text-xs leading-snug text-muted wide-tall:line-clamp-2 wider-tall:line-clamp-3">
                   {upNext.items[0].title}
                   {upNext.items.length > 1
                     ? `, and ${COUNT_WORDS[upNext.items.length - 1] ?? upNext.items.length - 1} more`
