@@ -17,8 +17,9 @@ import { FACTS, LEDE, LOCATION, NAME, ROLE_TITLE } from "@/lib/content/profile";
  *
  * Colours are literal hex, which is a defect anywhere else in this codebase.
  * Satori resolves neither CSS custom properties nor `oklch()`, so these are the
- * sRGB values of the light theme's --color-canvas, --color-ink, --color-muted,
- * --color-accent and --color-line. If the palette moves, these move with it —
+ * sRGB values of the light theme's --color-canvas, --color-ink, --color-muted
+ * and --color-line. The card carries no accent: it has no action to mark. If
+ * the palette moves, these move with it —
  * they did not when it went monochrome, and the card stayed navy and teal
  * until 2026-09-26, when the brand mark joined it and would have clashed.
  *
@@ -33,7 +34,6 @@ export const contentType = "image/png";
 const CANVAS = "#ffffff";
 const INK = "#0f0f0f";
 const MUTED = "#5d5d5d";
-const ACCENT = "#0f0f0f";
 const LINE = "#bebebe";
 
 export default async function OpengraphImage() {
@@ -59,7 +59,7 @@ export default async function OpengraphImage() {
               fontSize: 26,
               letterSpacing: 2,
               textTransform: "uppercase",
-              color: ACCENT,
+              color: INK,
             }}
           >
             {ROLE_TITLE}

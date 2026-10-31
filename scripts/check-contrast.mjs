@@ -84,11 +84,14 @@ const PAIRS = [
   ["faint", "panel", 4.5],
   ["accent", "canvas", 4.5],
   ["accent", "panel", 4.5],
+  // The primary action: canvas-coloured text on an accent fill.
+  ["canvas", "accent", 4.5],
   ["pass", "panel", 4.5],
   ["signal", "panel", 4.5],
   ["rail-ink", "rail", 4.5],
   ["rail-muted", "rail", 4.5],
-  ["accent-bright", "rail", 4.5],
+  // The rail's contact links take the accent under the pointer.
+  ["accent", "rail", 4.5],
   ["canvas", "ink", 4.5],
   // The sunk surface carries text too, all of it on the Roadmap tile: its
   // status labels (`faint` at 10px, measured 4.95:1), its summaries (`muted`)

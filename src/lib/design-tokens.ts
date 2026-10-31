@@ -41,11 +41,8 @@ export const colors = {
   /** Structural rules. */
   rule: "oklch(0.17 0 0)",
 
-  /** #0F5C6B, preserved from the previous design. */
-  accent: "oklch(0.17 0 0)",
-  accentSoft: "oklch(0.945 0 0)",
-  /** Tracks the rail, which is light in this theme. */
-  accentBright: "oklch(0.17 0 0)",
+  /** Signal orange, #c04909: the primary action, the key figure, link hover. */
+  accent: "oklch(0.56 0.165 42)",
   pass: "oklch(0.48 0 0)",
   signal: "oklch(0.17 0 0)",
 } as const;
@@ -143,8 +140,8 @@ export const media = {
 
 /**
  * Dark theme overrides. Mirrors the [data-theme="dark"] block in globals.css.
- * Desaturated navy surfaces rather than inverted values; the accent lifts
- * because the light-mode teal reads muddy on a dark surface.
+ * The monochrome inverts; the accent lifts, because the light theme's orange
+ * reads dim on the dark canvas.
  */
 export const darkColors: Record<ColorToken, string> = {
   canvas: "oklch(0.145 0 0)",
@@ -159,9 +156,7 @@ export const darkColors: Record<ColorToken, string> = {
   faint: "oklch(0.665 0 0)",
   line: "oklch(0.36 0 0)",
   rule: "oklch(0.975 0 0)",
-  accent: "oklch(0.975 0 0)",
-  accentSoft: "oklch(0.255 0 0)",
-  accentBright: "oklch(0.975 0 0)",
+  accent: "oklch(0.75 0.15 52)",
   pass: "oklch(0.72 0 0)",
   signal: "oklch(0.975 0 0)",
 };

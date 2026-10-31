@@ -62,7 +62,7 @@ export function Label({
 }) {
   return (
     <div className="pt-1 font-mono text-2xs uppercase leading-[1.75] tracking-[0.1em] text-faint">
-      <b className="flex items-baseline gap-2 font-medium text-accent">
+      <b className="flex items-baseline gap-2 font-medium text-ink">
         {index ? (
           <span className="tabular-nums text-faint">{index}</span>
         ) : null}

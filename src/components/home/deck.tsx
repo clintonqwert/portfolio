@@ -206,7 +206,7 @@ export function Deck({
                 <span aria-hidden="true" // 7px is optical, not rhythm: it centres a 3px dot on the first
                   // line of 0.78rem text. Snapping it to the scale visibly
                   // drops the dot below the cap height.
-                  className="mt-[7px] size-[3px] shrink-0 rounded-full bg-accent" />
+                  className="mt-[7px] size-[3px] shrink-0 rounded-full bg-ink" />
                 {point}
               </li>
             ))}
@@ -379,7 +379,7 @@ export function Deck({
                         }`}
                       >
                         <span aria-hidden="true" // 7px centres a 3px dot on the first line of 0.78rem text.
-                          className="mt-[7px] size-[3px] shrink-0 rounded-full bg-accent" />
+                          className="mt-[7px] size-[3px] shrink-0 rounded-full bg-ink" />
                         {point}
                       </li>
                     ))}
