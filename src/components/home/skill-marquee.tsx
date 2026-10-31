@@ -63,7 +63,7 @@ export function SkillMarquee({ skills }: { skills: string[] }) {
                 {LOGOS[skill] ? (
                   <svg
                     aria-hidden="true"
-                    className="size-[17px] shrink-0 fill-current text-ink"
+                    className="size-4 shrink-0 fill-current text-ink"
                     viewBox="0 0 24 24"
                   >
                     <use href={`#${symbolId(skill)}`} />

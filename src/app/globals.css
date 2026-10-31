@@ -201,6 +201,49 @@
   --z-skip: 60;
 }
 
+/*
+  The deck's reveals, gated on height as well as width. Its rows split the
+  viewport's height, so how much a tile holds depends on both: a 1728x860
+  window had the width for every reveal and clipped Tadvantage by 71px
+  (2026-10-31). Each gate is the shortest window, measured, at which the
+  content it reveals fits; below it the deck shows the next band down's.
+
+    xl-tall     >=1280 wide and >=800 tall, or >=1680 at any deck height:
+                the 16px gutters, the fourth fact under the headline,
+                AutoTrader's fourth lede line and stack, Tadvantage's first
+                highlight
+    wide-tall   >=1440 wide and >=864 tall, or >=1680 and >=800: everything
+                that came in at `wide`
+    wider-tall  >=1680 wide and >=1008 tall, or >=1920 and >=960:
+                everything that came in at `wider`
+
+  Each second condition is the same content in the wider cells of the next
+  band up, which need less height for it.
+
+  In rem, like the breakpoints and the 47.5rem short-window line, so a larger
+  default font moves them too. Registered smallest first: Tailwind emits
+  custom variants in this order, after its own breakpoints, so a larger gate
+  wins where two match. check:overflow tests the first height of each.
+*/
+@custom-variant xl-tall {
+  @media (width >= theme(--breakpoint-xl)) and (height >= 50rem),
+    (width >= theme(--breakpoint-wider)) {
+    @slot;
+  }
+}
+@custom-variant wide-tall {
+  @media (width >= theme(--breakpoint-wide)) and (height >= 54rem),
+    (width >= theme(--breakpoint-wider)) and (height >= 50rem) {
+    @slot;
+  }
+}
+@custom-variant wider-tall {
+  @media (width >= theme(--breakpoint-wider)) and (height >= 63rem),
+    (width >= theme(--breakpoint-widest)) and (height >= 60rem) {
+    @slot;
+  }
+}
+
 
 /*
   Dark theme: the same drawing, inverted. Black paper, white ink, white
@@ -503,10 +546,13 @@
     pixel, and a single px value was either tiny on a large screen or too
     tall on a short one:
 
-      1440–1679 wide  only the feature study  room = 50dvh − 277px
+      wide-tall       only the feature study  room = 50dvh − 277px
                       shows (Tadvantage)
-      >=1680 wide     all four; AutoTrader    room = 50dvh − 432px
+      wider-tall      all four; AutoTrader    room = 50dvh − 432px
                       is the most crowded
+
+    (The gates were width-only until 2026-10-31; the formulas were measured
+    then, at heights the gates still allow.)
 
     (Re-checked, not re-measured, after the 2026-09-26 grid moved the feature
     to Tadvantage at five columns: check:overflow and the one-height check
@@ -518,8 +564,9 @@
     2px. The formulas below leave 2px of slack. Re-take them with
     `npm run measure:shots` whenever the deck's content or spacing changes;
     check:behaviour fails if the windows stop matching. The 48px floor keeps a window worth
-    looking through; below it — a >=1680 viewport under ~956px tall — the
-    frame's `min-height: 0` lets the most crowded tile's window shrink under
+    looking through; below it, which only a >=1920 window 960–963px tall
+    still reaches now that wider-tall gates the narrow shots, the frame's
+    `min-height: 0` lets the most crowded tile's window shrink under
     the others rather than push the tile past its cell.
 
     Size containment makes the frame a query container, so the pan below can
@@ -542,9 +589,9 @@
     outline-offset: calc(var(--surface-border) * -1);
   }
 
-  /* wider: where the three narrow tiles show theirs. */
-  @media (width >= theme(--breakpoint-wider)) {
-    .tile-shot-frame {
+  /* wider-tall: where the three narrow tiles show theirs. */
+  .tile-shot-frame {
+    @variant wider-tall {
       --shot-h: clamp(48px, calc(50dvh - 434px), 360px);
     }
   }
@@ -924,10 +971,12 @@
     16px gutters from 1280, where the deck has the room to spend on air
     between tiles. At 1024 the same 4px more per gap cost ~28px across the
     grid's eight rows, and the narrow case-study cells, which had two lines
-    of summary to spare, clipped by up to 19px. 12px there.
+    of summary to spare, clipped by up to 19px. 12px there, and in a window
+    under 800px tall below 1680 wide, where the same 28px clipped History
+    (xl-tall).
   */
-  @media (width >= theme(--breakpoint-xl)) {
-    .deck {
+  .deck {
+    @variant xl-tall {
       gap: calc(var(--spacing) * 4);
     }
   }

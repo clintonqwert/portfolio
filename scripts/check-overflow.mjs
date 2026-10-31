@@ -61,6 +61,16 @@ const VIEWPORTS = [
   { name: "1100x800 at 20px", width: 1100, height: 800, font: 20 },
   { name: "1440x900 at 20px", width: 1440, height: 900, font: 20 },
   { name: "1920x1080 at 20px", width: 1920, height: 1080, font: 20 },
+  // The deck at the shortest window each of its height gates allows. Every
+  // reveal on it needs height as well as width (xl-tall, wide-tall and
+  // wider-tall in globals.css), so the worst case for each is the first
+  // height that shows it, and every viewport above scales height with width
+  // and never reached one. A 1728x860 window clipped Tadvantage by 71px
+  // (2026-10-31). The deck only: the other routes did not change.
+  ...[
+    [1280, 760], [1440, 760], [1680, 760], [2560, 760],
+    [1440, 800], [1440, 864], [1680, 800], [1680, 1008], [1920, 960],
+  ].map(([width, height]) => ({ name: `${width}x${height} deck`, width, height, routes: ["/"] })),
 ];
 
 const browser = await puppeteer.launch({
@@ -91,7 +101,7 @@ try {
     await page.setViewport({ width: vp.width, height: vp.height });
     await cdp.send("Page.setFontSizes", { fontSizes: { standard: vp.font ?? 16 } });
 
-    for (const route of ROUTES) {
+    for (const route of vp.routes ?? ROUTES) {
       await page.goto(`${ORIGIN}${route}`, { waitUntil: "load", timeout: 30000 });
       // Webfonts change line-breaking, so measuring before they settle would
       // report overflow that a real reader never sees, and miss some they do.

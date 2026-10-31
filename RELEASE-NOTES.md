@@ -24,6 +24,18 @@ shipped them, newest first.
   deck highlight and the résumé now say Clinton was release master on
   several releases between v3 and v12.7, not that he owned every one.
   `check:claims` now fails on the old wording.
+- **Two spacing fixes on the overview.** The History tile's figures no longer
+  sit flush on their rule: they get 4px, all the room the tile has from 1024
+  to 1439px wide. The skills strip's logos are 16px, on the icon scale,
+  instead of 17px.
+- **The overview fits wide windows that are short.** What each tile shows
+  used to depend on width alone, but a tile's room depends on height too. A
+  1728×860 window cut Tadvantage's figures at the tile's edge and lost its
+  note, and 1440×790 (a 13-inch laptop) clipped three tiles. Each extra now
+  needs a minimum height as well, and below it the tile shows what a
+  narrower window would. `check:overflow` now tests the deck at the shortest
+  window each of those minimums allows, and 441 window sizes from 1024 to
+  2560 wide were swept clean.
 
 ## v1.0.0 — 2026-10-06
 
