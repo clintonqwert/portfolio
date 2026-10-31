@@ -24,6 +24,10 @@ shipped them, newest first.
   deck highlight and the résumé now say Clinton was release master on
   several releases between v3 and v12.7, not that he owned every one.
   `check:claims` now fails on the old wording.
+- **Two spacing fixes on the overview.** The History tile's figures no longer
+  sit flush on their rule: they get 4px, all the room the tile has from 1024
+  to 1439px wide. The skills strip's logos are 16px, on the icon scale,
+  instead of 17px.
 
 ## v1.0.0 — 2026-10-06
 

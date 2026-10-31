@@ -417,7 +417,10 @@ export function Deck({
           <p className="line-clamp-2 shrink-0 text-xs leading-none text-muted wide:line-clamp-3 wide:leading-snug">
             {historyLede}
           </p>
-          <div className="mt-auto flex gap-3 border-t border-line pt-0">
+          {/* pt-1, not the pt-3 the other figure rows use: from 1024 to 1439
+              this tile has 4px to spare, and pt-0 set the figures flush on
+              the rule. Measured 2026-10-31: pt-2 overflows it at 1280x800. */}
+          <div className="mt-auto flex gap-3 border-t border-line pt-1">
             <Figure
               stat={{ value: String(historyRolesCount), label: "Chapters, 2016–present" }}
               size="sm"
