@@ -7,7 +7,7 @@ standard: the same stack and layering as
 [`riflessiautocare`](https://github.com/clintonqwert/riflessiautocare), held to
 Driftpilot's performance budget.
 
-**Release:** v1.0.0. See the [release notes](RELEASE-NOTES.md).
+**Release:** v1.0.1. See the [release notes](RELEASE-NOTES.md).
 
 ## Run it
 

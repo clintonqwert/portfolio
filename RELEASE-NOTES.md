@@ -14,6 +14,13 @@ shipped them, newest first.
 
 ## Unreleased
 
+Nothing yet.
+
+## v1.0.1 — 2026-10-31
+
+A patch: the résumé and the release role from #28, and the overview's
+spacing and short-window fixes from #29.
+
 - **The downloadable résumé has a new layout.** Its words are unchanged. It
   now comes from a markdown source through the same build as every tailored
   résumé: Skills in a sidebar on page 1, and Selected Projects, Education and
