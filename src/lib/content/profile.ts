@@ -24,8 +24,12 @@ export const LOCATION = "Vancouver, British Columbia";
 /** One line in the rail, and the location fact under the hero. */
 export const LOCATION_SHORT = "Vancouver, BC";
 /**
- * A positioning title for v2 (owner, 2026-10-31), not a job title: the job
- * titles held are on /history, unchanged.
+ * The role as it was done. At AutoTrader.ca the title was Software Engineer
+ * (Full Stack-Product), then Senior Software Engineer, and the work was
+ * product engineering, so this stands as a claim (owner, 2026-11-02, on
+ * review finding P1-1 of #32). It is the site's title and the structured
+ * data's `jobTitle`; the résumé keeps "Senior Full-Stack Software Engineer".
+ * The exact titles held, with their dates, are on /history.
  */
 export const ROLE_TITLE = "Senior Full-Stack Product Engineer";
 

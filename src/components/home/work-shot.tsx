@@ -78,8 +78,11 @@ export function WorkShot({ preview }: { preview: WorkPreview }) {
 }
 
 /**
- * The window's drawn width: stacked, the card spans the sheet (100vw less the
- * sheet's 20px gutters); from lg, cards sit two to a row in a sheet capped at
- * 1240px, so none draws wider than 560px.
+ * The window's drawn width. Stacked, the card spans the sheet (100vw less the
+ * sheet's 20px gutters). From lg, cards sit two to a row: half of what the
+ * 236px rail, the sheet's 2×48px gutters and the 24px gap leave, until the
+ * sheet reaches its 1240px cap at a 1476px viewport, then 560px. A flat 560px
+ * fetched about 1,120px at 2× for a ~334px card at 1024 (review of #32, P2-5).
+ * The px entries stay px: they describe the grid, which is drawn in pixels.
  */
-const SHOT_SIZES = `${media.stacked} calc(100vw - 40px), 560px`;
+const SHOT_SIZES = `${media.stacked} calc(100vw - 40px), (width <= 1476px) calc((100vw - 356px) / 2), 560px`;

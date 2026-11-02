@@ -58,7 +58,13 @@ export interface ProofPoint {
   figure?: string;
   /** A caveat the claim cannot be read without, e.g. a private repository. */
   note?: string;
-  href: string;
+  /** The page that owns the fact; the whole claim links to it. */
+  href?: string;
+  /**
+   * Where a claim rests on several things a reader can open, each one, so
+   * every part is a click away ("two live sites" links both sites).
+   */
+  sources?: Source[];
 }
 
 /** A Project OS role, as the AI card and /standard describe it. */

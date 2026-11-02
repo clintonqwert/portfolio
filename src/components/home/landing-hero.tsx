@@ -105,21 +105,41 @@ export function LandingHero({
               <div key={point.label}>
                 <dt className="label text-faint">{point.label}</dt>
                 <dd className="mt-2">
-                  <Link
-                    href={point.href}
-                    className="group block text-sm leading-snug text-ink no-underline"
-                  >
-                    {point.figure ? (
-                      <span className="figure-value block text-[2rem] text-accent">{point.figure}</span>
-                    ) : null}
-                    <span className="transition-colors duration-[var(--duration-fast)] ease-[var(--ease-out-quart)] group-hover:text-accent">
-                      {point.figure ? " " : null}
-                      {point.claim}
-                    </span>
-                    {point.note ? (
-                      <span className="mt-1.5 block meta text-faint">{point.note}</span>
-                    ) : null}
-                  </Link>
+                  {point.href ? (
+                    <Link
+                      href={point.href}
+                      className="group block text-sm leading-snug text-ink no-underline"
+                    >
+                      {point.figure ? (
+                        <span className="figure-value block text-[2rem] text-accent">{point.figure}</span>
+                      ) : null}
+                      <span className="transition-colors duration-[var(--duration-fast)] ease-[var(--ease-out-quart)] group-hover:text-accent">
+                        {point.figure ? " " : null}
+                        {point.claim}
+                      </span>
+                      {point.note ? (
+                        <span className="mt-1.5 block meta text-faint">{point.note}</span>
+                      ) : null}
+                    </Link>
+                  ) : (
+                    <span className="block text-sm leading-snug text-ink">{point.claim}</span>
+                  )}
+                  {/* A claim that rests on several things links each one. */}
+                  {point.sources ? (
+                    <ul className="mt-1.5 flex flex-wrap gap-x-3 gap-y-1 meta">
+                      {point.sources.map((source) => (
+                        <li key={source.href}>
+                          <a
+                            href={source.href}
+                            className="inline-block py-1 text-ink underline decoration-1 underline-offset-[3px] transition-colors duration-[var(--duration-fast)] ease-[var(--ease-out-quart)] hover:text-accent"
+                          >
+                            {source.label}
+                            <span aria-hidden="true"> ↗</span>
+                          </a>
+                        </li>
+                      ))}
+                    </ul>
+                  ) : null}
                 </dd>
               </div>
             ))}

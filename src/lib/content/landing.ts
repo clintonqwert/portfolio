@@ -27,15 +27,25 @@ async function study(slug: string): Promise<CaseStudy> {
 
 /** Four claims, one per capability, each linking to the page that owns it. */
 export async function getProofPoints(): Promise<ProofPoint[]> {
-  const tadvantage = await study("tadvantage");
+  const [tadvantage, driftpilot, riflessi] = await Promise.all([
+    study("tadvantage"),
+    study("driftpilot"),
+    study("riflessi"),
+  ]);
   const [commits, pulls] = tadvantage.stats;
   if (!commits || !pulls) throw new Error("landing: Tadvantage needs its two figures");
+  const live = [driftpilot, riflessi].map((s) => {
+    if (!s.liveUrl) throw new Error(`landing: ${s.slug} needs its live URL`);
+    return { label: s.liveUrl, href: `https://${s.liveUrl}` };
+  });
 
   return [
     {
+      // Both sites, each a click away: the claim is two of them, and linking
+      // one case study proved only half of it (review of #32, P2-4).
       label: "Product delivery",
       claim: "Two live sites shipped solo since 2026.",
-      href: "/work/driftpilot",
+      sources: live,
     },
     {
       // The page's one key figure. Lowercased into the sentence: the stat's

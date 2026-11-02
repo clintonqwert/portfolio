@@ -134,7 +134,9 @@ export default async function HomePage() {
         </div>
         {unfixed.length > 0 ? (
           <>
-            <p className="mt-12 label text-faint">Gaps and improvements</p>
+            {/* A heading, not a label: it opens its own list, and a reader
+                moving by headings should land on the gaps (principle 4). */}
+            <h3 className="mt-12 label font-normal text-faint">Gaps and improvements</h3>
             <ul className="mt-3 border-t border-rule">
               {unfixed.map((gap) => (
                 <li
