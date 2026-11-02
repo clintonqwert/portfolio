@@ -98,7 +98,7 @@ export function buildCaseStudyJsonLd(input: {
 }
 
 /**
- * BreadcrumbList for a page off the deck, built from the same trail its hero
+ * BreadcrumbList for a page off the overview, built from the same trail its hero
  * shows so the two cannot disagree.
  *
  * Every crumb but the last must be a page for search engines to use it, so a

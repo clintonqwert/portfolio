@@ -47,7 +47,7 @@ export async function generateMetadata({
 }
 
 /**
- * A case study, as a document rather than a panel of tiles.
+ * A case study, as a document: a hero, then chapters.
  *
  * Hero, then the study's own passages in the order they were written, then
  * two chapters every study can fill from data it already has: the stack it

@@ -3,16 +3,15 @@
  * Fail if the site stops behaving the way it promises to.
  *
  * check-overflow measures whether things fit. This measures whether things
- * work — the promises the deck and the secondary pages make that no static
- * check can see, and that were each verified by hand once and then left to
- * regress in silence:
+ * work — the promises the landing page and the secondary pages make that no
+ * static check can see, and that were each verified by hand once and then
+ * left to regress in silence:
  *
- *  - The deck is one viewport: zero scroll at >=1024 x >=760, and none of the
- *    secondary-page chrome (scroll cue, chapter bar) on it.
- *  - Every screenshot window on the deck is the same height. At rest no tile
- *    has fetched its whole page and no cursor animation is running; hovering
- *    a tile loads its page, pans it, and brings up the tile cursor beside an
- *    arrow that stays.
+ *  - The landing's first screen: "View selected work" leads to the work, the
+ *    résumé action serves the PDF, and at rest nothing is fetched that is not
+ *    shown: no work card's whole page, and not the recording.
+ *  - Four work cards, each one link named for where it goes, with pictures
+ *    of one height side by side. Hovering a card loads its page and pans it.
  *  - Every id on every route is unique. Chapter ids come from headings; a
  *    duplicate would silently retarget the cue, the chapter bar and deep links.
  *  - The scroll cue shows on arrival, hides once scrolling starts, returns at
@@ -20,16 +19,14 @@
  *    bar, with the hash updated.
  *  - The chapter bar appears once the hero has gone and names the chapter.
  *  - On a phone the overview carries the rail's profile — portrait, role and
- *    every contact link — and every work tile shows its screenshot, which
- *    loads as it nears the viewport and pans as it scrolls past. The same at
- *    1023px, and at 1100px with a 20px default font, where the rem breakpoint
- *    still stacks the tiles: layout, pan and loader agree on where it ends.
- *    Under reduced motion no page is fetched or panned, and with Save-Data on
- *    no page is fetched for being scrolled past.
- *  - A screenshot the deck hides at its width is never fetched.
- *  - Every deck tile's name reads whole, at every width it is shown at.
- *  - The reading path: the rail's order, every page's hero number, every deck
- *    tile's number and every page's "next" agree, AutoTrader.ca first.
+ *    every contact link — and each work card's screenshot loads as it nears
+ *    the viewport and pans as it scrolls past. The same at 1023px, and at
+ *    1100px with a 20px default font, where the rem breakpoint still stacks
+ *    the cards: layout, pan and loader agree on where it ends. Under reduced
+ *    motion no page is fetched or panned, and with Save-Data on no page is
+ *    fetched for being scrolled past.
+ *  - The reading path: the rail's order, every page's hero number and every
+ *    page's "next" agree, AutoTrader.ca first.
  *  - A case study's screen recording fetches nothing until seen, plays in view,
  *    keeps a reader's pause, and never starts itself under reduced motion or
  *    Save-Data.
@@ -60,6 +57,10 @@ const ROUTES = [
 /** A case study with a hero shot, figures, an ink chapter and a diagram-free first chapter. */
 const STUDY = "/work/riflessi";
 
+/** The landing's DriftPilot card, and the whole-page image its hover pans. */
+const DRIFTPILOT_CARD = '.work-card:has(a[href="/work/driftpilot"])';
+const DRIFTPILOT_PAGE = `${DRIFTPILOT_CARD} img.work-shot-image`;
+
 const browser = await puppeteer.launch({
   executablePath: CHROME,
   headless: true,
@@ -67,7 +68,7 @@ const browser = await puppeteer.launch({
     "--hide-scrollbars",
     "--disable-gpu",
     // A hover-capable fine pointer on every machine. Headless Chrome on a CI
-    // runner has no pointing device and reports (hover: none), so the deck's
+    // runner has no pointing device and reports (hover: none), so the cards'
     // hover-only pan was never enabled there: the pan check failed, and the
     // reduced-motion "does not pan" check passed for the wrong reason. CDP's
     // setEmulatedMedia ignores hover and pointer on that build — only the
@@ -143,34 +144,36 @@ const becomes = (page, fn, arg, timeout = 4000) =>
     .catch(() => false);
 
 try {
-  // ── the deck ────────────────────────────────────────────────────────────
-  for (const [width, height] of [[1024, 768], [1440, 900], [1920, 1080]]) {
+  // ── the landing's first screen ──────────────────────────────────────────
+  // The two things a reader came to do: the primary action lands on the
+  // work, and the résumé is a real PDF. At rest nothing is fetched that is
+  // not shown: no work card's whole page, and not the recording, which waits
+  // until it is half on screen. Negative checks, so each waits out a settle.
+  for (const [width, height] of [[390, 844], [1024, 768], [1440, 900], [1920, 1080]]) {
     const page = await open("/", { width, height });
-    const r = await page.evaluate(() => {
-      const main = document.querySelector("main");
+    const r = await page.evaluate(async () => {
+      const primary = document.querySelector('#top a[href="#work"]');
+      const resume = document.querySelector('#top a[download][href$=".pdf"]');
+      const res = resume ? await fetch(resume.getAttribute("href")) : null;
       return {
-        main: main.scrollHeight - main.clientHeight,
-        doc: document.scrollingElement.scrollHeight - innerHeight,
-        chrome: document.querySelectorAll(".scroll-cue, .chapterbar").length,
+        primary: primary !== null && document.getElementById("work") !== null,
+        resume: res ? `${res.status} ${res.headers.get("content-type")}` : "missing",
       };
     });
-    check(r.main <= 1 && r.doc <= 1, `deck ${width}x${height} does not scroll (main +${r.main}px, page +${r.doc}px)`);
-    check(r.chrome === 0, `deck ${width}x${height} has no scroll cue or chapter bar`);
+    check(r.primary, `landing ${width}x${height}: "View selected work" leads to #work`);
+    check(/^200 application\/pdf/.test(r.resume), `landing ${width}x${height}: the résumé action serves the PDF (${r.resume})`);
 
-    // A shot the deck hides at this width costs nothing. The feature tile's
-    // window was once fetched eagerly, and so fetched at 1024–1439 for a
-    // cell that never shows it. Negative, so it waits out a settle first.
     await new Promise((r) => setTimeout(r, 500));
-    const wasted = await page.evaluate(() => {
-      const fetched = performance.getEntriesByType("resource").map((e) => e.name);
-      return [...document.querySelectorAll(".tile-shot-frame")]
-        .filter((f) => f.offsetParent === null)
-        .flatMap((f) => [...f.querySelectorAll("img")])
-        .map((img) => (img.getAttribute("srcset") ?? img.dataset.srcset ?? "").match(/url=([^&]+)/)?.[1])
-        .filter((url) => url && fetched.some((name) => name.includes(`url=${url}&`)))
-        .map((url) => decodeURIComponent(url));
-    });
-    check(wasted.length === 0, `deck ${width}x${height} fetches no hidden screenshot (${wasted.join(", ") || "none"})`);
+    const rest = await page.evaluate(() => ({
+      pages: [...document.querySelectorAll("img.work-shot-image")].filter((i) => i.getAttribute("src")).length,
+      // A sized image with no source draws a broken-image icon; at rest the
+      // page image must draw nothing at all over its window.
+      drawn: [...document.querySelectorAll("img.work-shot-image")].filter((i) => getComputedStyle(i).visibility !== "hidden").length,
+      video: performance.getEntriesByType("resource").some((e) => e.name.endsWith(".mp4")),
+    }));
+    check(rest.pages === 0, `landing ${width}x${height} fetches no whole-page preview at rest (${rest.pages} loaded)`);
+    check(rest.drawn === 0, `landing ${width}x${height} draws no empty page image over a window at rest (${rest.drawn} drawn)`);
+    check(!rest.video, `landing ${width}x${height} fetches no recording at rest`);
     await page.close();
   }
 
@@ -199,190 +202,59 @@ try {
     await page.close();
   }
 
-  // ── every tile's name reads whole ───────────────────────────────────────
-  // A narrow cell once cut "Riflessi Auto Care" to "RIF…" at 1024 and still
-  // trimmed it at 1440; DriftPilot, History and AutoTrader.ca were cut at
-  // 1024. Short names at the narrowest widths and an arrow-only call to
-  // action keep every name whole.
-  for (const [width, height] of [[1024, 768], [1280, 800], [1440, 900], [1680, 1050], [1920, 1080], [390, 844]]) {
+  // ── the work cards ──────────────────────────────────────────────────────
+  // Four cards, each with one link named for where it goes ("Read the …
+  // case study", "See the AI workflow"), so a screen reader hears four
+  // specific links rather than four "Read more"s. Side by side, their
+  // pictures share one height, so the text under them starts on one line.
+  for (const [width, height] of [[1024, 768], [1440, 900], [1920, 1080]]) {
     const page = await open("/", { width, height });
-    const cut = await page.evaluate(() =>
-      [...document.querySelectorAll("a.tile")]
-        .map((t) => {
-          const name = t.querySelector(".display-hero");
-          return name && name.scrollWidth > name.clientWidth + 1 ? name.innerText : null;
-        })
-        .filter(Boolean),
-    );
-    check(cut.length === 0, `deck ${width}x${height}: every tile's name reads whole (${cut.join(", ") || "none cut"})`);
-    await page.close();
-  }
-
-  // ── no double rules in a tile ───────────────────────────────────────────
-  // Two hairlines close together with nothing between them read as a
-  // mistake. The Tadvantage tile drew exactly that on a phone: its column's
-  // top rule and its stats grid's, 25px apart, the highlights between them
-  // hidden below xl.
-  for (const [width, height] of [[390, 844], [1024, 768], [1440, 900]]) {
-    const page = await open("/", { width, height });
-    const doubles = await page.evaluate(() =>
-      [...document.querySelectorAll("a.tile")].flatMap((tile) => {
-        const shown = [...tile.querySelectorAll("*")].filter((e) => e.getClientRects().length > 0);
-        const rules = shown
-          // A rule spans its column. The 7px status squares (StatusMark) have
-          // borders too, but two of them 7px apart, one beside a wrapped
-          // label, are not a double hairline.
-          .filter((e) => {
-            const cs = getComputedStyle(e);
-            return parseFloat(cs.borderTopWidth) > 0 && cs.borderTopStyle !== "none" && e.getBoundingClientRect().width >= 24;
-          })
-          .map((e) => e.getBoundingClientRect().top)
-          .sort((a, b) => a - b);
-        const content = shown
-          .filter((e) => e.matches("img, video") || [...e.childNodes].some((n) => n.nodeType === 3 && n.textContent.trim()))
-          .map((e) => e.getBoundingClientRect().top);
-        const out = [];
-        for (let i = 1; i < rules.length; i++) {
-          const [a, b] = [rules[i - 1], rules[i]];
-          if (b - a > 1 && b - a < 40 && !content.some((t) => t > a && t < b)) {
-            out.push(`${tile.getAttribute("href")} ${Math.round(b - a)}px`);
-          }
-        }
-        return out;
-      }),
-    );
-    check(doubles.length === 0, `deck ${width}x${height}: no tile draws two rules with nothing between (${doubles.join(", ") || "none"})`);
-    await page.close();
-  }
-
-  // ── deck copy with no height to spare ──────────────────────────────────
-  // Two strings are sized to the deck, not to their own box, and a longer one
-  // used to fail a check about some other element: a second lede line pushed
-  // AutoTrader past its cell at 1280x800, and a wrapped AutoTrader point
-  // shortened its screenshot window from 1680 (the one-height check below).
-  // These name the string itself.
-  for (const [width, height] of [[1024, 768], [1280, 800], [1440, 900], [1680, 1050], [1920, 1080]]) {
-    const page = await open("/", { width, height });
-    const fit = await page.evaluate(() => {
-      const lines = (el) => Math.round(el.getBoundingClientRect().height / parseFloat(getComputedStyle(el).lineHeight));
-      const lede = document.querySelector(".deck-lede");
+    const r = await page.evaluate(() => {
+      const cards = [...document.querySelectorAll(".work-card")];
+      const links = cards.map((c) => [...c.querySelectorAll("a[href]")].map((a) => a.textContent.trim()));
+      const rows = new Map();
+      for (const card of cards) {
+        const row = Math.round(card.getBoundingClientRect().top);
+        const picture = Math.round(card.firstElementChild.getBoundingClientRect().height);
+        rows.set(row, [...(rows.get(row) ?? []), picture]);
+      }
       return {
-        lede: lede ? lines(lede) : 0,
-        points: [...document.querySelectorAll('a.tile[href="/autotrader"] .tile-points > li')]
-          .filter((li) => li.offsetParent !== null)
-          .map((li) => ({ text: li.textContent.trim().slice(0, 32), lines: lines(li) })),
+        count: cards.length,
+        named: links.every((l) => l.length === 1 && /^(Read|See) the /.test(l[0])),
+        links: links.map((l) => l.join(" | ")),
+        // 1px of slack: a bordered frame rounds a pixel off a 16:9 one.
+        uneven: [...rows.values()].filter((h) => Math.max(...h) - Math.min(...h) > 1),
       };
     });
-    check(fit.lede === 1, `deck ${width}x${height}: the lede is one line (${fit.lede})`);
-    if (width >= 1680) {
-      const wrapped = fit.points.filter((p) => p.lines !== 1);
-      check(
-        fit.points.length === 4 && wrapped.length === 0,
-        `deck ${width}x${height}: every AutoTrader point is one line (${wrapped.map((p) => `"${p.text}…" ${p.lines}`).join(", ") || `${fit.points.length} shown`})`,
-      );
-    }
+    check(r.count === 4 && r.named, `landing ${width}x${height}: 4 work cards, each one specific link (${r.links.join("; ")})`);
+    check(r.uneven.length === 0, `landing ${width}x${height}: cards side by side have pictures of one height (${JSON.stringify(r.uneven)})`);
     await page.close();
   }
 
-  // ── deck screenshots: one height, and a pan on hover ───────────────────
-  for (const [width, height] of [[1680, 1050], [1920, 1080]]) {
-    const page = await open("/", { width, height });
-    const heights = await page.evaluate(() =>
-      [...document.querySelectorAll(".tile-shot-frame")]
-        .filter((f) => f.offsetParent !== null)
-        .map((f) => Math.round(f.getBoundingClientRect().height)),
+  // ── a work card's screenshot: loads and pans on hover ──────────────────
+  {
+    const page = await open("/", { width: 1920, height: 1080 });
+    await (await page.$(DRIFTPILOT_CARD)).hover();
+    const panned = await becomes(
+      page,
+      (sel) => new DOMMatrix(getComputedStyle(document.querySelector(sel)).transform).m42 < -20,
+      DRIFTPILOT_PAGE,
+      3000,
     );
-    check(
-      heights.length === 4 && new Set(heights).size === 1,
-      `deck ${width}x${height} shows 4 screenshot windows of one height (${heights.join(", ")}px)`,
+    const state = await page.evaluate((sel) => ({
+      hover: matchMedia("(hover: hover)").matches,
+      y: Math.round(new DOMMatrix(getComputedStyle(document.querySelector(sel)).transform).m42),
+    }), DRIFTPILOT_PAGE);
+    check(panned, `hovering a work card pans its screenshot (hover media ${state.hover}, moved ${state.y}px)`);
+    const loaded = await becomes(
+      page,
+      (sel) => {
+        const img = document.querySelector(sel);
+        return img?.getAttribute("src") && img.complete && img.naturalWidth > 0 && getComputedStyle(img).visibility === "visible";
+      },
+      DRIFTPILOT_PAGE,
     );
-
-    const rest = await page.evaluate(() => ({
-      pages: [...document.querySelectorAll("img.tile-shot-image")].filter((i) => i.getAttribute("src")).length,
-      // A sized image with no source draws a broken-image icon; at rest the
-      // page image must draw nothing at all over its window.
-      drawn: [...document.querySelectorAll(".tile-shot-frame")]
-        .filter((f) => f.offsetParent !== null)
-        .filter((f) => getComputedStyle(f.querySelector("img.tile-shot-image")).visibility !== "hidden").length,
-      shards: document
-        .getAnimations()
-        .filter((a) => a.animationName?.startsWith("shard") && a.playState === "running").length,
-    }));
-    check(rest.pages === 0, `deck ${width}x${height} fetches no whole-page preview at rest (${rest.pages} loaded)`);
-    check(rest.drawn === 0, `deck ${width}x${height} draws no empty page image over a window at rest (${rest.drawn} drawn)`);
-    check(rest.shards === 0, `deck ${width}x${height} runs no cursor animation at rest (${rest.shards} running)`);
-
-    if (width === 1920) {
-      const tile = await page.$('a.tile[href="/work/tadvantage"]');
-      await tile.hover();
-      const panned = await becomes(
-        page,
-        () => {
-          const img = document.querySelector('a.tile[href="/work/tadvantage"] .tile-shot-image');
-          return img && new DOMMatrix(getComputedStyle(img).transform).m42 < -20;
-        },
-        undefined,
-        3000,
-      );
-      const state = await page.evaluate(() => ({
-        hover: matchMedia("(hover: hover)").matches,
-        hovered: document.querySelector('a.tile[href="/work/tadvantage"]').matches(":hover"),
-        y: Math.round(
-          new DOMMatrix(
-            getComputedStyle(document.querySelector('a.tile[href="/work/tadvantage"] .tile-shot-image')).transform,
-          ).m42,
-        ),
-      }));
-      check(
-        panned,
-        `hovering a deck tile pans its screenshot (hover media ${state.hover}, tile hovered ${state.hovered}, moved ${state.y}px)`,
-      );
-
-      const loaded = await becomes(page, () => {
-        const img = document.querySelector('a.tile[href="/work/tadvantage"] img.tile-shot-image');
-        return (
-          img?.getAttribute("src") && img.complete && img.naturalWidth > 0 &&
-          getComputedStyle(img).visibility === "visible"
-        );
-      });
-      check(loaded, "hovering a deck tile fetches its whole-page preview and shows it once it arrives");
-
-      // The tile cursor: on, following, running its loop, and the arrow kept.
-      const box = await tile.boundingBox();
-      await page.mouse.move(box.x + box.width / 2, box.y + box.height / 2, { steps: 4 });
-      const cursor = await becomes(page, () => {
-        const c = document.querySelector(".tile-cursor");
-        const tileEl = document.querySelector('a.tile[href="/work/tadvantage"]');
-        return (
-          c?.dataset.active === "true" &&
-          c.style.transform.startsWith("translate3d") &&
-          getComputedStyle(tileEl).cursor !== "none" &&
-          document.getAnimations().some((a) => a.animationName === "shard" && a.playState === "running")
-        );
-      });
-      check(cursor, "hovering a deck tile brings up the tile cursor beside the arrow, running");
-
-      // What shatters is the CR mark: every shard carries its piece of the
-      // letters, the mask image is actually served, and the surviving
-      // shard's letters widen back to the whole mark in step with the loop.
-      const mark = await page.evaluate(async () => {
-        const shards = [...document.querySelectorAll(".tile-cursor-shard")];
-        const masked = shards.filter((s) => getComputedStyle(s, "::after").maskImage.includes("cr-mark-letters")).length;
-        const res = await fetch("/brand/cr-mark-letters.png");
-        return {
-          shards: shards.length,
-          masked,
-          served: `${res.status} ${res.headers.get("content-type")}`,
-          letters: document
-            .getAnimations()
-            .some((a) => a.animationName === "shard-main-letters" && a.playState === "running"),
-        };
-      });
-      check(
-        mark.shards === 16 && mark.masked === 16 && mark.served === "200 image/png" && mark.letters,
-        `the tile cursor shatters the CR mark (${mark.masked}/${mark.shards} shards masked, letters ${mark.served}, main shard reforming ${mark.letters})`,
-      );
-    }
+    check(loaded, "hovering a work card fetches its whole-page preview and shows it once it arrives");
     await page.close();
   }
 
@@ -471,9 +343,9 @@ try {
   // ── the overview stacked: profile, and scroll-driven screenshots ───────
   // A phone, and the edge of the stacked layout from both sides of its
   // breakpoint: 1023px, and 1100px at a 20px default font, where the rem
-  // breakpoint (64rem = 1280px there) still stacks the tiles. The layout
+  // breakpoint (64rem = 1280px there) still stacks the cards. The layout
   // comes from the lg: utilities, the pan from globals.css and the loader
-  // from DeckPointer; all three have to agree on where "stacked" ends.
+  // from PreviewLoader; all three have to agree on where "stacked" ends.
   for (const { width, height, font, reduced = false, saveData = false } of [
     { width: 390, height: 844 },
     { width: 390, height: 844, reduced: true },
@@ -497,21 +369,25 @@ try {
         profile.shown && profile.portrait && profile.links === 4,
         `stacked overview (${at}) shows the profile: portrait and ${profile.links} contact links`,
       );
-      const shots = await page.evaluate(
-        () => [...document.querySelectorAll(".tile-shot-frame")].filter((f) => f.offsetParent !== null).length,
+      const shots = await page.evaluate(() => ({
+        windows: [...document.querySelectorAll("img.work-shot-window")].filter((i) => i.offsetParent !== null).length,
+        recording: document.querySelector(".work-card video") !== null,
+      }));
+      check(
+        shots.windows === 2 && shots.recording,
+        `stacked overview (${at}) shows both work screenshots and the recording (${shots.windows} windows, recording ${shots.recording})`,
       );
-      check(shots === 4, `stacked overview (${at}) shows all 4 work screenshots (${shots})`);
     }
 
     // Bring the first shot up the screen and see whether its page loads and pans.
     await page.evaluate(() => {
-      const frame = document.querySelector(".tile-shot-frame");
+      const frame = document.querySelector("figure.work-shot-frame");
       window.scrollTo(0, window.scrollY + frame.getBoundingClientRect().top - 300);
     });
     const state = () =>
       page.evaluate(() => {
-        const img = document.querySelector(".tile-shot-frame img.tile-shot-image");
-        const top = document.querySelector(".tile-shot-frame img.tile-shot-window");
+        const img = document.querySelector("figure.work-shot-frame img.work-shot-image");
+        const top = document.querySelector("figure.work-shot-frame img.work-shot-window");
         return {
           loaded: Boolean(img.getAttribute("src")) && img.complete && img.naturalWidth > 0,
           y: Math.round(new DOMMatrix(getComputedStyle(img).transform).m42),
@@ -521,14 +397,14 @@ try {
       });
     if (!reduced && !saveData) {
       const panned = await becomes(page, () => {
-        const img = document.querySelector(".tile-shot-frame img.tile-shot-image");
+        const img = document.querySelector("figure.work-shot-frame img.work-shot-image");
         return (
           img.complete && img.naturalWidth > 0 && getComputedStyle(img).visibility === "visible" &&
           new DOMMatrix(getComputedStyle(img).transform).m42 < -20
         );
       });
       const s = await state();
-      check(panned, `stacked (${at}): scrolling a tile loads its page and pans it (loaded ${s.loaded}, moved ${s.y}px)`);
+      check(panned, `stacked (${at}): scrolling a card loads its page and pans it (loaded ${s.loaded}, moved ${s.y}px)`);
     } else if (reduced) {
       await new Promise((r) => setTimeout(r, 800));
       const s = await state();
@@ -550,9 +426,9 @@ try {
   // ── the reading path ────────────────────────────────────────────────────
   // The rail's order is the site's: AutoTrader.ca and its pages first, then
   // the studio's, then the practice pages (owner's decision, 2026-09-26).
-  // Every page carries its rail number in its hero, a deck tile shows the
-  // number of the page it opens, and each page's close offers the next page
-  // in rail order — so a reader following "Next" walks the rail exactly.
+  // Every page carries its rail number in its hero, and each page's close
+  // offers the next page in rail order, so a reader following "Next" walks
+  // the rail exactly.
   {
     const PATH = [
       "/autotrader", "/work/tadvantage", "/work/mygarage", "/work/luxury-tax",
@@ -569,14 +445,6 @@ try {
     check(
       JSON.stringify(rail) === JSON.stringify(PATH),
       `rail runs AutoTrader.ca, its pages, the studio's, then practice (${rail.join(" ")})`,
-    );
-    const tiles = await page.evaluate(() =>
-      [...document.querySelectorAll("a.tile")].map((a) => [a.getAttribute("href"), a.querySelector(".chip")?.textContent.trim()]),
-    );
-    const misnumbered = tiles.filter(([href, n]) => n !== number(href));
-    check(
-      tiles.length === 7 && misnumbered.length === 0,
-      `every deck tile shows its page's rail number (${tiles.map(([h, n]) => `${n} ${h}`).join(", ")})`,
     );
     await page.close();
 
@@ -699,7 +567,7 @@ try {
     await page.close();
   }
 
-  // Reduced motion is followed live, as the deck's pointer follows it.
+  // Reduced motion is followed live, as the work cards' loader follows it.
   {
     const page = await open("/work/riflessi", { width: 1440, height: 900 });
     await showVideo(page);
@@ -770,31 +638,20 @@ try {
     await page.close();
   }
 
-  // ── reduced motion: nothing loops, reveals or pans ─────────────────────
+  // ── reduced motion: hovering a card neither pans nor fetches ──────────
   {
     const page = await open("/", { width: 1920, height: 1080, reduced: true });
-    const tile = await page.$('a.tile[href="/work/tadvantage"]');
-    await tile.hover();
+    await (await page.$(DRIFTPILOT_CARD)).hover();
     await new Promise((r) => setTimeout(r, 1200));
-    const { moved, hover } = await page.evaluate(() => {
-      const img = document.querySelector('a.tile[href="/work/tadvantage"] .tile-shot-image');
-      return {
-        moved: new DOMMatrix(getComputedStyle(img).transform).m42,
-        hover: matchMedia("(hover: hover)").matches,
-      };
-    });
+    const after = await page.evaluate((sel) => ({
+      moved: new DOMMatrix(getComputedStyle(document.querySelector(sel)).transform).m42,
+      hover: matchMedia("(hover: hover)").matches,
+      pages: [...document.querySelectorAll("img.work-shot-image")].filter((i) => i.getAttribute("src")).length,
+    }), DRIFTPILOT_PAGE);
     // Only meaningful with hover available — otherwise "no pan" proves nothing.
     check(
-      hover && moved === 0,
-      `reduced motion: hovering a deck tile does not pan (hover media ${hover}, moved ${moved}px)`,
-    );
-    const after = await page.evaluate(() => ({
-      cursor: document.querySelector(".tile-cursor")?.dataset.active,
-      pages: [...document.querySelectorAll("img.tile-shot-image")].filter((i) => i.getAttribute("src")).length,
-    }));
-    check(
-      after.cursor === "false" && after.pages === 0,
-      `reduced motion: no tile cursor and no whole-page fetch on hover (cursor ${after.cursor}, ${after.pages} loaded)`,
+      after.hover && after.moved === 0 && after.pages === 0,
+      `reduced motion: hovering a work card neither pans nor fetches (hover media ${after.hover}, moved ${after.moved}px, ${after.pages} loaded)`,
     );
     await page.close();
   }

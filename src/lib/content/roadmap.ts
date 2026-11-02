@@ -10,7 +10,6 @@ import type {
   RoadmapGroup,
   RoadmapItem,
   Source,
-  UpNext,
 } from "@/types/content";
 
 /**
@@ -243,7 +242,7 @@ export async function getDirection(): Promise<DirectionStage[]> {
 }
 
 /**
- * The horizon rules, held here so the page, its list and the home tile all
+ * The horizon rules, held here so the page, its list and the landing all
  * read one answer:
  *  - a shipped date needs the pull request that merged it;
  *  - shipped keeps at most three items, newest first;
@@ -273,18 +272,6 @@ export async function getRoadmap(): Promise<RoadmapGroup[]> {
   return HORIZONS.map((h) => ({ ...h, items: ITEMS.filter((item) => item.horizon === h.horizon) })).filter(
     (group) => group.items.length > 0,
   );
-}
-
-/**
- * The home tile's fourth cell: work with an open pull request when there is
- * some, since that is what is moving; otherwise the first of what's next.
- */
-export async function getUpNext(): Promise<UpNext> {
-  const groups = await getRoadmap();
-  const now = groups.find((g) => g.horizon === "now");
-  if (now) return { heading: now.title, status: "Open pull request", filled: true, items: now.items };
-  const next = groups.find((g) => g.horizon === "next");
-  return { heading: next?.title ?? "Next", status: "Not started", filled: false, items: next?.items ?? [] };
 }
 
 /**

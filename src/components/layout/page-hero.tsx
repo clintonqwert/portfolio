@@ -12,13 +12,13 @@ export interface Spec {
 }
 
 /**
- * The first viewport of every page off the deck.
+ * The first viewport of every page off the overview.
  *
  * Answers three things before any scrolling: what this is (kicker and
  * headline), the argument it makes (lede), and how to check it (the title
  * block — period, role, and the live site and source to verify against). The
- * kicker carries the same ink index chip the deck tile did, so the page reads
- * as that tile opened up rather than as somewhere new.
+ * kicker carries the ink index chip the rail numbers the page with, so it
+ * reads as that page opened up rather than as somewhere new.
  *
  * `media` takes the right-hand half from xl up; below that it drops under the
  * text. Without it the headline gets the width instead.
@@ -161,13 +161,10 @@ export function PageHero({
           ) : null}
         </div>
 
-        {/* Last in the hero's flow, not pinned to the fold. The hero is at
-            least one viewport tall, so when its content fits, `mt-auto`
-            still lands the cue at the bottom of the screen; when the
-            content runs past the fold — a phone, a long headline — the cue
-            follows it instead of drawing over the title block or a
-            screenshot, and the content crossing the fold says "scroll" by
-            itself. Pinned, it overlapped hero content at 375 and 390 wide. */}
+        {/* Last in the hero's flow, under the headline's first letter, and
+            sticky to the screen's foot (.scroll-cue-dock): when the content
+            runs past the fold it holds at the bottom of the screen rather
+            than following the content out of sight. */}
         <ScrollCue target={next} label={cueLabel} />
       </div>
     </section>

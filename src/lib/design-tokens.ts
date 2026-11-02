@@ -121,7 +121,7 @@ export const duration = {
  * written in px would describe a layout the page is no longer in.
  */
 export const breakpoints = {
-  /** The rail appears and the deck becomes a grid. */
+  /** The rail appears, and the work cards sit two to a row. */
   lg: "64rem",
   /** A case-study hero sets its shot beside the title. */
   xl: "80rem",
@@ -129,7 +129,7 @@ export const breakpoints = {
 
 /**
  * Media conditions built from them. `stacked` is everything below lg, where
- * the rail gives way to the slim bar and the deck's tiles stack: the phone
+ * the rail gives way to the slim bar and the work cards stack: the phone
  * profile card, and the screenshots that pan as they scroll past.
  */
 export const media = {

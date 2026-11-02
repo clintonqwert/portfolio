@@ -1,13 +1,13 @@
 #!/usr/bin/env node
 /**
- * Fail if a dashboard panel's content runs past its own edge.
+ * Fail if any box on any route loses its own content: a box that clips what
+ * it holds, a fixed panel that hides it, or a page that scrolls sideways.
  *
- * The shell is fixed to one viewport and panels do not scroll — prose flows into
- * CSS columns instead. That trade means overflowing content is silently *clipped*
- * rather than merely out of view, so nothing in the browser complains and a
- * review can miss it. It has shipped twice: once from an obsolete max-width
- * capping the flow to three columns, once from a panel given more words than it
- * had room for.
+ * Clipped content is silently *gone* rather than merely out of view, so
+ * nothing in the browser complains and a review can miss it. It has shipped
+ * more than once: from an obsolete max-width capping the prose to three
+ * columns, from a panel given more words than it had room for, and on the
+ * old one-screen deck, from tiles given more than their cells held.
  *
  * Driven over CDP rather than by screenshotting, because Chrome clamps a real
  * window to roughly 500px wide — which once had me report a phantom mobile
@@ -36,11 +36,10 @@ const ROUTES = [
   "/work/driftpilot", "/work/riflessi", "/work/tadvantage", "/work/mygarage", "/work/luxury-tax",
 ];
 
-/** The shell is only viewport-fit at lg and up; below that it scrolls by design. */
+/** Desktop widths down to a phone, short windows, and a larger default font. */
 const VIEWPORTS = [
-  // 1920 and 1680 are not vanity sizes here: the deck reveals screenshots and
-  // extra points above 1440, so they are the only widths where that content
-  // exists at all. Testing 1440 down would have shipped it unmeasured.
+  // 1920 and 1680 are not vanity sizes: the widest layouts are where a box
+  // last changes shape, and testing 1440 down would leave them unmeasured.
   { name: "1920x1080", width: 1920, height: 1080 },
   { name: "1680x1050", width: 1680, height: 1050 },
   { name: "1440x900", width: 1440, height: 900 },
@@ -57,20 +56,10 @@ const VIEWPORTS = [
   // in different layouts: 1100 is below lg (64rem = 1280px) and stacks, and
   // 1440x900 is a short desktop window (under 47.5rem = 950px tall). Media
   // queries written in px once ignored it and put a desktop grid under a
-  // stacked page. The text is a quarter larger, so tiles fit or clip anew.
+  // stacked page. The text is a quarter larger, so boxes fit or clip anew.
   { name: "1100x800 at 20px", width: 1100, height: 800, font: 20 },
   { name: "1440x900 at 20px", width: 1440, height: 900, font: 20 },
   { name: "1920x1080 at 20px", width: 1920, height: 1080, font: 20 },
-  // The deck at the shortest window each of its height gates allows. Every
-  // reveal on it needs height as well as width (xl-tall, wide-tall and
-  // wider-tall in globals.css), so the worst case for each is the first
-  // height that shows it, and every viewport above scales height with width
-  // and never reached one. A 1728x860 window clipped Tadvantage by 71px
-  // (2026-10-31). The deck only: the other routes did not change.
-  ...[
-    [1280, 760], [1440, 760], [1680, 760], [2560, 760],
-    [1440, 800], [1440, 864], [1680, 800], [1680, 1008], [1920, 960],
-  ].map(([width, height]) => ({ name: `${width}x${height} deck`, width, height, routes: ["/"] })),
 ];
 
 const browser = await puppeteer.launch({
@@ -101,7 +90,7 @@ try {
     await page.setViewport({ width: vp.width, height: vp.height });
     await cdp.send("Page.setFontSizes", { fontSizes: { standard: vp.font ?? 16 } });
 
-    for (const route of vp.routes ?? ROUTES) {
+    for (const route of ROUTES) {
       await page.goto(`${ORIGIN}${route}`, { waitUntil: "load", timeout: 30000 });
       // Webfonts change line-breaking, so measuring before they settle would
       // report overflow that a real reader never sees, and miss some they do.
@@ -112,17 +101,11 @@ try {
         const label = (el) =>
           (el.textContent ?? "").trim().slice(0, 40).replace(/\s+/g, " ");
 
-        // 2px of slack: sub-pixel rounding on fractional layouts is not a defect.
-        for (const el of document.querySelectorAll(".tile")) {
-          const over = el.scrollHeight - el.clientHeight - 2;
-          if (over > 0) out.push(`tile +${over}px [${label(el)}]`);
-        }
-
-        // Anything that *loses* its own children. Measuring only .tile missed
-        // two real defects: /history cut the earliest role mid-word inside an
-        // overflow-hidden child, and /gaps clipped a 640px table into a 247px
-        // column. In both cases the tile was the right height, so a check that
-        // only asked the tile saw nothing wrong.
+        // Anything that *loses* its own children. When this check measured
+        // only the deck's tiles it missed two real defects: /history cut the
+        // earliest role mid-word inside an overflow-hidden child, and /gaps
+        // clipped a 640px table into a 247px column. Both outer boxes were the
+        // right height, so a check that only asked them saw nothing wrong.
         //
         // Only `hidden` and `clip` count as loss. `auto` is reachable by
         // scrolling, and flagging it buried the real hits under the mobile nav
@@ -136,11 +119,11 @@ try {
           // The scroll cue's dots fall the length of its thread and shrink
           // away — that is the animation. Decorative and aria-hidden.
           el.classList.contains("scroll-cue-thread") ||
-          // A deck tile's screenshot is a window onto a whole page, which it
+          // A work card's screenshot is a window onto a whole page, which it
           // pans down on hover. The page running past the window is the
-          // design, the image is one element with alt text, and every tile
-          // is still measured: this only exempts the window itself.
-          el.classList.contains("tile-shot-frame") ||
+          // design, the image is one element with alt text, and the card is
+          // still measured: this only exempts the window itself.
+          el.classList.contains("work-shot-frame") ||
           // An ellipsis is a signpost, not a loss — the reader can see that
           // something was shortened, which is the whole difference. Both the
           // single-line (`truncate`) and multi-line (`line-clamp-N`) forms
@@ -177,7 +160,7 @@ try {
         // Fixed panels that hide their own content. A position:fixed element
         // cannot be scrolled by the page, so anything past its edge is
         // unreachable unless it scrolls itself. The rail failed exactly this
-        // way and no tile-based check could see it: the rail is not a tile.
+        // way and no check of the page's boxes could see it: the rail is not one.
         for (const el of document.querySelectorAll("*")) {
           const cs = getComputedStyle(el);
           if (cs.position !== "fixed") continue;

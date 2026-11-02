@@ -5,7 +5,14 @@ import type { Role, StackGroup } from "@/types/content";
  * what it amounted to. A list of dated rows rather than a timeline of dots —
  * PRODUCT.md rules the dots out, and the dates are the part a reader checks.
  */
-export function TrackRecord({ roles }: { roles: Role[] }) {
+export function TrackRecord({
+  roles,
+  compact = false,
+}: {
+  roles: Role[];
+  /** Period, title and organisation only: the landing's summary of /history. */
+  compact?: boolean;
+}) {
   return (
     <ol className="border-t border-rule">
       {roles.map((role, i) => (
@@ -20,9 +27,11 @@ export function TrackRecord({ roles }: { roles: Role[] }) {
           <div>
             <h3 className="display-tight text-xl leading-snug text-ink">{role.title}</h3>
             <p className="mt-0.5 font-mono text-xs text-muted">{role.org}</p>
-            <p className="mt-2 max-w-[64ch] text-base leading-relaxed text-muted">
-              {role.summary}
-            </p>
+            {compact ? null : (
+              <p className="mt-2 max-w-[64ch] text-base leading-relaxed text-muted">
+                {role.summary}
+              </p>
+            )}
           </div>
         </li>
       ))}

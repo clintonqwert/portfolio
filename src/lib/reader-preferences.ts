@@ -8,7 +8,7 @@
  * Whether the reader has asked to save data: Save-Data, or the media feature
  * where a browser ships it. Loading something because it scrolled into view
  * is not the reader asking for it, so under this nothing loads that way —
- * the deck's whole-page previews and the case-study recordings alike.
+ * the work cards' whole-page previews and the recordings alike.
  */
 export function savingData(): boolean {
   const { connection } = navigator as Navigator & { connection?: { saveData?: boolean } };

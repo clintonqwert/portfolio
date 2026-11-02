@@ -15,13 +15,13 @@ material work. The repository is the technical source of truth.
   earlier drafts of this material drifted into claims the repositories did not
   support.
 - Reuse the token, content, SEO and component systems before adding alternatives.
-- **The deck must not scroll at ≥1024px wide and ≥760px tall.** Anything added
-  to `/` has to fit its grid cell; tiles clip or scroll internally. If content
-  does not fit, it belongs in a detail route, not in a taller tile. Below 760px
-  of height the rows grow to their content and `<main>` scrolls — a 1440x700
-  window is desktop-wide and laptop-short, and eight rows of it gave each tile
-  ~145px, which clipped by up to 78px. The promise holds wherever there is room
-  to keep it honestly.
+- **`/` is a landing page that scrolls** (v2, 2026-10-31): a hero with the two
+  actions and four proof points, then numbered chapters. It replaced the
+  one-screen deck, which Project OS keeps as a template
+  (`06-Templates/dashboard-deck`). Keep the landing to what proves the
+  headline: each proof point links to the page that owns its fact, and
+  secondary figures belong on that page, not on `/`. The accent goes on the
+  primary action, the one key figure and link hover only.
 - **The rail must never hide its own content.** It is `position: fixed`, so
   anything past its edge cannot be scrolled to by the page. It carries
   `overflow-y-auto` for that reason; do not remove it to tidy a scrollbar away.

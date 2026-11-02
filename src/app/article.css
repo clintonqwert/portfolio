@@ -1,8 +1,8 @@
 /*
-  Secondary pages: every route off the deck.
+  Pages: the landing and every route it leads to.
 
   Split out of globals.css once this layer had grown past the point where the
-  deck and the documents it opens were easy to tell apart in one file. The
+  old deck and the documents it opened were easy to tell apart in one file. The
   class families and naming rules are the ones documented at the top of
   globals.css, and every colour, duration and easing here is a token from its
   @theme. The few fixed sizes (the sheet's measure, the cue's track, the
@@ -11,7 +11,7 @@
 @layer components {
   /*
     Chapter prose: one measured column at reading size. Not the 15px body —
-    the deck's density is the point of the deck, but a chapter is read
+    a chapter is read
     start to finish, and 17px/1.65 is what keeps a long paragraph from
     feeling like a wall. Never flowed into multi-column: balance fills
     whatever height it is given, which once turned every short case study
@@ -29,10 +29,10 @@
 
   /*
     ── secondary pages ───────────────────────────────────────────────
-    Every route off the deck is a document the deck indexes: a hero that
-    holds the first viewport, then chapters that scroll. The deck is dense
-    because it is scanned; these are paced because they are read. The rail
-    stays fixed beside both, so moving between them never moves the frame.
+    Every route is a document: a hero that holds the first viewport, then
+    chapters that scroll. The landing is the same, with its work as cards in
+    a wide row. The rail stays fixed beside all of them, so moving between
+    them never moves the frame.
   */
 
   /*
@@ -93,8 +93,8 @@
     opacity is not counted as painted until it arrives, which would push
     Largest Contentful Paint back by the whole stagger.
   */
-  /* The face itself is .display-hero (globals.css), shared with the deck's
-     headline and tile titles; the capitals are the hero's alone. */
+  /* The face itself is .display-hero (globals.css), shared with the
+     landing's headline; the capitals are the secondary hero's alone. */
   .hero-title {
     text-transform: uppercase;
     line-height: 1.04;
@@ -156,12 +156,45 @@
     exactly this — markers, not surfaces. A paper halo keeps the thread
     readable where it crosses a dark screenshot.
   */
+  /*
+    Where the cue sits: last in the hero's flow, lined up with the
+    headline's first letter, and sticky to the bottom of the screen. When the
+    hero fits its viewport the cue rests at the hero's foot, as it always
+    has; when the content runs past the fold, a phone or a short window, it
+    holds at the bottom of the screen instead of following the content down
+    out of sight. So it is on the first screen of every page, in the same
+    place, and leaves once scrolling starts. Sticky rather than fixed: it
+    keeps the sheet's left edge, which a fixed element would have to compute.
+  */
+  .scroll-cue-dock {
+    position: sticky;
+    bottom: max(calc(var(--spacing) * 5), env(safe-area-inset-bottom));
+    margin-top: auto;
+    padding-top: calc(var(--spacing) * 10);
+    z-index: var(--z-sticky);
+  }
+
+  @media (width >= theme(--breakpoint-lg)) {
+    .scroll-cue-dock {
+      bottom: calc(var(--spacing) * 8);
+    }
+  }
+
+  /*
+    A borderless square of paper behind it (owner, 2026-10-31): where the
+    hero runs past the screen and the cue holds over content, it covers that
+    content cleanly instead of tangling with it, and where it rests on empty
+    page it cannot be seen. The padding is taken back with a negative margin,
+    so the dot still sits on the headline's first letter.
+  */
   .scroll-cue {
     display: inline-flex;
     align-items: flex-start;
     gap: calc(var(--spacing) * 2.5);
+    padding: calc(var(--spacing) * 3);
+    margin: calc(var(--spacing) * -3);
     color: var(--color-ink);
-    filter: drop-shadow(0 0 1px var(--color-canvas));
+    background-color: var(--color-canvas);
     transition:
       opacity var(--duration-normal) var(--ease-out-quart),
       transform var(--duration-normal) var(--ease-out-quart);
@@ -389,7 +422,7 @@
 
   /*
     A screenshot on a secondary page. The frame is a hairline that firms to
-    ink when the shot links to the live site, the same answer a deck tile
+    ink when the shot links to the live site, the same answer a work card
     gives. The image drifts a little slower than the page as the hero leaves,
     which is the whole of the parallax: a few dozen pixels, on the frame
     rather than the image, so nothing is ever cropped to make room for it.

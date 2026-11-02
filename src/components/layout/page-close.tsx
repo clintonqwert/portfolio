@@ -8,7 +8,7 @@ import type { PageLink } from "@/types/content";
  *
  * Next is the dominant move — the reader who got this far is the one worth
  * keeping — so it takes the full sheet in display type. Previous, related
- * reading and the way back to the deck sit beneath it at reading size, and the
+ * reading and the way back to the overview sit beneath it at reading size, and the
  * last line is the two actions the whole site exists to earn: an email, and
  * the résumé.
  */
