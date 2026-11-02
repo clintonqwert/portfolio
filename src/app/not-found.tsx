@@ -8,7 +8,7 @@ export default function NotFound() {
       <SectionHeading as="h1">Page not found</SectionHeading>
       <p className="mt-3 max-w-[52ch] text-muted">
         There’s no page here. You’ll find the work on the{" "}
-        <Link href="/" className="text-accent underline underline-offset-4">
+        <Link href="/" className="text-ink underline underline-offset-4">
           home page
         </Link>
         .

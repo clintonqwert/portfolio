@@ -95,14 +95,18 @@ which is the thing the reader actually cannot verify from code.
    around it (2026-09-25).
 4. **The gaps are load-bearing.** Weaknesses are published in the same visual
    register as strengths. Never soften, hide, or visually demote them.
-5. **Identity preservation — monochrome.** The palette is chroma 0 in both
-   themes: black ink, white paper, grey for what recedes, and solid black
-   blocks for emphasis. This comes from Clinton's own earlier design for this
-   site (`profile/PortfolioSiteDesign`), which is strictly monochrome and lets
-   colour arrive only through photography. The deep teal `#0F5C6B` that
-   preceded it was retired on 2026-09-21 at his request; it was never his
-   mark, and this is. Hierarchy is carried by weight, case and rule — never by
-   hue. Adding an accent colour would undo the identity, not extend it.
+5. **Identity preservation — monochrome, with one signal.** Every surface and
+   every mark is chroma 0 in both themes: black ink, white paper, grey for
+   what recedes, and solid black blocks for emphasis. This comes from
+   Clinton's own earlier design for this site (`profile/PortfolioSiteDesign`),
+   which is strictly monochrome and lets colour arrive through photography.
+   The deep teal `#0F5C6B` that preceded it was retired on 2026-09-21 at his
+   request; it was never his mark, and this is. For v2 he added one hue,
+   signal orange (2026-10-31), and it goes in three places only: the primary
+   action, the one key figure, and a link under the pointer. It says "act
+   here". Hierarchy is still carried by weight, case and rule, never by hue.
+   A second hue, a tinted surface, or the accent on decoration would undo the
+   identity, not extend it.
 
 ## Accessibility & Inclusion
 

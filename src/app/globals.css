@@ -11,9 +11,11 @@
   src/lib/design-tokens.ts. `npm run check:tokens` compares them and fails the
   build on a mismatch — change both together.
 
-  Strategy: monochrome. Chroma 0 in both themes, hierarchy carried by weight,
-  case and rule rather than hue, and colour arriving only through photography.
-  There is no accent colour; PRODUCT.md principle 5 has the reasoning.
+  Strategy: monochrome with one signal. Chroma 0 for every surface and mark in
+  both themes, hierarchy carried by weight, case and rule rather than hue, and
+  colour arriving through photography and one accent: signal orange, kept to
+  the primary action, the key figure and link hover. PRODUCT.md principle 5
+  has the reasoning.
 
   ── CLASS NAMING ──────────────────────────────────────────────────────
   Four families, and a class earns its place by being something you would say
@@ -80,13 +82,14 @@
 
   /*
     ── emphasis + states ───────────────────────────────────────────────
-    No accent hue. `signal` is ink, for a figure that was measured and is
-    worth stopping on; `pass` is grey, for a threshold that simply holds.
-    Monochrome does not mean meaning is lost — it means weight carries it.
+    One hue, signal orange (owner, 2026-10-31, for v2), in three places
+    only: the primary action, the one key figure, and a link under the
+    pointer. Every surface and every other mark stays chroma 0; PRODUCT.md
+    principle 5 has the rule. `signal` is ink, for a figure that was measured
+    and is worth stopping on; `pass` is grey, for a threshold that simply
+    holds. Weight carries meaning; the hue only says "act here".
   */
-  --color-accent: oklch(0.17 0 0);
-  --color-accent-soft: oklch(0.945 0 0);
-  --color-accent-bright: oklch(0.17 0 0);
+  --color-accent: oklch(0.56 0.165 42);
   --color-pass: oklch(0.48 0 0);
   --color-signal: oklch(0.17 0 0);
 
@@ -268,9 +271,9 @@
   --color-line: oklch(0.36 0 0);
   --color-rule: oklch(0.975 0 0);
 
-  --color-accent: oklch(0.975 0 0);
-  --color-accent-soft: oklch(0.255 0 0);
-  --color-accent-bright: oklch(0.975 0 0);
+  /* Lifted for the dark canvas: 8.50:1 there, where the light value would
+     read dim. Canvas-coloured text sits on it at the same ratio. */
+  --color-accent: oklch(0.75 0.15 52);
   --color-pass: oklch(0.72 0 0);
   --color-signal: oklch(0.975 0 0);
 }
@@ -336,15 +339,16 @@
     text-wrap: pretty;
   }
 
+  /* Ink, not the accent: focus has to show on every surface, the accent's own
+     fill included, and the accent is kept for "act here". */
   :focus-visible {
-    outline: 2px solid var(--color-accent);
+    outline: 2px solid var(--color-ink);
     outline-offset: 3px;
     border-radius: var(--radius-sm);
   }
 
-  /* Focus on the dark rail needs the lifted accent to stay visible. */
   .rail :focus-visible {
-    outline-color: var(--color-accent-bright);
+    outline-color: var(--color-rail-ink);
   }
 
   /*
@@ -423,7 +427,7 @@
   }
 
   .rail::-webkit-scrollbar-thumb:hover {
-    background-color: var(--color-accent-bright);
+    background-color: var(--color-rail-ink);
   }
 }
 

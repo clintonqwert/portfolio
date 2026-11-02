@@ -39,7 +39,7 @@ export function MobileProfile() {
               {NAME}
               <span aria-hidden="true">.</span>
             </p>
-            <p className="mt-1.5 font-mono text-3xs uppercase leading-snug tracking-[0.09em] text-accent-bright">
+            <p className="mt-1.5 font-mono text-3xs uppercase leading-snug tracking-[0.09em] text-rail-ink">
               {ROLE_TITLE}
             </p>
             <p className="mt-1 meta text-rail-muted">{LOCATION}</p>

@@ -46,7 +46,7 @@ export function ContactLinks({ layout }: { layout: "stack" | "wrap" }) {
         <li key={href} className="min-w-0">
           <a
             href={href}
-            className="block truncate py-2 text-rail-muted no-underline transition-colors duration-[var(--duration-fast)] ease-[var(--ease-out-quart)] hover:text-accent-bright"
+            className="block truncate py-2 text-rail-muted no-underline transition-colors duration-[var(--duration-fast)] ease-[var(--ease-out-quart)] hover:text-accent"
           >
             {label}
           </a>

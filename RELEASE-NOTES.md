@@ -14,6 +14,12 @@ shipped them, newest first.
 
 ## Unreleased
 
+- **v2: one accent colour.** Signal orange joins the monochrome palette for
+  the primary action, the one key figure and link hover, and nowhere else.
+  It clears 5.00:1 in the light theme and 8.53:1 in the dark one, as text and
+  under text, and `check:contrast` holds it there. Focus rings, which used
+  the accent token while it was ink, now use ink itself. PRODUCT.md
+  principle 5 records the change.
 - **The downloadable résumé has a new layout.** Its words are unchanged. It
   now comes from a markdown source through the same build as every tailored
   résumé: Skills in a sidebar on page 1, and Selected Projects, Education and
