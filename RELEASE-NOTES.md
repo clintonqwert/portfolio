@@ -14,6 +14,25 @@ shipped them, newest first.
 
 ## Unreleased
 
+- **v2: the overview is a landing page.** `/` leads with what Clinton builds
+  and four proof points that each link to the page owning the fact, then the
+  work as four cards named by capability, how the work is done, the track
+  record, what is unfinished (the roadmap's stages and the open gaps), and a
+  contact block. It replaces the one-screen deck; Project OS keeps the deck
+  as a template with its source and measurements. Every new line was written
+  and approved in a private brief first, and the secondary figures moved to
+  the pages that own them.
+  - The headline is "Senior full-stack product engineer", the role title
+    follows it, and the roles sought add product roles.
+  - Riflessi's card plays its scroll recording; the others pan their live
+    page on hover, loading it only then.
+  - The scroll cue holds on the first screen of every page, under the
+    headline's first letter, and leaves after 64px of scrolling.
+  - The rail fits without scrolling from 768px tall: short contact labels,
+    "Vancouver, BC", and the portrait's first step moved to 800px.
+  - `check:behaviour` checks the landing instead of the deck, is split into
+    one module per surface, and now fails if the rail scrolls at 768px tall
+    or more; `check:overflow` drops the deck's tiles and viewports.
 - **v2: one accent colour.** Signal orange joins the monochrome palette for
   the primary action, the one key figure and link hover, and nowhere else.
   It clears 5.00:1 in the light theme and 8.53:1 in the dark one, as text and

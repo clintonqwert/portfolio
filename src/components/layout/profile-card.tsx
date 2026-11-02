@@ -1,7 +1,7 @@
 import Image from "next/image";
 
 import { ThemeToggle } from "@/components/layout/theme-toggle";
-import { LOCATION, NAME, PORTRAIT, ROLE_TITLE } from "@/lib/content/profile";
+import { LOCATION_SHORT, NAME, PORTRAIT, ROLE_TITLE } from "@/lib/content/profile";
 
 /**
  * Profile block at the top of the rail.
@@ -44,7 +44,7 @@ export function ProfileCard() {
           <p className="mt-0.5 font-mono text-3xs uppercase leading-snug tracking-[0.09em] text-rail-ink">
             {ROLE_TITLE}
           </p>
-          <p className="mt-0.5 meta text-rail-muted">{LOCATION}</p>
+          <p className="mt-0.5 meta text-rail-muted">{LOCATION_SHORT}</p>
         </div>
         <ThemeToggle
           iconOnly

@@ -1,7 +1,7 @@
 @import "tailwindcss";
 /*
-  Secondary pages — the hero, chapters, scroll cue, chapter bar and figures
-  every route off the deck is built from — live in their own file. The tokens
+  Pages — the hero, chapters, scroll cue, chapter bar and figures every
+  route is built from, the landing page included — live in their own file. The tokens
   they draw on stay here, where check:tokens and check:contrast read them.
 */
 @import "./article.css";
@@ -21,10 +21,10 @@
   Four families, and a class earns its place by being something you would say
   out loud. Everything else is a utility at the call site.
 
-    surface   .panel .tile .chip .rail
+    surface   .panel .chip .rail .work-shot-frame
               Things with a visible edge. They own background, rule and radius.
 
-    layout    .deck .flow .datagrid .marquee
+    layout    .flow .datagrid .marquee
               Things that arrange children. They own grid, columns and gap.
 
     type role .display .display-tight .label .meta .figure-value .figure-label
@@ -35,13 +35,13 @@
 
   Two rules that keep it honest:
 
-  1. A type role never sets colour. The same .label appears in accent on a tile
-     head, faint in a figure and rail-muted in the sidebar; baking colour in
+  1. A type role never sets colour. The same .label appears in ink in a
+     chapter head, faint in a figure and rail-muted in the sidebar; baking colour in
      would force a modifier class per context. Colour is a utility.
 
   2. A hyphen means "part of", not "variant of". .marquee-track is the track
      inside the marquee; .figure-label is the label inside the figure. There
-     are no .tile--large style modifiers — that is what utilities are for.
+     are no .card--large style modifiers — that is what utilities are for.
 
   Arbitrary values (p-[7px]) are allowed only for genuine one-offs — optical
   alignment, a width that must match another element — and carry a comment
@@ -176,6 +176,10 @@
 
   /*
     ── breakpoints ─────────────────────────────────────────────────────
+    None beyond Tailwind's own today. The deck's `wide`, `wider` and
+    `widest` (90 / 105 / 120rem) went with it in v2; Project OS keeps them
+    in 06-Templates/dashboard-deck. If one is added, the rule stands:
+
     Named, because `min-[1440px]:` said nothing about why 1440 and because
     mixing arbitrary min-width variants with named ones is a real hazard:
     Tailwind emits the `lg` (64rem) block last, so `lg:col-end-10` beat
@@ -187,15 +191,7 @@
     defaults and the bug comes straight back — measured in the built CSS, not
     assumed. And rem breakpoints scale with a reader who has raised their
     default font size, which px ones ignore.
-
-    90rem / 105rem / 120rem are 1440 / 1680 / 1920 at a 16px root. These are
-    where the deck's content actually stops fitting, measured rather than
-    chosen: `wide` is where the case-study cells can hold a screenshot, `wider`
-    where the narrow ones can too.
   */
-  --breakpoint-wide: 90rem;
-  --breakpoint-wider: 105rem;
-  --breakpoint-widest: 120rem;
 
   /* ── z-index scale ─────────────────────────────────────────────────── */
   --z-sticky: 20;
@@ -203,50 +199,6 @@
   --z-overlay: 40;
   --z-skip: 60;
 }
-
-/*
-  The deck's reveals, gated on height as well as width. Its rows split the
-  viewport's height, so how much a tile holds depends on both: a 1728x860
-  window had the width for every reveal and clipped Tadvantage by 71px
-  (2026-10-31). Each gate is the shortest window, measured, at which the
-  content it reveals fits; below it the deck shows the next band down's.
-
-    xl-tall     >=1280 wide and >=800 tall, or >=1680 at any deck height:
-                the 16px gutters, the fourth fact under the headline,
-                AutoTrader's fourth lede line and stack, Tadvantage's first
-                highlight
-    wide-tall   >=1440 wide and >=864 tall, or >=1680 and >=800: everything
-                that came in at `wide`
-    wider-tall  >=1680 wide and >=1008 tall, or >=1920 and >=960:
-                everything that came in at `wider`
-
-  Each second condition is the same content in the wider cells of the next
-  band up, which need less height for it.
-
-  In rem, like the breakpoints and the 47.5rem short-window line, so a larger
-  default font moves them too. Registered smallest first: Tailwind emits
-  custom variants in this order, after its own breakpoints, so a larger gate
-  wins where two match. check:overflow tests the first height of each.
-*/
-@custom-variant xl-tall {
-  @media (width >= theme(--breakpoint-xl)) and (height >= 50rem),
-    (width >= theme(--breakpoint-wider)) {
-    @slot;
-  }
-}
-@custom-variant wide-tall {
-  @media (width >= theme(--breakpoint-wide)) and (height >= 54rem),
-    (width >= theme(--breakpoint-wider)) and (height >= 50rem) {
-    @slot;
-  }
-}
-@custom-variant wider-tall {
-  @media (width >= theme(--breakpoint-wider)) and (height >= 63rem),
-    (width >= theme(--breakpoint-widest)) and (height >= 60rem) {
-    @slot;
-  }
-}
-
 
 /*
   Dark theme: the same drawing, inverted. Black paper, white ink, white
@@ -477,16 +429,16 @@
   /*
     The page heroes' face: the width axis at 112 and a medium weight, after
     architech-template. The secondary-page hero (.hero-title in article.css)
-    sets it in capitals; the deck's headline and its tile titles share it by
-    the owner's decision on 2026-09-26, so the overview and the pages it
-    indexes speak in one voice. A page's kicker (hero and chapter bar) is
-    the same label as its tile title, so it wears the same face.
+    sets it in capitals; the landing's headline shares it (the old deck's
+    did, by the owner's decision on 2026-09-26), so the overview and the
+    pages it leads to speak in one voice. A page's kicker (hero and chapter
+    bar) wears the same face.
 
-    The face is shared, the capitals are not. The deck's headline is a full
-    sentence, and a sentence in caps inside a dense dashboard would shout
-    rather than speak, so it stays in sentence case; the hero earns its caps
-    by being the only thing on its screen, set large with room around it
-    (2026-09-25). Recorded in PRODUCT.md, so neither gets "fixed" back.
+    The face is shared, the capitals are not. The landing's headline is a
+    full sentence, a statement to read, so it stays in sentence case; a
+    secondary hero's title is a page's name, set alone and large, and earns
+    its caps (2026-09-25). Recorded in PRODUCT.md, so neither gets "fixed"
+    back.
   */
   .display-hero {
     font-family: var(--font-display);
@@ -507,19 +459,22 @@
   /*
     The portrait scales with the height available, not the width.
 
-    The rail has 78px of slack at a 768px viewport and 360px at 1050px, so a
-    single size is either timid on a large screen or overflows a small one.
-    These three steps were measured against that slack rather than chosen for
-    looking right in one window. In rem (760 / 900 / 1040px at the default
-    font), because the slack is what the rail's text leaves, and that text
-    grows with a reader's larger default font while a px step would not.
+    The rail's text leaves the portrait what it has: a single size is either
+    timid on a large screen or overflows a small one. These steps are
+    measured against that slack rather than chosen for looking right in one
+    window. The first was 760px until 2026-10-31, when the rail's text had
+    grown (a two-line role and availability) and the rail scrolled at every
+    height under 900; at 800 it fits from 768 up. In rem (800 / 900 / 1040px
+    at the default font), because the slack is what the rail's text leaves,
+    and that text grows with a reader's larger default font while a px step
+    would not.
   */
   .portrait {
     width: 104px;
     height: 104px;
   }
 
-  @media (height >= 47.5rem) {
+  @media (height >= 50rem) {
     .portrait {
       width: 128px;
       height: 128px;
@@ -541,317 +496,13 @@
   }
 
   /*
-    A deck tile's screenshot: a fixed window onto a whole page.
-
-    One height for every shot on the deck: the room the most crowded tile has
-    left, so every window matches the smallest and none is cut to its own
-    letterbox. Measured, not chosen — the deck's rows are fractions of the
-    viewport, so that room grows with viewport height at half a pixel per
-    pixel, and a single px value was either tiny on a large screen or too
-    tall on a short one:
-
-      wide-tall       only the feature study  room = 50dvh − 277px
-                      shows (Tadvantage)
-      wider-tall      all four; AutoTrader    room = 50dvh − 432px
-                      is the most crowded
-
-    (The gates were width-only until 2026-10-31; the formulas were measured
-    then, at heights the gates still allow.)
-
-    (Re-checked, not re-measured, after the 2026-09-26 grid moved the feature
-    to Tadvantage at five columns: check:overflow and the one-height check
-    pass at every width, which is what the formulas promise.)
-
-    Those fit every measurement to the pixel (1440×800…1000, 1680×900…1200,
-    1800×1000, 1920×960…1200; 2560-wide screens have ~19px more), re-taken
-    after the 16px tile gutters and insets went in, which cost every window
-    2px. The formulas below leave 2px of slack. Re-take them with
-    `npm run measure:shots` whenever the deck's content or spacing changes;
-    check:behaviour fails if the windows stop matching. The 48px floor keeps a window worth
-    looking through; below it, which only a >=1920 window 960–963px tall
-    still reaches now that wider-tall gates the narrow shots, the frame's
-    `min-height: 0` lets the most crowded tile's window shrink under
-    the others rather than push the tile past its cell.
-
-    Size containment makes the frame a query container, so the pan below can
-    stop the page's bottom edge exactly at the window's bottom (100cqh) even
-    if the frame has shrunk. The outline is inset over the image — a hairline
-    drawn on top, where an inset shadow would sit hidden underneath it.
-  */
-  .tile-shot-frame {
-    --shot-h: clamp(48px, calc(50dvh - 279px), 360px);
-    position: relative;
-    height: var(--shot-h);
-    min-height: 0;
-    flex-shrink: 1;
-    /* clip, not hidden: hidden would make the frame a scroll container,
-       which a view timeline would bind to instead of the page. */
-    overflow: clip;
-    container-type: size;
-    background-color: var(--color-sunk);
-    outline: var(--surface-border) solid var(--color-line);
-    outline-offset: calc(var(--surface-border) * -1);
-  }
-
-  /* wider-tall: where the three narrow tiles show theirs. */
-  .tile-shot-frame {
-    @variant wider-tall {
-      --shot-h: clamp(48px, calc(50dvh - 434px), 360px);
-    }
-  }
-
-  /* At rest: the page's top, which is all the window shows. */
-  .tile-shot-window {
-    display: block;
-    width: 100%;
-    height: auto;
-  }
-
-  /*
-    Phones and tablets. The tiles stack full-width, so every work tile has
-    room for its window, sized to the tile's width rather than the desktop
-    formula. With no hover to hold, the reader's scroll drives the pan: the
-    frame names a view timeline, and the page runs top to bottom while the
-    window is fully on screen. Scroll-driven, so there is no script and no
-    listener; where the timeline is unsupported the window simply stays put,
-    showing the page's top.
-
-    theme(--breakpoint-lg) is Tailwind's lg itself, resolved at build, so the
-    pan switches exactly where the lg: utilities do — for a reader with a
-    larger default font too. DeckPointer loads the pages on the same
-    breakpoint through media.stacked in design-tokens.ts, which check:tokens
-    holds to Tailwind's.
-  */
-  @media (width < theme(--breakpoint-lg)) {
-    .tile-shot-frame {
-      --shot-h: clamp(160px, 56vw, 300px);
-      view-timeline: --shot block;
-    }
-  }
-
-  @media (width < theme(--breakpoint-lg)) and (prefers-reduced-motion: no-preference) {
-    @supports (animation-timeline: view()) {
-      .tile-shot-image {
-        animation: shot-scroll linear both;
-        animation-timeline: --shot;
-        animation-range: contain 0% contain 100%;
-      }
-    }
-  }
-
-  @keyframes shot-scroll {
-    to {
-      transform: translateY(calc(-100% + 100cqh));
-    }
-  }
-
-  /* The whole page, laid exactly over the window (the window is a crop of
-     its top) and empty until DeckPointer gives it a source: on intent on the
-     desktop deck, as its tile nears the viewport on a phone. */
-  .tile-shot-image {
-    position: absolute;
-    left: 0;
-    top: 0;
-    display: block;
-    width: 100%;
-    height: auto;
-    /* Leaving: back to the top briskly, like letting go of a scroll. */
-    transition: transform var(--duration-slow) var(--ease-out-quart);
-  }
-
-  /* Hidden until its fetch has arrived. An image element with a size and no
-     source draws the browser's broken-image icon: Chrome put one in the
-     corner of every window until a hover gave it a page, and on a phone
-     saving data or reducing motion it would have stayed there for good. */
-  .tile-shot-image:not([data-loaded]) {
-    visibility: hidden;
-  }
-
-  /*
-    Hovered or keyboard-focused: pan down the whole page at a steady pace
-    (--pan, set per image from its length). A short pause first, so a pointer
-    crossing the deck on its way somewhere else does not set every tile off.
-    Hover-capable pointers only: on touch there is no hover, and a tap opens
-    the case study, which shows the page properly anyway. From lg only (see
-    media.stacked), so a narrow window with a mouse gets one pan, not two.
-  */
-  @media (width >= theme(--breakpoint-lg)) and (hover: hover) and (prefers-reduced-motion: no-preference) {
-    a.tile:hover .tile-shot-image,
-    a.tile:focus-visible .tile-shot-image {
-      transform: translateY(calc(-100% + 100cqh));
-      transition: transform var(--pan, 4s) cubic-bezier(0.45, 0.05, 0.55, 0.95) 160ms;
-    }
-  }
-
-  /*
-    The cursor over a deck tile (DeckPointer): the CR mark, which shatters
-    into a 4×4 grid, spreads, flies apart and settles back into one, on a
-    1.64s loop — the timing of the image-hover cursor on architech-template.
-    Each shard is ink carrying its own piece of the letters in paper (the
-    brand sheet's negative-space CR, owner's idea, 2026-09-26), so the packed
-    square reads as the mark and the mark is what breaks apart. A paper
-    hairline, drawn as a drop-shadow on the group so the packed square has no
-    seams, keeps it readable on a tile's paper and on a dark screenshot alike,
-    in both themes — ink and paper swap there, and the mark inverts with them.
-
-    It grows in with an exponential ease over a second and shrinks away
-    faster, as the reference does, riding beside the arrow rather than
-    replacing it (DeckPointer) — an enlarged or high-contrast system cursor
-    is someone's accessibility setting, and a tile is no place to take it.
-    The loop is paused unless the cursor is showing: sixteen squares
-    animating forever behind zero opacity was work on every visit, touch
-    devices included, for nothing on screen.
-  */
-  .tile-cursor {
-    position: fixed;
-    left: 0;
-    top: 0;
-    z-index: var(--z-overlay);
-    width: 0;
-    height: 0;
-    pointer-events: none;
-  }
-
-  .tile-cursor-burst {
-    position: absolute;
-    left: 0;
-    top: 0;
-    filter: drop-shadow(0 0 1px var(--color-canvas));
-    transform: scale(0);
-    opacity: 0;
-    transition:
-      transform 450ms var(--ease-out-quart),
-      opacity var(--duration-fast) var(--ease-out-quart);
-  }
-
-  .tile-cursor[data-active="true"] .tile-cursor-burst {
-    transform: scale(1);
-    opacity: 1;
-    transition:
-      transform 1000ms cubic-bezier(0.16, 1, 0.3, 1),
-      opacity 500ms cubic-bezier(0.16, 1, 0.3, 1);
-  }
-
-  /* 8.5px cells on an 8px pitch: the half-pixel overlap keeps anti-aliasing
-     from drawing seams through the packed square. */
-  .tile-cursor-shard {
-    position: absolute;
-    left: -4.25px;
-    top: -4.25px;
-    width: 8.5px;
-    height: 8.5px;
-    background-color: var(--color-ink);
-    animation: shard 1.64s cubic-bezier(0.45, 0, 0.55, 1) infinite;
-    animation-play-state: paused;
-  }
-
-  /*
-    The shard's piece of the mark: the letters (public/brand/cr-mark-letters,
-    alpha is the letterforms) in paper over the shard's ink. The mask is laid
-    on the 8px pitch, not the 8.5px cell, so each half-pixel overlap shows the
-    same letters as its neighbour and the packed mark has no seam.
-  */
-  .tile-cursor-shard::after {
-    content: "";
-    position: absolute;
-    inset: 0;
-    background-color: var(--color-canvas);
-    mask-image: url("/brand/cr-mark-letters.png");
-    mask-repeat: no-repeat;
-    mask-size: 32px 32px;
-    mask-position: calc((var(--x) + 1.5) * -8px) calc((var(--y) + 1.5) * -8px);
-  }
-
-  .tile-cursor[data-active="true"] .tile-cursor-shard,
-  .tile-cursor[data-active="true"] .tile-cursor-main::after {
-    animation-play-state: running;
-  }
-
-  .tile-cursor-main {
-    animation-name: shard-main;
-  }
-
-  /* The surviving shard's letters widen from its piece to the whole mark as
-     it returns to the centre, in step with shard-main (same duration and
-     curve), so the loop ends on the full mark the next one starts from. */
-  .tile-cursor-main::after {
-    animation: shard-main-letters 1.64s cubic-bezier(0.45, 0, 0.55, 1) infinite;
-    animation-play-state: paused;
-  }
-
-  @keyframes shard-main-letters {
-    0%,
-    48% {
-      mask-size: 32px 32px;
-      mask-position: calc((var(--x) + 1.5) * -8px) calc((var(--y) + 1.5) * -8px);
-    }
-    72%,
-    100% {
-      mask-size: 8.5px 8.5px;
-      mask-position: 0 0;
-    }
-  }
-
-  /* Packed small → packed large → gaps open → spread with jitter → flung
-     out to nothing. At 0% the sixteen half-size cells make one 16px mark;
-     the surviving shard ends the cycle as the whole mark at that size, so
-     the loop has no seam. */
-  @keyframes shard {
-    0% {
-      transform: translate(calc(var(--x) * 4px), calc(var(--y) * 4px)) scale(0.5);
-    }
-    20% {
-      transform: translate(calc(var(--x) * 8px), calc(var(--y) * 8px)) scale(1);
-    }
-    30% {
-      transform: translate(calc(var(--x) * 10px), calc(var(--y) * 10px)) scale(0.85);
-    }
-    48% {
-      transform: translate(calc(var(--x) * 14px + var(--jx)), calc(var(--y) * 14px + var(--jy)))
-        scale(0.75);
-    }
-    72%,
-    100% {
-      transform: translate(
-          calc(var(--x) * 24px + var(--jx) * 2),
-          calc(var(--y) * 24px + var(--jy) * 2)
-        )
-        scale(0);
-    }
-  }
-
-  @keyframes shard-main {
-    0% {
-      transform: translate(calc(var(--x) * 4px), calc(var(--y) * 4px)) scale(0.5);
-    }
-    20% {
-      transform: translate(calc(var(--x) * 8px), calc(var(--y) * 8px)) scale(1);
-    }
-    30% {
-      transform: translate(calc(var(--x) * 10px), calc(var(--y) * 10px)) scale(0.85);
-    }
-    48% {
-      transform: translate(calc(var(--x) * 14px), calc(var(--y) * 14px)) scale(0.75);
-    }
-    /* No quarter turn now that the square is a mark: a plain square turned
-       90° looks the same, but "CR" would end the loop sideways and snap
-       upright at the seam. */
-    72% {
-      transform: translate(0, 0) scale(1.4);
-    }
-    100% {
-      transform: translate(0, 0) scale(2);
-    }
-  }
-
-  /*
     ── type roles ──────────────────────────────────────────────────────
     Three jobs the mono face does, named once instead of being respelled at
     every call site. Each was previously a run of four or five utilities
     repeated with small accidental differences — 0.07em here, 0.08em there,
     0.1em somewhere else — which is how a design system stops being one.
 
-    Colour is deliberately not set: the same role appears in accent on a tile
+    Colour is deliberately not set: the same role appears in ink in a chapter
     head, faint in a figure label and rail-muted in the sidebar, and baking it
     in would just force a modifier class per context.
   */
@@ -957,100 +608,6 @@
 
 @layer components {
   /*
-    The dashboard occupies exactly one viewport at >=1024px and never scrolls.
-    Below that the tiles stack and the page scrolls normally — forcing a single
-    viewport onto a phone means either three tiles or unreadable type.
-
-    Every query here is Tailwind's own breakpoint (theme(--breakpoint-*)),
-    because the tiles' spans are lg: utilities. When the grid was switched on
-    at a px 1024 instead, a reader with a 20px default font got a 12-column
-    grid at 1100px under a page Tailwind had stacked: twelve 77px tiles.
-  */
-  .deck {
-    display: grid;
-    gap: calc(var(--spacing) * 3);
-  }
-
-  /*
-    16px gutters from 1280, where the deck has the room to spend on air
-    between tiles. At 1024 the same 4px more per gap cost ~28px across the
-    grid's eight rows, and the narrow case-study cells, which had two lines
-    of summary to spare, clipped by up to 19px. 12px there, and in a window
-    under 800px tall below 1680 wide, where the same 28px clipped History
-    (xl-tall).
-  */
-  .deck {
-    @variant xl-tall {
-      gap: calc(var(--spacing) * 4);
-    }
-  }
-
-  @media (width >= theme(--breakpoint-lg)) {
-    .deck {
-      /* Fills whatever the headline and marquee leave, rather than assuming the
-         viewport height itself — the bands above it are not fixed-height. */
-      min-height: 0;
-      flex: 1;
-      grid-template-columns: repeat(12, minmax(0, 1fr));
-      grid-auto-rows: minmax(0, 1fr);
-    }
-  }
-
-  /*
-    Short desktop windows. The deck is viewport-fit at >=1024px wide, but a
-    1440x700 window is desktop-wide and laptop-short: eight rows of a 700px
-    viewport is ~145px each, and the tiles clipped by up to 78px. That was true
-    before any of this and simply had never been measured, because every
-    viewport in the overflow gate scaled height with width.
-
-    Rows grow to their content here instead of splitting the viewport, and
-    <main> already scrolls, so the deck stops being a fixed frame at a height
-    where it cannot honestly be one. The no-scroll promise still holds wherever
-    there is room to keep it.
-
-    47.5rem is 760px at the default font. A larger font needs more height for
-    the same eight rows, so the line moves with it.
-  */
-  @media (width >= theme(--breakpoint-lg)) and (height < 47.5rem) {
-    .deck {
-      flex: none;
-      grid-auto-rows: minmax(min-content, 1fr);
-      grid-template-rows: repeat(8, minmax(min-content, 1fr)) !important;
-    }
-  }
-
-  /*
-    Tiles clip rather than push the grid taller. Any tile whose content can
-    exceed its cell scrolls internally — there is no page scroll to fall back on.
-  */
-  .tile {
-    display: flex;
-    flex-direction: column;
-    min-height: 0;
-    min-width: 0;
-    background-color: var(--color-panel);
-    border-radius: var(--radius-lg);
-    box-shadow: inset 0 0 0 var(--surface-border) var(--color-line);
-    transition: box-shadow var(--duration-fast) var(--ease-out-quart);
-  }
-
-  /*
-    A link tile does not lift — nothing here has height. Its hairline goes to
-    full ink instead, so the response is the drawing getting firmer. That reads
-    at a glance and costs no layout.
-  */
-  a.tile:hover,
-  a.tile:focus-visible {
-    /* +1px rather than the +0.5px this shipped with: half a pixel read as
-       a rounding artefact more than a response. A full pixel is still no
-       layout shift (box-shadow, not border) but is now something a reader
-       actually registers as the tile answering the cursor. */
-    box-shadow: inset 0 0 0 calc(var(--surface-border) + 1px) var(--color-rule);
-  }
-}
-
-@layer components {
-  /*
     Marquee. The track holds two identical lists and translates by exactly -50%,
     so the loop is seamless with no jump. Duration scales with content rather
     than being a fixed number — a longer list at the same duration reads as a
@@ -1058,10 +615,10 @@
   */
   .marquee {
     /*
-      A stated height rather than one derived from the type inside it. The strip
-      sits between the headline and a deck that must fit the rest of the
-      viewport exactly, so its height is a number the deck can be reasoned
-      about against — not a side effect of a font-size change.
+      A stated height rather than one derived from the type inside it, so the
+      strip's height is a number the hero can be laid out against, not a side
+      effect of a font-size change. (It was set for the old deck, which had to
+      fit the viewport exactly.)
     */
     display: flex;
     align-items: center;
@@ -1117,6 +674,100 @@
     }
     .marquee-track {
       animation: none;
+    }
+  }
+}
+
+@layer components {
+  /*
+    A work card's screenshot (WorkShot): a window onto the top of a live page,
+    at 16:9, the shape of the Riflessi recording beside it, so the four
+    cards' frames line up. The window crops are 1200×780, so the frame shows
+    each page's top and trims the bottom of its first screen. The AI card's
+    roles panel takes the same frame.
+
+    Size containment makes the frame a query container, so the pan can stop
+    the page's bottom edge exactly at the window's bottom (100cqh). The
+    outline is inset over the image: a hairline drawn on top, where an inset
+    shadow would sit hidden underneath it.
+  */
+  .work-shot-frame {
+    position: relative;
+    aspect-ratio: 16 / 9;
+    /* clip, not hidden: hidden would make the frame a scroll container,
+       which a view timeline would bind to instead of the page. */
+    overflow: clip;
+    container-type: size;
+    background-color: var(--color-sunk);
+    outline: var(--surface-border) solid var(--color-line);
+    outline-offset: calc(var(--surface-border) * -1);
+  }
+
+  .work-shot-window {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+
+  /* The whole page, laid exactly over the window (the window is a crop of
+     its top) and empty until PreviewLoader gives it a source. */
+  .work-shot-image {
+    position: absolute;
+    left: 0;
+    top: 0;
+    display: block;
+    width: 100%;
+    height: auto;
+    /* Leaving: back to the top briskly, like letting go of a scroll. */
+    transition: transform var(--duration-slow) var(--ease-out-quart);
+  }
+
+  /* Hidden until its fetch has arrived: a sized image with no source draws
+     the browser's broken-image icon. */
+  .work-shot-image:not([data-loaded]) {
+    visibility: hidden;
+  }
+
+  /*
+    Hovered or keyboard-focused: pan down the whole page at a steady pace
+    (--pan, set per image from its length), after a short pause so a pointer
+    crossing the page does not set every card off. Hover-capable pointers
+    only, from lg; below it the reader's scroll drives the pan instead.
+  */
+  @media (width >= theme(--breakpoint-lg)) and (hover: hover) and (prefers-reduced-motion: no-preference) {
+    .work-card:hover .work-shot-image,
+    .work-card:focus-within .work-shot-image {
+      transform: translateY(calc(-100% + 100cqh));
+      transition: transform var(--pan, 4s) cubic-bezier(0.45, 0.05, 0.55, 0.95) 160ms;
+    }
+  }
+
+  /*
+    Phones and tablets: no hover to hold, so the scroll drives the pan. The
+    frame names a view timeline and the page runs top to bottom while the
+    window is fully on screen. Where timelines are unsupported the window
+    stays put, showing the page's top. PreviewLoader loads the pages on the
+    same breakpoint (media.stacked), which check:tokens holds to Tailwind's.
+  */
+  @media (width < theme(--breakpoint-lg)) {
+    .work-shot-frame {
+      view-timeline: --work-shot block;
+    }
+  }
+
+  @media (width < theme(--breakpoint-lg)) and (prefers-reduced-motion: no-preference) {
+    @supports (animation-timeline: view()) {
+      .work-shot-image {
+        animation: work-shot-scroll linear both;
+        animation-timeline: --work-shot;
+        animation-range: contain 0% contain 100%;
+      }
+    }
+  }
+
+  @keyframes work-shot-scroll {
+    to {
+      transform: translateY(calc(-100% + 100cqh));
     }
   }
 }

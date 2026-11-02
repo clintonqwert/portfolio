@@ -48,7 +48,7 @@ export function SiteRail({ links }: { links: NavEntry[] }) {
           </a>
 
           <div className="mt-2">
-            <ContactLinks layout="stack" />
+            <ContactLinks layout="grid" />
           </div>
         </div>
       </div>

@@ -80,19 +80,22 @@ which is the thing the reader actually cannot verify from code.
 2. **Every claim checkable in one click.** Figures sit next to the live URL or
    public repository that proves them. An unverifiable number is worth less than
    no number.
-3. **Dense where it is scanned, paced where it is read.** The reader is
-   skimming for evidence, not being courted. The deck is the index: one
-   viewport, information per screen over theatre per scroll. Every page it
-   opens is a document: a hero that answers what, why and how to check it,
-   then chapters at reading size with the room to be read. Motion there
+3. **Proof first, then paced reading.** The reader is skimming for
+   evidence, not being courted. The landing page (v2, 2026-10-31) answers in
+   its first screen: who this is, what they build, two actions (see the
+   work, take the résumé) and four proof points, each linking to the page
+   that owns the fact. Then numbered chapters: the work by capability, how
+   the work is done, the track record, what is unfinished, how to get in
+   touch. Every page it leads to is a document too: a hero that answers
+   what, why and how to check it, then chapters at reading size. Motion
    serves orientation — where you are, that there is more — and never
-   performance for its own sake. The two layers share one headline face —
-   Archivo widened, at a medium weight, after architech-template, whose
-   cursor and scroll cue the site also borrows — on the hero, the deck's
-   headline and its tile titles (2026-09-26). They differ in case on
-   purpose: the deck's headline stays in sentence case, while a secondary
-   page's hero headline is set in capitals, alone on its screen with room
-   around it (2026-09-25).
+   performance for its own sake. One headline face throughout — Archivo
+   widened, at a medium weight, after architech-template, whose scroll cue
+   the site also borrows (2026-09-26). It differs in case on purpose: the
+   landing's headline is a sentence and stays in sentence case, while a
+   secondary page's hero title is set in capitals, alone on its screen with
+   room around it (2026-09-25). The v1 overview was a one-screen deck of
+   tiles, dense because it was scanned; Project OS keeps it as a template.
 4. **The gaps are load-bearing.** Weaknesses are published in the same visual
    register as strengths. Never soften, hide, or visually demote them.
 5. **Identity preservation — monochrome, with one signal.** Every surface and

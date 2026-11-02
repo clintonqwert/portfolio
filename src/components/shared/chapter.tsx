@@ -11,7 +11,7 @@ export interface ChapterRef {
  * One numbered chapter of a secondary page.
  *
  * The number is a real position — chapters are read in order, and the chapter
- * bar counts them — and it sits in the same ink chip the deck's tile heads
+ * bar counts them — and it sits in the same ink chip the rail's page numbers
  * use, so it reads as this system's numbering rather than decoration.
  *
  * `tone="ink"` inverts the chapter into a solid block — the `.chip` surface,

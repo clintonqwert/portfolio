@@ -74,7 +74,7 @@ export default async function HistoryPage() {
       </Chapter>
 
       <Chapter {...practice}>
-        {/* Not soft skills — six things the repositories are actually held
+        {/* Not soft skills — things the repositories are actually held
             to, which is the difference between a claim and a check. */}
         <ul className="grid border-t border-rule sm:grid-cols-2 sm:gap-x-10">
           {principles.map((principle, i) => (
