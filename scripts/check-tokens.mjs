@@ -4,7 +4,7 @@
  * breakpoints script mirrors stop matching Tailwind's.
  *
  * The palette lives twice: as CSS custom properties in src/app/globals.css, and
- * as a typed module in src/lib/design-tokens.ts. CLAUDE.md says to change both
+ * as a typed module in src/lib/design-tokens.ts. AGENTS.md says to change both
  * together, and nothing checked that — so design-tokens.ts went on describing a
  * dark slate rail for weeks after the CSS shipped a light one that flips with
  * the theme. check-contrast.mjs reads only the CSS, so it never noticed.

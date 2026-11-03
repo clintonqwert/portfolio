@@ -39,6 +39,9 @@ shipped them, newest first.
   under text, and `check:contrast` holds it there. Focus rings, which used
   the accent token while it was ink, now use ink itself. PRODUCT.md
   principle 5 records the change.
+- **One set of agent instructions.** The rules moved from `CLAUDE.md` to
+  `AGENTS.md`, which Codex reads, and `CLAUDE.md` imports it. The Codex copy
+  had been untracked, and it still described the deck.
 
 ## v1.0.1 — 2026-10-31
 
