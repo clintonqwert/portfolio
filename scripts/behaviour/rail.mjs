@@ -1,7 +1,7 @@
 /**
  * The rail fits its window without scrolling from 768px tall.
  *
- * It keeps overflow-y-auto (CLAUDE.md: the rail must never hide its own
+ * It keeps overflow-y-auto (AGENTS.md: the rail must never hide its own
  * content), so check:overflow accepts a rail that scrolls; this is what
  * notices when it starts to. When it was made to fit (2026-10-31) it had
  * about 3px to spare at 768, so a longer role, availability line or nav
