@@ -16,8 +16,8 @@ export interface NavLink {
 /**
  * A section label above a cluster of related links — AutoTrader.ca above
  * Tadvantage/myGarage/Luxury tax, DriftPilot Studio above DriftPilot/Riflessi.
- * (Numbers are the rail's, and every surface that numbers a page — a deck
- * tile, a page's hero, its chapter bar, the close that offers it next —
+ * (Numbers are the rail's, and every surface that numbers a page — a page's
+ * hero, its chapter bar, the close that offers it next —
  * takes them from here.)
  * Not itself a numbered view: it carries no index unless it is also a real
  * page (`href` set), in which case it is both the label and the umbrella
@@ -48,8 +48,8 @@ export async function getNavLinks(): Promise<NavEntry[]> {
     { kind: "link", href: "/", label: "Overview", index: "00" },
 
     // AutoTrader.ca first, then the studio: six and a half years on the
-    // dealer platform is the work the site leads with — the headline, the
-    // deck's wide cell — so the rail and every page's number and "next"
+    // dealer platform was the work the site led with when this was decided —
+    // the headline, the deck's wide cell — so the rail and every page's number and "next"
     // follow the same order (owner's decision, 2026-09-26). It was studio
     // first, in the order the case studies were written.
 
@@ -87,7 +87,7 @@ export async function getNavLinks(): Promise<NavEntry[]> {
 }
 
 /**
- * Every page off the deck, in the order the rail lists them.
+ * Every page off the overview, in the order the rail lists them.
  *
  * Derived from getNavLinks rather than written out again, so the reading path
  * a page's footer offers can never disagree with the rail beside it. Case

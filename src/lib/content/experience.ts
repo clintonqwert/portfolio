@@ -2,7 +2,7 @@ import "server-only";
 
 import { AUTOSYNC_INVENTORY_IMAGE } from "@/lib/content/assets";
 import { REPO_HREF } from "@/lib/content/profile";
-import type { Passage, Stat } from "@/types/content";
+import type { AgentRole, Passage } from "@/types/content";
 
 /**
  * AutoTrader.ca — five years, and the largest single block of experience on
@@ -21,45 +21,14 @@ export const AUTOTRADER_RAIL = {
   stack: ["Vue · Node.js", "PHP · MySQL", "Redis · AWS"],
 } as const;
 
-/** One-line summaries for the dashboard tiles. */
+/** /autotrader's lede and meta description. */
 export const AUTOTRADER_LEDE =
   "Five years at AutoTrader.ca, after I came over from Convertus with the platform in 2020. The work I’d point you to first is the caching, and the win was stability more than speed.";
 
 export const PROJECT_OS_LEDE =
   "I designed a five-role AI workflow and deliver my work through it. One writes code, the other four only report, and I make the decisions.";
 
-/**
- * The AutoTrader tile's two figures, here rather than in the component so the
- * tile and the Outcome row below cannot drift apart. The second is the exact
- * claim the repository supports — none after rollout — not the before-count,
- * which came from a keyword search of the history and was never checked line
- * by line (review of #12, P1-2).
- */
-export const AUTOTRADER_FIGURES: Stat[] = [
-  { value: "5 yrs", label: "Jan 2020 \u2013 Jun 2025" },
-  { value: "0", label: "Cache reverts & removals, 3 yrs on" },
-];
 
-/**
- * Short restatements of facts already published in the passages below, for the
- * dashboard tile. Same claims, fewer words — not new material.
- *
- * Four, and the tile renders four. A fifth was added and then sliced off when
- * the skills strip took the height it needed, which left an entry in this file
- * that shipped nowhere. The claim it made — Agile delivery on a shared codebase
- * — is in the "The rest of the five years" passage below, which is where it reads
- * properly anyway.
- *
- * Each must fit one line at 1680 and 1920, about 70 characters. From 1680 the
- * tile's screenshot window takes the height the points leave, and the deck's
- * four windows must match; check:behaviour names any point that wraps.
- */
-export const AUTOTRADER_POINTS = [
-  "Custom in-house OOP PHP, no Laravel or Symfony",
-  "Object Cache Pro: ended 3 years of cache churn",
-  "Technical SEO, where getting inventory found is the product",
-  "Built the luxury tax; worked on Ford Model E and CARFAX v3",
-];
 
 export async function getAutoTraderPassages(): Promise<Passage[]> {
   return [
@@ -165,29 +134,38 @@ export async function getAutoTraderPassages(): Promise<Passage[]> {
  * the list.
  */
 const PROJECT_OS_ROLES = [
-  { term: "Builder", writes: true },
-  { term: "Reviewer", writes: false },
-  { term: "Tester", writes: false },
-  { term: "Auditor", writes: false },
-  { term: "Content strategist", writes: false },
+  { term: "Builder", writes: true, returns: "Writes the code" },
+  { term: "Reviewer", writes: false, returns: "P0, P1 and P2 findings" },
+  { term: "Tester", writes: false, returns: "PASS or FAIL, with evidence" },
+  { term: "Auditor", writes: false, returns: "A scored report" },
+  { term: "Content strategist", writes: false, returns: "A copy brief" },
 ] as const;
 
 /**
- * These counts feed /standard's hero (PROJECT_OS_RAIL) and the home tile
- * (PROJECT_OS_FIGURES). Documents and lines are entered here; roles and
- * writers are counted from PROJECT_OS_ROLES.
+ * The roles for the landing's AI card. Report-only by role contract: no role
+ * declares `allowed-tools`, so nothing in tooling enforces it (profile.ts).
+ */
+export async function getProjectOsRoles(): Promise<AgentRole[]> {
+  return PROJECT_OS_ROLES.map((role) => ({ ...role }));
+}
+
+/**
+ * These counts feed /standard's hero (PROJECT_OS_RAIL). Documents and lines
+ * are entered here; roles are counted from PROJECT_OS_ROLES, as the landing's
+ * AI card lists them.
  *
  * The prose still says "five roles, one writes code" in words, so a change to
  * the role list contradicts each of these until they change with it:
- *  - PROJECT_OS_LEDE, which is also /standard's meta description;
- *  - PROJECT_OS_TILE_LEDE, directly above the figures on the home tile;
+ *  - PROJECT_OS_LEDE, which is also /standard's meta description and the
+ *    landing's AI card;
+ *  - PROJECT_OS_TILE_LEDE, the AI claim in the landing's proof strip;
  *  - the "How AI helps with the work" passage's first paragraph;
- *  - LEDE in profile.ts, and the "AI & automation" skills line in practice.ts.
+ *  - the "Review before anything lands" principle and the "AI & automation"
+ *    skills line, both in practice.ts.
  * check:claims does not count, so the build will not catch a mismatch.
  */
 const PROJECT_OS_COUNTS = {
   roles: String(PROJECT_OS_ROLES.length),
-  writers: String(PROJECT_OS_ROLES.filter((role) => role.writes).length),
   documents: "44",
   lines: "1,920",
 } as const;
@@ -203,19 +181,9 @@ export const PROJECT_OS_RAIL = {
 } as const;
 
 /**
- * The home tile's four figures, from the same counts as /standard's hero.
- * Exactly four: the tile lays them out four across in a fixed-height row.
- */
-export const PROJECT_OS_FIGURES: [Stat, Stat, Stat, Stat] = [
-  { value: PROJECT_OS_COUNTS.roles, label: "Specialist AI roles" },
-  { value: PROJECT_OS_COUNTS.writers, label: "May write files" },
-  { value: PROJECT_OS_COUNTS.documents, label: "Documents in the standard" },
-  { value: PROJECT_OS_COUNTS.lines, label: "Lines, cross-project" },
-];
-
-/**
- * The home tile's one line. Without it the tile was four numbers, and a reader
- * couldn't tell a workflow from a product; /standard says the rest.
+ * The AI claim in the landing's proof strip, in one line; /standard says the
+ * rest. It began as the old deck tile's lede, above four figures that left a
+ * reader unable to tell a workflow from a product.
  */
 export const PROJECT_OS_TILE_LEDE = "One AI role writes code, four review it, and I decide what ships.";
 

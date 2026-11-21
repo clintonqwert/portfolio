@@ -63,14 +63,12 @@ export default async function RootLayout({
         <ThemeScript />
       </head>
       {/*
-        lg:overflow-hidden is what makes the dashboard viewport-fit: at desktop
-        widths the document itself cannot scroll, and any tile that needs more
-        room scrolls inside its own box. Below lg the page scrolls normally.
-
-        <main> takes the scroll instead of the document so the rail stays put.
-        The deck never uses it — it fits by construction — but a case study on a
-        1280px laptop does, and without it the prose had nowhere to go but
-        sideways, 307px past the edge of the page.
+        At desktop widths the document itself does not scroll: <main> takes
+        the scroll instead, so the rail stays put beside every page. Below lg
+        the page scrolls normally. (lg:overflow-hidden made the old one-screen
+        deck viewport-fit; every page scrolls in <main> now.) Without <main>'s
+        scroll a case study on a 1280px laptop had nowhere to go but sideways,
+        307px past the edge of the page.
       */}
       <body className="min-h-dvh bg-canvas antialiased lg:h-dvh lg:overflow-hidden">
         <a
@@ -89,6 +87,15 @@ export default async function RootLayout({
 
         <div className="lg:h-dvh lg:pl-[236px]">
           <main id="main" className="lg:h-full lg:overflow-y-auto">
+            {/* The first 64px of the page, with no height of its own (the
+                negative margin cancels it): the scroll cue leaves once this
+                has left the screen, so "scrolling has started" means the same
+                64px on every page, whatever sits above the hero. */}
+            <span
+              id="scroll-sentinel"
+              aria-hidden="true"
+              className="pointer-events-none block h-16 -mb-16"
+            />
             {children}
           </main>
         </div>

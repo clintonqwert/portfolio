@@ -12,7 +12,7 @@ import type { NavEntry } from "@/lib/content/navigation";
  * navigation. This used to find the current *section* by observing `#hash`
  * targets, from when the site was one long page; every entry has been its own
  * route since, so the observer found nothing and no link was ever marked —
- * including on the case study you had just opened from the deck. The route
+ * including on the case study you had just opened from the overview. The route
  * is the location now, so the route is what is compared.
  *
  * The links are real anchors and work before hydration; only the marker
@@ -118,7 +118,7 @@ export function RailNav({
                 rests on colour alone. Square, like everything else here.
                 Reaching full opacity on hover too, not just on the active
                 page: a link should answer before it's clicked, the same way
-                a tile's hairline firms up under the cursor.
+                a work card's hairline firms up under the cursor.
               */}
               <span
                 aria-hidden="true"

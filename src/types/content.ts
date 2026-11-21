@@ -46,6 +46,52 @@ export interface Principle {
   body: string;
 }
 
+/**
+ * One claim in the landing's proof strip: the capability it proves, the
+ * claim, and the page that owns the fact. At most one carries a figure,
+ * which is the page's one key figure and takes the accent.
+ */
+export interface ProofPoint {
+  label: string;
+  claim: string;
+  /** Set apart and large, before the claim. */
+  figure?: string;
+  /** A caveat the claim cannot be read without, e.g. a private repository. */
+  note?: string;
+  /** The page that owns the fact; the whole claim links to it. */
+  href?: string;
+  /**
+   * Where a claim rests on several things a reader can open, each one, so
+   * every part is a click away ("two live sites" links both sites).
+   */
+  sources?: Source[];
+}
+
+/** A Project OS role, as the AI card and /standard describe it. */
+export interface AgentRole {
+  term: string;
+  writes: boolean;
+  /** What the role hands back. */
+  returns: string;
+}
+
+/** A featured project on the landing page, named by the capability it proves. */
+export interface FeaturedWork {
+  name: string;
+  capability: string;
+  text: string;
+  stack: readonly string[];
+  href: string;
+  /** The specific call to action: "Read the DriftPilot case study". */
+  cta: string;
+  /** Key into the work previews, for a card that shows a live page. */
+  preview?: string;
+  /** A recording instead, where the page's motion is the point. */
+  video?: VideoSlot;
+  /** For the AI card, which shows the roles instead of a page. */
+  roles?: AgentRole[];
+}
+
 /** An image with the facts a frame needs to show it honestly. */
 export interface ImageSlot {
   src: string;
@@ -65,11 +111,11 @@ export interface ImageSlot {
 }
 
 /**
- * A deck tile's screenshot: the top of a page, shown at rest, and the whole
+ * A work card's screenshot: the top of a page, shown at rest, and the whole
  * page, fetched only when a reader shows intent to pan it. The window is a
  * crop of the page's top, so the two line up and the swap cannot be seen.
  */
-export interface DeckPreview {
+export interface WorkPreview {
   window: ImageSlot;
   page: ImageSlot;
 }
@@ -95,7 +141,7 @@ export interface VideoSlot {
 /**
  * A figure placed inside a passage, with a line saying what it shows: a
  * screenshot, or a recording where motion is the point. Not "Figure": that
- * name is already the stat component on the deck tiles.
+ * name was the old deck's stat component, and figures.tsx has a Figures.
  */
 export type PassageFigure =
   | { image: ImageSlot; video?: never; caption: string }
@@ -140,25 +186,8 @@ export interface Passage {
  */
 export interface CaseStudy {
   slug: string;
-  /**
-   * Gives this study the widest of the deck's study cells, with a
-   * two-column interior, first among the studies. One study carries it. Equal
-   * cells would claim the three are equivalent.
-   */
-  feature?: boolean;
-  /**
-   * The wide cell's right column, for a feature study with no assertion
-   * table to put there: what was mine, each a short restatement of
-   * something the passages below already publish. Never a new claim.
-   */
-  highlights?: string[];
-  /** Short name used in navigation and cards. */
+  /** Short name used in navigation. */
   name: string;
-  /**
-   * A shorter one still, for a deck cell at its narrowest (1024–1279) — the
-   * rail's name for the page. Only where the name would otherwise be cut.
-   */
-  shortName?: string;
   /** Sentence-case headline — the argument the case study makes. */
   headline: string;
   /** One-line summary used on the home page and in metadata. */
@@ -173,18 +202,9 @@ export interface CaseStudy {
   stats: Stat[];
   passages: Passage[];
   /**
-   * Set false to keep a study off the dashboard.
-   *
-   * The deck is exactly one viewport tall with three case-study cells assigned
-   * by position; a fourth would collide with the third. A study that is a
-   * chapter of another one reaches readers through the rail and through its
-   * parent study instead, which costs it nothing.
-   */
-  onDeck?: boolean;
-  /**
-   * A footer caveat for the dashboard tile. Separate from `stats` because a
+   * A caveat shown with the study's figures. Separate from `stats` because a
    * study can have both: Tadvantage has six and a half years worth quoting and
-   * no adoption figures, and the tile used to be able to show only one of those.
+   * no adoption figures.
    */
   note?: string;
   /** Optional assertion table, with its caption. */
@@ -295,10 +315,3 @@ export type GapView =
   | { state: "mitigated"; gap: string; consequence: string; mitigation: string }
   | ({ state: "closed" } & ClosedGap);
 
-/** The home tile's summary of what is moving: in progress, else next. */
-export interface UpNext {
-  heading: string;
-  status: string;
-  filled: boolean;
-  items: RoadmapItem[];
-}

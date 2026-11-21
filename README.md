@@ -26,9 +26,8 @@ npm run dev
 | `npm run lint` | ESLint, `next/core-web-vitals` + TypeScript |
 | `npm run check:claims` | Scans the content layer for retired claims |
 | `npm run check:contrast` | WCAG 2.2 AA on both palettes, plus opacity modifiers |
-| `npm run check:overflow` | Panel spill, silent clipping and unreachable fixed panels, seven viewports; needs a server |
-| `npm run measure:shots` | Re-measures the deck's screenshot-window room for the height formula; needs a server |
-| `npm run check:behaviour` | Deck stays one viewport; unique ids; scroll cue, chapter bar, reduced motion and focus inside ink blocks; needs a server |
+| `npm run check:overflow` | Silent clipping, unreachable fixed panels and sideways scroll, ten viewports (three at a 20px default font); needs a server |
+| `npm run check:behaviour` | Landing actions, nothing fetched at rest, the work cards and their pan; unique ids; scroll cue, chapter bar, reduced motion and focus inside ink blocks; needs a server |
 | `npm run check:logos` | Skill logos match the generator and the skill list |
 | `npm run gen:logos` | Regenerate `src/lib/logos.ts` from simple-icons |
 
@@ -60,48 +59,51 @@ client-side data fetching.
 ### Layout
 
 The rail carries the profile — avatar, name, role, location, theme toggle — at
-top-left, then navigation, then the résumé download. The workspace is three
-bands: headline, a skills marquee, and the tile grid.
+top-left, then navigation, then availability, the résumé download and the
+contacts. Every page sits beside it in `<main>`, which takes the scroll at
+≥1024px so the rail never moves.
 
-### The deck
+### The landing page
 
-`/` is a dashboard, not a landing page. At ≥1024px it fills exactly one viewport
-and does not scroll: `body` is `overflow-hidden`, the deck is a 12×9 grid of
-`100dvh`, and any tile whose content could exceed its cell scrolls inside itself.
+`/` is a landing page that scrolls (v2, 2026-10-31). Its hero answers on the
+first screen: the headline, what Clinton builds, the proof line, two actions
+(see the work, download the résumé), four proof points that each link to the
+page owning the fact, and the skills strip. Then numbered chapters: **Selected
+work** (four cards named by the capability each proves), **How I work**,
+**Experience**, **What's next, and what's still missing** (the roadmap's stages
+and the open gaps), and **Start a conversation**, the page's one ink block.
 
-From 1440px wide the work tiles carry a screenshot window: every window the
-same height (the room the most crowded tile has left, which grows with
-viewport height), onto a whole-page capture that pans down while the tile is
-hovered or focused — a scroll preview of the site. On a phone the tiles stack
-full-width, every work tile shows its window, and the page pans as the tile
-scrolls past (a CSS view timeline, no script; with Save-Data on, each window
-stays on the page's top and no whole page is fetched); the overview there
-also opens with the rail's profile — portrait, role, availability and contact
-links — which the slim mobile bar has no room for. Over a tile the pointer
-becomes a square that shatters and re-forms (after the image-hover cursor on
-architech-template.webflow.io, rebuilt in CSS); fine hover-capable pointers
-only, never under reduced motion. `check:behaviour` holds the equal heights,
-the pan and the cursor.
+A work card shows its live page through a window onto a whole-page capture
+that pans down while the card is hovered or focused, a scroll preview of the
+site; the whole page loads only on that intent. On a phone the cards stack,
+and each page pans as its card scrolls past (a CSS view timeline, no script;
+with Save-Data on, the window stays on the page's top and no whole page is
+fetched). Riflessi's card plays its scroll recording instead, and the AI
+card shows the five roles. `check:behaviour` holds the actions, the
+nothing-at-rest promise, the card links and heights, and the pan.
 
-Below 1024px the constraint is lifted and the page scrolls normally, because a
-single viewport on a phone means either three tiles or unreadable type.
+The accent (signal orange) appears on the primary action, the one key figure
+and link hover, and nowhere else (PRODUCT.md principle 5).
 
-Those figures are for the default 16px font. Every breakpoint is rem —
-Tailwind's own, which the CSS reads through `theme(--breakpoint-*)` — so a
-reader who has raised their default font reaches each layout later: at 20px the
-deck starts at 1280px, and holds one viewport from 950px tall rather than 760.
-When the deck's grid was switched on at a px 1024 instead, that reader got a
-12-column grid at 1100px under a page Tailwind had stacked. `check:overflow`
-measures three viewports at a 20px default for that reason. The few
+v1's overview was a one-screen dashboard deck of tiles. Project OS keeps it as
+a template, with its source and its measurements, in
+`06-Templates/dashboard-deck`.
+
+Every breakpoint is rem — Tailwind's own, which the CSS reads through
+`theme(--breakpoint-*)` — so a reader who has raised their default font
+reaches each layout later: at 20px the rail and the two-up cards start at
+1280px. When the old deck's grid was switched on at a px 1024 instead, that
+reader got a 12-column grid at 1100px under a page Tailwind had stacked.
+`check:overflow` measures three viewports at a 20px default for that reason. The few
 breakpoints script needs (an image's `sizes`, a `matchMedia`) are mirrored in
 `design-tokens.ts`, and `check:tokens` holds them to Tailwind's.
 
 ### Secondary pages
 
-Everything the deck links to — `/work/[slug]`, `/autotrader`, `/standard`,
-`/history`, `/roadmap` — is a document that scrolls, deliberately unlike the deck.
-The deck is scanned; these are read. The rail stays fixed beside both, and
-`<main>` takes the scroll at ≥1024px, so the frame never moves.
+Everything the landing links to — `/work/[slug]`, `/autotrader`, `/standard`,
+`/history`, `/roadmap` — is a document built from the same parts as the
+landing. The rail stays fixed beside all of them, and `<main>` takes the
+scroll at ≥1024px, so the frame never moves.
 
 Each page is a **hero** that fills the first viewport (kicker with the rail's
 index chip, headline, lede, a ruled title block of facts and links, and a
@@ -127,14 +129,14 @@ visible.
 ### CSS conventions
 
 Four class families, documented in full at the top of `src/app/globals.css`
-(tokens, base, the deck), with the secondary pages' layer in
+(tokens, base, the components), with the pages' layer in
 `src/app/article.css`, imported from it:
-**surface** (`.panel` `.tile` `.chip` `.rail`), **layout** (`.deck` `.flow`
+**surface** (`.panel` `.chip` `.rail` `.work-shot-frame`), **layout** (`.flow`
 `.datagrid` `.marquee` `.sheet` `.hero` `.titleblock` `.chapter`
 `.flowchart`), **type role** (`.display` `.label` `.meta`
 `.figure-value` `.figure-label`) and **media** (`.portrait`).
 
-A type role never sets colour — the same `.label` is accent on a tile head and
+A type role never sets colour — the same `.label` is ink in a chapter head and
 faint in a figure — so colour stays a utility at the call site. A hyphen means
 "part of" (`.marquee-track`), never "variant of".
 
@@ -163,9 +165,9 @@ multi-column. Detail pages once flowed prose into columns to avoid scrolling,
 and column balance fills whatever height it is given — so every short case
 study became three-line columns over a third of a screen of blank panel.
 
-Fit is measured, not assumed: every route is checked at seven viewports for
-tile spill, silently clipped `overflow:hidden` boxes, unreachable fixed
-panels and horizontal overflow.
+Fit is measured, not assumed: every route is checked at ten viewports for
+silently clipped `overflow:hidden` boxes, unreachable fixed panels and
+horizontal overflow.
 
 ### The marquee
 

@@ -2,7 +2,7 @@ import "server-only";
 
 import type { Principle, Role, StackGroup } from "@/types/content";
 
-/** Shared between /history and its dashboard tile, so the two never drift. */
+/** /history's lede and meta description. */
 export const HISTORY_LEDE =
   "Where I’ve worked since 2016, the tools I’ve used, and the principles I hold my work to.";
 
@@ -32,6 +32,10 @@ export async function getPrinciples(): Promise<Principle[]> {
     {
       title: "Gaps in writing",
       body: "I write down known weaknesses and what they cost, before anyone asks.",
+    },
+    {
+      title: "Review before anything lands",
+      body: "One AI role writes code and four review it. I read what they report before a change lands.",
     },
   ];
 }

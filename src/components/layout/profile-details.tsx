@@ -17,11 +17,12 @@ export function Availability({ className }: { className?: string }) {
   );
 }
 
+/** [href, full address, short label for the rail's grid]. */
 const LINKS = [
-  [CONTACT_HREF.email, CONTACT.email],
-  [CONTACT_HREF.github, CONTACT.github],
-  [CONTACT_HREF.linkedin, CONTACT.linkedin],
-  [CONTACT_HREF.studio, CONTACT.studio],
+  [CONTACT_HREF.email, CONTACT.email, "Email"],
+  [CONTACT_HREF.github, CONTACT.github, "GitHub"],
+  [CONTACT_HREF.linkedin, CONTACT.linkedin, "LinkedIn"],
+  [CONTACT_HREF.studio, CONTACT.studio, CONTACT.studio],
 ] as const;
 
 /**
@@ -29,26 +30,34 @@ const LINKS = [
  * reader checks — they were once only in JSON-LD, which is to say invisible to
  * the human being asked to verify.
  *
- * `stack` is the rail's column; `wrap` flows them across a phone's width.
+ * `grid` is the rail's: short labels two to a row, which took the rail's
+ * four full addresses (four rows) down to two and helped it fit a 768px
+ * window without scrolling (2026-10-31). Each link's name starts with its
+ * label and carries the full address (Label in Name), and hovering shows it.
+ * `wrap` flows the full addresses across a phone's width.
+ *
  * py-2 is a floor, not a rhythm choice, in both: it keeps each link above the
  * 24px WCAG 2.2 target-size minimum at this type size. A spacing sweep once
  * took it to py-1 — 23.3px — and only Lighthouse caught it.
  */
-export function ContactLinks({ layout }: { layout: "stack" | "wrap" }) {
+export function ContactLinks({ layout }: { layout: "grid" | "wrap" }) {
+  const grid = layout === "grid";
   return (
     <ul
       className={cn(
         "font-mono text-3xs",
-        layout === "wrap" ? "flex flex-wrap gap-x-5" : "",
+        grid ? "grid grid-cols-2 gap-x-3" : "flex flex-wrap gap-x-5",
       )}
     >
-      {LINKS.map(([href, label]) => (
+      {LINKS.map(([href, address, short]) => (
         <li key={href} className="min-w-0">
           <a
             href={href}
+            aria-label={grid && short !== address ? `${short} ${address}` : undefined}
+            title={grid ? address : undefined}
             className="block truncate py-2 text-rail-muted no-underline transition-colors duration-[var(--duration-fast)] ease-[var(--ease-out-quart)] hover:text-accent"
           >
-            {label}
+            {grid ? short : address}
           </a>
         </li>
       ))}

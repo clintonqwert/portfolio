@@ -1,7 +1,7 @@
 import "server-only";
 
 import { REPO_HREF } from "@/lib/content/profile";
-import type { DeckPreview, ImageSlot, VideoSlot } from "@/types/content";
+import type { WorkPreview, ImageSlot, VideoSlot } from "@/types/content";
 
 export type { ImageSlot };
 
@@ -14,9 +14,9 @@ export type { ImageSlot };
  *
  * Every slot below is now a real capture of a public page, saved as WebP:
  *  - driftpilot.ca, taken 2026-09-25 in headless Chrome.
- *  - riflessiautocare.ca: the hero and the deck window re-taken 2026-09-28,
- *    after the site moved to its own domain and gained its header mark.
- *    The deck's full-page preview is still the 2026-09-25 capture: a
+ *  - riflessiautocare.ca: the hero and the preview window re-taken
+ *    2026-09-28, after the site moved to its own domain and gained its header
+ *    mark. Its full-page preview is still the 2026-09-25 capture: a
  *    full-page capture of today's scroll sequence renders its acts blank,
  *    because their reveals only fire as a visitor scrolls.
  *  - tadvantage.ca and autosyncmotors.com, supplied by the owner on
@@ -77,7 +77,7 @@ export const SCORES_IMAGE: ImageSlot = {
 };
 
 /**
- * AutoSync, for the AutoTrader tile and /autotrader.
+ * AutoSync, for the AutoTrader card and /autotrader.
  *
  * Not in WORK_IMAGES because AutoTrader is a role rather than a case study and
  * has no slug. autosyncmotors.com is the public demo of the platform, so it is
@@ -204,18 +204,19 @@ export const WORK_IMAGES: Record<string, ImageSlot> = {
 };
 
 /**
- * Whole-page previews for the deck tiles, keyed by slug (AutoTrader, which has
- * no slug, as "autotrader").
+ * Whole-page previews for the landing's work cards, keyed by slug (AutoTrader,
+ * which has no slug, as "autotrader"). Riflessi's card shows its recording
+ * instead; its preview stays here for any page that wants the still.
  *
- * A tile shows a fixed window onto the top of the page and pans down it on
- * hover, like scrolling the site — so these are full-page captures rather
+ * A work card shows a fixed window onto the top of the page and pans down it
+ * on hover, like scrolling the site — so these are full-page captures rather
  * than the 16:10 heroes above.
  *
  * 1200px wide at q82, downsampled from 2x sources. A whole desktop page in a
  * ~450px window is nearly all fine text, so sharpness is the whole job: the
  * first cut was 800px from 1x captures at q68, which the widest window had
  * to upscale and which then lost a second round to the optimizer's q75 —
- * that is what read as blur. TileShot asks for q90 (see next.config.ts).
+ * that is what read as blur. WorkShot asks for q90 (see next.config.ts).
  *
  *  - Tadvantage and AutoSync are the owner's full-page 2x originals, the
  *    AutoSync one cropped at the right edge to keep its chat widget out.
@@ -228,7 +229,7 @@ export const WORK_IMAGES: Record<string, ImageSlot> = {
  *    "The work." case results — the studio's own marketing figures, which the
  *    screenshot rule above keeps off this site, pan or no pan.
  */
-export const DECK_PREVIEWS: Record<string, DeckPreview> = {
+export const WORK_PREVIEWS: Record<string, WorkPreview> = {
   driftpilot: preview("driftpilot", 2790, {
     alt: "The DriftPilot studio site, from the hero down through its services and delivery process",
     source: { label: "driftpilot.ca", href: "https://driftpilot.ca" },
@@ -251,17 +252,17 @@ export const DECK_PREVIEWS: Record<string, DeckPreview> = {
 };
 
 /**
- * One deck preview from its two files: `<name>-window.webp`, the page's first
- * 780px (at 1200 wide, a 0.65 ratio — taller than any window the deck draws,
- * 268×173 at 1440 being the squarest), and `<name>-preview.webp`, the page.
- * At rest a tile shows only the window: measured at 1728@2x, fetching all four
- * whole pages up front cost 598 kB for the ~130px strips on show.
+ * One preview from its two files: `<name>-window.webp`, the page's first
+ * 780px (at 1200 wide, a 0.65 ratio, taller than the 16:9 card frame that
+ * shows it), and `<name>-preview.webp`, the page. At rest a card shows only
+ * the window: on the old deck, fetching all four whole pages up front cost
+ * 598 kB for the strips on show.
  */
 function preview(
   name: string,
   pageHeight: number,
   meta: Pick<ImageSlot, "alt" | "source">,
-): DeckPreview {
+): WorkPreview {
   return {
     window: {
       src: `/work/${name}-window.webp`,

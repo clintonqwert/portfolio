@@ -97,7 +97,6 @@ const CASE_STUDIES: readonly CaseStudy[] = [
   {
     slug: "riflessi",
     name: "Riflessi Auto Care",
-    shortName: "Riflessi",
     headline: "Proving the foundation was reusable",
     summary:
       "A second business on DriftPilot’s foundation, built in five weeks: I cut its 19 MB 3D hero to 2 MB and kept the home shop’s address out of every photo.",
@@ -159,11 +158,6 @@ const CASE_STUDIES: readonly CaseStudy[] = [
   },
   {
     slug: "tadvantage",
-    // Carries the widest study cell, beside AutoTrader.ca's: six and a half
-    // years on the platform is the longest and largest body of work here, and
-    // the automotive experience is what the roles this site is for hire on.
-    // Owner's decision, 2026-09-26. It was DriftPilot's, for its budget table.
-    feature: true,
     name: "Tadvantage",
     headline: "Six and a half years on a dealer platform, and the parts I put my name on",
     summary:
@@ -189,18 +183,6 @@ const CASE_STUDIES: readonly CaseStudy[] = [
       { label: "myGarage: the feature that tested the data model", href: "/work/mygarage" },
       { label: "Luxury tax: a chapter of this platform", href: "/work/luxury-tax" },
     ],
-    // Each restates a passage below: releases ("My part in it"), luxury
-    // tax ("Pricing"), caching ("Performance"), SEO ("The unglamorous half"),
-    // IQ Badging. Ordered by weight; the deck shows as many as fit.
-    highlights: [
-      "Release master on releases between v3 and v12.7",
-      "Canada’s luxury tax on every price, rolled out dealer by dealer",
-      "Ended three years of object-cache churn; page caching fleet-wide",
-      "The SEO foundation: bilingual inventory sitemaps, VIN-keyed schema",
-      "IQ Badging: one Vue component, on every vehicle card",
-    ],
-    // The deck gives a feature cell's label three lines (deck.tsx). This one
-    // needs all three at 1440; at 1280 they stop at "the most of 100+…".
     stats: [
       { value: "1,682", label: "Commits, the most of 100+ contributors" },
       { value: "358", label: "Merged pull requests" },
@@ -292,13 +274,11 @@ const CASE_STUDIES: readonly CaseStudy[] = [
     role: "Full-stack engineer",
     stack: ["PHP", "MySQL", "AWS RDS", "Node.js", "Vue.js"],
     /*
-      Kept off the dashboard for the same reason Luxury tax is: the deck's
-      three case-study cells are already assigned. In the rail it is nested
-      under the "AutoTrader.ca" heading alongside Tadvantage and Luxury tax
-      (see navigation.ts) rather than sitting at the top level — a feature of
-      Tadvantage, not a peer of it — and it links back to Tadvantage below.
+      In the rail it is nested under the "AutoTrader.ca" heading alongside
+      Tadvantage and Luxury tax (see navigation.ts) rather than sitting at the
+      top level — a feature of Tadvantage, not a peer of it — and it links
+      back to Tadvantage below.
     */
-    onDeck: false,
     stats: [],
     related: [{ label: "Tadvantage: the platform this shipped on", href: "/work/tadvantage" }],
     passages: [
@@ -348,14 +328,6 @@ const CASE_STUDIES: readonly CaseStudy[] = [
     role: "Full-stack engineer",
     stack: ["PHP", "WordPress", "Vue.js", "Optimizely", "WP-CLI", "PHPUnit", "Jest"],
     related: [{ label: "Tadvantage: the platform this shipped on", href: "/work/tadvantage" }],
-    /*
-      Kept off the dashboard. The deck is exactly one viewport tall and its
-      three case-study cells are already assigned; a fourth would either
-      collide with the third or shrink all of them. This study reaches readers
-      through the rail and through the Tadvantage study it belongs to, which
-      costs it nothing — it is a chapter of that platform, not a rival to it.
-    */
-    onDeck: false,
     stats: [],
     passages: [
       {

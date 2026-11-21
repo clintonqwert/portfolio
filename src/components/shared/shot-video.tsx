@@ -16,7 +16,7 @@ import type { VideoSlot } from "@/types/content";
  * as the figure comes within 800px. Under reduced motion or Save-Data it
  * never starts by itself, since scrolling past is not asking for a 2 MB
  * video; the button still plays it. Reduced motion is followed live, as the
- * deck's pointer is: switched on mid-visit, the loop stops.
+ * work cards' preview loader is: switched on mid-visit, the loop stops.
  *
  * The button is the pause WCAG 2.2.2 asks of anything that moves on its own
  * for more than five seconds, and the reader's last word on it outranks
@@ -34,9 +34,12 @@ export function ShotVideo({
   caption,
 }: {
   video: VideoSlot;
-  /** Figure number on this page, e.g. "03". */
-  figure: string;
-  caption: string;
+  /**
+   * Figure number on this page, e.g. "03", and its caption. Both or neither:
+   * a work card shows the recording bare, under its own title.
+   */
+  figure?: string;
+  caption?: string;
 }) {
   const ref = useRef<HTMLVideoElement>(null);
   const choice = useRef<"play" | "pause" | null>(null);
@@ -150,7 +153,9 @@ export function ShotVideo({
           </a>
         </noscript>
       </div>
-      <ShotCaption figure={figure} caption={caption} source={video.source} linkSource />
+      {figure && caption ? (
+        <ShotCaption figure={figure} caption={caption} source={video.source} linkSource />
+      ) : null}
     </figure>
   );
 }

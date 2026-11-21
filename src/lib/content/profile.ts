@@ -21,7 +21,17 @@ import "server-only";
 
 export const NAME = "Clinton Jay Ramonida";
 export const LOCATION = "Vancouver, British Columbia";
-export const ROLE_TITLE = "Senior Full-Stack Software Engineer";
+/** One line in the rail, and the location fact under the hero. */
+export const LOCATION_SHORT = "Vancouver, BC";
+/**
+ * The role as it was done. At AutoTrader.ca the title was Software Engineer
+ * (Full Stack-Product), then Senior Software Engineer, and the work was
+ * product engineering, so this stands as a claim (owner, 2026-11-02, on
+ * review finding P1-1 of #32). It is the site's title and the structured
+ * data's `jobTitle`; the résumé keeps "Senior Full-Stack Software Engineer".
+ * The exact titles held, with their dates, are on /history.
+ */
+export const ROLE_TITLE = "Senior Full-Stack Product Engineer";
 
 /**
  * The roles sought, said once. The rail's availability line and the first
@@ -29,7 +39,7 @@ export const ROLE_TITLE = "Senior Full-Stack Software Engineer";
  * Lowercase here: the fact capitalises its first letter, which is safe for
  * "AI" and "FDE" where lowercasing would not be.
  */
-const ROLES_SOUGHT = "senior full-stack, AI-enabled & FDE roles";
+const ROLES_SOUGHT = "senior full-stack, product, AI-enabled & FDE roles";
 
 /**
  * Availability. Shown in the rail on every route — a reviewer should not have
@@ -114,43 +124,39 @@ export const PORTRAIT = {
  */
 export const FACTS = [
   `${ROLES_SOUGHT.charAt(0).toUpperCase()}${ROLES_SOUGHT.slice(1)}`,
-  "Vancouver, BC",
+  LOCATION_SHORT,
   "Hybrid preferred, remote or on-site welcome",
   "Canadian citizen, no sponsorship needed",
 ] as const;
 
 /**
- * The statement above the fold: who this is and the experience behind it,
- * for a reader who gives the page thirty seconds. It used to be the position
- * line below, with the role in the lede; the owner swapped them on 2026-09-26
- * after an outside review — lead with the role and the automotive platform.
+ * The landing hero, in reading order: who this is, what they do, and the
+ * proof. v2 (owner, 2026-10-31) leads with the capability and puts the
+ * automotive platform in the proof, as the evidence of scale rather than the
+ * identity. Every line is in profile/portfolio-v2-brief.md with its source.
  */
-export const HEADLINE =
-  "Senior full-stack engineer. Six and a half years on a national automotive SaaS platform.";
+export const HEADLINE = "Senior full-stack product engineer.";
 
-/**
- * The position, under the headline. Shorter and harder than the résumé summary.
- *
- * One line at the lede's 70ch, and it has to stay one: at 1280x800 the deck has
- * no height to spare, and a second line pushed AutoTrader 10px past its cell
- * (2026-09-29). check:behaviour fails on a second line. The pipeline point it
- * replaced is DriftPilot's now: the tile's budget rows on the deck, and the
- * summary's "performance budget on every pull request" on its case study.
- */
 export const LEDE =
-  "Since 2026 I’ve shipped two live sites on my own, with a five-role AI workflow I designed.";
+  "I build web products end to end, from the interface and its APIs to the deploy and the performance budget.";
+
+/** "Most recently" would be wrong: DriftPilot is the most recent work. */
+export const PROOF_LINE =
+  "Since 2026 I’ve shipped two live sites on my own. Before that, six and a half years on the dealer platform that became AutoSync at AutoTrader.ca.";
 
 /**
  * For search results and link previews: the headline's facts with the whole
  * career around them, since a snippet has room for one sentence and no page.
  */
 export const DESCRIPTION =
-  "Senior full-stack engineer with nine years of production web systems, six and a half of them on a national automotive SaaS platform.";
+  "Senior full-stack product engineer with nine years of production web systems. Since 2026 I’ve shipped two live sites on my own, after six and a half years on a national automotive SaaS platform.";
 
 /*
   A four-stat masthead summary and a standalone position statement used to
   live here (getHeadlineStats, getPositionPassages). Both were retired
-  2026-09 because they restated figures the tiles show more specifically,
-  and a second copy of a figure is one more place for it to drift. Don't
-  bring a summary back; put the figure on the tile that owns it.
+  2026-09 because they restated figures the deck's tiles showed more specifically,
+  and a second copy of a figure is one more place for it to drift. v2's proof
+  strip (landing.ts) brings four claims back on the owner's decision, under
+  one rule: each restates a fact its case study owns and links to it, so
+  there is still one place it can be checked.
 */
