@@ -42,6 +42,21 @@ shipped them, newest first.
 - **One set of agent instructions.** The rules moved from `CLAUDE.md` to
   `AGENTS.md`, which Codex reads, and `CLAUDE.md` imports it. The Codex copy
   had been untracked, and it still described the deck.
+- **The rail says where you are.** Each page in the rail carries its number,
+  and the current page's number is the same ink chip as its hero's. A rule
+  down each group ties its pages to their heading, with the current page
+  marked on it. AutoTrader.ca, a page as well as a heading, is numbered and
+  answers the pointer like a link, and the practice pages stand apart from
+  DriftPilot Studio. The current link's first letter no longer grows, which
+  had moved every row under it 2px on each click. The rail has 7.5px to
+  spare at 768px tall, up from 5.5px. The theme toggle is drawn with a
+  hairline instead of a grey fill.
+  - On a phone the bar's strip opens with the current page centred. It used
+    to open at its start, with the current page off-screen on most routes.
+    Its ends fade where the edge cuts a pill.
+  - `check:behaviour` now checks that the rail marks one page on every
+    route, with its hero's number, and that its rows hold still from page to
+    page. It also checks that a phone shows the current pill.
 
 ## v1.0.1 — 2026-10-31
 

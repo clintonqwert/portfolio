@@ -62,7 +62,7 @@ export function SiteRail({ links }: { links: NavEntry[] }) {
             </span>
           </Link>
           <div className="flex shrink-0 items-center gap-2">
-            <ThemeToggle className="bg-rail-line/50 text-rail-muted" />
+            <ThemeToggle />
             <a
               href={RESUME.href}
               download
@@ -72,7 +72,7 @@ export function SiteRail({ links }: { links: NavEntry[] }) {
             </a>
           </div>
         </div>
-        <nav aria-label="Sections" className="overflow-x-auto border-t border-rail-line/60">
+        <nav aria-label="Sections" className="border-t border-rail-line/60">
           <RailNav links={links} variant="bar" />
         </nav>
       </header>
