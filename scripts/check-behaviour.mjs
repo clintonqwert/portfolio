@@ -31,7 +31,10 @@
  *    keeps a reader's pause, and never starts itself under reduced motion or
  *    Save-Data.
  *  - Under prefers-reduced-motion nothing loops or reveals.
- *  - The rail fits its window without scrolling from 768px tall.
+ *  - The rail fits its window without scrolling from 768px tall, marks one
+ *    page on every route with the number its hero carries, and holds its rows
+ *    still from page to page. On a phone the bar shows the current page's
+ *    pill, clear of the strip's faded ends.
  *  - Keyboard focus is visible inside every ink block. The ring is accent and
  *    accent is ink, so inside a chip it once drew ink on ink — identical
  *    colours, invisible focus — and neither Lighthouse nor check:contrast can

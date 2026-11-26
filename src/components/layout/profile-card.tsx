@@ -46,10 +46,7 @@ export function ProfileCard() {
           </p>
           <p className="mt-0.5 meta text-rail-muted">{LOCATION_SHORT}</p>
         </div>
-        <ThemeToggle
-          iconOnly
-          className="shrink-0 bg-rail-line/40 text-rail-muted hover:bg-rail-line/70 hover:text-rail-ink"
-        />
+        <ThemeToggle iconOnly className="shrink-0" />
       </div>
     </div>
   );

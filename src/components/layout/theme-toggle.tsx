@@ -69,7 +69,11 @@ export function ThemeToggle({
       // Name). "Switch to light mode" under a visible "Dark" was flagged by
       // Lighthouse on the mobile bar, the one place the word shows.
       aria-label={isDark ? "Dark theme — switch to light" : "Light theme — switch to dark"}
-      className={`inline-flex cursor-pointer items-center gap-2 rounded-sm px-2.5 py-1.5 font-mono text-3xs uppercase tracking-[0.08em] transition-colors duration-200 ${className ?? ""}`}
+      // Drawn with a hairline, like every other box here. It was a grey
+      // fill, the one tinted surface in the rail, and read as a disabled
+      // button. Rail tokens because the rail and its bar are the only
+      // places it appears.
+      className={`inline-flex cursor-pointer items-center gap-2 rounded-sm px-2.5 py-1.5 font-mono text-3xs uppercase tracking-[0.08em] text-rail-muted shadow-[inset_0_0_0_1px_var(--color-rail-line)] transition-[color,box-shadow] duration-[var(--duration-fast)] ease-[var(--ease-out-quart)] hover:text-rail-ink hover:shadow-[inset_0_0_0_1px_var(--color-rail-ink)] ${className ?? ""}`}
     >
       <svg
         aria-hidden="true"

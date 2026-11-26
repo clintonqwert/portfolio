@@ -24,7 +24,7 @@
     surface   .panel .chip .rail .work-shot-frame
               Things with a visible edge. They own background, rule and radius.
 
-    layout    .flow .datagrid .marquee
+    layout    .flow .datagrid .marquee .strip
               Things that arrange children. They own grid, columns and gap.
 
     type role .display .display-tight .label .meta .figure-value .figure-label
@@ -675,6 +675,33 @@
     .marquee-track {
       animation: none;
     }
+  }
+
+  /*
+    The phone bar's row of page links: one line that scrolls sideways, its
+    ends faded so a pill the edge cuts reads as "there is more" rather than
+    as clipped text. The fade is 16px, the list's own px-4, so at either end
+    of the scroll it falls on padding and a pill is only faded while the edge
+    actually crosses it. In px, like px-4, so the two stay equal at any
+    default font size. The scroll padding keeps a pill that keyboard focus
+    scrolls to clear of the fade.
+  */
+  .strip {
+    scroll-padding-inline: 16px;
+    -webkit-mask-image: linear-gradient(
+      to right,
+      transparent,
+      #000 16px,
+      #000 calc(100% - 16px),
+      transparent
+    );
+    mask-image: linear-gradient(
+      to right,
+      transparent,
+      #000 16px,
+      #000 calc(100% - 16px),
+      transparent
+    );
   }
 }
 
